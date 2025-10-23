@@ -1,0 +1,298 @@
+@extends('admin.temp.main')
+
+@section('admin')
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
+<link href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+	<div class="row">
+		<p class="col-sm-12 h2">Add New Calculator</p>
+		<div class="col-sm-12">
+			@if($status=Session::get('status'))
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="alert alert-success">
+                            {{ $status }}
+                            <button data-dismiss="alert" class="close" type="button">×</button>
+                        </div>
+                    </div>
+                </div>
+            @endif
+			@if ($errors->any())
+            <div class="row">
+                <div class="col-sm-12 col-md-12">
+                    @foreach ($errors->all() as $error)
+                        <div class="alert alert-danger">
+                            {{ $error }}
+                            <button data-dismiss="alert" class="close" type="button">×</button>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
+			<form method="POST" action="{{ url('admin/edit-calculator/'.$page->cal_id) }}/" accept-charset="UTF-8" enctype="multipart/form-data">
+				<input type="hidden" name="_token" id="key_token" value="{{ csrf_token() }}">
+				<input type="hidden" name="cal_cat" id="cayegoryName" value="{{$page->cal_cat}}">
+				<div class="col-md-6 col-md-12">
+					<div class="form-group">
+						<label class="h4">Select Calculator Category</label>
+						<select class="form-control" required  id="cat_cal">
+							<option selected disabled>Select Calculator Category</option>
+							@foreach ($get_cats as $item)
+								<option value="{{$item->cat_id}}" {{$item->cat_name== $page->cal_cat?'selected':''}}>{{$item->cat_name}}</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="form-group">
+						<label class="h4">Select Calculator Sub Category</label>
+						<select class="form-control"  name="cal_sub_cat" id="cal_sub_cat">
+							<option selected disabled>Select Calculator Sub Category</option>
+							@foreach ($get_subcats as $item)
+							<option value="{{ $item->cat_id }}" {{ isset($get_sub) && $get_sub->cat_id == $item->cat_id ? 'selected' : '' }}>
+								{{ $item->cat_name }}
+							</option>
+							@endforeach
+						</select>
+					</div>
+					<div class="form-group">
+				        <label class="checkbox-inline">
+							@if ($page->show_hide==1)
+								<input type="checkbox" name="show_hide" checked data-toggle="toggle"> Show and hide calculator
+							@else
+								<input type="checkbox" name="show_hide" data-toggle="toggle"> Show and hide calculator
+							@endif
+				        </label>
+				    </div>
+					<div class="form-group">
+						<label class="h4">Calculator Title</label>
+						<input class='form-control' type='text' name='cal_title' id="naam" value="{{$page->cal_title}}" required placeholder="Calculator Title" />
+					</div>
+					<div class="form-group">
+				        <label class="h4">Calculator URL</label>
+						<input class='form-control' type='text' name='cal_url' id="cal_url" value="{{$page->cal_link}}" required placeholder="Page Url" />
+					</div>
+					<div class="form-group">
+				        <label class="checkbox-inline">
+							@if ($page->no_index==1)
+								<input type="checkbox" name="noindex" checked data-toggle="toggle"> Noindex
+							@else
+								<input type="checkbox" name="noindex" data-toggle="toggle"> Noindex
+							@endif
+				        </label>
+				    </div>
+					<div class="form-group">
+				        <label class="h4">Calculator Search By</label>
+						<input class='form-control' type='text' name='cal_search' id="cal_search" value="{{$page->image_class}}" required placeholder="Search by" />
+					</div>
+					<div class="form-group">
+						<label class="h4">Select Parent</label>
+				        <input class="form-control" type="text" name="parent" list="p" id="parent" value="{{$page->parent}}">
+				        <datalist id="p">
+				        	@foreach($parent as $value)
+				        		<?php 
+				        			$url=$value->cal_link;
+				        			$url=explode('/', $url);
+				        		 ?>
+				        		 @if(count($url)===1)
+				        			<option value="{{$value->cal_title}}">{{$value->cal_title}}</option>
+				        		@endif
+				        	@endforeach
+				        </datalist>
+					</div>
+					@php
+						$related=json_decode($page->related_cal,true);
+					@endphp
+					<input type="hidden" name="count_rel" value="{{ is_array($related)?count($related)-1:0 }}" class="count_rel">
+				    <div class="form-group">
+						<label class="h4">Select Related Calculator</label><br>
+						<button class="add_cal btn btn-primary" type="button">Add Related Cal</button>
+						<div class="add_related">
+							@php
+								if (is_array($related)) {
+									foreach ($related as $key => $value1) {
+										if (is_numeric($key)) {
+											$name=explode('/', $value1);
+											echo "<p style='margin-top:5px'>No. ".($key+1)." Related Calculator</p><select class='form-control select2' name='related_cal".($key+1)."'><option value='khali'>Select Related Calculator</option>";
+											foreach ($parent as $value) {
+												if (isset($name[3])) {
+													$link_n=$name[2].'/'.$name[3];
+													if ($link_n==$value->cal_link) {
+														$selected="selected";
+													}else{
+														$selected='';
+													}
+												}else{
+													if (isset($name[2]) && $name[2]==$value->cal_link) {
+														$selected="selected";
+													}else{
+														$selected='';
+													}
+												}
+												echo '<option '.$selected.' value="'.$value->cal_title."/".$value->cal_img."/".$value->cal_link.'">'.$value->cal_title.'</option>';
+											}
+											echo "</select>";
+										}
+									}
+								}
+							@endphp
+						</div>
+					</div>
+					<div class="form-group">
+			            <label class="h4">Page Content</label>
+			            <textarea class="ckeditor" name="content" id="ckeditor_content" required>{!! $page->content !!}</textarea>
+			        </div>
+					<div class="form-group">
+						<label class="h4">Calculator Short Description</label>
+						<textarea class="form-control" name="cal_des" style="height:100px">{{ $page->cal_detail }}</textarea>
+					</div>
+					<input type="hidden" name="is_calculator" value="Calculator">
+					@if ($page->cal_img)	
+						<div class="form-group">
+							<label>Icon</label>
+							<div style="width: 134px; height: 116px; margin: 5px;">
+								<img src="{{url('assets/img/'.$page->cal_img)}}" style="width: 100%;height: 100%;object-fit: cover;">
+							</div>
+						</div>
+					@endif
+					<div class="form-group">
+						<label class="h4">Calculator Icon</label>
+        				<input type="file" name="cal_img" class="form-control" accept=".png,.jpg,.jpeg,.gif,.webp">
+					</div>
+			        <div class="form-group">
+						<label class="h4">Meta Title</label>
+						<input class='form-control' type='text' name='meta_title' value="{{$page->meta_title}}" required placeholder="Meta Tile" />
+					</div>
+					<div class="form-group">
+				        <label class="h4">Meta Description</label>
+						<input class='form-control' type='text' name='meta_des' value="{{$page->meta_des}}" required placeholder="Meta Description" />
+					</div>
+					<div class="form-group">
+						<label class="checkbox-inline">
+							@if (($page->is_aprove==0))
+								<input type="checkbox" name="aprove" data-toggle="toggle"> Approved
+							@else
+								<input type="checkbox" checked name="aprove" data-toggle="toggle"> Approved
+							@endif
+						</label>
+					</div>
+					<div class="form-group">
+						<label class="checkbox-inline">
+							@if (($page->clarity==0))
+								<input type="checkbox" name="clarity" data-toggle="toggle"> Clarity
+							@else
+								<input type="checkbox" checked name="clarity" data-toggle="toggle"> Clarity
+							@endif
+						</label>
+					</div>
+					<div class="form-group">
+						<label class="checkbox-inline">
+							@if ($page->mathjax==0)
+								<input type="checkbox" name="mathjax" data-toggle="toggle"> Mathjax
+							@else
+								<input type="checkbox" name="mathjax" checked data-toggle="toggle"> Mathjax
+							@endif
+						</label>
+					</div>
+					<div class="form-group">
+						<label class="h4">Table of Content:</label>
+						@php
+							$TOC=json_decode($page->TOC,true);
+						@endphp
+						<textarea class="form-control" name="TOC" placeholder="Enter Table of Contant" style="height:150px">@if (isset($TOC['by-default']) && !empty($TOC['by-default'])){{ $TOC['by-default'] }}@endif</textarea>
+					</div>
+					<div class="form-group mb-5 mt-5">
+			            <input type="submit" name="add_calculator" class="btn btn-primary" value="Update Calculator">
+			        </div>
+			    </div>
+				<div class="col-md-6 col-md-12">
+					<label class="col-md-12 h4">Page Keys</label>
+					<div class="col-md-12 add_keys">
+						@php
+							$keys=json_decode($page->lang_keys);
+						@endphp
+						@foreach ($keys as $key => $value)
+							<div class="col-md-6">
+								<input type="text" name="keyname[]" value="{{$key}}" style="margin-top: 5px;" class="form-control col-md-6" placeholder="Key Name">
+							</div>
+							<div class="col-md-6">
+								<input type="text" name="keyvalue[]" value="{{$value}}" style="margin-top: 5px;" class="form-control col-md-6" placeholder="Key Value">
+							</div>  
+						@endforeach
+					</div>
+					<button type="button" id="add_key" class="btn btn-primary" style="margin: 10px 0px 0px 20px;"><i class="fa fa-plus"></i> Add Key</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<script src="https://cdn.ckeditor.com/4.15.1/standard/ckeditor.js"></script>
+	<script>
+		CKEDITOR.config.allowedContent = true;
+		CKEDITOR.disableAutoInline = true;
+		$(document).ready(function(){
+			"use strict";
+			let options = '';
+			@foreach ($parent as $value)
+				options += '<option value="';
+				options += "{{$value->cal_title.'/'.$value->cal_img.'/'.$value->cal_link}}";
+				options += '">';
+				options += "{{$value->cal_title}}";
+				options += "</option>";
+			@endforeach	
+			function add_related(j){
+            	var html='<p style="margin-top:5px">Add '+j+' Related Calculator</p>'+
+                '<select class="select2 active form-control" name="related_cal'+j+'">'+
+               	'<option disabled selected>Select Related Calculator</option>'+options+'</select>';
+               	$('.add_related').append(html);
+               	$('.select2').select2();
+        	}
+			var i=0;
+			$('.add_cal').on('click',function(){
+				i++;
+				add_related(i);
+				$('.count_rel').val(i);
+			})
+
+			var html='<div class="col-md-6" style="margin-top:10px;">'+
+		        '<input type="text" name="keyname[]" class="form-control col-md-6" placeholder="Key Name">'+
+		    '</div>'+
+		    '<div class="col-md-6" style="margin-top:10px;">'+
+		        '<input type="text" name="keyvalue[]" class="form-control col-md-6" placeholder="Key Value">'+
+		    '</div>';
+		    $('#add_key').click(function(){
+		        $('.add_keys').append(html);
+		    })
+		})
+		$(window).on('load', function (){
+			// $( '#ckeditor_content' ).ckeditor();
+		});
+		// CKEDITOR.replace( 'ckeditor_content' );
+		$('#cat_cal').change(function(){
+			var cal_id=$(this).val();
+			var token=$('#key_token').val();
+			if(parent!=''){
+				$.ajax({
+				type: "post",
+				url: "{{URL::to('admin/search-subcategory')}}/",
+				data: {
+					cal_id : cal_id,
+					_token : token
+				},
+				success: function(data){
+					var html='';
+					var html = '<option value="">Select Subcategory</option>'; 
+					$.each(data.data, function(index, value) {
+						html += '<option value="' + value.cat_id + '">' + value.cat_name + '</option>';
+					});
+					$('#cayegoryName').val(data.categoriesName);
+					$('#cal_sub_cat').html(html);
+					},
+					error: function(xhr, status, error) {
+					console.log(xhr.responseText); 
+					}
+				
+				});
+			}
+        });
+	</script>
+@endsection

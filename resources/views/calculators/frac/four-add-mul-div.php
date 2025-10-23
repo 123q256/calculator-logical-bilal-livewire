@@ -1,0 +1,146 @@
+<?php if($action1 === '÷'){ 
+    $ON3 = $N3;
+    $OD3 = $D3;
+    list($N3,$D3) = array($D3,$N3);
+    $oaction = $action;
+    $oaction1 = $action1;
+    $action1 = '×';
+    $oaction2 = $action2; ?>
+    <p class="mt-2">
+        So we are having three different operations in the problem given. But first, we will work on <?= $oaction1 ?> operation
+    </p>
+    <p class="mt-2"><?=$lang[26]?>.</p>
+    <p class="mt-2"><?=$lang[27]?>.</p>
+    <p class="text-center mt-2">
+        \(
+            \dfrac{<?=$N1?>}{<?=$D1?>} <?=$action?> 
+            \dfrac{<?=$N2?>}{<?=$D2?>} <?=$action1?> 
+            \dfrac{<?=$N3?>}{<?=$D3?>} <?=$action2?> 
+            \dfrac{<?=$N4?>}{<?=$D4?>} = \ ?
+        \)
+    </p>
+<?php }else{
+    $ON3 = $N3;
+    $OD3 = $D3;
+    $ON4 = $N4;
+    $OD4 = $D4;
+    $oaction = $action;
+    $oaction1 = $action1;
+    $oaction2 = $action2;
+} ?>
+<?php if($action2 === '÷'){ 
+    list($N4,$D4) = array($D4,$N4);
+    $action2 = '×'; ?>
+    <p class="mt-2">
+        So we are having three different operations in the problem given. But first, we will work on <?= $oaction2 ?> operation
+    </p>
+    <p class="mt-2"><?=$lang[26]?>.</p>
+    <p class="mt-2"><?=$lang[27]?>.</p>
+    <p class="text-center mt-2">
+        \(
+            \dfrac{<?=$N1?>}{<?=$D1?>} <?=$action?> 
+            \dfrac{<?=$N2?>}{<?=$D2?>} <?=$action1?> 
+            \dfrac{<?=$N3?>}{<?=$D3?>} <?=$action2?> 
+            \dfrac{<?=$N4?>}{<?=$D4?>} = \ ?
+        \)
+    </p>
+<?php }?>
+<p class="mt-2"><?=$lang[28]?>.</p>
+<p class="mt-2 center">
+    \( = \dfrac{(<?=$N2?>)\times(<?=$N3?>)\times(<?=$N4?>)}{<?=$D2?>\times<?=$D3?>\times<?=$D4?>} \)
+</p>
+<p class="mt-2 center">
+    \( = \dfrac{<?=$N2*$N3*$N4?>}{<?=$D2*$D3*$D4?>} \)
+</p>
+<?php
+$N2 =  $N2*$N3*$N4;
+$D2 =  $D2*$D3*$D4;
+?>
+<p class="mt-2">Now,</p>
+<p class="text-center mt-2">
+    \(
+        \dfrac{<?=$N1?>}{<?=$D1?>} <?=$action?> 
+        \dfrac{<?=$N2?>}{<?=$D2?>} = \ ?
+    \)
+</p>
+
+<?php if($D1!=$D2){ ?>
+    <p class="mt-2"><?=$lang[30]?>.</p>
+    <?php $x = "$N1/$D1,$N2/$D2" ?>
+    <p class="mt-2">
+        <a href="#" class="text-blue text-decoration-none" target="_blank">LCD(<?=$x?>) = <?=$detail['lcd']?></a>
+    </p>
+    <p class="mt-2"><?=$lang[31]?>.</p>
+    <p class="text-center mt-2">
+        \( \left(\dfrac{<?=$N1?>}{<?=$D1?>} \times \dfrac{<?=$detail['lcd']/$D1?>}{<?=$detail['lcd']/$D1?>} \right) <?=$action?> \left(\dfrac{<?=$N2?>}{<?=$D2?>} \times \dfrac{<?=$detail['lcd']/$D2?>}{<?=$detail['lcd']/$D2?>} \right) = ? \)
+    </p>
+    <p class="mt-2"><?=$lang[32]?>.</p>
+    <p class="text-center mt-2">
+        <?php $mul1 = $detail['lcd']/$D1;$mul2 = $detail['lcd']/$D2; ?>
+        \( \left(\dfrac{<?=$N1*$mul1?>}{<?=$D1*$mul1?>} \right) <?=$action?> \left(\dfrac{<?=$N2*$mul2?>}{<?=$D2*$mul2?>} \right) = ? \)
+    </p>
+    <p class="mt-2"><?=$lang[33]?> <?=($action=='+')?'+':'-'?> <?=$lang[34]?>. <br> <?=$lang[35]?>:</p>
+    <p class="text-center mt-2">
+        <?php if($action=='+'){ 
+            $plus = ($N1*$mul1) + ($N2*$mul2);
+            }elseif($action=='-'){
+            $plus = ($N1*$mul1) - ($N2*$mul2);
+            } ?>
+        \( \dfrac{<?=$N1*$mul1?> <?=$action?> <?=$N2*$mul2?>}{<?=$D1*$mul1?>} = \dfrac{<?=$plus?>}{<?=$D1*$mul1?>} \)
+    </p>
+<?php }elseif($D1==$D2){
+    $mul1 = 1;
+?>
+    <p class="mt-2"><?=$lang[17]?>.<br> <?=$lang[35]?>:</p>
+    <p class="text-center mt-2">
+        <?php if($action=='+'){ 
+                $plus = ($N1) + ($N2);
+            }elseif($action=='-'){
+                $plus = ($N1) - ($N2);
+            } ?>
+        \( \dfrac{<?=$N1?> <?=$action?> <?=$N2?>}{<?=$D1?>} = \dfrac{<?=$plus?>}{<?=$D1?>} \)
+    </p>
+<?php } ?>
+
+<!-- for GCF -->
+<?php if(gcd($plus,$D1*$mul1)!=1){ $gcd=gcd($plus,$D1*$mul1); ?> <p class="mt-2"><?=$lang[18]?> <?=$plus?> <?=$lang[12]?> <?=$D1*$mul1?> <?=$lang[19]?></p>
+    <p class="mt-2">
+        <a href="#" class="mt-2" target="_blank">GCF(<?=$plus?>,<?=$D1*$mul1?>) = <?=$gcd?></a>
+    </p>
+    <p class="text-center mt-2">
+        \( \dfrac{<?=$plus?> \div <?=$gcd?>}{<?=$D1*$mul1?> \div <?=$gcd?>} = \)
+        <?php if($detail['btm']!=1 && $detail['upr']!=0){ ?>
+            \( \dfrac{<?=$detail['upr']?>}{<?=$detail['btm']?>} \)
+        <?php }else{ ?>
+            \( <?=$detail['upr']?> \)
+        <?php } ?>
+    </p>
+<?php } ?>
+<?php if($detail['btm']!=1 && $detail['upr']!=0 && $detail['upr']>$detail['btm']){ ?>
+    <p class="mt-2"><?=$lang[20]?></p>
+    <p class="mt-2 center">\( \dfrac{<?=$detail['upr']?>}{<?=$detail['btm']?>} \)</p>
+    <p class="mt-2"><?=$lang[21]?></p>
+    <p class="mt-2 center">\( <?=$detail['upr']?> \div <?=$detail['btm']?> \)</p>
+    <?php if($detail['upr']%$detail['btm']!=0 && $detail['upr']>$detail['btm']){ ?>
+        <p class="mt-2"><?=$lang[22]?>:</p>
+        <?php
+            $bta=abs($detail['upr'] % $detail['btm']);
+            $shi=$detail['upr'] / $detail['btm'];
+            $shi = explode('.',$shi);
+            $shi = $shi[0];
+        ?>
+        <p class="mt-2 center">\( \dfrac{<?=$detail['upr']?>}{<?=$detail['btm']?>} = <?=$shi.' \\dfrac{'.$bta.'}{'.$detail['btm']?>} \)</p>
+        <p class="mt-2"><?=$lang[23]?>:</p>
+        <p class="mt-2 center">\( \dfrac{<?=$N1?>}{<?=$D1?>} <?=$action?> \dfrac{<?=$N2?>}{<?=$D2?>} = <?=$shi.' \\dfrac{'.$bta.'}{'.$detail['btm']?>} \)</p>
+    <?php } ?>
+<?php }else{ ?>
+        <p class="mt-2"><?=$lang[23]?>:</p>
+        <p class="mt-2 center">
+            \( \dfrac{<?=$N1?>}{<?=$D1?>} <?=$action?> \dfrac{<?=$N2?>}{<?=$D2?>} = \)
+            <?php if($detail['btm']!=1 && $detail['upr']!=0){ ?>
+                \( \dfrac{<?=$detail['upr']?>}{<?=$detail['btm']?>} \)
+            <?php }else{ ?>
+                \( <?=$detail['upr']?> \)
+            <?php } ?>
+        </p>
+<?php } ?>

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="295.7" height="171.399" viewBox="0 0 295.7 171.399">
+  <g id="range-domain-graph" transform="translate(0.99 2.302)">
+    <path id="path29" d="M53.81,140.9h240.9" fill="none" stroke="#3465a4" stroke-width="1.42"/>
+    <path id="path31" d="M54.21,140.8V2.8" fill="none" stroke="#3465a4" stroke-width="1.42"/>
+    <path id="path57" d="M104.01,108.6v63.1" transform="translate(0 -5.3)" fill="none" stroke="#2e2e2e" stroke-width="0.81"/>
+    <path id="path59" d="M257.81,58V171.865" transform="translate(0 -4.767)" fill="none" stroke="#2e2e2e" stroke-width="0.81"/>
+    <path id="path61" d="M104.01,103.3H15.71" fill="none" stroke="#07a6ff" stroke-width="0.81"/>
+    <path id="path63" d="M140.91,41H14.71" fill="none" stroke="#0078bc" stroke-width="0.81"/>
+    <path id="path65" d="M21.11,82.5v18.9" fill="none" stroke="#0078bc" stroke-width="1.18"/>
+    <path id="path67" d="M21.11,60.7V43.4" fill="none" stroke="#0078bc" stroke-width="1.18"/>
+    <path id="path69" d="M148.81,158.4h-42.7" fill="none" stroke="#2e2e2e" stroke-width="1.18"/>
+    <path id="path71" d="M219.106,158.4h36.6" fill="none" stroke="#2e2e2e" stroke-width="1.18"/>
+    <text id="text73" transform="translate(154.01 164.098)" fill="#2e2e2e" font-size="17.33" font-family="ComicSansMS, Comic Sans MS"><tspan x="0" y="0">Domain</tspan></text>
+    <text id="text75" transform="translate(-0.99 76.943)" fill="#0078bc" font-size="17.33" font-family="ComicSansMS, Comic Sans MS"><tspan x="0" y="0">Range</tspan></text>
+    <text id="text77" transform="translate(278.51 158.898)" fill="#3465a4" font-size="22.9" font-family="TimesNewRomanPS-BoldItalicMT, Times New Roman" font-weight="700" font-style="italic"><tspan x="0" y="0">x</tspan></text>
+    <text id="text79" transform="translate(10.61 17.698)" fill="#3465a4" font-size="22.9" font-family="TimesNewRomanPS-BoldItalicMT, Times New Roman" font-weight="700" font-style="italic"><tspan x="0" y="0">g(x)</tspan></text>
+    <path id="path55" d="M103.21,103.5s20.4-62.5,42.7-62c22.4.5,51,50.2,72.3,50s38.9-38.8,38.9-38.8" fill="none" stroke="#3465a4" stroke-width="2.16"/>
+  </g>
+</svg>

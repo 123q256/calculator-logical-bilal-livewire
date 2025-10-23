@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="204.109" height="87.38" viewBox="0 0 204.109 87.38">
+  <g id="factor-2x3" transform="translate(0.435 12.979)">
+    <text id="text12" transform="translate(101.675 24.82)" fill="#0084c8" font-size="32.8" font-family="ComicSansMS, Comic Sans MS"><tspan x="0" y="0">6</tspan></text>
+    <text id="text14" transform="translate(27.565 69.401)" fill="#0084c8" font-size="18" font-family="ComicSansMS, Comic Sans MS"><tspan x="-27.989" y="0">Factor</tspan></text>
+    <text id="text16" transform="translate(135.227 69.401)" fill="#0084c8" font-size="18" font-family="ComicSansMS, Comic Sans MS"><tspan x="-27.989" y="0">Factor</tspan></text>
+    <text id="text18" transform="translate(47.175 25.32)" fill="#0084c8" font-size="32.8" font-family="ComicSansMS, Comic Sans MS"><tspan x="0" y="0">4</tspan></text>
+    <text id="text20" transform="translate(77.675 23.02)" fill="#3465a4" font-size="32.8" font-family="ComicSansMS, Comic Sans MS"><tspan x="0" y="0">×</tspan></text>
+    <text id="text22" transform="translate(136.675 24.92)" fill="#3465a4" font-size="32.8" font-family="ComicSansMS, Comic Sans MS"><tspan x="0" y="0">= 24</tspan></text>
+    <path id="path24" d="M30.075,53.72l21.5-21.5" fill="#0084c8" stroke="#0084c8" stroke-width="1"/>
+    <path id="path26" d="M135.475,53.72l-21.5-21.5" fill="#0084c8" stroke="#0084c8" stroke-width="1"/>
+  </g>
+</svg>
