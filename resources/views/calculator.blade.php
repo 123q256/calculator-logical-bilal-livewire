@@ -6,9 +6,9 @@
     @php
         $detail = session('calculator_result');
     @endphp
-    <div class="max-w-screen-xl mx-auto">
+    <div class="max-w-6xl mx-auto">
         <div class="flex flex-wrap mx-4 justify-center">
-            <div class=" w-full lg:w-[70%] md:w-[70%]  pt-4  mx-auto lg:py-5 md:py-5  relative z-50">
+            <div class=" w-full lg:w-[70%] md:w-[70%]  pt-4  mx-auto lg:py-5 md:py-5  relative">
                 <div class="">
                     <h1
                         class="xl:text-[35px] lg:text-[30] md:text-[30px] text-[18px] font-[700] px-2 leading-[40.68px] text-left">

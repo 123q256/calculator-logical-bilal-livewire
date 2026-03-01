@@ -1,7 +1,7 @@
 <div>
     <form wire:submit.prevent="calculate" class="row">
         <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg  space-y-6 my-3">
-            <div class="col-12 col-lg-9 mx-auto mt-2 lg:w-[90%] w-full">
+            <div class="col-12  mx-auto mt-2 w-full">
                 <div class="row">
                     @if (isset($error))
                         <p class="text-red-500 text-lg mb-3"><strong>{{ $error }}</strong></p>

@@ -8,9 +8,9 @@ class ShareModal extends Component
 {
     public $show = false;
     public $pageUrl;
-    public $post_id, $post_title, $post_des, $post_cat, $post_time, $post_url, $meta_title, $meta_des, $post_img, $short_des, $show_hide;
+    public $post_id, $post_title, $post_des, $post_cat, $post_time, $post_url, $meta_title, $meta_des, $post_img, $short_des, $show_hide,$posts;
 
-    public function mount($post_id, $post_title, $post_des, $post_cat, $post_time, $post_url, $meta_title, $meta_des, $post_img, $short_des, $show_hide, $pageUrl)
+    public function mount($post_id, $post_title, $post_des, $post_cat, $post_time, $post_url, $meta_title, $meta_des, $post_img, $short_des, $show_hide, $pageUrl,$posts)
     {
         $this->post_id = $post_id;
         $this->post_title = $post_title;
@@ -24,6 +24,7 @@ class ShareModal extends Component
         $this->short_des = $short_des;
         $this->show_hide = $show_hide;
         $this->pageUrl = $pageUrl;
+        $this->posts = $posts;
     }
 
     public function openShareModal()

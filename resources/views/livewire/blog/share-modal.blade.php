@@ -1,34 +1,77 @@
 <div>
-    <div class="max-w-screen-xl mx-auto lg:px-0 px-5 lg:mt-10 md:mt-10 lg:mb-10 md:mb-10 mb-0 blog_detail_image11">
-        <h1 class="text-[24px] leading-[31.25px] font-[600] text-center mt-5 ">Blogs/{{ $post_cat }}</h1>
 
-        <div class="max-w-screen-lg mx-auto py-10 relative">
-            <div class="w-full">
-                <img class="rounded-[31px] w-full object-cover" src="{{ url('images/' . $post_img) }}"
-                    alt="{{ $post_title }}" width="100%" height="auto" />
-            </div>
+    <main class="max-w-6xl mx-auto px-4 sm:px-8  sm:pt-5 pt-6 pb-14">
+        <a href="{{ url('blog') }}"
+            class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-lg ">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg> Blogs
+        </a>
+        <a href="javascript:void(0)" class="inline-flex items-center gap-2  font-medium text-lg ">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg> Blogs/{{ $post_cat }}
+        </a>
+            <h1 id="blogTitle" class="text-lg sm:text-2xl lg:text-2xl font-bold text-neutral-950 my-4">{{ $post_title }}</h1>
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
-            <div class="flex items-center my-4 lg:flex-row md:flex-row flex-col px-2">
-                <div class="lg:w-[80%] md:w-[80%] w-full">
-                    <p class="text-1xl lg:text-2xl md:text-2xl font-bold mt-2">{{ $post_title }}</p>
-                    <div class="flex mt-3 gap-x-2 items-center">
-                        <span class="text-[#A3A3A3] font-[600] mb-5 block">{{ $post_time }}</span>
-                    </div>
+            <!-- Main Content -->
+            <article class="flex-1 min-w-0">
+               
+                <div class="aspect-video  rounded-2xl overflow-hidden bg-gray-200 mb-6">
+                    <img id="blogImage" src="{{ url('images/' . $post_img) }}" alt="{{ $post_title }}"
+                        class="w-full h-full object-cover">
                 </div>
-
-                <div class="lg:w-[20%] md:w-[20%] w-full text-end">
+                <p id="blogDate" class="text-blue-600 text-sm font-medium">{{ \Carbon\Carbon::parse($post_time)->format('d F Y') }}</p>
+                <div class="w-full text-end">
                     <button wire:click="openShareModal"
                         class="bg-transparent border z-50 border-gray-300 hover:border-[#2845F5] text-[#000] hover:bg-[#2845F5] hover:text-white duration-200 text-[16px] rounded-[44px] px-6 py-3">
                         Share
                     </button>
                 </div>
-            </div>
+              
+                <div id="blogContent" class="mt-6 text-gray-600 leading-7 space-y-4">
+                    {!! $post_des !!}
+                </div>
+            </article>
 
-            <div class="px-2 blog_detail">
-                {!! $post_des !!}
-            </div>
+            <!-- Related Blogs Sidebar -->
+            <aside class="lg:w-80 flex-shrink-0">
+                <div class="lg:sticky lg:top-24">
+                    <h3 class="text-lg font-bold text-neutral-950 mb-2">Related Blogs</h3>
+                    <div id="relatedBlogs" class="space-y-4">
+                        @php
+                            $i = 0;
+                        @endphp
+                        @foreach ($posts as $post)
+                            @php
+                                $i++;
+                            @endphp
+                            @php
+                                $post_cat = strtolower($post->post_cat);
+                            @endphp
+
+                            <a href="{{ url('blog/' . $post->post_url) }}/"
+                                class="block p-4 bg-white rounded-xl border border-black/10 hover:border-blue-600/30 hover:shadow-lg transition group">
+                                <div class="flex gap-4">
+                                    <img src="{{ url('images/' . $post->post_img) }}" alt=""
+                                        class="w-20 h-20 rounded-lg object-cover flex-shrink-0">
+                                    <div class="min-w-0">
+                                        <p class="text-blue-600 text-xs font-medium">
+                                            {{ \Carbon\Carbon::parse($post->post_time)->format('d M Y') }}</p>
+                                        <h4
+                                            class="text-sm font-semibold text-neutral-950 group-hover:text-blue-600 line-clamp-3">
+                                            {{ $post->post_title }}
+                                        </h4>
+                                    </div>
+                                </div>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            </aside>
         </div>
-    </div>
+    </main>
 
     @if ($show)
         <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">

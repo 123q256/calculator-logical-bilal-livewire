@@ -11,7 +11,7 @@
             <label for="name"
                 class="block mb-2 xl:text-[14px] lg:text-[12px] text-[14px] font-medium text-[#A3A3A3] pl-5">Name</label>
             <input type="name" id="name" wire:model.defer="name"
-                class="input_border bg-white border-[#F0F0F0] rounded-[20.5px] border-2 text-gray-900 text-sm block w-full 2xl:p-5 xl:p-4 lg:p-3 p-3 "
+                class="input_border w-full px-4 py-3.5 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition "
                 placeholder="Enter your Name" required />
             @error('name')
                 <span class="text-red-500">{{ $message }}</span>
@@ -23,7 +23,7 @@
                 class="block mb-2 xl:text-[14px] lg:text-[12px] text-[14px] font-medium text-[#A3A3A3] pl-5 ">Email
                 Address</label>
             <input type="email" id="email" wire:model.defer="email"
-                class="input_border bg-white border-[#F0F0F0] rounded-[20.5px] border-2 text-gray-900 text-sm  block w-full 2xl:p-5 xl:p-4 lg:p-3 p-3 "
+                class="input_border w-full px-4 py-3.5 rounded-xl border  border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition "
                 placeholder="Enter your Email" required />
             @error('email')
                 <span class="text-red-500">{{ $message }}</span>
@@ -34,7 +34,7 @@
             <label for="subject"
                 class="block mb-2 xl:text-[14px] lg:text-[12px] text-[14px] font-medium text-[#A3A3A3] pl-5">Subject</label>
             <input type="text" id="subject" wire:model.defer="subject"
-                class="input_border bg-white border-[#F0F0F0] rounded-[20.5px] border-2 text-gray-900 text-sm block w-full 2xl:p-5 xl:p-4 lg:p-3 p-3 "
+                class="input_border w-full px-4 py-3.5 rounded-xl border  border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition "
                 placeholder="Let us know how we can help you" required />
             @error('subject')
                 <span class="text-red-500">{{ $message }}</span>
@@ -45,7 +45,7 @@
             <label for="msg"
                 class="block my-2 xl:text-[14px] lg:text-[12px] text-[14px] font-medium text-[#A3A3A3] pl-5">Message</label>
             <textarea type="text" rows="5" id="msg" wire:model.defer="msg"
-                class="input_border bg-white border-[#F0F0F0] rounded-[20.5px] border-2 text-gray-900 text-sm block w-full 2xl:p-5 xl:p-4 lg:p-3 p-3 "
+                class="input_border w-full px-4 py-3.5 rounded-xl  border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition "
                 placeholder="Enter your Description" required></textarea>
             @error('msg')
                 <span class="text-red-500">{{ $message }}</span>

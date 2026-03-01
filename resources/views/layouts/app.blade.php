@@ -24,6 +24,10 @@
         .active-tags {
             color: #2845F5 !important;
         }
+         .hero-bg {
+      background: linear-gradient(160deg, #f0f4ff 0%, #fafafa 60%, #fff 100%);
+    }
+
     </style>
     @livewireStyles
 </head>
@@ -35,7 +39,7 @@
     <!-- searchModal -->
     <div id="searchModal" class="modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden"
         style="z-index:999999;">
-        <div class="rounded-lg p-6 max-w-[45rem] w-full animate-fadeIn absolute top-[110px]"
+        <div class="rounded-lg p-6 max-w-[45rem] w-full animate-fadeIn absolute top-[150px]"
             style="background:transparent;">
             <!-- Close Button -->
             <button style="background-color: white; border-radius:20px;"
@@ -49,20 +53,38 @@
             <livewire:search.search-two />
         </div>
     </div>
-    @include('layouts/header')
+    @include('layouts.include.header')
     @section('content')
     @show
-    @include('layouts/footer')
+       {{-- Footer --}}
+     @include('layouts.include.footer')
     <script src="{{ url('js/flowbite.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script src="{{ url('assets/js/website.js') }}"></script>
-    <script src="{{ url('assets/js/add-calculator.js') }}"></script>
 
     @livewireScripts
     @stack('calculatorJS')
+
+    <script>
+           function toggleCatDropdown() {
+      const dd = document.getElementById('cat-dropdown');
+      const chevron = document.getElementById('cat-chevron');
+      dd.classList.toggle('hidden');
+      chevron.classList.toggle('rotate-180');
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+      const wrap = document.getElementById('cat-dropdown-wrap');
+      if (!wrap.contains(e.target)) {
+        document.getElementById('cat-dropdown').classList.add('hidden');
+        document.getElementById('cat-chevron').classList.remove('rotate-180');
+      }
+    });
+    </script>
 </body>
 
 </html>

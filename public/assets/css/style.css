@@ -65,7 +65,7 @@ body {
     color: #fff;
 }
 
-.input_form input[type="text"],
+/* .input_form input[type="text"],
 .input_form input[type="date"],
 .input_form input[type="number"],
 .input_form input[type="password"],
@@ -84,7 +84,7 @@ body {
     box-shadow: none !important;
     background-color: #fff !important;
     color: #4a5568;
-}
+} */
 
 
 .blog_b_border {
@@ -222,9 +222,9 @@ input {
 .border-s-dark {
     border-left: 1px solid #d2d4d8 !important;
 }
-.border-b {
+/* .border-b {
     border-bottom: 2px solid #ffffff !important;
-}
+} */
 .abc_cal:hover {
     background-color: #2845f5;
 }
