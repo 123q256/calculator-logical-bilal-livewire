@@ -1,6 +1,6 @@
   <!-- MOST USED CALCULATORS -->
   <section class="py-12 sm:py-12 bg-gray-50">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
           <div class="text-center mb-10">
               <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Most Used Calculators</h2>
               <p class="text-gray-500 text-sm">Quick access to our most popular tools</p>

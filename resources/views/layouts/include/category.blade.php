@@ -1,9 +1,9 @@
   <!-- CATEGORIES — 10 total: 5 per row (2 rows desktop), 2 per row mobile -->
   <section id="categories" class="py-12 sm:py-12 bg-white">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
           <div class="text-center mb-12">
               <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Browse by Category</h2>
-              <p class="text-gray-500">Find the perfect calculator for your specific needs</p>
+              <p class="text-gray-500 text-[16px]">Find the perfect calculator for your specific needs</p>
           </div>
 
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">

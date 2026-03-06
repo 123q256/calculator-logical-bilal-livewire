@@ -214,7 +214,7 @@
            setTimeout(() => show = false, 2000);
        })" x-transition
            class="fixed top-5 right-5 bg-green-500 text-white px-4 py-2 rounded shadow-lg z-50" x-text="message"
-           style="display: none;"></div>
+           style="display: none;z-index:99999999999;"></div>
 
    </div>
 

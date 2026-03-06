@@ -6,7 +6,7 @@
                 <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
             @endif
 
-            <div class="lg:w-[70%] md:w-[60%] w-full mx-auto">
+            <div class="lg:w-[80%] md:w-[90%] w-full mx-auto">
                 <p class="w-full">{{ $lang['13'] ?? 'Calculate your age using Pearson method:' }}</p>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 gap-4 mt-5">
@@ -36,6 +36,7 @@
         </div>
 
         @isset($detail)
+        <hr style="height: 1px; background-color: #e5e7eb;">
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
                 <div class="">

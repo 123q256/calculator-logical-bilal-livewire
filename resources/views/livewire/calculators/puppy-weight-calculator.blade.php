@@ -13,7 +13,7 @@
             @if (isset($error))
                 <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
             @endif
-            <div class="lg:w-[60%] md:w-[60%] w-full mx-auto ">
+            <div class="lg:w-[80%] md:w-[100%] w-full mx-auto ">
                 <div class="grid grid-cols-1  lg:grid-cols-2 md:grid-cols-2  gap-4">
 
                     <div class="space-y-2" x-data="{ open: false }">
@@ -297,6 +297,7 @@
             @endif
         </div>
         @isset($detail)
+        <hr style="height: 1px; background-color: #e5e7eb;">
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
                 <div class="">

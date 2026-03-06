@@ -8,7 +8,7 @@
         class="max-w-[90%] mx-auto lg:px-0 px-5 my-10">
 
         <section class=" bg-white">
-            <div class="max-w-6xl mx-auto px-4 sm:px-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
 
                     <div >

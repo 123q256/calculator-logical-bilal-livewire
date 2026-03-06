@@ -6,7 +6,7 @@
                 <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
             @endif
 
-            <div class="lg:w-[40%] md:w-[40%] w-full mx-auto">
+            <div class="lg:w-[70%] md:w-[90%] w-full mx-auto">
                 <div class="grid grid-cols-1 gap-4">
                     <div class="space-y-2 relative">
                         <label for="e_date" class="font-s-14 text-blue">{!! $lang['1'] ?? 'Enter Date' !!}:</label>
@@ -24,6 +24,7 @@
         </div>
 
         @isset($detail)
+        <hr style="height: 1px; background-color: #e5e7eb;">
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
                 <div class="">

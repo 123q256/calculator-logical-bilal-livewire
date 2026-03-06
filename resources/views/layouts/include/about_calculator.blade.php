@@ -1,6 +1,6 @@
   <!-- ABOUT SECTION -->
   <section class="py-12 sm:py-12 bg-white">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
               <!-- Left: Text Content -->

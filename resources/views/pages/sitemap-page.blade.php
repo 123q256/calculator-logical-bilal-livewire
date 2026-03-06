@@ -5,11 +5,11 @@
 
 
 <div class="container-fluid mx-auto  container-fluid mt-[20px]">
-    <div class="w-full max-w-6xl mx-auto py-1 rounded-lg text-center">
+    <div class="w-full max-w-7xl mx-auto py-1 rounded-lg text-center">
         <h1 class="text-2xl lg:text-3xl md:text-3xl px-5 font-semibold "><strong >All Calculators</strong></h1>
     </div>
     <div class="flex flex-col items-center py-1 mb-5">
-        <div class="mt-2 w-full max-w-6xl bg-right bg-cover bg-white rounded-lg px-[12px] ">
+        <div class="mt-2 w-full max-w-7xl bg-right bg-cover bg-white rounded-lg px-[12px] ">
             <div class="flex flex-col lg:flex-row">
                 <div class=" w-full  order-1 lg:order-2  px-[5px]   rounded-lg md:mb-6 lg:mb-6 ">
                     <p class="text-gray-600  text-center ">

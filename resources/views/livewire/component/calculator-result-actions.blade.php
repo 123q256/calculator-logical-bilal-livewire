@@ -17,7 +17,7 @@
     </div>
 
     @if ($detail)
-        <div class="lg:flex md:flex flex px-5 mb-3 bg-[#2845F5] text-white rounded-lg items-center mt-2 justify-between">
+        <div class="lg:flex md:flex flex px-5 mb-3 bg-[#808080] text-white rounded-lg items-center mt-2 justify-between">
             <div id="actual_feedback" x-data="{
                 submitted: false,
                 loading: false,
@@ -82,7 +82,7 @@
     @endif
 
     @if ($show)
-        <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center" style="z-index: 99;">
             <div x-data @click.outside="$wire.closeShareModal()"
                 class="relative bg-white rounded-lg shadow-lg p-6 max-w-md w-full animate-fadeIn">
                 <!-- Close Button -->

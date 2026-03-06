@@ -1,6 +1,6 @@
    <!-- WHY CHOOSE -->
    <section class="py-12 sm:py-12 bg-white">
-       <div class="max-w-6xl mx-auto px-4 sm:px-6">
+       <div class="max-w-7xl mx-auto px-4 sm:px-6">
            <div class="text-center mb-12">
                <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Why Choose Calculator Online</h2>
                <p class="text-gray-500 text-sm">The smart choice for all your calculation needs</p>

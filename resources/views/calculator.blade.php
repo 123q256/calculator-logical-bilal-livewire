@@ -6,23 +6,23 @@
     @php
         $detail = session('calculator_result');
     @endphp
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-7xl mx-auto">
         <div class="flex flex-wrap mx-4 justify-center">
             <div class=" w-full lg:w-[70%] md:w-[70%]  pt-4  mx-auto lg:py-5 md:py-5  relative">
                 <div class="">
                     <h1
-                        class="xl:text-[35px] lg:text-[30] md:text-[30px] text-[18px] font-[700] px-2 leading-[40.68px] text-left">
+                        class="lg:text-[30] md:text-[30px] text-[18px] font-[700] px-2 leading-[40.68px] text-left">
                         {{ $cal_name }}
                     </h1>
                     @if (isset($lang['after_title']))
-                        <p class="lg:text-[16px] md:text-[16px] text-[14px] text-left my-3 px-2">{{ $lang['after_title'] }}
+                        <p class="lg:text-[18px] md:text-[18px] text-[16px] text-left my-3 px-2">{{ $lang['after_title'] }}
                         </p>
                     @endif
                 </div>
                 <livewire:component.breadcrumb :calData="$cal_data" :calCat="$cal_data->cal_cat" :brudcumParent="$cal_data->parent" />
 
-                <div class="bordercalculator px-2 bg-white xl:rounded-[25px] lg:rounded-[20px] rounded-[16px] w-full"
-                    style="box-shadow: 0px 0px 20px 4px #0000001a">
+                <div class="form-border px-2  w-full" style="box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;"
+                    >
 
                     @php
                         $langArray = json_decode($cal_data->lang_keys, true);
@@ -32,10 +32,10 @@
                         'currancy' => $currancy,
                     ])
 
-                    @if ($detail)
+                    {{-- @if ($detail)
                         <livewire:component.calculator-result-actions :detail="$detail" :calculator-name="$cal_name" :calculator-link="$cal_data->cal_link"
                             :pageUrl="url()->current()" />
-                    @endif
+                    @endif --}}
 
                 </div>
                 {{-- About Calculator --}}

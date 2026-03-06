@@ -5,13 +5,13 @@
 @section('content')
 
 <div class="container-fluid mx-auto  container-fluid mt-[20px]">
-    <div class="w-full max-w-6xl mx-auto bg-black py-8 rounded-lg text-center">
+    <div class="w-full max-w-7xl mx-auto bg-black py-8 rounded-lg text-center">
         <h1 class="text-2xl lg:text-5xl md:text-5xl font-semibold text-[#E8FFF1]">{{ ucfirst($category) }} Calculators</h1>
         <div class="flex justify-center mt-4">
     </div>
 </div>
 <div class="flex flex-col items-center py-1 mb-5">
-    <div class="mt-2 w-full max-w-6xl bg-right bg-cover bg-[#ebf6e0] rounded-lg">
+    <div class="mt-2 w-full max-w-7xl bg-right bg-cover bg-[#ebf6e0] rounded-lg">
         <div class="flex flex-col lg:flex-row">
             <div class=" w-full  order-1 lg:order-2  px-[20px] lg:px-[30px] md:px-[30px]  pt-[20px] lg:pt-[30px] md:pt-[30px]   rounded-lg mb-6 lg:mb-0">
                 <p class="text-gray-600 mb-6 mt-4 ">

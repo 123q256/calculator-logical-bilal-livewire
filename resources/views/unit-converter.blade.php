@@ -3,10 +3,10 @@
 @section('meta_des', $meta_des)
 
 @section('content')
-    <div class="container mx-auto w-full max-w-screen-xl bg-white text-black  ">
-        <div class="flex flex-wrap mx-4 justify-center">
+    <div class="max-w-7xl mx-auto  w-full bg-white text-black mb-10 ">
+        <div class="max-w-7xl mx-auto flex flex-wrap px-4">
 
-            <div class=" w-full lg:w-[60%] md:w-[60%]  pt-4">
+            <div class=" w-full lg:w-[65%] md:w-[65%]  pt-4">
                 <div class="row">
                     <h1 class="text-2xl lg:text-2xl md:text-2xl font-semibold my-3 ">Unit Converter</h1>
                 </div>
@@ -386,7 +386,7 @@
                 </div>
 
             </div>
-            <div class="side-bar mt-[100px] w-full lg:w-[30%] md:w-[30%] ml-5  pt-4 hidden md:block">
+            <div class="side-bar mt-[100px] w-full lg:w-[33%] md:w-[33%] ml-5  pt-4 hidden md:block">
                 @include('inc.converter-sidebar')
             </div>
         </div>

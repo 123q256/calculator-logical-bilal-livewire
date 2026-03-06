@@ -1,6 +1,6 @@
 <!-- FOOTER -->
 <footer class="bg-gray-50 border-t border-gray-200 pt-14 pb-6">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-10">
 
             <!-- Brand - 40% (2/5 columns) -->

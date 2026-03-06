@@ -1,6 +1,6 @@
   <!-- NAVBAR -->
-  <header class="border-b border-gray-200 bg-white sticky top-0" style="z-index: 9;">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+  <header class="border-b border-gray-200 bg-white sticky top-0" style="z-index: 99;">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       <!-- Logo -->
         <a href="{{ url('/') }}" class="flex items-center gap-2">
       <div class="flex items-center gap-2">

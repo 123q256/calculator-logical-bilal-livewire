@@ -1,6 +1,6 @@
   <!-- FEATURED IN -->
   <section class="py-12 bg-gray-50">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
       <div class="text-center mb-10">
         <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2">Featured In</p>
         <h2 class="text-2xl sm:text-3xl font-bold text-gray-900">Trusted by Leading Publications</h2>

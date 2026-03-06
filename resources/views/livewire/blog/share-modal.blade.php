@@ -1,6 +1,6 @@
 <div>
 
-    <main class="max-w-6xl mx-auto px-4 sm:px-8  sm:pt-5 pt-6 pb-14">
+    <main class="max-w-7xl mx-auto px-4 sm:px-8  sm:pt-5 pt-6 pb-14">
         <a href="{{ url('blog') }}"
             class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium text-lg ">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

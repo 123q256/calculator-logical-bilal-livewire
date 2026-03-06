@@ -1,6 +1,6 @@
   <!-- CTA BANNER -->
   <section class="py-10 px-4 sm:px-6">
-      <div class="max-w-6xl mx-auto">
+      <div class="max-w-7xl mx-auto">
           <div class="relative rounded-3xl overflow-hidden px-8 sm:px-12 py-12"
               style="background: linear-gradient(135deg, #3B4FE8 0%, #5B6FF0 100%);">
 

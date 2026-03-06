@@ -4,7 +4,7 @@
         <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
             Find the Right Calculator in Seconds
         </h1>
-        <p class="text-gray-500 text-[14px] mb-10">
+        <p class="text-gray-500 text-[20px] mb-10">
             Access over 500 specialized calculators designed to make your
             everyday calculations faster and more accurate.
         </p>

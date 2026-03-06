@@ -26,7 +26,7 @@
                 </div>
             </div>
 
-            <div class="lg:w-[60%] md:w-[90%] w-full mx-auto overflow-auto">
+            <div class="lg:w-[90%] md:w-[90%] w-full mx-auto overflow-auto">
                 <div class="flex flex-wrap">
                     <label class="label">Start Time:</label>
                     <div class="w-full flex space-x-4">
@@ -95,8 +95,9 @@
         </div>
         @isset($detail)
             {{-- result --}}
+            <hr style="height: 1px; background-color: #e5e7eb;">
             <div id="result-section" wire:loading.remove wire:target="calculate"
-                class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
+                class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator  space-y-6 result">
                 <div class="">
                     @if ($type == 'calculator')
                         @include('inc.copy-pdf')

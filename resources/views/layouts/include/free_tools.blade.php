@@ -1,6 +1,6 @@
 <!-- SMART TOOLS SECTION -->
 <section class="py-12 sm:py-12" style="background:#EEF1FD;">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
 
         <!-- Badge -->
         <div class="mb-5">

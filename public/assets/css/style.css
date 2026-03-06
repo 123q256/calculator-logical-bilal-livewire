@@ -1,11 +1,56 @@
 body {
     font-family: "DM Sans", sans-serif;
 }
-.footer_bg_image {
-    background-image: url("../images/footer-bg-img.png");
-    background-size: cover;
-    background-position: center;
+
+.input_form {
+    background-color: #ffffff;
+    
 }
+.form-border,
+.set_resultbox {
+      /* border: 10px solid #e5e7eb; */
+    border-radius: 6px;
+    border: 8px solid gainsboro;
+}
+.input_form input[type="text"],
+.input_form input[type="date"],
+.input_form input[type="number"],
+.input_form input[type="password"],
+.input_form input[type="time"],
+.input_form input[type="datetime-local"],
+.input_form select,
+.converter_input input[type="text"],
+.converter_input input[type="number"],
+.converter_input select {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px;
+    border-radius: 14px;
+    border: 1px solid #d1d5db;
+    background: #f9fafc;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+    transition: 0.15s;
+}
+
+/* FOCUS STATE - border none + shadow none */
+.input_form input:focus,
+.input_form select:focus,
+.converter_input input:focus,
+.converter_input select:focus {
+    border: 1px solid gray !important;           /* border completely removed */
+    box-shadow: none !important;        /* shadow completely removed */
+    outline: none !important;
+}
+
+/* .result_calculator {
+    background-color: #1670a712;
+    box-shadow: 0 3px 6px #00000029;
+} */
+
+
+
 .header_b_border {
     border: 1px solid;
     border-image-source: linear-gradient(
@@ -33,10 +78,7 @@ body {
 .bg-sky {
     background: #f6fafc;
 }
-.bordercalculator,
-.set_resultbox {
-    border: 10px solid gainsboro;
-}
+
 
 .unit_converters option {
     padding: 7px;
@@ -64,28 +106,6 @@ body {
     background: #2845f5 !important;
     color: #fff;
 }
-
-/* .input_form input[type="text"],
-.input_form input[type="date"],
-.input_form input[type="number"],
-.input_form input[type="password"],
-.input_form input[type="time"],
-.input_form input[type="datetime-local"],
-.input_form select,
-.converter_input input[type="text"],
-.converter_input input[type="number"],
-.converter_input select {
-    width: 100%;
-    height: 45px;
-    padding: 8px 16px;
-    border-radius: 12px !important;
-    border: 1px solid #2845f5;
-    outline: none !important;
-    box-shadow: none !important;
-    background-color: #fff !important;
-    color: #4a5568;
-} */
-
 
 .blog_b_border {
     background-image: url("../images/blog-bg-img copy.png");
@@ -165,20 +185,8 @@ input {
     border-bottom: 1px solid #d7d7d7 !important;
     padding: 6px 4px !important;
 }
-/* .result_calculator{
-    background-color: #F4F4F4;
-}
-.input_form{
-    background-color: #1670a712;
-} */
-.result_calculator {
-    background-color: #1670a712;
-    box-shadow: 0 3px 6px #00000029;
-}
-.input_form {
-    background-color: #f4f4f4;
-    box-shadow: 0 3px 6px #00000029;
-}
+
+
 .custom-scrollbar::-webkit-scrollbar-track {
     padding: 2px 0;
     border-radius: 5px;
@@ -368,37 +376,6 @@ input {
 .content a {
     color: #2845f5 !important;
     text-decoration: underline;
-}
-
-.input_form {
-    background-color: #f4f4f4;
-    box-shadow: 0 3px 6px #00000029;
-}
-
-.input_form input[type="text"],
-.input_form input[type="date"],
-.input_form input[type="number"],
-.input_form input[type="password"],
-.input_form input[type="time"],
-.input_form input[type="datetime-local"],
-.input_form select,
-.converter_input input[type="text"],
-.converter_input input[type="number"],
-.converter_input select {
-    width: 100%;
-    height: 45px;
-    padding: 8px 16px;
-    border-radius: 12px !important;
-    border: 1px solid #2845f5;
-    outline: none !important;
-    box-shadow: none !important;
-    background-color: #fff !important;
-    color: #4a5568;
-}
-
-.result_calculator {
-    background-color: #1670a712;
-    box-shadow: 0 3px 6px #00000029;
 }
 
 /* blog css  */

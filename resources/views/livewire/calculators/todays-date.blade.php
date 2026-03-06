@@ -22,7 +22,7 @@
             border-radius: 15px;
         }
 
-        header {
+        .header_main {
             margin: 5px 20px;
             display: flex;
             justify-content: space-between;
@@ -127,7 +127,7 @@
             <div class="w-full mt-6">
                 <div class="max-w-[400px] mx-auto ">
                     <div class="calendar bg-white md:p-4 rounded-lg overflow-auto">
-                        <header class="flex justify-between items-center mb-4">
+                        <header class="flex justify-between items-center mb-4 header_main">
                             <button wire:click="previousMonth" class="p-2 rounded-full hover:bg-gray-100">◀</button>
                             <div class="header-display">
                                 <p class="display font-semibold">

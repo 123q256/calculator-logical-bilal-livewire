@@ -6,7 +6,7 @@
             @endif
        
 
-            <div class="lg:w-[60%] md:w-[80%] w-full mx-auto space-y-4">
+            <div class="lg:w-[80%] md:w-[90%] w-full mx-auto space-y-4">
 
                 {{-- Row 1: Full width select --}}
                 <div class="grid grid-cols-1">
@@ -53,6 +53,7 @@
         </div>
 
         @isset($detail)
+        <hr style="height: 1px; background-color: #e5e7eb;">
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
                 <div class="">

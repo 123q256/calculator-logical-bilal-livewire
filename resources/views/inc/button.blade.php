@@ -1,6 +1,6 @@
 <div class="flex justify-center gap-3 mb-6 mt-10">
     <button type="submit" id="calculate" wire:loading.attr="disabled"
-        class="relative bg-[#2845F5] shadow-2xl text-[#fff] hover:bg-[#1A1A1A] hover:text-white duration-200 font-[600] text-[16px] rounded-[44px] px-5 py-3 flex items-center justify-center gap-2">
+        class="relative bg-[#2845F5] shadow-2xl text-[#fff] hover:bg-[#1A1A1A] hover:text-white duration-200 font-[600] text-[16px] rounded-[10px] px-5 py-3 flex items-center justify-center gap-2">
         <span wire:loading wire:target="calculate" id="addbtnflex" class="flex items-center gap-2 ">
             <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
                 viewBox="0 0 24 24">
@@ -15,7 +15,7 @@
 
     @if ($detail)
         <button wire:click="resetForm" type="button"
-            class="calculate bg-[#000000] shadow-2xl text-[#fff] hover:bg-[#2845F5] duration-200 font-[600] text-[16px] rounded-[44px] px-5 py-3">
+            class="calculate bg-[#000000] shadow-2xl text-[#fff] hover:bg-[#2845F5] duration-200 font-[600] text-[16px] rounded-[10px] px-5 py-3">
             @if (app()->getLocale() == 'en')
                 RESET
             @else
