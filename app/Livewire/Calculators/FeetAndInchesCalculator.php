@@ -33,6 +33,13 @@ class FeetAndInchesCalculator extends Component
     }
 
 
+    public function updatedOperations()
+    {
+        $this->detail = null;
+        session()->forget(['calculator_result', 'validation_error']);
+    }
+
+
     public function resetForm()
     {
         $this->resetErrorBag();
@@ -50,6 +57,8 @@ class FeetAndInchesCalculator extends Component
 
         return redirect()->to(url()->previous() ?? '/');
     }
+
+
     public function calculate()
     {
         $request = (object)[

@@ -45,8 +45,11 @@ class RoofPitchCalculator extends Component
         }
     }
 
+
     public function changeFrom()
     {
+           $this->detail = null;
+        session()->forget(['calculator_result', 'validation_error']);
         // Agar aapko koi aur logic chalana hai change par
     }
 
@@ -66,6 +69,7 @@ class RoofPitchCalculator extends Component
     public function toggleUnitRDropdown()
     {
         $this->showUnitRDropdown = !$this->showUnitRDropdown;
+        
     }
 
     public function setUnitR($value)

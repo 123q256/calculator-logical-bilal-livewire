@@ -99,6 +99,7 @@ class Statistics extends Model
 				$this->param['pro_a'] = $pro_a;
 				$this->param['pro_b'] = $pro_b;
 				$this->param['Solver'] = "events";
+				$this->param['RESULT'] = 1;
 				return $this->param;
 			} else {
 				$this->param['error'] = "Please fill All fields.";

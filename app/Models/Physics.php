@@ -675,11 +675,11 @@ class Physics extends Model
 					$mag = $request->mag * floatval($mag_u[0]);
 
 					$tor=$loop*$current*$request->mag*$area*sin($angle);
-					if ($_POST['torc_u']=='kg-cm') {
+					if ($request->torc_u=='kg-cm') {
 						$tor=round($tor*10.19716,5);
-					}elseif ($_POST['torc_u']=='J/rad' || $_POST['torc_u']=='Nm') {
+					}elseif ($request->torc_u=='J/rad' || $request->torc_u=='Nm') {
 						$tor=round($tor,5);
-					}elseif ($_POST['torc_u']=='ft-lb') {
+					}elseif ($request->torc_u=='ft-lb') {
 						$tor=round($tor*0.737562,5);
 					}
 				

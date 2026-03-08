@@ -2072,16 +2072,16 @@ public function asphalt($request)
 public function acreage($request)
 {
 	
-	$to_cal = $request->input('to_cal');
-	$length = $request->input('length');
-	$length_unit = $request->input('length_unit');
-	$width = $request->input('width');
-	$width_unit = $request->input('width_unit');
-	$area = $request->input('area');
-	$area_unit = $request->input('area_unit');
-	$price = $request->input('price');
-	$price_unit = $request->input('price_unit');
-	$currancy = $request->input('currancy');
+	$to_cal = $request->to_cal;
+	$length = $request->length;
+	$length_unit = $request->length_unit;
+	$width = $request->width;
+	$width_unit = $request->width_unit;
+	$area = $request->area;
+	$area_unit = $request->area_unit;
+	$price = $request->price;
+	$price_unit = $request->price_unit;
+	$currancy = $request->currancy;
 	$price_unit = str_replace($currancy,'', $price_unit);
 	if ($to_cal == 1) {
 		if (is_numeric($length) && is_numeric($width)) {
@@ -4763,7 +4763,7 @@ public function cubic($request)
 
 	if ($room_unit == "1") {
 		if (is_numeric($length) && is_numeric($height) && is_numeric($width)) {
-			function calculate($a, $b)
+			$calculate = function ($a, $b)
 			{
 				if ($b == "ft") {
 					$convert = $a * 1;
@@ -4785,8 +4785,8 @@ public function cubic($request)
 					$convert = $a * 6076;
 				}
 				return $convert;
-			}
-			function calculate2($a, $b)
+			};
+			$calculate2 = function ($a, $b)
 			{
 				if ($b == "ft") {
 					$convert5 = $a * 1;
@@ -4808,8 +4808,8 @@ public function cubic($request)
 					$convert5 = $a * 6076;
 				}
 				return $convert5;
-			}
-			function converting($a, $b)
+			};
+			$converting = function ($a, $b)
 			{
 				if ($b == "cm") {
 					$convert3 = $a * 1;
@@ -4831,23 +4831,23 @@ public function cubic($request)
 					$convert3 = $a * 185200;
 				}
 				return $convert3;
-			}
-			$l = calculate($length, $length_unit);
-			$w = calculate($width, $width_unit);
-			$h = calculate($height, $height_unit);
+			};
+			$l = $calculate($length, $length_unit);
+			$w = $calculate($width, $width_unit);
+			$h = $calculate($height, $height_unit);
 			$volume = $l * $w * $h;
 			$calculate_meter_cube = ($volume) / 35.3147;
 			$calculate_cubic_yards = $volume * 0.03704;
 			$calculate_cubic_inches = $volume / 0.0005787;
 			$calculate_cubic_centimeters = $volume * 28317;
-			$v1 = converting($length, $length_unit);
-			$v2 = converting($width, $width_unit);
-			$v3 = converting($height, $height_unit);
+			$v1 = $converting($length, $length_unit);
+			$v2 = $converting($width, $width_unit);
+			$v3 = $converting($height, $height_unit);
 			$volumetric_weight = ($v1 * $v2 * $v3) / 5000;
 			$volumetric_weight2 = $volumetric_weight * 2.205;
-			$v4 = calculate2($length, $length_unit);
-			$v5 = calculate2($width, $width_unit);
-			$v6 = calculate2($height, $height_unit);
+			$v4 = $calculate2($length, $length_unit);
+			$v5 = $calculate2($width, $width_unit);
+			$v6 = $calculate2($height, $height_unit);
 			$twenty_ft = 1165 / ($v4 * $v5 * $v6);
 			$fourty_ft = 2350 / ($v4 * $v5 * $v6);
 			$fourty_high_cube = 2694 / ($v4 * $v5 * $v6);
@@ -4919,7 +4919,7 @@ public function cubic($request)
 			} elseif ($area_unit == "m") {
 				$convert13 = $area * 10.7639;
 			}
-			function calculate_three($a, $b)
+			$calculate_three = function ($a, $b)
 			{
 				if ($b == "ft") {
 					$convert = $a * 1;
@@ -4941,8 +4941,8 @@ public function cubic($request)
 					$convert = $a * 6076.12;
 				}
 				return $convert;
-			}
-			$h1 = calculate_three($height, $height_unit);
+			};
+			$h1 = $calculate_three($height, $height_unit);
 			$volume = $convert13 * $h1;
 			if ($price != 0 && $price != '') {
 				if ($price_unit == "ft³") {
@@ -4998,7 +4998,7 @@ public function feet($request)
 	$in_unit = "in";
 	$baran = 12;
 	if (is_numeric($feet1) && is_numeric($feet2) && !empty($inches1) && !empty($inches2)) {
-		function calculation($inches1)
+		$calculation = function($inches1)
 		{
 			$int = 0;
 			$float = 0;
@@ -5012,26 +5012,26 @@ public function feet($request)
 				$float = $top / $bottom;
 			}
 			return $int + $float;
-		}
-		function convertToDecimal($inches1)
+		};
+		$convertToDecimal = function($inches1)
 		{
 			$numbers = explode("/", $inches1);
 			return round($numbers[0] / $numbers[1], 6);
-		}
+		};
 		if (preg_match('/^(?:\d+\/\d+)$/', $inches1) && preg_match('/^(?:\d+\/\d+)$/', $inches2)) {
-			$inches1 = convertToDecimal($inches1);
-			$inches2 = convertToDecimal($inches2);
+			$inches1 = $convertToDecimal($inches1);
+			$inches2 = $convertToDecimal($inches2);
 		} else if (preg_match('/^(\d+(?: \d+\/\d+)?)$/', $inches1) && preg_match('/^(\d+(?: \d+\/\d+)?)$/', $inches2)) {
-			$inches1 = calculation($inches1);
-			$inches2 = calculation($inches2);
+			$inches1 = $calculation($inches1);
+			$inches2 = $calculation($inches2);
 		} else if (preg_match('/^(\d+(?: \d+\/\d+)?)$/', $inches1) && preg_match('/^(?:\d+\/\d+)$/', $inches2)) {
-			$inches1 = calculation($inches1);
-			$inches2 = convertToDecimal($inches2);
+			$inches1 = $calculation($inches1);
+			$inches2 = $convertToDecimal($inches2);
 		} elseif (preg_match('/^(?:\d+\/\d+)$/', $inches1) && preg_match('/^(\d+(?: \d+\/\d+)?)$/', $inches2)) {
-			$inches1 = convertToDecimal($inches1);
-			$inches2 = calculation($inches2);
+			$inches1 = $convertToDecimal($inches1);
+			$inches2 = $calculation($inches2);
 		}
-		function float2rat($n, $tolerance = 1.e-6)
+		$float2rat = function($n, $tolerance = 1.e-6)
 		{
 			$h1 = 1;
 			$h2 = 0;
@@ -5061,7 +5061,7 @@ public function feet($request)
 			} else if ($k1 <= 1) {
 				return "$h1";
 			}
-		}
+		};
 		if ($operations == "1") {
 			$in = trim($inches1) + trim($inches2);
 			$ft = $feet1 + $feet2;
@@ -5073,7 +5073,7 @@ public function feet($request)
 				$b = "0." . $i;
 				$ft = $ft + $f;
 				$in = $b * $baran;
-				$in = (float2rat($in));
+				$in = ($float2rat($in));
 			}
 		} elseif ($operations == "2") {
 			if ($feet1 >= $feet2 && $inches1 >= $inches2) {
@@ -5087,7 +5087,7 @@ public function feet($request)
 					$b = "0." . $i;
 					$ft = $ft + $f;
 					$in = $b * $baran;
-					$in = (float2rat($in));
+					$in = ($float2rat($in));
 				}
 			} elseif ($feet1 <= $feet2 && $inches1 <= $inches2) {
 				$in = $inches1 - $inches2;
@@ -5100,7 +5100,7 @@ public function feet($request)
 					$b = "0." . $i;
 					$ft = $ft + $f;
 					$in = $b * $baran;
-					$in = (float2rat($in));
+					$in = ($float2rat($in));
 				} elseif ($feet1 >= $feet2 && $inches1 <= $inches2) {
 					while ($inches1 < $inches2) {
 						$inches2 = $inches2 - $baran;
@@ -5116,7 +5116,7 @@ public function feet($request)
 						$b = "0." . $i;
 						$ft = $ft + $f;
 						$in = $b * $baran;
-						$in = (float2rat($in));
+						$in = ($float2rat($in));
 					}
 				} elseif ($feet1 <= $feet2 && $inches1 >= $inches2) {
 					while ($inches1 > $inches2) {
@@ -5137,7 +5137,7 @@ public function feet($request)
 						$b = "0." . $i;
 						$ft = $ft + $f;
 						$in = $b * $baran;
-						$in = (float2rat($in));
+						$in = ($float2rat($in));
 					}
 				}
 			}
@@ -5190,23 +5190,23 @@ public function feet($request)
 // Cubic Yard calculator	
 public function yard($request)
 {
-	$operations=$request->input('operations');
-	$first=$request->input('first');
-	$second=$request->input('second');
-	$third=$request->input('third');
-	$four=$request->input('four');
-	$quantity=$request->input('quantity');
-	$units1=$request->input('units1');
-	$units2=$request->input('units2');
-	$units3=$request->input('units3');
-	$units4=$request->input('units4');
-	$price_unit=$request->input('price_unit');
-	$price=$request->input('price');
-	$extra_area=$request->input('extra_area');
-	$extra_units=$request->input('extra_units');
-	$currancy = $request->input('currancy');
+	$operations=$request->operations;
+	$first=$request->first;
+	$second=$request->second;
+	$third=$request->third;
+	$four=$request->four;
+	$quantity=$request->quantity;
+	$units1=$request->units1;
+	$units2=$request->units2;
+	$units3=$request->units3;
+	$units4=$request->units4;
+	$price_unit=$request->price_unit;
+	$price=$request->price;
+	$extra_area=$request->extra_area;
+	$extra_units=$request->extra_units;
+	$currancy = $request->currancy;
 	$price_unit = str_replace($currancy,'', $price_unit);
-	function calculate($a,$b){
+	$calculate = function($a,$b){
 		if($b=="ft"){
 			$convert=$a*1;
 		}elseif ($b=="in") {
@@ -5219,8 +5219,8 @@ public function yard($request)
 			$convert=$a*3.28084;
 		}
 		return $convert;
-	}
-	function calculate_square($x,$y){
+	};
+	$calculate_square = function($x,$y){
 		// dd($x,$y);
 		if($y=="ft²"){
 			$squ=$x*1;
@@ -5234,12 +5234,12 @@ public function yard($request)
 			$squ=$x*10.7639;
 		}
 		return $squ;
-	}
+	};
 	if ($operations=="3") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
-			$third=calculate($third,$units3);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
+			$third=$calculate($third,$units3);
 			$cubic_feet=$first * $second * $third;
 			$cubic_yard=$cubic_feet / 27;
 			$cubic_meter=$cubic_feet * 0.0283;
@@ -5251,8 +5251,8 @@ public function yard($request)
 		}
 	}else if ($operations=="4") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
 			$sq_val=pow($second, 2);
 			$cubic_feet=$first * $sq_val;
 			$cubic_yard=$cubic_feet / 27;
@@ -5265,10 +5265,10 @@ public function yard($request)
 		}
 	}else if ($operations=="5") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
-			$third=calculate($third,$units3);
-			$four=calculate($four,$units4);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
+			$third=$calculate($third,$units3);
+			$four=$calculate($four,$units4);
 			$in_area=$second * $third;
 			$sq_border=$four * 2;
 			$a1=$second + $sq_border;
@@ -5286,8 +5286,8 @@ public function yard($request)
 		}
 	}else if ($operations=="6") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
 			$sq_val=$second / 2;
 			$final_val=pow($sq_val, 2);
 			$area=3.14 * $final_val;
@@ -5302,9 +5302,9 @@ public function yard($request)
 		}
 	}else if ($operations=="7") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
-			$third=calculate($third,$units3);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
+			$third=$calculate($third,$units3);
 			$a=$third * 2;
 			$outer_diameter=$second + $a;
 			$sq_val=$outer_diameter / 2;
@@ -5325,9 +5325,9 @@ public function yard($request)
 		}
 	}else if ($operations=="8") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
-			$third=calculate($third,$units3);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
+			$third=$calculate($third,$units3);
 			$sq_val=$second / 2;
 			$final_val=pow($sq_val, 2);
 			$outer_area=3.14 * $final_val;
@@ -5346,10 +5346,10 @@ public function yard($request)
 		}
 	}else if ($operations=="9") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
-			$third=calculate($third,$units3);
-			$four=calculate($four,$units4);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
+			$third=$calculate($third,$units3);
+			$four=$calculate($four,$units4);
 			$first_ans=$second + $third + $four;
 			$second_ans=$third + $four - $second;
 			$third_ans=$four + $second - $third;
@@ -5368,10 +5368,10 @@ public function yard($request)
 		}
 	}else if ($operations=="10") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
-			$third=calculate($third,$units3);
-			$four=calculate($four,$units4);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
+			$third=$calculate($third,$units3);
+			$four=$calculate($four,$units4);
 			$first_ans=($second + $third)/2;
 			$area=$first_ans * $four;
 			$cubic_feet=$first * $area;

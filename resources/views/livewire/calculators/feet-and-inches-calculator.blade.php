@@ -35,7 +35,7 @@
                     <!-- Operations: full width on mobile -->
                     <div class="space-y-2 mb-3 sm:mb-0">
                         <label for="operations" class="font-s-14 text-blue">&nbsp;</label>
-                        <select class="input mt-3 w-full" name="operations" id="operations" wire:model="operations">
+                        <select class="input mt-3 w-full" name="operations" id="operations" wire:model.live="operations">
                             <option value="1">+</option>
                             <option value="2">-</option>
                             <option value="3">×</option>
@@ -72,6 +72,7 @@
         </div>
 
         @isset($detail)
+         <hr style="height: 1px; background-color: #e5e7eb;">
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
                 <div class="">

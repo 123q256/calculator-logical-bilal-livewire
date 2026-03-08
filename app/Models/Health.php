@@ -13,7 +13,7 @@ class Health extends Model
 
    // BMI Calculator
 	public function bmi($request){
-        // dd($request->all());
+        // dd($request);
         $age = $request->age;
         $height_cm = $request->height_cm;
         $ft_in = $request->ft_in;
@@ -41,6 +41,10 @@ class Health extends Model
 			$height_in = $height_cm / 2.54;
 			if($stage==='child'){
 				if(is_numeric($age)) {
+					if ($age < 2 || $age > 20) {
+						$this->param['error'] = 'Child & Teen BMI is only supported for ages 2 to 20.';
+						return $this->param;
+					}
 					$convert_hight = $height_in;
 					$solve = $weight * 703 / ($convert_hight * $convert_hight);
 					$BMI = round($solve , 2);
@@ -860,6 +864,7 @@ class Health extends Model
 					$this->param['color']=$color;
 					$this->param['left']=$left;
 					$this->param['stage']=$stage;
+					$this->param['RESULT']=1;
                     // dd($this->param);
                     return $this->param;
 				}else{

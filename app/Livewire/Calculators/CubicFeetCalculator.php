@@ -47,6 +47,8 @@ class CubicFeetCalculator extends Component
 
     public function changeRoom_unit()
     {
+           $this->detail = null;
+        session()->forget(['calculator_result', 'validation_error']);
         // Agar koi logic chalani ho change par to yahan karein
     }
     public function setAreaUnit($unit)
