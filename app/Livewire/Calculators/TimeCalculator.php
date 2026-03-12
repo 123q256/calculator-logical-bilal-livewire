@@ -89,7 +89,7 @@ class TimeCalculator extends Component
             'scroll_to_result'
         ]);
 
-     return redirect()->to(url()->previous() ?? '/');
+    //  return redirect()->to(url()->previous() ?? '/');
     }
 
     public function calculate()
@@ -128,11 +128,21 @@ class TimeCalculator extends Component
         // dd($result);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', $request);
-            $this->error = null;
+              $this->error = null;
+             $this->detail = $result;
+             $this->js(<<<'JS'
+                $nextTick(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 50;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            JS);
+                return;
 
-           return redirect()->to(url()->previous() ?? '/');
+        //    return redirect()->to(url()->previous() ?? '/');
         }
 
         $this->error = $result['error'] ?? 'Something went wrong.';
@@ -143,16 +153,6 @@ class TimeCalculator extends Component
 
     public function render()
     {
-        if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) {
-                    const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({ top: offset, behavior: 'smooth' });
-                }
-            JS);
-        }
-
         return view('livewire.calculators.time-calculator');
     }
 }

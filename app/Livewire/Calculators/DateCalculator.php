@@ -95,7 +95,7 @@ class DateCalculator extends Component
             'validation_error',
             'scroll_to_result'
         ]);
-         return redirect()->to(url()->previous() ?? '/');
+        //  return redirect()->to(url()->previous() ?? '/');
     }
 
 
@@ -137,11 +137,20 @@ class DateCalculator extends Component
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', $request);
             $this->error = null;
-
-            return redirect()->to(url()->previous() ?? '/');
+             $this->detail = $result;
+             $this->js(<<<'JS'
+                $nextTick(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 50;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            JS);
+                return;
+            // return redirect()->to(url()->previous() ?? '/');
         }
 
         $this->error = $result['error'] ?? 'Something went wrong.';
@@ -150,16 +159,6 @@ class DateCalculator extends Component
 
     public function render()
     {
-        if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) {
-                    const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
-                    window.scrollTo({ top: offset, behavior: 'smooth' });
-                }
-            JS);
-        }
-
         return view('livewire.calculators.date-calculator');
     }
 }

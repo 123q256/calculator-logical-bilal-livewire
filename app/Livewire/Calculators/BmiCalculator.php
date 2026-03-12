@@ -40,9 +40,6 @@ class BmiCalculator extends Component
         }
     }
 
-
-
-
     public function resetForm()
     {
         $this->resetErrorBag();
@@ -58,7 +55,7 @@ class BmiCalculator extends Component
 
         session()->forget(['calculator_result', 'validation_error', 'calculator_back_inputs', 'scroll_to_result']);
         
-        return redirect()->to(url()->previous() ?? '/');
+        // return redirect()->to(url()->previous() ?? '/');
     }
 
 
@@ -89,10 +86,18 @@ class BmiCalculator extends Component
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
             session()->put('calculator_back_inputs', $request);
             $this->error = null;
              $this->detail = $result;
+            $this->js(<<<'JS'
+                $nextTick(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 60;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            JS);
             return; 
             // return redirect()->to(url()->previous() ?? '/');
         }
@@ -104,13 +109,6 @@ class BmiCalculator extends Component
 
     public function render()
     {
-        if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-            JS);
-        }
-
         return view('livewire.calculators.bmi-calculator');
     }
 }

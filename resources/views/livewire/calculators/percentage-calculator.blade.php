@@ -1,7 +1,8 @@
 <div>
+    <form wire:submit.prevent="calculate">
     @if (app()->getLocale() == 'id')
         {{-- ══════════════════════════════════════════════════════
-             ID LOCALE
+ID LOCALE
         ══════════════════════════════════════════════════════ --}}
         <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 my-3">
             @if($error)
@@ -547,6 +548,5 @@
         @endif
 
     @endif
-
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </form>
 </div>

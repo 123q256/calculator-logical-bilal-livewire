@@ -1,6 +1,9 @@
 <div>
     @isset($detail)
         <style>
+            .bg-red{
+                background-color: red !important;
+            }
             .speech-bubble-area {
                 position: absolute;
                 width: 18%;

@@ -113,7 +113,9 @@ class PercentageCalculator extends Component
             session()->flash('scroll_to_result', true);
             session()->put('calculator_back_inputs', $request);
             $this->error = null;
-            return redirect()->to(url()->previous() ?? '/');
+            $this->detail = $result;
+            return;
+            // return redirect()->to(url()->previous() ?? '/');
         }
 
         $this->error  = $result['error'] ?? 'Something went wrong.';
@@ -127,7 +129,11 @@ class PercentageCalculator extends Component
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
                 const el = document.getElementById('result-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                if (el) {
+                    const offset = 30;
+                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
+                }
             JS);
         }
 

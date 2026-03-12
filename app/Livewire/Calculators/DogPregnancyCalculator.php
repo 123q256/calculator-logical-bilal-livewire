@@ -35,7 +35,7 @@ class DogPregnancyCalculator extends Component
         $this->e_date = '2022-08-20'; // set to today
         $this->error = null; // clear custom error
         $this->detail = null; // clear custom error
-        return redirect()->to(url()->previous() ?? '/');
+        // return redirect()->to(url()->previous() ?? '/');
     }
 
 
@@ -60,11 +60,21 @@ class DogPregnancyCalculator extends Component
         $result = $model->dog_pre($request);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', $request);
-            $this->error = null;
+              $this->error = null;
+             $this->detail = $result;
+             $this->js(<<<'JS'
+                $nextTick(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 50;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            JS);
+                return;
 
-            return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
+           // return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
         }
 
         $this->error = $result['error'] ?? 'Something went wrong.';
@@ -74,16 +84,7 @@ class DogPregnancyCalculator extends Component
     public function render()
     {
         // JS scroll into view if result was returned
-        if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
-        const el = document.getElementById('result-section');
-        if (el) {
-            const offset = 30;
-            const top = el.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-    JS);
-        }
+    
 
         return view('livewire.calculators.dog-pregnancy-calculator');
     }

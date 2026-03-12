@@ -197,10 +197,20 @@ class TorqueCalculator extends Component
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
             session()->put('calculator_back_inputs', $request);
-            $this->error = null;
-            return redirect()->to(url()->previous() ?? '/');
+             $this->error = null;
+             $this->detail = $result;
+             $this->js(<<<'JS'
+                $nextTick(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 50;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            JS);
+                return;
+            // return redirect()->to(url()->previous() ?? '/');
         }
 
         $this->error  = $result['error'] ?? 'Something went wrong.';
@@ -211,13 +221,6 @@ class TorqueCalculator extends Component
     // ─── Render ───────────────────────────────────────────────────
     public function render()
     {
-        if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-            JS);
-        }
-
         return view('livewire.calculators.torque-calculator');
     }
 }

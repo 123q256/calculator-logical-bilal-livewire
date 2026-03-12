@@ -140,9 +140,18 @@ class IdealGasLawCalculator extends Component
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', $request);
             $this->error = null;
-            // $this->detail = $result;
-            // return; 
-           return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
+            $this->detail = $result;
+            $this->js(<<<'JS'
+                $nextTick(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 50;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            JS);
+            return; 
+        //    return redirect()->to(url()->previous() ?? '/'); 
         }
         // dd($result);
          $this->error = $result['error'] ?? 'Something went wrong.';
@@ -153,13 +162,6 @@ class IdealGasLawCalculator extends Component
     // ─── Render ───────────────────────────────────────────────────
     public function render()
     {
-        if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-            JS);
-        }
-
         return view('livewire.calculators.ideal-gas-law-calculator');
     }
 }

@@ -96,7 +96,7 @@ class CubicFeetCalculator extends Component
             'scroll_to_result'
         ]);
 
-        return redirect()->to(url()->previous() ?? '/');
+        // return redirect()->to(url()->previous() ?? '/');
     }
 
     public function calculate()

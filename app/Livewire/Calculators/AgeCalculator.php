@@ -72,26 +72,11 @@ class AgeCalculator extends Component
         // Result/error clear
         $this->error  = null;
         $this->detail = null;
-        return redirect()->to(url()->previous() ?? '/');
+        // return redirect()->to(url()->previous() ?? '/');
     }
 
     public function calculate()
     {
-        try {
-            $this->validate([
-                'year'       => 'required|integer|min:1940|max:' . date('Y'),
-                'month'      => 'required|integer|min:1|max:12',
-                'day'        => 'required|integer|min:1|max:31',
-                'year_sec'   => 'required|integer|min:1940|max:' . date('Y'),
-                'month_sec'  => 'required|integer|min:1|max:12',
-                'day_sec'    => 'required|integer|min:1|max:31',
-            ]);
-        } catch (ValidationException $e) {
-            $this->error = 'Please! Check your input.';
-            session()->flash('validation_error', $this->error);
-            $this->detail = null;
-            return;
-        }
 
         $request = (object)[
             'year'      => $this->year,
@@ -104,14 +89,14 @@ class AgeCalculator extends Component
 
         $model = new \App\Models\EverydayLife();
         $result = $model->age($request);
-
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
-            // flash ki jagah put() use karo taake next request ke baad bhi rahe
             session()->put('calculator_back_inputs', (object)$request);
             $this->error = null;
-            return redirect()->to(url()->previous() ?? '/');
+            $this->detail = $result;
+            return;
+            // return redirect()->to(url()->previous() ?? '/');
         }
 
         $this->error = $result['error'] ?? 'Something went wrong.';
@@ -124,7 +109,9 @@ class AgeCalculator extends Component
             $this->js(<<<'JS'
                 const el = document.getElementById('result-section');
                 if (el) {
-                    el.scrollIntoView({ behavior: 'smooth' });
+                    const offset = 30;
+                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                    window.scrollTo({ top: top, behavior: 'smooth' });
                 }
             JS);
         }

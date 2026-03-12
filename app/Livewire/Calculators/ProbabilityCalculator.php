@@ -85,12 +85,20 @@ class ProbabilityCalculator extends Component
         $result = $model->probability($request);
          if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', $request);
             $this->error = null;
-            // $this->detail = $result;
-            // return; 
-           return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
+             $this->detail = $result;
+             $this->js(<<<'JS'
+                $nextTick(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const top = el.getBoundingClientRect().top + window.scrollY - 50;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                });
+            JS);
+                return;
+           //return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
         }
         // dd($result);
          $this->error = $result['error'] ?? 'Something went wrong.';
@@ -99,12 +107,6 @@ class ProbabilityCalculator extends Component
 
     public function render()
     {
-          if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
-            JS);
-        }
         return view('livewire.calculators.probability-calculator');
     }
 }
