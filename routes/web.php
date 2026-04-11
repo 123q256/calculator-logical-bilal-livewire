@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\LoginRegisterController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\Auth\UserForgotPasswordController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
