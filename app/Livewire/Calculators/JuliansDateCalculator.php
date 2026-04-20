@@ -8,114 +8,122 @@ use App\Models\Timedate;
 
 class JuliansDateCalculator extends Component
 {
+    public $inputs = [];
+    public $device;
+    public $currentYear;
     public $error = null;
     public $detail = null;
     public $lang = [];
     public $type = 'calculator';
-    public $month, $day, $year;
-    public $currentYear;
-    public $device;
-    public $julian;
-    public $daysLeft = null;
-    public $timecheck = 'stat'; // default value
-    public $time;
-
 
     public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
-        $this->detail = session('calculator_result');
-        $this->error = session('validation_error');
-
-        $today = Carbon::today();
-
-        // Defaults
-        $this->month = $today->month;
-        $this->day = $today->day;
-        $this->year = $today->year;
-        $this->time = date('H:i');
-        $this->timecheck = 'stat'; // default
+        $this->currentYear = date('Y');
 
         if (session()->has('calculator_back_inputs')) {
-            $inputs = session('calculator_back_inputs');
-
-            $this->month = $inputs->month ?? $this->month;
-            $this->day = $inputs->day ?? $this->day;
-            $this->year = $inputs->year ?? $this->year;
-            $this->time = $inputs->time ?? $this->time;
-            $this->timecheck = $inputs->timecheck ?? $this->timecheck;
-            $this->julian = $inputs->julian ?? $this->julian;
+            $this->inputs = (array)session('calculator_back_inputs');
+        } else {
+            $today = Carbon::today();
+            $this->inputs = [
+                'month' => $today->month,
+                'day' => $today->day,
+                'year' => $today->year,
+                'time' => date('H:i'),
+                'timecheck' => 'stat',
+                'julian' => null,
+            ];
         }
-    }
 
+        $this->detail = session('calculator_result');
+        $this->error = session('validation_error');
+    }
 
     public function setNow()
     {
-        $this->time = date('H:i'); // update to current time on click
+        $this->inputs['time'] = date('H:i');
     }
+
     public function changeOperation($value)
     {
-        $this->timecheck = $value;
+        $this->inputs['timecheck'] = $value;
     }
 
     public function resetForm()
     {
         $this->resetErrorBag();
         $this->resetValidation();
-
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $today = Carbon::today();
+        $this->inputs = [
+            'month' => $today->month,
+            'day' => $today->day,
+            'year' => $today->year,
+            'time' => date('H:i'),
+            'timecheck' => 'stat',
+            'julian' => null,
+        ];
 
-        return redirect()->to(url()->previous() ?? '/');
+        session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
+
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
     {
-        $request = (object)[
-            'month' => $this->month ?? null,
-            'day' => $this->day ?? null,
-            'year' => $this->year ?? null,
-            'time' => $this->time ?? null,
-            'julian' => $this->julian ?? null,
-            'timecheck' => $this->timecheck ?? null,
-        ];
+        $request = (object)$this->inputs;
+
         $model = new Timedate();
         $result = $model->julians($request);
+
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
-
-            return redirect()->to(url()->previous() ?? '/');
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
     }
-
-
 
     public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-        const el = document.getElementById('result-section');
-        if (el) {
-            const offset = 30;
-            const top = el.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-       JS);
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
         }
         return view('livewire.calculators.julians-date-calculator');
     }

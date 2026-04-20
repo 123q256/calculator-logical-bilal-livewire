@@ -3,87 +3,63 @@
 namespace App\Livewire\Calculators;
 
 use Livewire\Component;
-use App\Models\Timedate;
-use Illuminate\Support\Carbon;
+use App\Models\Construction;
+use Illuminate\Http\Request;
 
-class BirthYearCalculator extends Component
+class PipeVolumeCalculator extends Component
 {
-
-    public $error;
+    public $error = null;
+    public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $detail = null;
-    public $date;
-    public $age = 25;
-    public $age_unit = 'years'; // default
-    public $choose = 'after';
 
+    public $inner_diameter = 9;
+    public $inner_diameter_unit = 'cm';
+    public $length = 12;
+    public $length_unit = 'cm';
+    public $density = 12;
+    public $density_unit = 'kg/m³';
 
     public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
-        if (!$this->date) {
-            $this->date = Carbon::now()->format('Y-m-d');
+
+        // Restore state if the page was reloaded (Legacy mode)
+        if (session()->has('calculator_result')) {
+            $this->detail = session('calculator_result');
         }
-        $this->detail = session('calculator_result');
-        $this->error = session('validation_error');
+        if (session()->has('validation_error')) {
+            $this->error = session('validation_error');
+        }
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            // New values you're adding
-            $this->date = $inputs->date ?? $this->date;
-            $this->age = $inputs->age ?? $this->age;
-            $this->age_unit = $inputs->age_unit ?? $this->age_unit;
-            $this->choose = $inputs->choose ?? $this->choose;
+            $this->inner_diameter = $inputs->inner_diameter ?? $this->inner_diameter;
+            $this->inner_diameter_unit = $inputs->inner_diameter_unit ?? $this->inner_diameter_unit;
+            $this->length = $inputs->length ?? $this->length;
+            $this->length_unit = $inputs->length_unit ?? $this->length_unit;
+            $this->density = $inputs->density ?? $this->density;
+            $this->density_unit = $inputs->density_unit ?? $this->density_unit;
         }
     }
-
-    public function setPreUnit($unit)
-    {
-        $this->age_unit = $unit;
-    }
-
-    public function resetForm()
-    {
-        $this->resetErrorBag();
-        $this->resetValidation();
-
-        $this->error = null;
-        $this->detail = null;
-
-        $this->date = Carbon::now()->format('Y-m-d');
-        $this->age = 25;
-        $this->age_unit = 'years';
-        $this->choose = 'after';
-
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            session()->forget([
-                'calculator_back_inputs',
-                'calculator_result',
-                'validation_error',
-                'scroll_to_result'
-            ]);
-            return redirect()->to(url()->previous() ?? '/');
-        }
-    }
-
 
     public function calculate()
     {
         $request = (object)[
-            'date'     => $this->date,
-            'age'      => $this->age,
-            'age_unit' => $this->age_unit,
-            'choose'   => $this->choose,
+            'inner_diameter' => $this->inner_diameter,
+            'inner_diameter_unit' => $this->inner_diameter_unit,
+            'length' => $this->length,
+            'length_unit' => $this->length_unit,
+            'density' => $this->density,
+            'density_unit' => $this->density_unit,
         ];
 
-        $model = new Timedate();
-        $result = $model->birthyear($request);
-        // dd($result);
+        $model = new Construction();
+        $result = $model->pipe($request);
+        
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
-
             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
                 session()->flash('calculator_result', $result);
                 session()->flash('scroll_to_result', true);
@@ -103,17 +79,27 @@ class BirthYearCalculator extends Component
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
             $this->detail = null;
-
+            
             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
                 session()->flash('validation_error', $this->error);
-                session()->flash('calculator_back_inputs', $request);
                 return redirect()->to(url()->previous() ?? '/');
             }
         }
     }
+
+    public function resetForm()
+    {
+        $this->reset(['inner_diameter', 'inner_diameter_unit', 'length', 'length_unit', 'density', 'density_unit', 'error', 'detail']);
+       
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget(['calculator_result', 'validation_error', 'scroll_to_result', 'calculator_back_inputs']);
+            return redirect()->to(url()->previous() ?? '/');
+        }
+    }
+
     public function render()
     {
-        if (session('scroll_to_result')) {
+    if (session('scroll_to_result')) {
             $this->js(<<<'JS'
                 const el = document.getElementById('result-section');
                 if (el) {
@@ -122,6 +108,6 @@ class BirthYearCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.birth-year-calculator');
+        return view('livewire.calculators.pipe-volume-calculator');
     }
 }

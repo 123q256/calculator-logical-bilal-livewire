@@ -113,7 +113,7 @@
                 <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
             @endif
             <div class="lg:w-[90%] md:w-[100%] w-full mx-auto ">
-                <input type="hidden" id="count_val" name="count_val" wire:model="count_val">
+                <input type="hidden" id="count_val" name="count_val" wire:model="inputs.count_val">
                 <div class="grid grid-cols-1 gap-4">
                     <div class="w-full overflow-auto mera_table">
                         <table class="w-full time_table table-auto border-collapse">
@@ -122,7 +122,7 @@
                                     <td></td>
                                     <td>
                                         <label class="flex items-center">
-                                            <input type="checkbox" wire:model="hours_check"
+                                            <input type="checkbox" wire:model="inputs.hours_check"
                                                 wire:change="toggleColumn('hours')">
                                             <span class="text-black ml-2">Hours</span>
                                         </label>
@@ -130,7 +130,7 @@
                                     <td></td>
                                     <td>
                                         <label class="flex items-center">
-                                            <input type="checkbox" wire:model="min_check"
+                                            <input type="checkbox" wire:model="inputs.min_check"
                                                 wire:change="toggleColumn('minutes')">
                                             <span class="text-black ml-2">Minutes</span>
                                         </label>
@@ -138,7 +138,7 @@
                                     <td></td>
                                     <td>
                                         <label class="flex items-center">
-                                            <input type="checkbox" wire:model="sec_check"
+                                            <input type="checkbox" wire:model="inputs.sec_check"
                                                 wire:change="toggleColumn('seconds')">
                                             <span class="text-black ml-2">Seconds</span>
                                         </label>
@@ -146,7 +146,7 @@
                                     <td></td>
                                     <td>
                                         <label class="flex items-center">
-                                            <input type="checkbox" wire:model="milli_check"
+                                            <input type="checkbox" wire:model="inputs.milli_check"
                                                 wire:change="toggleColumn('milliseconds')">
                                             <span class="text-black ml-2">Milliseconds</span>
                                         </label>
@@ -157,7 +157,7 @@
 
 
                             <tbody>
-                                @foreach ($rows as $index => $row)
+                                @foreach ($inputs['rows'] as $index => $row)
                                     <tr>
                                         <td>
                                             @if ($index > 0)
@@ -168,8 +168,8 @@
                                         {{-- Hours --}}
                                         <td>
                                             <input type="number" min="0" placeholder="hours"
-                                                wire:model.defer="rows.{{ $index }}.inhour"
-                                                @if (!$hours_check) disabled @endif class="input hours">
+                                                wire:model.defer="inputs.rows.{{ $index }}.inhour"
+                                                @if (!$inputs['hours_check']) disabled @endif class="input hours">
                                         </td>
 
                                         <td>
@@ -179,8 +179,8 @@
                                         {{-- Minutes --}}
                                         <td>
                                             <input type="number" min="0" placeholder="minutes"
-                                                wire:model.defer="rows.{{ $index }}.inminutes"
-                                                @if (!$min_check) disabled @endif class="input minutes">
+                                                wire:model.defer="inputs.rows.{{ $index }}.inminutes"
+                                                @if (!$inputs['min_check']) disabled @endif class="input minutes">
                                         </td>
 
                                         <td>
@@ -190,8 +190,8 @@
                                         {{-- Seconds --}}
                                         <td>
                                             <input type="number" min="0" placeholder="seconds"
-                                                wire:model.defer="rows.{{ $index }}.inseconds"
-                                                @if (!$sec_check) disabled @endif class="input seconds">
+                                                wire:model.defer="inputs.rows.{{ $index }}.inseconds"
+                                                @if (!$inputs['sec_check']) disabled @endif class="input seconds">
                                         </td>
 
                                         <td>
@@ -201,8 +201,8 @@
                                         {{-- Milliseconds --}}
                                         <td>
                                             <input type="number" min="0" placeholder="milliseconds"
-                                                wire:model.defer="rows.{{ $index }}.inmiliseconds"
-                                                @if (!$milli_check) disabled @endif
+                                                wire:model.defer="inputs.rows.{{ $index }}.inmiliseconds"
+                                                @if (!$inputs['milli_check']) disabled @endif
                                                 class="input milliseconds">
                                         </td>
 

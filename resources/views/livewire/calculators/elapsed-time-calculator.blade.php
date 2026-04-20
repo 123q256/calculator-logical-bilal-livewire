@@ -8,14 +8,14 @@
 
             <div class="col-12 col-lg-9 mx-auto mt-2 lg:w-[50%] w-full">
                 <!-- Hidden input bound to Livewire -->
-                <input type="hidden" name="main_units" id="main_units" wire:model="main_units">
+                <input type="hidden" name="main_units" id="main_units" wire:model="inputs.main_units">
 
                 <div class="flex flex-wrap items-center bg-blue-100 border border-blue-500 text-center rounded-lg px-1">
 
                     <!-- Elapsed -->
                     <div class="lg:w-1/2 w-full px-2 py-1">
                         <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white wed 
-                {{ $main_units !== 'elapsed' ? '' : 'tagsUnit' }}"
+                {{ $inputs['main_units'] !== 'elapsed' ? '' : 'tagsUnit' }}"
                             wire:click="setMainUnits('elapsed')">
                             {{ $lang['1'] }}
                         </div>
@@ -24,7 +24,7 @@
                     <!-- Clock -->
                     <div class="lg:w-1/2 w-full px-2 py-1">
                         <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white rel 
-                {{ $main_units === 'clock' ? 'tagsUnit' : '' }}"
+                {{ $inputs['main_units'] === 'clock' ? 'tagsUnit' : '' }}"
                             wire:click="setMainUnits('clock')">
                             {{ $lang['2'] }}
                         </div>
@@ -39,28 +39,28 @@
 
                 <div class="grid grid-cols-1 gap-4">
                     <div
-                        class="d-flex align-items-center px-2 mt-3 clock-time {{ $main_units == 'clock' ? '' : 'hidden' }}">
+                        class="d-flex align-items-center px-2 mt-3 clock-time {{ $inputs['main_units'] == 'clock' ? '' : 'hidden' }}">
                         <p class="text-blue font-s-14 pe-2">{{ $lang['5'] }}:</p>
 
-                        <input type="radio" id="first" value="12" wire:model="clock_format"
+                        <input type="radio" id="first" value="12" wire:model="inputs.clock_format"
                             wire:click="setClockFormat('12')">
                         <label for="first" class="font-s-14 text-blue ps-lg-1 pe-2">12 Hours</label>
 
-                        <input type="radio" id="second" value="24" wire:model="clock_format"
+                        <input type="radio" id="second" value="24" wire:model="inputs.clock_format"
                             wire:click="setClockFormat('24')">
                         <label for="second" class="font-s-14 ps-lg-1 text-blue">24 Hours</label>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1  gap-4 elapsed {{ $main_units !== 'elapsed' ? 'hidden' : '' }}">
+                <div class="grid grid-cols-1  gap-4 elapsed {{ $inputs['main_units'] !== 'elapsed' ? 'hidden' : '' }}">
                     <p class="mt-2 px-1 font-s-14">{{ $lang['3'] }}</p>
                 </div>
-                <div class="grid grid-cols-4  gap-4 elapsed {{ $main_units !== 'elapsed' ? 'hidden' : '' }}">
+                <div class="grid grid-cols-4  gap-4 elapsed {{ $inputs['main_units'] !== 'elapsed' ? 'hidden' : '' }}">
                     {{-- Single field --}}
                     @if ($showElapsedStart)
                         <div>
-                            <label class="font-s-14 text-blue">{{ $elapsed_start_unit }}:</label>
-                            <input type="number" step="any" wire:model="elapsed_start" id="elapsed_start"
+                            <label class="font-s-14 text-blue">{{ $inputs['elapsed_start_unit'] }}:</label>
+                            <input type="number" step="any" wire:model="inputs.elapsed_start" id="elapsed_start"
                                 class="input" aria-label="input" />
                         </div>
                     @endif
@@ -69,7 +69,7 @@
                         <div>
                             <label class="font-s-14 text-blue">hrs:</label>
                             <input type="number" step="any" id="elapsed_start_one" class="input"
-                                aria-label="input" wire:model="elapsed_start_one" />
+                                aria-label="input" wire:model="inputs.elapsed_start_one" />
                         </div>
                     @endif
 
@@ -78,7 +78,7 @@
                         <div>
                             <label class="font-s-14 text-blue">mins:</label>
                             <input type="number" step="any" name="" id="elapsed_start_sec" class="input"
-                                aria-label="input" wire:model="elapsed_start_sec" />
+                                aria-label="input" wire:model="inputs.elapsed_start_sec" />
 
                         </div>
                     @endif
@@ -88,14 +88,14 @@
                         <div>
                             <label class="font-s-14 text-blue">sec:</label>
                             <input type="number" step="any" name="elapsed_start_three" id="elapsed_start_three"
-                                class="input" aria-label="input" wire:model="elapsed_start_three" />
+                                class="input" aria-label="input" wire:model="inputs.elapsed_start_three" />
                         </div>
                     @endif
 
                     {{-- Dropdown --}}
                     <div class="space-y-2 elapsed_start_unit mt-3">
                         <div class="w-100 pt-2">
-                            <select wire:model="elapsed_start_unit" wire:change="changeelapsed_start_unit"
+                            <select wire:model="inputs.elapsed_start_unit" wire:change="changeelapsed_start_unit"
                                 class="input">
                                 <option value="sec">sec</option>
                                 <option value="mins">mins</option>
@@ -109,15 +109,15 @@
                 </div>
 
 
-                <div class="grid grid-cols-1  gap-4 elapsed {{ $main_units !== 'elapsed' ? 'hidden' : '' }}">
+                <div class="grid grid-cols-1  gap-4 elapsed {{ $inputs['main_units'] !== 'elapsed' ? 'hidden' : '' }}">
                     <p class="mt-2 px-1 font-s-14">{{ $lang['4'] }}</p>
                 </div>
-                <div class="grid grid-cols-4  gap-4 elapsed {{ $main_units !== 'elapsed' ? 'hidden' : '' }}">
+                <div class="grid grid-cols-4  gap-4 elapsed {{ $inputs['main_units'] !== 'elapsed' ? 'hidden' : '' }}">
                     {{-- Single field --}}
                     @if ($showElapsedEnd)
                         <div>
-                            <label class="font-s-14 text-blue">{{ $elapsed_end_unit }}:</label>
-                            <input type="number" step="any" wire:model="elapsed_end" name=""
+                            <label class="font-s-14 text-blue">{{ $inputs['elapsed_end_unit'] }}:</label>
+                            <input type="number" step="any" wire:model="inputs.elapsed_end" name=""
                                 id="elapsed_end" class="input" aria-label="input" />
                         </div>
                     @endif
@@ -126,7 +126,7 @@
                         <div>
                             <label class="font-s-14 text-blue">hrs:</label>
                             <input type="number" step="any" name="" id="elapsed_end_one" class="input"
-                                aria-label="input" wire:model="elapsed_end_one" />
+                                aria-label="input" wire:model="inputs.elapsed_end_one" />
                         </div>
                     @endif
 
@@ -135,7 +135,7 @@
                         <div>
                             <label class="font-s-14 text-blue">mins:</label>
                             <input type="number" step="any" name="" id="elapsed_end_sec" class="input"
-                                aria-label="input" wire:model="elapsed_end_sec" />
+                                aria-label="input" wire:model="inputs.elapsed_end_sec" />
                         </div>
                     @endif
 
@@ -144,14 +144,14 @@
                         <div>
                             <label class="font-s-14 text-blue">sec:</label>
                             <input type="number" step="any" name="elapsed_end_three" id="elapsed_end_three"
-                                class="input" aria-label="input" wire:model="elapsed_end_three" />
+                                class="input" aria-label="input" wire:model="inputs.elapsed_end_three" />
                         </div>
                     @endif
 
                     {{-- Dropdown --}}
                     <div class="space-y-2 elapsed_end_unit mt-3">
                         <div class="w-100 pt-2">
-                            <select wire:model="elapsed_end_unit" wire:change="changeelapsed_end_unit"
+                            <select wire:model="inputs.elapsed_end_unit" wire:change="changeelapsed_end_unit"
                                 class="input">
                                 <option value="sec">sec</option>
                                 <option value="mins">mins</option>
@@ -164,37 +164,37 @@
                     </div>
                 </div>
                 {{-- 22222222 --}}
-                <div class="grid grid-cols-1  gap-4 clock {{ $main_units !== 'elapsed' ? '' : 'hidden' }}">
+                <div class="grid grid-cols-1  gap-4 clock {{ $inputs['main_units'] !== 'elapsed' ? '' : 'hidden' }}">
                     <p class="mt-2 px-1 font-s-14">{{ $lang['6'] }}</p>
                 </div>
-                <div class="grid grid-cols-4  gap-4  clock {{ $main_units !== 'elapsed' ? '' : 'hidden' }}">
+                <div class="grid grid-cols-4  gap-4  clock {{ $inputs['main_units'] !== 'elapsed' ? '' : 'hidden' }}">
                     <div class="space-y-2 clock_hour">
                         <div class="w-100 py-2 relative">
                             <input type="number" step="any" name="" id="clock_hour" class="input"
-                                aria-label="input" wire:model="clock_hour" />
+                                aria-label="input" wire:model="inputs.clock_hour" />
                             <span class="input_unit text-blue">hrs</span>
                         </div>
                     </div>
                     <div class="space-y-2 clock_minute">
                         <div class="w-100 py-2 relative">
                             <input type="number" step="any" name="" id="clock_minute" class="input"
-                                aria-label="input" wire:model="clock_minute" />
+                                aria-label="input" wire:model="inputs.clock_minute" />
                             <span class="input_unit text-blue">min</span>
                         </div>
                     </div>
                     <div class="space-y-2 clock_second">
                         <div class="w-100 py-2 relative">
                             <input type="number" step="any" name="" id="clock_second" class="input"
-                                aria-label="input" wire:model="clock_second" />
+                                aria-label="input" wire:model="inputs.clock_second" />
                             <span class="input_unit text-blue">sec</span>
                         </div>
                     </div>
 
 
 
-                    <div class="space-y-2 clock_start_unit {{ $clock_format != '12' ? 'hidden' : '' }}">
+                    <div class="space-y-2 clock_start_unit {{ $inputs['clock_format'] != '12' ? 'hidden' : '' }}">
                         <div class="w-100 py-2">
-                            <select name="" wire:model="clock_start_unit" id="clock_start_unit"
+                            <select name="" wire:model="inputs.clock_start_unit" id="clock_start_unit"
                                 class="input">
                                 <option value="AM">AM</option>
                                 <option value="PM">PM</option>
@@ -202,20 +202,20 @@
                         </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-1  gap-4 clock {{ $main_units !== 'elapsed' ? '' : 'hidden' }}">
+                <div class="grid grid-cols-1  gap-4 clock {{ $inputs['main_units'] !== 'elapsed' ? '' : 'hidden' }}">
                     <p class="mt-2 px-1 font-s-14">{{ $lang['7'] }}</p>
                 </div>
-                <div class="grid grid-cols-4  gap-4 clock {{ $main_units !== 'elapsed' ? '' : 'hidden' }}">
+                <div class="grid grid-cols-4  gap-4 clock {{ $inputs['main_units'] !== 'elapsed' ? '' : 'hidden' }}">
                     <div class="space-y-2 clock_hur">
                         <div class="w-100 py-2 relative">
                             <input type="number" step="any" name="" id="clock_hur" class="input"
-                                aria-label="input" wire:model="clock_hur" />
+                                aria-label="input" wire:model="inputs.clock_hur" />
                             <span class="input_unit text-blue">hrs</span>
                         </div>
                     </div>
                     <div class="space-y-2 clock_mints">
                         <div class="w-100 py-2 relative">
-                            <input type="number" step="any" wire:model="clock_mints" id="clock_mints"
+                            <input type="number" step="any" wire:model="inputs.clock_mints" id="clock_mints"
                                 class="input" aria-label="input" />
                             <span class="input_unit text-blue">min</span>
                         </div>
@@ -223,13 +223,13 @@
                     <div class="space-y-2 clock_secs">
                         <div class="w-100 py-2 relative">
                             <input type="number" step="any" name="" id="clock_secs" class="input"
-                                aria-label="input" wire:model="clock_secs" />
+                                aria-label="input" wire:model="inputs.clock_secs" />
                             <span class="input_unit text-blue">sec</span>
                         </div>
                     </div>
-                    <div class="space-y-2 clock_end_unit {{ $clock_format != '12' ? 'hidden' : '' }}">
+                    <div class="space-y-2 clock_end_unit {{ $inputs['clock_format'] != '12' ? 'hidden' : '' }}">
                         <div class="w-100 py-2">
-                            <select name="" wire:model="clock_end_unit" id="clock_end_unit" class="input">
+                            <select name="" wire:model="inputs.clock_end_unit" id="clock_end_unit" class="input">
                                 <option value="AM">AM</option>
                                 <option value="PM">PM</option>
 

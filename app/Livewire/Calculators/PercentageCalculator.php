@@ -62,7 +62,8 @@ class PercentageCalculator extends Component
     public function resetForm(): void
     {
         $this->resetErrorBag();
-        session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error']);
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error']);
 
         $this->error       = null;
         $this->detail      = null;
@@ -109,18 +110,34 @@ class PercentageCalculator extends Component
         $model  = new \App\Models\Math();
         $result = $model->percentage($request);
     if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            $this->detail = $result;
+            $this->error = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->put('calculator_back_inputs', $request);
-            $this->error = null;
-            $this->detail = $result;
-            return;
+                                    return;
             // return redirect()->to(url()->previous() ?? '/');
         }
+                    } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        }
 
-        $this->error  = $result['error'] ?? 'Something went wrong.';
+        $this->error = $result['error'] ?? 'Something went wrong.';
         $this->detail = null;
-        session()->flash('validation_error', $this->error);
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     // ─── Render ───────────────────────────────────────────────────

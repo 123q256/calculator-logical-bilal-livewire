@@ -1364,166 +1364,167 @@ class Timedate extends Model
 	{
 		// dd($request->all());
 		//    if (isset($_POST['submit'])) {
-		$selection1 = $request->input('selection1');
-		$selection2 = $request->input('selection2');
-		$selection3 = $request->input('selection3');
+		$selection1 = $request->selection1;
+		$selection2 = $request->selection2;
+		$selection3 = $request->selection3;
 		// table 1 variables
-		$inhour = $request->input('inhour');
-		$inmin = $request->input('inmin');
-		$inampm = $request->input('inampm');
-		$outhour = $request->input('outhour');
-		$outmin = $request->input('outmin');
-		$outampm = $request->input('outampm');
-		$inhourl1 = $request->input('inhourl1');
-		$inminl1 = $request->input('inminl1');
-		$inampml1 = $request->input('inampml1');
-		$outhourl1 = $request->input('outhourl1');
-		$outminl1 = $request->input('outminl1');
-		$outampml1 = $request->input('outampml1');
-		$inhourl2 = $request->input('inhourl2');
-		$inminl2 = $request->input('inminl2');
-		$inampml2 = $request->input('inampml2');
-		$outhourl2 = $request->input('outhourl2');
-		$outminl2 = $request->input('outminl2');
-		$outampml2 = $request->input('outampml2');
+		$inhour = array_pad((array)($request->inhour ?? []), 7, '');
+		$inmin = array_pad((array)($request->inmin ?? []), 7, '');
+		$inampm = array_pad((array)($request->inampm ?? []), 7, '');
+		$outhour = array_pad((array)($request->outhour ?? []), 7, '');
+		$outmin = array_pad((array)($request->outmin ?? []), 7, '');
+		$outampm = array_pad((array)($request->outampm ?? []), 7, '');
+		$inhourl1 = array_pad((array)($request->inhourl1 ?? []), 7, '');
+		$inminl1 = array_pad((array)($request->inminl1 ?? []), 7, '');
+		$inampml1 = array_pad((array)($request->inampml1 ?? []), 7, '');
+		$outhourl1 = array_pad((array)($request->outhourl1 ?? []), 7, '');
+		$outminl1 = array_pad((array)($request->outminl1 ?? []), 7, '');
+		$outampml1 = array_pad((array)($request->outampml1 ?? []), 7, '');
+		$inhourl2 = array_pad((array)($request->inhourl2 ?? []), 7, '');
+		$inminl2 = array_pad((array)($request->inminl2 ?? []), 7, '');
+		$inampml2 = array_pad((array)($request->inampml2 ?? []), 7, '');
+		$outhourl2 = array_pad((array)($request->outhourl2 ?? []), 7, '');
+		$outminl2 = array_pad((array)($request->outminl2 ?? []), 7, '');
+		$outampml2 = array_pad((array)($request->outampml2 ?? []), 7, '');
 
 		// table 1 optional
 
-		$in = $request->input('in');
-		$out = $request->input('out');
-		$inlunch1 = $request->input('inlunch1');
-		$outlunch1 = $request->input('outlunch1');
-		$inlunch2 = $request->input('inlunch2');
-		$outlunch2 = $request->input('outlunch2');
+		$in = array_pad((array)($request->in ?? []), 7, '');
+		$out = array_pad((array)($request->out ?? []), 7, '');
+		$inlunch1 = array_pad((array)($request->inlunch1 ?? []), 7, '');
+		$outlunch1 = array_pad((array)($request->outlunch1 ?? []), 7, '');
+		$inlunch2 = array_pad((array)($request->inlunch2 ?? []), 7, '');
+		$outlunch2 = array_pad((array)($request->outlunch2 ?? []), 7, '');
 
 		// table 2 variables
-		$t2inhour = $request->input('t2inhour');
-		$t2inmin = $request->input('t2inmin');
-		$t2inampm = $request->input('t2inampm');
-		$t2outhour = $request->input('t2outhour');
-		$t2outmin = $request->input('t2outmin');
-		$t2outampm = $request->input('t2outampm');
-		$t2inhourl1 = $request->input('t2inhourl1');
-		$t2inminl1 = $request->input('t2inminl1');
-		$t2inampml1 = $request->input('t2inampml1');
-		$t2outhourl1 = $request->input('t2outhourl1');
-		$t2outminl1 = $request->input('t2outminl1');
-		$t2outampml1 = $request->input('t2outampml1');
-		$t2inhourl2 = $request->input('t2inhourl2');
-		$t2inminl2 = $request->input('t2inminl2');
-		$t2inampml2 = $request->input('t2inampml2');
-		$t2outhourl2 = $request->input('t2outhourl2');
-		$t2outminl2 = $request->input('t2outminl2');
-		$t2outampml2 = $request->input('t2outampml2');
+		$t2inhour = array_pad((array)($request->t2inhour ?? []), 7, '');
+		$t2inmin = array_pad((array)($request->t2inmin ?? []), 7, '');
+		$t2inampm = array_pad((array)($request->t2inampm ?? []), 7, '');
+		$t2outhour = array_pad((array)($request->t2outhour ?? []), 7, '');
+		$t2outmin = array_pad((array)($request->t2outmin ?? []), 7, '');
+		$t2outampm = array_pad((array)($request->t2outampm ?? []), 7, '');
+		$t2inhourl1 = array_pad((array)($request->t2inhourl1 ?? []), 7, '');
+		$t2inminl1 = array_pad((array)($request->t2inminl1 ?? []), 7, '');
+		$t2inampml1 = array_pad((array)($request->t2inampml1 ?? []), 7, '');
+		$t2outhourl1 = array_pad((array)($request->t2outhourl1 ?? []), 7, '');
+		$t2outminl1 = array_pad((array)($request->t2outminl1 ?? []), 7, '');
+		$t2outampml1 = array_pad((array)($request->t2outampml1 ?? []), 7, '');
+		$t2inhourl2 = array_pad((array)($request->t2inhourl2 ?? []), 7, '');
+		$t2inminl2 = array_pad((array)($request->t2inminl2 ?? []), 7, '');
+		$t2inampml2 = array_pad((array)($request->t2inampml2 ?? []), 7, '');
+		$t2outhourl2 = array_pad((array)($request->t2outhourl2 ?? []), 7, '');
+		$t2outminl2 = array_pad((array)($request->t2outminl2 ?? []), 7, '');
+		$t2outampml2 = array_pad((array)($request->t2outampml2 ?? []), 7, '');
 
 		// table 2 optional
-		$t2in = $request->input('t2in');
-		$t2out = $request->input('t2out');
-		$t2inlunch1 = $request->input('t2inlunch1');
-		$t2outlunch1 = $request->input('t2outlunch1');
-		$t2inlunch2 = $request->input('t2inlunch2');
-		$t2outlunch2 = $request->input('t2outlunch2');
+		$t2in = array_pad((array)($request->t2in ?? []), 7, '');
+		$t2out = array_pad((array)($request->t2out ?? []), 7, '');
+		$t2inlunch1 = array_pad((array)($request->t2inlunch1 ?? []), 7, '');
+		$t2outlunch1 = array_pad((array)($request->t2outlunch1 ?? []), 7, '');
+		$t2inlunch2 = array_pad((array)($request->t2inlunch2 ?? []), 7, '');
+		$t2outlunch2 = array_pad((array)($request->t2outlunch2 ?? []), 7, '');
 
 		// table 3 variables
-		$t3inhour = $request->input('t3inhour');
-		$t3inmin = $request->input('t3inmin');
-		$t3inampm = $request->input('t3inampm');
-		$t3outhour = $request->input('t3outhour');
-		$t3outmin = $request->input('t3outmin');
-		$t3outampm = $request->input('t3outampm');
-		$t3inhourl1 = $request->input('t3inhourl1');
-		$t3inminl1 = $request->input('t3inminl1');
-		$t3inampml1 = $request->input('t3inampml1');
-		$t3outhourl1 = $request->input('t3outhourl1');
-		$t3outminl1 = $request->input('t3outminl1');
-		$t3outampml1 = $request->input('t3outampml1');
-		$t3inhourl2 = $request->input('t3inhourl2');
-		$t3inminl2 = $request->input('t3inminl2');
-		$t3inampml2 = $request->input('t3inampml2');
-		$t3outhourl2 = $request->input('t3outhourl2');
-		$t3outminl2 = $request->input('t3outminl2');
-		$t3outampml2 = $request->input('t3outampml2');
+		$t3inhour = array_pad((array)($request->t3inhour ?? []), 7, '');
+		$t3inmin = array_pad((array)($request->t3inmin ?? []), 7, '');
+		$t3inampm = array_pad((array)($request->t3inampm ?? []), 7, '');
+		$t3outhour = array_pad((array)($request->t3outhour ?? []), 7, '');
+		$t3outmin = array_pad((array)($request->t3outmin ?? []), 7, '');
+		$t3outampm = array_pad((array)($request->t3outampm ?? []), 7, '');
+		$t3inhourl1 = array_pad((array)($request->t3inhourl1 ?? []), 7, '');
+		$t3inminl1 = array_pad((array)($request->t3inminl1 ?? []), 7, '');
+		$t3inampml1 = array_pad((array)($request->t3inampml1 ?? []), 7, '');
+		$t3outhourl1 = array_pad((array)($request->t3outhourl1 ?? []), 7, '');
+		$t3outminl1 = array_pad((array)($request->t3outminl1 ?? []), 7, '');
+		$t3outampml1 = array_pad((array)($request->t3outampml1 ?? []), 7, '');
+		$t3inhourl2 = array_pad((array)($request->t3inhourl2 ?? []), 7, '');
+		$t3inminl2 = array_pad((array)($request->t3inminl2 ?? []), 7, '');
+		$t3inampml2 = array_pad((array)($request->t3inampml2 ?? []), 7, '');
+		$t3outhourl2 = array_pad((array)($request->t3outhourl2 ?? []), 7, '');
+		$t3outminl2 = array_pad((array)($request->t3outminl2 ?? []), 7, '');
+		$t3outampml2 = array_pad((array)($request->t3outampml2 ?? []), 7, '');
 
 		// table 3 optional
-		$t3in = $request->input('t3in');
-		$t3out = $request->input('t3out');
-		$t3inlunch1 = $request->input('t3inlunch1');
-		$t3outlunch1 = $request->input('t3outlunch1');
-		$t3inlunch2 = $request->input('t3inlunch2');
-		$t3outlunch2 = $request->input('t3outlunch2');
+		$t3in = array_pad((array)($request->t3in ?? []), 7, '');
+		$t3out = array_pad((array)($request->t3out ?? []), 7, '');
+		$t3inlunch1 = array_pad((array)($request->t3inlunch1 ?? []), 7, '');
+		$t3outlunch1 = array_pad((array)($request->t3outlunch1 ?? []), 7, '');
+		$t3inlunch2 = array_pad((array)($request->t3inlunch2 ?? []), 7, '');
+		$t3outlunch2 = array_pad((array)($request->t3outlunch2 ?? []), 7, '');
 
 		// table 4 variables
-		$t4inhour = $request->input('t4inhour');
-		$t4inmin = $request->input('t4inmin');
-		$t4inampm = $request->input('t4inampm');
-		$t4outhour = $request->input('t4outhour');
-		$t4outmin = $request->input('t4outmin');
-		$t4outampm = $request->input('t4outampm');
-		$t4inhourl1 = $request->input('t4inhourl1');
-		$t4inminl1 = $request->input('t4inminl1');
-		$t4inampml1 = $request->input('t4inampml1');
-		$t4outhourl1 = $request->input('t4outhourl1');
-		$t4outminl1 = $request->input('t4outminl1');
-		$t4outampml1 = $request->input('t4outampml1');
-		$t4inhourl2 = $request->input('t4inhourl2');
-		$t4inminl2 = $request->input('t4inminl2');
-		$t4inampml2 = $request->input('t4inampml2');
-		$t4outhourl2 = $request->input('t4outhourl2');
-		$t4outminl2 = $request->input('t4outminl2');
-		$t4outampml2 = $request->input('t4outampml2');
+		$t4inhour = array_pad((array)($request->t4inhour ?? []), 7, '');
+		$t4inmin = array_pad((array)($request->t4inmin ?? []), 7, '');
+		$t4inampm = array_pad((array)($request->t4inampm ?? []), 7, '');
+		$t4outhour = array_pad((array)($request->t4outhour ?? []), 7, '');
+		$t4outmin = array_pad((array)($request->t4outmin ?? []), 7, '');
+		$t4outampm = array_pad((array)($request->t4outampm ?? []), 7, '');
+		$t4inhourl1 = array_pad((array)($request->t4inhourl1 ?? []), 7, '');
+		$t4inminl1 = array_pad((array)($request->t4inminl1 ?? []), 7, '');
+		$t4inampml1 = array_pad((array)($request->t4inampml1 ?? []), 7, '');
+		$t4outhourl1 = array_pad((array)($request->t4outhourl1 ?? []), 7, '');
+		$t4outminl1 = array_pad((array)($request->t4outminl1 ?? []), 7, '');
+		$t4outampml1 = array_pad((array)($request->t4outampml1 ?? []), 7, '');
+		$t4inhourl2 = array_pad((array)($request->t4inhourl2 ?? []), 7, '');
+		$t4inminl2 = array_pad((array)($request->t4inminl2 ?? []), 7, '');
+		$t4inampml2 = array_pad((array)($request->t4inampml2 ?? []), 7, '');
+		$t4outhourl2 = array_pad((array)($request->t4outhourl2 ?? []), 7, '');
+		$t4outminl2 = array_pad((array)($request->t4outminl2 ?? []), 7, '');
+		$t4outampml2 = array_pad((array)($request->t4outampml2 ?? []), 7, '');
 
 		// table 4 optional
-		$t4in = $request->input('t4in');
-		$t4out = $request->input('t4out');
-		$t4inlunch1 = $request->input('t4inlunch1');
-		$t4outlunch1 = $request->input('t4outlunch1');
-		$t4inlunch2 = $request->input('t4inlunch2');
-		$t4outlunch2 = $request->input('t4outlunch2');
+		$t4in = array_pad((array)($request->t4in ?? []), 7, '');
+		$t4out = array_pad((array)($request->t4out ?? []), 7, '');
+		$t4inlunch1 = array_pad((array)($request->t4inlunch1 ?? []), 7, '');
+		$t4outlunch1 = array_pad((array)($request->t4outlunch1 ?? []), 7, '');
+		$t4inlunch2 = array_pad((array)($request->t4inlunch2 ?? []), 7, '');
+		$t4outlunch2 = array_pad((array)($request->t4outlunch2 ?? []), 7, '');
 
-		$lunch = $request->input('lunch');
-		$advancedcheck = $request->input('advancedcheck');
+		$lunch = $request->lunch;
+		$advancedcheck = $request->advancedcheck;
 		if (isset($advancedcheck)) {
-			$advancedcheck = $request->input('advancedcheck');
+			$advancedcheck = $request->advancedcheck;
 		} else {
 			$advancedcheck = false;
 		}
-		$paid_lunch1 = $request->input('paid_lunch1');
-		$paid_lunch2 = $request->input('paid_lunch2');
-		$hour_rate = $request->input('hour_rate');
-		$overtime = $request->input('overtime');
-		$overtime_pay = $request->input('overtime_pay');
-		$table_selection = $request->input('table_selection');
-		$sick_h = $request->input('sick_h');
-		$sick_m = $request->input('sick_m');
-		$v_h = $request->input('v_h');
-		$v_m = $request->input('v_m');
-		$t2sick_h = $request->input('t2sick_h');
-		$t2sick_m = $request->input('t2sick_m');
-		$t2v_h = $request->input('t2v_h');
-		$t2v_m = $request->input('t2v_m');
-		$t3sick_h = $request->input('t3sick_h');
-		$t3sick_m = $request->input('t3sick_m');
-		$t3v_h = $request->input('t3v_h');
-		$t3v_m = $request->input('t3v_m');
-		$t4sick_h = $request->input('t4sick_h');
-		$t4sick_m = $request->input('t4sick_m');
-		$t4v_h = $request->input('t4v_h');
-		$t4v_m = $request->input('t4v_m');
-		$naam = $request->input('naam');
-		$naam2 = $request->input('naam2');
-		$naam3 = $request->input('naam3');
-		$naam4 = $request->input('naam4');
-		$s_date = $request->input('s_date');
-		$e_date = $request->input('e_date');
-		$s2_date = $request->input('s2_date');
-		$e2_date = $request->input('e2_date');
-		$s3_date = $request->input('s3_date');
-		$e3_date = $request->input('e3_date');
-		$s4_date = $request->input('s4_date');
-		$e4_date = $request->input('e4_date');
+		$paid_lunch1 = $request->paid_lunch1;
+		$paid_lunch2 = $request->paid_lunch2;
+		$hour_rate = $request->hour_rate;
+		$overtime = $request->overtime;
+		$overtime_pay = $request->overtime_pay;
+		$table_selection = $request->table_selection;
+		$sick_h = $request->sick_h;
+		$sick_m = $request->sick_m;
+		$v_h = $request->v_h;
+		$v_m = $request->v_m;
+		$t2sick_h = $request->t2sick_h;
+		$t2sick_m = $request->t2sick_m;
+		$t2v_h = $request->t2v_h;
+		$t2v_m = $request->t2v_m;
+		$t3sick_h = $request->t3sick_h;
+		$t3sick_m = $request->t3sick_m;
+		$t3v_h = $request->t3v_h;
+		$t3v_m = $request->t3v_m;
+		$t4sick_h = $request->t4sick_h;
+		$t4sick_m = $request->t4sick_m;
+		$t4v_h = $request->t4v_h;
+		$t4v_m = $request->t4v_m;
+		$naam = $request->naam;
+		$naam2 = $request->naam2;
+		$naam3 = $request->naam3;
+		$naam4 = $request->naam4;
+		$s_date = $request->s_date;
+		$e_date = $request->e_date;
+		$s2_date = $request->s2_date;
+		$e2_date = $request->e2_date;
+		$s3_date = $request->s3_date;
+		$e3_date = $request->e3_date;
+		$s4_date = $request->s4_date;
+		$e4_date = $request->e4_date;
 
-		function timeCal($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
+		$timeCal = function ($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
 		{
+
 			$checkHour = true;
 			$checkHourl = true;
 			$checkHourl2 = true;
@@ -1853,19 +1854,18 @@ class Timedate extends Model
 					if (!empty($paid_lunch1) && !empty($paid_lunch2)) {
 						$min1 = "00" . ":" . $paid_lunch1;
 						$min2 = "00" . ":" . $paid_lunch2;
-						function calculate_total_time()
+						$calculate_total_time = function()
 						{
 							$i = 0;
 							foreach (func_get_args() as $time) {
 								sscanf($time, '%d:%d', $hour, $min);
 								$i += $hour * 60 + $min;
 							}
-							if ($h = floor($i / 60)) {
-								$i %= 60;
-							}
+							$h = floor($i / 60);
+							$i %= 60;
 							return sprintf('%02d:%02d', $h, $i);
-						}
-						$paid_lunch = calculate_total_time($min1, $min2);
+						};
+						$paid_lunch = $calculate_total_time($min1, $min2);
 						foreach ($ans_arr as $key => $val) {
 							list($h, $m) = explode(':', $val);
 							if ($h <= 9) {
@@ -2004,7 +2004,7 @@ class Timedate extends Model
 					}
 				}
 			}
-			function AddPlayTime($overall_time)
+			$AddPlayTime = function($overall_time)
 			{
 				$minutes = 0;
 				foreach ($overall_time as $value) {
@@ -2015,8 +2015,8 @@ class Timedate extends Model
 				$hours = floor($minutes / 60);
 				$minutes -= $hours * 60;
 				return sprintf('%02d:%02d', $hours, $minutes);
-			}
-			$table_ans = AddPlayTime($overall_time);
+			};
+			$table_ans = $AddPlayTime($overall_time);
 			$overtime3_first = $table_ans;
 			if ($overtime == "0") {
 				if (!empty($hour_rate)) {
@@ -2044,7 +2044,7 @@ class Timedate extends Model
 						$overtime3_first = $table_ans;
 					}
 				}
-				function calculate_overtime_one($overtime_work1)
+				$calculate_overtime_one = function($overtime_work1)
 				{
 					$minutes = 0;
 					if ($overtime_work1 != "") {
@@ -2057,8 +2057,8 @@ class Timedate extends Model
 					$hours = floor($minutes / 60);
 					$minutes -= $hours * 60;
 					return sprintf('%02d:%02d', $hours, $minutes);
-				}
-				$Ans1 = calculate_overtime_one($overtime_work1);
+				};
+				$Ans1 = $calculate_overtime_one($overtime_work1);
 				list($Ans1_h, $Ans1_m) = explode(':', $Ans1);
 				if ($Ans1_h <= 9) {
 					$Ans1_h = sprintf("%02d", $Ans1_h);
@@ -2263,8 +2263,8 @@ class Timedate extends Model
 				}
 			}
 			return array($ans_arr, $ansl1_arr, $ansl21_arr, $ansl2_arr, $overall_time, $regular_time, $overtime2_first, $overtime3_first, $sick_pay, $sick_time, $vacation_pay, $v_time, $overtime4_first, $overtime5_first, $overtime6_first);
-		}
-		function timeCal2($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
+		};
+		$timeCal2 = function($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
 		{
 			$checkHour = true;
 			$checkHourl = true;
@@ -2720,7 +2720,7 @@ class Timedate extends Model
 					if (!empty($paid_lunch1) && !empty($paid_lunch2)) {
 						$min1 = "00" . ":" . $paid_lunch1;
 						$min2 = "00" . ":" . $paid_lunch2;
-						function calculate_total_time2()
+						$calculate_total_time2 = function()
 						{
 							$i = 0;
 							foreach (func_get_args() as $time) {
@@ -2731,8 +2731,8 @@ class Timedate extends Model
 								$i %= 60;
 							}
 							return sprintf('%02d:%02d', $h, $i);
-						}
-						$paid_lunch = calculate_total_time2($min1, $min2);
+						};
+						$paid_lunch = $calculate_total_time2($min1, $min2);
 						foreach ($ans_arr as $key => $val) {
 							list($h, $m) = explode(':', $val);
 							if ($h <= 9) {
@@ -2871,7 +2871,7 @@ class Timedate extends Model
 					}
 				}
 			}
-			function AddPlayTime2($overall_time)
+			$AddPlayTime2 = function($overall_time)
 			{
 				$minutes = 0;
 				foreach ($overall_time as $value) {
@@ -2882,8 +2882,8 @@ class Timedate extends Model
 				$hours = floor($minutes / 60);
 				$minutes -= $hours * 60;
 				return sprintf('%02d:%02d', $hours, $minutes);
-			}
-			$table_ans = AddPlayTime2($overall_time);
+			};
+			$table_ans = $AddPlayTime2($overall_time);
 			$overtime3_first = $table_ans;
 			if ($overtime == "0") {
 				if (!empty($hour_rate)) {
@@ -2911,7 +2911,7 @@ class Timedate extends Model
 						$overtime3_first = $table_ans;
 					}
 				}
-				function calculate_overtime_one2($overtime_work1)
+				$calculate_overtime_one2 = function($overtime_work1)
 				{
 					$minutes = 0;
 					if ($overtime_work1 != "") {
@@ -2924,8 +2924,8 @@ class Timedate extends Model
 					$hours = floor($minutes / 60);
 					$minutes -= $hours * 60;
 					return sprintf('%02d:%02d', $hours, $minutes);
-				}
-				$Ans1 = calculate_overtime_one2($overtime_work1);
+				};
+				$Ans1 = $calculate_overtime_one2($overtime_work1);
 				list($Ans1_h, $Ans1_m) = explode(':', $Ans1);
 				if ($Ans1_h <= 9) {
 					$Ans1_h = sprintf("%02d", $Ans1_h);
@@ -3130,8 +3130,8 @@ class Timedate extends Model
 				}
 			}
 			return array($ans_arr, $ansl1_arr, $ansl21_arr, $ansl2_arr, $overall_time, $regular_time, $overtime2_first, $overtime3_first, $sick_pay, $sick_time, $vacation_pay, $v_time, $overtime4_first, $overtime5_first, $overtime6_first);
-		}
-		function timeCal3($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
+		};
+		$timeCal3 = function($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
 		{
 			$checkHour = true;
 			$checkHourl = true;
@@ -3600,7 +3600,7 @@ class Timedate extends Model
 					if (!empty($paid_lunch1) && !empty($paid_lunch2)) {
 						$min1 = "00" . ":" . $paid_lunch1;
 						$min2 = "00" . ":" . $paid_lunch2;
-						function calculate_total_time3()
+						$calculate_total_time3 = function()
 						{
 							$i = 0;
 							foreach (func_get_args() as $time) {
@@ -3611,8 +3611,8 @@ class Timedate extends Model
 								$i %= 60;
 							}
 							return sprintf('%02d:%02d', $h, $i);
-						}
-						$paid_lunch = calculate_total_time3($min1, $min2);
+						};
+						$paid_lunch = $calculate_total_time3($min1, $min2);
 						foreach ($ans_arr as $key => $val) {
 							list($h, $m) = explode(':', $val);
 							if ($h <= 9) {
@@ -3751,7 +3751,7 @@ class Timedate extends Model
 					}
 				}
 			}
-			function AddPlayTime3($overall_time)
+			$AddPlayTime3 = function($overall_time)
 			{
 				$minutes = 0;
 				foreach ($overall_time as $value) {
@@ -3762,8 +3762,8 @@ class Timedate extends Model
 				$hours = floor($minutes / 60);
 				$minutes -= $hours * 60;
 				return sprintf('%02d:%02d', $hours, $minutes);
-			}
-			$table_ans = AddPlayTime3($overall_time);
+			};
+			$table_ans = $AddPlayTime3($overall_time);
 			$overtime3_first = $table_ans;
 			if ($overtime == "0") {
 				if (!empty($hour_rate)) {
@@ -3791,7 +3791,7 @@ class Timedate extends Model
 						$overtime3_first = $table_ans;
 					}
 				}
-				function calculate_overtime_one3($overtime_work1)
+				$calculate_overtime_one3 = function($overtime_work1)
 				{
 					$minutes = 0;
 					if ($overtime_work1 != "") {
@@ -3804,8 +3804,8 @@ class Timedate extends Model
 					$hours = floor($minutes / 60);
 					$minutes -= $hours * 60;
 					return sprintf('%02d:%02d', $hours, $minutes);
-				}
-				$Ans1 = calculate_overtime_one3($overtime_work1);
+				};
+				$Ans1 = $calculate_overtime_one3($overtime_work1);
 				list($Ans1_h, $Ans1_m) = explode(':', $Ans1);
 				if ($Ans1_h <= 9) {
 					$Ans1_h = sprintf("%02d", $Ans1_h);
@@ -4010,8 +4010,8 @@ class Timedate extends Model
 				}
 			}
 			return array($ans_arr, $ansl1_arr, $ansl21_arr, $ansl2_arr, $overall_time, $regular_time, $overtime2_first, $overtime3_first, $sick_pay, $sick_time, $vacation_pay, $v_time, $overtime4_first, $overtime5_first, $overtime6_first);
-		}
-		function timeCal4($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
+		};
+		$timeCal4 = function($selection3 = null, $selection1 = null, $inhour = null, $inmin = null, $inampm = null, $outhour = null, $outmin = null, $outampm = null, $in = null, $out = null, $inhourl1 = null, $inminl1 = null, $inampml1 = " ", $outhourl1 = null, $outminl1 = null, $outampml1 = null, $inlunch1 = null, $outlunch1 = null, $inhourl2 = null, $inminl2 = null, $inampml2 = null, $outhourl2 = null, $outminl2 = null, $outampml2 = null, $inlunch2 = null, $outlunch2 = null, $sick_h = null, $sick_m = null, $v_h = null, $v_m = null, $advancedcheck = null, $lunch = null, $paid_lunch1 = null, $paid_lunch2 = null, $hour_rate = null, $overtime = null, $overtime_pay = null)
 		{
 			$checkHour = true;
 			$checkHourl = true;
@@ -4469,7 +4469,7 @@ class Timedate extends Model
 					if (!empty($paid_lunch1) && !empty($paid_lunch2)) {
 						$min1 = "00" . ":" . $paid_lunch1;
 						$min2 = "00" . ":" . $paid_lunch2;
-						function calculate_total_time4()
+						$calculate_total_time4 = function()
 						{
 							$i = 0;
 							foreach (func_get_args() as $time) {
@@ -4480,8 +4480,8 @@ class Timedate extends Model
 								$i %= 60;
 							}
 							return sprintf('%02d:%02d', $h, $i);
-						}
-						$paid_lunch = calculate_total_time4($min1, $min2);
+						};
+						$paid_lunch = $calculate_total_time4($min1, $min2);
 						foreach ($ans_arr as $key => $val) {
 							list($h, $m) = explode(':', $val);
 							if ($h <= 9) {
@@ -4620,7 +4620,7 @@ class Timedate extends Model
 					}
 				}
 			}
-			function AddPlayTime4($overall_time)
+			$AddPlayTime4 = function($overall_time)
 			{
 				$minutes = 0;
 				foreach ($overall_time as $value) {
@@ -4631,8 +4631,8 @@ class Timedate extends Model
 				$hours = floor($minutes / 60);
 				$minutes -= $hours * 60;
 				return sprintf('%02d:%02d', $hours, $minutes);
-			}
-			$table_ans = AddPlayTime4($overall_time);
+			};
+			$table_ans = $AddPlayTime4($overall_time);
 			$overtime3_first = $table_ans;
 			if ($overtime == "0") {
 				if (!empty($hour_rate)) {
@@ -4660,7 +4660,7 @@ class Timedate extends Model
 						$overtime3_first = $table_ans;
 					}
 				}
-				function calculate_overtime_one4($overtime_work1)
+				$calculate_overtime_one4 = function($overtime_work1)
 				{
 					$minutes = 0;
 					if ($overtime_work1 != "") {
@@ -4673,8 +4673,8 @@ class Timedate extends Model
 					$hours = floor($minutes / 60);
 					$minutes -= $hours * 60;
 					return sprintf('%02d:%02d', $hours, $minutes);
-				}
-				$Ans1 = calculate_overtime_one4($overtime_work1);
+				};
+				$Ans1 = $calculate_overtime_one4($overtime_work1);
 				list($Ans1_h, $Ans1_m) = explode(':', $Ans1);
 				if ($Ans1_h <= 9) {
 					$Ans1_h = sprintf("%02d", $Ans1_h);
@@ -4879,9 +4879,9 @@ class Timedate extends Model
 				}
 			}
 			return array($ans_arr, $ansl1_arr, $ansl21_arr, $ansl2_arr, $overall_time, $regular_time, $overtime2_first, $overtime3_first, $sick_pay, $sick_time, $vacation_pay, $v_time, $overtime4_first, $overtime5_first, $overtime6_first);
-		}
+		};
 		if ($table_selection == "1") {
-			$ans_time = timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_time = $timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_time === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -4924,7 +4924,7 @@ class Timedate extends Model
 				$this->param['days'] = $days;
 			}
 		} else if ($table_selection == "2") {
-			$ans_time = timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_time = $timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_time === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -4969,7 +4969,7 @@ class Timedate extends Model
 
 			// for table 2 calculation
 
-			$ans_timet2 = timeCal2($selection3, $selection1, $t2inhour, $t2inmin, $t2inampm, $t2outhour, $t2outmin, $t2outampm, $t2in, $t2out, $t2inhourl1, $t2inminl1, $t2inampml1, $t2outhourl1, $t2outminl1, $t2outampml1, $t2inlunch1, $t2outlunch1, $t2inhourl2, $t2inminl2, $t2inampml2, $t2outhourl2, $t2outminl2, $t2outampml2, $t2inlunch2, $t2outlunch2, $t2sick_h, $t2sick_m, $t2v_h, $t2v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_timet2 = $timeCal2($selection3, $selection1, $t2inhour, $t2inmin, $t2inampm, $t2outhour, $t2outmin, $t2outampm, $t2in, $t2out, $t2inhourl1, $t2inminl1, $t2inampml1, $t2outhourl1, $t2outminl1, $t2outampml1, $t2inlunch1, $t2outlunch1, $t2inhourl2, $t2inminl2, $t2inampml2, $t2outhourl2, $t2outminl2, $t2outampml2, $t2inlunch2, $t2outlunch2, $t2sick_h, $t2sick_m, $t2v_h, $t2v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_timet2 === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5012,7 +5012,7 @@ class Timedate extends Model
 				$this->param['dayst2'] = $dayst2;
 			}
 		} else if ($table_selection == "3") {
-			$ans_time = timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_time = $timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_time === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5057,7 +5057,7 @@ class Timedate extends Model
 
 			// for table 2 calculation
 
-			$ans_timet2 = timeCal2($selection3, $selection1, $t2inhour, $t2inmin, $t2inampm, $t2outhour, $t2outmin, $t2outampm, $t2in, $t2out, $t2inhourl1, $t2inminl1, $t2inampml1, $t2outhourl1, $t2outminl1, $t2outampml1, $t2inlunch1, $t2outlunch1, $t2inhourl2, $t2inminl2, $t2inampml2, $t2outhourl2, $t2outminl2, $t2outampml2, $t2inlunch2, $t2outlunch2, $t2sick_h, $t2sick_m, $t2v_h, $t2v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_timet2 = $timeCal2($selection3, $selection1, $t2inhour, $t2inmin, $t2inampm, $t2outhour, $t2outmin, $t2outampm, $t2in, $t2out, $t2inhourl1, $t2inminl1, $t2inampml1, $t2outhourl1, $t2outminl1, $t2outampml1, $t2inlunch1, $t2outlunch1, $t2inhourl2, $t2inminl2, $t2inampml2, $t2outhourl2, $t2outminl2, $t2outampml2, $t2inlunch2, $t2outlunch2, $t2sick_h, $t2sick_m, $t2v_h, $t2v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_timet2 === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5102,7 +5102,7 @@ class Timedate extends Model
 
 			// for table 3 calculation
 
-			$ans_timet3 = timeCal3($selection3, $selection1, $t3inhour, $t3inmin, $t3inampm, $t3outhour, $t3outmin, $t3outampm, $t3in, $t3out, $t3inhourl1, $t3inminl1, $t3inampml1, $t3outhourl1, $t3outminl1, $t3outampml1, $t3inlunch1, $t3outlunch1, $t3inhourl2, $t3inminl2, $t3inampml2, $t3outhourl2, $t3outminl2, $t3outampml2, $t3inlunch2, $t3outlunch2, $t3sick_h, $t3sick_m, $t3v_h, $t3v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_timet3 = $timeCal3($selection3, $selection1, $t3inhour, $t3inmin, $t3inampm, $t3outhour, $t3outmin, $t3outampm, $t3in, $t3out, $t3inhourl1, $t3inminl1, $t3inampml1, $t3outhourl1, $t3outminl1, $t3outampml1, $t3inlunch1, $t3outlunch1, $t3inhourl2, $t3inminl2, $t3inampml2, $t3outhourl2, $t3outminl2, $t3outampml2, $t3inlunch2, $t3outlunch2, $t3sick_h, $t3sick_m, $t3v_h, $t3v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_timet2 === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5145,7 +5145,7 @@ class Timedate extends Model
 				$this->param['dayst3'] = $dayst3;
 			}
 		} else if ($table_selection == "4") {
-			$ans_time = timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_time = $timeCal($selection3, $selection1, $inhour, $inmin, $inampm, $outhour, $outmin, $outampm, $in, $out, $inhourl1, $inminl1, $inampml1, $outhourl1, $outminl1, $outampml1, $inlunch1, $outlunch1, $inhourl2, $inminl2, $inampml2, $outhourl2, $outminl2, $outampml2, $inlunch2, $outlunch2, $sick_h, $sick_m, $v_h, $v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_time === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5190,7 +5190,7 @@ class Timedate extends Model
 
 			// for table 2 calculation
 
-			$ans_timet2 = timeCal2($selection3, $selection1, $t2inhour, $t2inmin, $t2inampm, $t2outhour, $t2outmin, $t2outampm, $t2in, $t2out, $t2inhourl1, $t2inminl1, $t2inampml1, $t2outhourl1, $t2outminl1, $t2outampml1, $t2inlunch1, $t2outlunch1, $t2inhourl2, $t2inminl2, $t2inampml2, $t2outhourl2, $t2outminl2, $t2outampml2, $t2inlunch2, $t2outlunch2, $t2sick_h, $t2sick_m, $t2v_h, $t2v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_timet2 = $timeCal2($selection3, $selection1, $t2inhour, $t2inmin, $t2inampm, $t2outhour, $t2outmin, $t2outampm, $t2in, $t2out, $t2inhourl1, $t2inminl1, $t2inampml1, $t2outhourl1, $t2outminl1, $t2outampml1, $t2inlunch1, $t2outlunch1, $t2inhourl2, $t2inminl2, $t2inampml2, $t2outhourl2, $t2outminl2, $t2outampml2, $t2inlunch2, $t2outlunch2, $t2sick_h, $t2sick_m, $t2v_h, $t2v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_timet2 === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5235,7 +5235,7 @@ class Timedate extends Model
 
 			// for table 3 calculation
 
-			$ans_timet3 = timeCal3($selection3, $selection1, $t3inhour, $t3inmin, $t3inampm, $t3outhour, $t3outmin, $t3outampm, $t3in, $t3out, $t3inhourl1, $t3inminl1, $t3inampml1, $t3outhourl1, $t3outminl1, $t3outampml1, $t3inlunch1, $t3outlunch1, $t3inhourl2, $t3inminl2, $t3inampml2, $t3outhourl2, $t3outminl2, $t3outampml2, $t3inlunch2, $t3outlunch2, $t3sick_h, $t3sick_m, $t3v_h, $t3v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_timet3 = $timeCal3($selection3, $selection1, $t3inhour, $t3inmin, $t3inampm, $t3outhour, $t3outmin, $t3outampm, $t3in, $t3out, $t3inhourl1, $t3inminl1, $t3inampml1, $t3outhourl1, $t3outminl1, $t3outampml1, $t3inlunch1, $t3outlunch1, $t3inhourl2, $t3inminl2, $t3inampml2, $t3outhourl2, $t3outminl2, $t3outampml2, $t3inlunch2, $t3outlunch2, $t3sick_h, $t3sick_m, $t3v_h, $t3v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_timet2 === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5280,7 +5280,7 @@ class Timedate extends Model
 
 			// for table 4 calculation
 
-			$ans_timet4 = timeCal4($selection3, $selection1, $t4inhour, $t4inmin, $t4inampm, $t4outhour, $t4outmin, $t4outampm, $t4in, $t4out, $t4inhourl1, $t4inminl1, $t4inampml1, $t4outhourl1, $t4outminl1, $t4outampml1, $t4inlunch1, $t4outlunch1, $t4inhourl2, $t4inminl2, $t4inampml2, $t4outhourl2, $t4outminl2, $t4outampml2, $t4inlunch2, $t4outlunch2, $t4sick_h, $t4sick_m, $t4v_h, $t4v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
+			$ans_timet4 = $timeCal4($selection3, $selection1, $t4inhour, $t4inmin, $t4inampm, $t4outhour, $t4outmin, $t4outampm, $t4in, $t4out, $t4inhourl1, $t4inminl1, $t4inampml1, $t4outhourl1, $t4outminl1, $t4outampml1, $t4inlunch1, $t4outlunch1, $t4inhourl2, $t4inminl2, $t4inampml2, $t4outhourl2, $t4outminl2, $t4outampml2, $t4inlunch2, $t4outlunch2, $t4sick_h, $t4sick_m, $t4v_h, $t4v_m, $advancedcheck, $lunch, $paid_lunch1, $paid_lunch2, $hour_rate, $overtime, $overtime_pay);
 			if ($ans_timet4 === false) {
 				$this->param['error'] = 'Please check your input';
 				return $this->param;
@@ -5324,6 +5324,7 @@ class Timedate extends Model
 			}
 		}
 		$this->param['table_selection'] = $table_selection;
+		$this->param['RESULT'] = 1;
 		// dd($this->param);
 		return $this->param;
 	}
@@ -5683,7 +5684,7 @@ class Timedate extends Model
 	public function add($request)
 	{
 		// Helper function for milliseconds conversion
-		function convertMilliseconds($milliseconds) {
+		$convertMilliseconds = function($milliseconds) {
 			$seconds = 0;
 			$minutes = 0;
 			$hours   = 0;
@@ -5702,7 +5703,7 @@ class Timedate extends Model
 			}
 
 			return [$hours, $minutes, $seconds, $milliseconds];
-		}
+		};
 
 		$checkbox1 = $request->hours_check ?? false;
 		$checkbox2 = $request->min_check ?? false;
@@ -5745,7 +5746,7 @@ class Timedate extends Model
 		}
 
 		// Convert milliseconds overflow
-		list($hours, $minutes, $seconds, $remainingMilliseconds) = convertMilliseconds($time_miliseconds);
+		list($hours, $minutes, $seconds, $remainingMilliseconds) = $convertMilliseconds($time_miliseconds);
 		$time_hour += $hours;
 		$time_minutes += $minutes;
 		$time_seconds += $seconds;
@@ -5804,15 +5805,15 @@ class Timedate extends Model
 		$r_delay = trim($request->r_delay);
 		$r_units = trim($request->r_units);
        
-		function convertToHoursMins1($time, $format = '%02d Hours %02d Minutes') {
+		$convertToHoursMins1 = function($time, $format = '%02d Hours %02d Minutes') {
 			if ($time < 1) {
 				return;
 			}
 			$hours = floor($time / 60);
 			$minutes = ($time % 60);
 			return sprintf($format, $hours, $minutes);
-		}
-		function convert($first_value,$units){
+		};
+		$convert = function($first_value,$units){
 			if ($units == 'sec' ) {
 				$first_value = $first_value / 86400;
 			}else if ($units == 'min' ) {
@@ -5827,18 +5828,18 @@ class Timedate extends Model
 				$first_value = $first_value * 365;
 			}
 			return $first_value;
-		}
+		};
         if (!empty($type) ) {
 			if($type == 'manufac'){
 				if(is_numeric($pre_time) && is_numeric($p_time) && is_numeric($post_time)){
 					if(isset($pre_units) ) {
-						$pre_time = convert($pre_time,$pre_units);
+						$pre_time = $convert($pre_time,$pre_units);
 					} 
 					if(isset($p_units) ) {
-						$p_time = convert($p_time,$p_units);
+						$p_time = $convert($p_time,$p_units);
 					}
 					if(isset($post_units) ) {
-						$post_time = convert($post_time,$post_units);
+						$post_time = $convert($post_time,$post_units);
 					}
 					$manufac = $pre_time + $p_time + $post_time;	
 				}
@@ -5852,7 +5853,7 @@ class Timedate extends Model
 					$from_time = strtotime($place_time); 
 					$to_time = strtotime($receive_time); 
 					$diff_minutes = round(abs($from_time - $to_time) / 60);
-					$timeDiff = convertToHoursMins1($diff_minutes);
+					$timeDiff = $convertToHoursMins1($diff_minutes);
 					// dd($diff_minutes);
 				}
 				else {
@@ -5863,10 +5864,10 @@ class Timedate extends Model
 			else if($type == 'supply'){
 				if(is_numeric($s_delay) && is_numeric($r_delay)){
 					if(isset($supply_units) ) {
-						$s_delay = convert($s_delay,$supply_units);
+						$s_delay = $convert($s_delay,$supply_units);
 					}
 					if(isset($r_units) ) {
-						$r_delay = convert($r_delay,$r_units);
+						$r_delay = $convert($r_delay,$r_units);
 					}
 					$supply = $s_delay + $r_delay;
 				}
@@ -5912,7 +5913,7 @@ class Timedate extends Model
 		$hur = trim($request->hur);
 		$min = trim($request->min);
 		$am_pm = trim($request->am_pm);
-		function eng_time($num)
+		$eng_time = function($num)
 		{
 			$reading = [
 				"zero ",
@@ -5976,7 +5977,7 @@ class Timedate extends Model
 			}
 			$jawab = $hr . $min;
 			return ($jawab);
-		}
+		};
 		if ($conversion === "1") {
 			if (is_numeric($military_time)) {
 				if (((int)substr($military_time, 0, 2)) < 0 || ((int)substr($military_time, 0, 2)) >= 24 || ((int)substr($military_time, -2, 2)) < 0 || ((int)substr($military_time, -2, 2)) >= 60) {
@@ -5989,7 +5990,7 @@ class Timedate extends Model
 				$chubees_ghante = $f_two . ":" . $l_two;
 				$bara_ghante  = date("g:i a", strtotime($chubees_ghante));
 				$military_time = $military_time;
-				$eng_word = eng_time($military_time);
+				$eng_word = $eng_time($military_time);
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
 				
@@ -6006,7 +6007,7 @@ class Timedate extends Model
 					$chubees_ghante = $hur . ":" . $min;
 					$bara_ghante  = date("g:i a", strtotime($chubees_ghante));
 					$military_time = $time;
-					$eng_word = eng_time($military_time);
+					$eng_word = $eng_time($military_time);
 				} elseif ($hours === "12h") {
 					$hur = sprintf("%02d", $hur);
 					$min = sprintf("%02d", $min);
@@ -6017,7 +6018,7 @@ class Timedate extends Model
 					$min_ans  = date("i", strtotime($bara_ghante));
 					$chubees_ghante = $hrs_ans . ":" . $min_ans;
 					$military_time = $hrs_ans . $min_ans;
-					$eng_word = eng_time($military_time);
+					$eng_word = $eng_time($military_time);
 				}
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
@@ -6056,7 +6057,7 @@ class Timedate extends Model
 		$clock_mints = trim($request->clock_mints);
 		$clock_secs = trim($request->clock_secs);
 		$clock_end_unit = trim($request->clock_end_unit);
-		function time_unit($elapsed_start, $elapsed_start_unit)
+		$time_unit = function($elapsed_start, $elapsed_start_unit)
 		{
 			if ($elapsed_start_unit == "sec") {
 				$elapsed_start = $elapsed_start;
@@ -6066,8 +6067,8 @@ class Timedate extends Model
 				$elapsed_start = $elapsed_start * 3600;
 			}
 			return $elapsed_start;
-		}
-		function other_time($elapsed_start_one, $elapsed_start_sec, $elapsed_start_unit)
+		};
+		$other_time = function($elapsed_start_one, $elapsed_start_sec, $elapsed_start_unit)
 		{
 			if ($elapsed_start_unit === "mins/sec") {
 				$interval = ($elapsed_start_one * 60) + $elapsed_start_sec;
@@ -6075,31 +6076,31 @@ class Timedate extends Model
 				$interval = ($elapsed_start_one *  3600) + ($elapsed_start_sec * 60);
 			}
 			return $interval;
-		}
-		function other_time_sec($elapsed_start_one, $elapsed_start_sec, $elapsed_start_three, $elapsed_start_unit)
+		};
+		$other_time_sec = function($elapsed_start_one, $elapsed_start_sec, $elapsed_start_three, $elapsed_start_unit)
 		{
 			if ($elapsed_start_unit === "hrs/mins/sec") {
 				$interval = ($elapsed_start_one *  3600) + ($elapsed_start_sec * 60) + $elapsed_start_three;
 			}
 			return $interval;
-		}
+		};
 		if ($main_units === 'elapsed') {
 			if (is_numeric($elapsed_start) && is_numeric($elapsed_start_one) && is_numeric($elapsed_start_sec)  && is_numeric($elapsed_start_three) && is_numeric($elapsed_end) && is_numeric($elapsed_end_one) && is_numeric($elapsed_end_sec) && is_numeric($elapsed_end_three)) {
 				if ($elapsed_start_unit === 'sec' || $elapsed_start_unit === 'mins'  || $elapsed_start_unit === 'hrs') {
-					$elapsed_start = time_unit($elapsed_start, $elapsed_start_unit);
+					$elapsed_start = $time_unit($elapsed_start, $elapsed_start_unit);
 				
 				} elseif ($elapsed_start_unit === "hrs/mins/sec") {
-					$elapsed_start = other_time_sec($elapsed_start_one, $elapsed_start_sec, $elapsed_start_three, $elapsed_start_unit);
+					$elapsed_start = $other_time_sec($elapsed_start_one, $elapsed_start_sec, $elapsed_start_three, $elapsed_start_unit);
 				} else {
-					$elapsed_start = other_time($elapsed_start_one, $elapsed_start_sec, $elapsed_start_unit);
+					$elapsed_start = $other_time($elapsed_start_one, $elapsed_start_sec, $elapsed_start_unit);
 					
 				}
 				if ($elapsed_end_unit === 'sec' || $elapsed_end_unit === 'mins'  || $elapsed_end_unit === 'hrs') {
-					$elapsed_end = time_unit($elapsed_end, $elapsed_end_unit);
+					$elapsed_end = $time_unit($elapsed_end, $elapsed_end_unit);
 				} elseif ($elapsed_end_unit === "hrs/mins/sec") {
-					$elapsed_end = other_time_sec($elapsed_end_one, $elapsed_end_sec, $elapsed_end_three, $elapsed_end_unit);
+					$elapsed_end = $other_time_sec($elapsed_end_one, $elapsed_end_sec, $elapsed_end_three, $elapsed_end_unit);
 				} else {
-					$elapsed_end = other_time($elapsed_end_one, $elapsed_end_sec, $elapsed_end_unit);
+					$elapsed_end = $other_time($elapsed_end_one, $elapsed_end_sec, $elapsed_end_unit);
 				}
 				if ($elapsed_end < $elapsed_start) {
 					$this->param['error'] = 'the end time should be greater than the start time';
@@ -6397,7 +6398,7 @@ class Timedate extends Model
 				$cal_bus = null;
 
 			}
-			function getWorkdays($date1, $date2, $workSat = FALSE, $patron = '', $fix_holiday = '', $display = '', $display_repeat = '')
+			$getWorkdays = function($date1, $date2, $workSat = FALSE, $patron = '', $fix_holiday = '', $display = '', $display_repeat = '')
 			{
 				if (!defined('SATURDAY')) define('SATURDAY', 6);
 				if (!defined('SUNDAY')) define('SUNDAY', 0);
@@ -6454,7 +6455,7 @@ class Timedate extends Model
 				}
 				$getdays = array('workdays' => $workdays, 'weekend' => $weekend, 'holidays' => $holidays, 'get_holi' => $get_holi, 'dis_holi' => $dis_holi);
 				return $getdays;
-			}
+			};
 			if ($submitt === 'simple') {
 				if ($e_date) {
 					if (isset($end_inc)) {
@@ -6679,9 +6680,9 @@ class Timedate extends Model
 								}
 							}
 						}
-						$getworkdays = getWorkdays($s_date, $e_date, $check_sat, $repeat_holiday, $all_holiday, $display_holiday, $display_repeat);
+						$getworkdays = $getWorkdays($s_date, $e_date, $check_sat, $repeat_holiday, $all_holiday, $display_holiday, $display_repeat);
 					} else {
-						$getworkdays = getWorkdays($s_date, $e_date, $check_sat);
+						$getworkdays = $getWorkdays($s_date, $e_date, $check_sat);
 					}
 					$s_hour = 0;
 					$s_min = 0;
@@ -7493,7 +7494,7 @@ class Timedate extends Model
 		$end_date = trim($request->end_date);
 		$working_days = trim($request->working_days);
 		$include_end_date = trim($request->include_end_date);
-		function calculateWorkingDays($start_timestamp, $end_timestamp, $working_days)
+		$calculateWorkingDays = function($start_timestamp, $end_timestamp, $working_days)
 		{
 			$result = 0;
 			while ($start_timestamp <= $end_timestamp) {
@@ -7511,7 +7512,7 @@ class Timedate extends Model
 			}
 
 			return $result;
-		}
+		};
 
 		if (!empty($start_date) && !empty($end_date)) {
 			$start_timestamp = strtotime($start_date);
@@ -7528,12 +7529,12 @@ class Timedate extends Model
 				$start_timestamp = strtotime($start_date);
 				$end_timestamp = strtotime($end_date);
 				$working_days = "Exclude weekends";
-				$result = calculateWorkingDays($start_timestamp, $end_timestamp, $working_days);
+				$result = $calculateWorkingDays($start_timestamp, $end_timestamp, $working_days);
 			} elseif ($working_days == "Exclude only Sunday") {
 				$start_timestamp = strtotime($start_date);
 				$end_timestamp = strtotime($end_date);
 				$working_days = "Exclude only Sunday";
-				$result = calculateWorkingDays($start_timestamp, $end_timestamp, $working_days);
+				$result = $calculateWorkingDays($start_timestamp, $end_timestamp, $working_days);
 			} else {
 				$result = ceil(($end_timestamp - $start_timestamp) / (60 * 60 * 24));
 			}

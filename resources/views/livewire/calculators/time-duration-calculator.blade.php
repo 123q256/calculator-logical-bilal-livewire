@@ -5,13 +5,13 @@
                 <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
             @endif
             <div class="col-12 col-lg-9 mx-auto mt-2 lg:w-[50%] w-full">
-                <input type="hidden" wire:model="calculator_time" id="calculator_time">
+                <input type="hidden" wire:model="inputs.calculator_time" id="calculator_time">
                 <div class="flex flex-wrap items-center bg-blue-100 border border-blue-500 text-center rounded-lg px-1">
                     <!-- Date Tab -->
                     <div class="lg:w-1/2 w-full px-2 py-1">
                         <div wire:click="changeOperation('date_cal')"
                             class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white pacetab 
-                {{ $calculator_time === 'date_cal' ? 'tagsUnit' : '' }}">
+                {{ $inputs['calculator_time'] === 'date_cal' ? 'tagsUnit' : '' }}">
                             {{ $lang['1'] }}
                         </div>
                     </div>
@@ -19,7 +19,7 @@
                     <div class="lg:w-1/2 w-full px-2 py-1">
                         <div wire:click="changeOperation('time_cal')"
                             class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white pacetab 
-                {{ $calculator_time === 'time_cal' ? 'tagsUnit' : '' }}">
+                {{ $inputs['calculator_time'] === 'time_cal' ? 'tagsUnit' : '' }}">
                             {{ $lang['2'] }}
                         </div>
                     </div>
@@ -28,12 +28,12 @@
             <div class="lg:w-[80%] md:w-[80%] w-full mx-auto ">
                 <p class="font-s-14 mt-4 text-blue">{{ $lang['3'] }}</p>
                 <div
-                    class="grid lg:grid-cols-5 grid-cols-2 md:gap-4 gap-2 time_betw  {{ $calculator_time === 'time_cal' ? 'flex' : 'hidden' }}">
+                    class="grid lg:grid-cols-5 grid-cols-2 md:gap-4 gap-2 time_betw  {{ $inputs['calculator_time'] === 'time_cal' ? 'flex' : 'hidden' }}">
                     <div class="space-y-2">
                         <label for="start_date" class="text-blue text-sm">Date:</label>
                         <div class="py-2">
                             <input type="date" step="any" name="" id="start_date"
-                                class="w-full p-2 border border-gray-300 rounded" wire:model="start_date" />
+                                class="w-full p-2 border border-gray-300 rounded" wire:model="inputs.start_date" />
                         </div>
                     </div>
 
@@ -41,7 +41,7 @@
                         <label for="t_start_h" class="text-blue text-sm">Hrs:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="t_start_h"
-                                class="w-full p-2 border border-gray-300 rounded" wire:model="t_start_h"
+                                class="w-full p-2 border border-gray-300 rounded" wire:model="inputs.t_start_h"
                                 placeholder="Hrs" />
                         </div>
                     </div>
@@ -49,7 +49,7 @@
                         <label for="t_start_m" class="text-blue text-sm">Min:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="t_start_m"
-                                class="w-full p-2 border border-gray-300 rounded" wire:model="t_start_m"
+                                class="w-full p-2 border border-gray-300 rounded" wire:model="inputs.t_start_m"
                                 placeholder="Min" />
                         </div>
                     </div>
@@ -57,14 +57,14 @@
                         <label for="t_start_s" class="text-blue text-sm">Sec:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="t_start_s"
-                                class="w-full p-2 border border-gray-300 rounded" wire:model="t_start_s"
+                                class="w-full p-2 border border-gray-300 rounded" wire:model="inputs.t_start_s"
                                 placeholder="Sec" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <div class="py-2">
                             <label for="t_start_ampm" class="text-blue text-sm">&nbsp;</label>
-                            <select name="" wire:model="t_start_ampm" id="t_start_ampm"
+                            <select name="" wire:model="inputs.t_start_ampm" id="t_start_ampm"
                                 class="w-full p-2 border border-gray-300 rounded mt-2">
                                 <option value="am">AM</option>
                                 <option value="pm">PM</option>
@@ -73,12 +73,12 @@
                     </div>
                 </div>
                 <div
-                    class="grid lg:grid-cols-4 grid-cols-2 md:gap-4 gap-2 time_due {{ $calculator_time === 'time_cal' ? 'hidden' : 'flex' }} ">
+                    class="grid lg:grid-cols-4 grid-cols-2 md:gap-4 gap-2 time_due {{ $inputs['calculator_time'] === 'time_cal' ? 'hidden' : 'flex' }} ">
                     <div class="space-y-2">
                         <label for="d_start_h" class="text-blue text-sm">Hrs:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="d_start_h"
-                                class="w-full p-2 border border-gray-300 rounded" wire:model="d_start_h"
+                                class="w-full p-2 border border-gray-300 rounded" wire:model="inputs.d_start_h"
                                 placeholder="Hrs" />
                         </div>
                     </div>
@@ -86,7 +86,7 @@
                         <label for="d_start_m" class="text-blue text-sm">Min:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="d_start_m"
-                                class="w-full p-2 border border-gray-300 rounded" wire:model="d_start_m"
+                                class="w-full p-2 border border-gray-300 rounded" wire:model="inputs.d_start_m"
                                 placeholder="Min" />
                         </div>
                     </div>
@@ -94,14 +94,14 @@
                         <label for="d_start_s" class="text-blue text-sm">Sec:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="d_start_s"
-                                class="w-full p-2 border border-gray-300 rounded" wire:model="d_start_s"
+                                class="w-full p-2 border border-gray-300 rounded" wire:model="inputs.d_start_s"
                                 placeholder="Sec" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <div class="py-2">
                             <label for="d_start_ampm" class="text-blue text-sm">&nbsp;</label>
-                            <select name="" wire:model="d_start_ampm" id="d_start_ampm"
+                            <select name="" wire:model="inputs.d_start_ampm" id="d_start_ampm"
                                 class="w-full p-2 border border-gray-300 rounded mt-2">
                                 <option value="am">AM</option>
                                 <option value="pm">PM</option>
@@ -111,12 +111,12 @@
                 </div>
                 <p class="font-s-14 text-blue mt-2">{{ $lang['6'] }}</p>
                 <div
-                    class="grid lg:grid-cols-5 grid-cols-2 md:gap-4 gap-2 time_betw  {{ $calculator_time === 'time_cal' ? 'flex' : 'hidden' }}">
+                    class="grid lg:grid-cols-5 grid-cols-2 md:gap-4 gap-2 time_betw  {{ $inputs['calculator_time'] === 'time_cal' ? 'flex' : 'hidden' }}">
                     <div class="space-y-2">
                         <label for="end_date" class="text-blue text-sm">Date:</label>
                         <div class="py-2">
                             <input type="date" step="any" name="" id="end_date" class="input w-full"
-                                wire:model="end_date" />
+                                wire:model="inputs.end_date" />
                         </div>
                     </div>
 
@@ -124,27 +124,27 @@
                         <label for="t_end_h" class="text-blue text-sm">Hrs:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="t_end_h" class="input w-full"
-                                wire:model="t_end_h" placeholder="Hrs" />
+                                wire:model="inputs.t_end_h" placeholder="Hrs" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <label for="t_end_m" class="text-blue text-sm">Min:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="t_end_m" class="input w-full"
-                                wire:model="t_end_m" placeholder="Min" />
+                                wire:model="inputs.t_end_m" placeholder="Min" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <label for="t_end_s" class="text-blue text-sm">Sec:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="t_end_s" class="input w-full"
-                                wire:model="t_end_s" placeholder="Sec" />
+                                wire:model="inputs.t_end_s" placeholder="Sec" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <div class="py-2">
                             <label for="t_end_ampm" class="text-blue text-sm">&nbsp;</label>
-                            <select name="" wire:model="t_end_ampm" id="t_end_ampm"
+                            <select name="" wire:model="inputs.t_end_ampm" id="t_end_ampm"
                                 class="input w-full mt-2">
                                 <option value="am">AM</option>
                                 <option value="pm">PM</option>
@@ -153,33 +153,33 @@
                     </div>
                 </div>
                 <div
-                    class="grid lg:grid-cols-4 grid-cols-2 md:gap-4 gap-2 time_due {{ $calculator_time === 'time_cal' ? 'hidden' : 'flex' }} ">
+                    class="grid lg:grid-cols-4 grid-cols-2 md:gap-4 gap-2 time_due {{ $inputs['calculator_time'] === 'time_cal' ? 'hidden' : 'flex' }} ">
 
                     <div class="space-y-2">
                         <label for="d_end_h" class="text-blue text-sm">Hrs:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="d_end_h" class="input w-full"
-                                wire:model="d_end_h" placeholder="Hrs" />
+                                wire:model="inputs.d_end_h" placeholder="Hrs" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <label for="d_end_m" class="text-blue text-sm">Min:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="d_end_m" class="input w-full"
-                                wire:model="d_end_m" placeholder="Min" />
+                                wire:model="inputs.d_end_m" placeholder="Min" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <label for="d_end_s" class="text-blue text-sm">Sec:</label>
                         <div class="py-2">
                             <input type="number" step="any" name="" id="d_end_s" class="input w-full"
-                                wire:model="d_end_s" placeholder="Sec" />
+                                wire:model="inputs.d_end_s" placeholder="Sec" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <div class="py-2">
                             <label for="d_end_ampm" class="text-blue text-sm">&nbsp;</label>
-                            <select name="" wire:model="d_end_ampm" id="d_end_ampm"
+                            <select name="" wire:model="inputs.d_end_ampm" id="d_end_ampm"
                                 class="input w-full mt-2">
                                 <option value="am">AM</option>
                                 <option value="pm">PM</option>

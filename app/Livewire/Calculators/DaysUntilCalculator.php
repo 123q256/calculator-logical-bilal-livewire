@@ -7,46 +7,40 @@ use App\Models\Timedate;
 
 class DaysUntilCalculator extends Component
 {
+    public $inputs = [];
     public $error = null;
     public $detail = null;
     public $lang = [];
     public $type = 'calculator';
-    public $startEvent = 'empty';
     public $device;
-    public $next;
-    public $current;
-    public $inc_all = true;   // default checked hai jab $detail nahi hoga
-    public $inc_day = false;
-    public array $weekDay = ['Mon', 'Tue'];
 
     public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
-        $this->detail = session('calculator_result');
-        $this->error = session('validation_error');
-        $this->current = now()->toDateString();
-        $this->next = now()->addMonth()->toDateString();
-
-        $this->inc_all = request()->has('inc_all') && request('inc_all') == 'on' ? true : true; // default true
-        $this->inc_day = request()->has('inc_day') && request('inc_day') == 'on' ? true : false;
 
         if (session()->has('calculator_back_inputs')) {
-            $inputs = session('calculator_back_inputs');
-            $this->startEvent = $inputs->startEvent ?? $this->startEvent;
-            $this->next = $inputs->next ?? $this->next;
-            $this->current = $inputs->current ?? $this->current;
-            $this->inc_all = $inputs->inc_all ?? $this->inc_all;
-            $this->inc_day = $inputs->inc_day ?? $this->inc_day;
-            $this->weekDay = $inputs->weekDay ?? $this->weekDay;
+            $this->inputs = (array)session('calculator_back_inputs');
+        } else {
+            $this->inputs = [
+                'startEvent' => 'empty',
+                'next' => now()->addMonth()->toDateString(),
+                'current' => now()->toDateString(),
+                'inc_all' => true,
+                'inc_day' => false,
+                'weekDay' => ['Mon', 'Tue'],
+            ];
         }
+
+        $this->detail = session('calculator_result');
+        $this->error = session('validation_error');
     }
 
-
     public function changeinc_all() {}
+
     public function changestartEvent()
     {
-        $value = $this->startEvent;
+        $value = $this->inputs['startEvent'] ?? 'empty';
         $currentDate = now();
         $currentYear = $currentDate->year;
 
@@ -78,69 +72,82 @@ class DaysUntilCalculator extends Component
             $eventDate = $eventDate->addYear();
         }
 
-        $this->next = $eventDate->toDateString();
+        $this->inputs['next'] = $eventDate->toDateString();
     }
-
-
 
     public function resetForm()
     {
         $this->resetErrorBag();
         $this->resetValidation();
-
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
-
-        return redirect()->to(url()->previous() ?? '/');
-    }
-    public function calculate()
-    {
-        $request = (object)[
-            'startEvent' => $this->startEvent,
-            'next'       => $this->next,
-            'current'    => $this->current,
-            'inc_all'    => $this->inc_all,
-            'inc_day'    => $this->inc_day,
-            'weekDay'    => $this->weekDay,
+        $this->inputs = [
+            'startEvent' => 'empty',
+            'next' => now()->addMonth()->toDateString(),
+            'current' => now()->toDateString(),
+            'inc_all' => true,
+            'inc_day' => false,
+            'weekDay' => ['Mon', 'Tue'],
         ];
 
+        session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
+
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
+    }
+
+    public function calculate()
+    {
+        $request = (object)$this->inputs;
 
         $model = new Timedate();
         $result = $model->days_until($request);
-        // dd($result);
+
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
-
-            return redirect()->to(url()->previous() ?? '/');
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
     }
-
 
     public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-        const el = document.getElementById('result-section');
-        if (el) {
-            const offset = 30;
-            const top = el.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-       JS);
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
         }
         return view('livewire.calculators.days-until-calculator');
     }

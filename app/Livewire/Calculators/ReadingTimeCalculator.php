@@ -53,28 +53,39 @@ class ReadingTimeCalculator extends Component
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $this->reading_speed = '2';
+        $this->read_pages = '0.50';
+        $this->book_unit = 'min';
+        $this->book_leng = 1;
+        $this->total_unit = 'min';
+        $this->daily_reading = 8;
+        $this->time_unit = 'min';
+        $this->reading_unit = 'min';
+        $this->period_unit = 'min';
 
-        return redirect()->to(url()->previous() ?? '/');
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget([
+                'calculator_back_inputs',
+                'calculator_result',
+                'validation_error',
+                'scroll_to_result'
+            ]);
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'reading_speed'         => $this->reading_speed,
-            'read_pages'     => $this->read_pages,
-            'book_unit'    => $this->book_unit,
-            'book_leng'       => $this->book_leng,
-            'total_unit'      => $this->total_unit,
-            'daily_reading'    => $this->daily_reading,
-            'time_unit'   => $this->time_unit,
-            'reading_unit'      => $this->reading_unit,
-            'period_unit'      => $this->period_unit,
+            'reading_speed' => $this->reading_speed,
+            'read_pages'    => $this->read_pages,
+            'book_unit'     => $this->book_unit,
+            'book_leng'     => $this->book_leng,
+            'total_unit'    => $this->total_unit,
+            'daily_reading' => $this->daily_reading,
+            'time_unit'     => $this->time_unit,
+            'reading_unit'  => $this->reading_unit,
+            'period_unit'   => $this->period_unit,
         ];
 
 
@@ -82,17 +93,35 @@ class ReadingTimeCalculator extends Component
         $result = $model->reading($request);
         // dd($result);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
 
-            return redirect()->to(url()->previous() ?? '/');
-        }
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
 
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            }
+        }
     }
 
 

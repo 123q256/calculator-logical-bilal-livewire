@@ -409,7 +409,7 @@ class Pets extends Model
 		$h_units = $request->h_units;
 		$length = $request->length;
 		$l_units = $request->l_units;
-		function unitConverter($input_value, $units)
+		$unitConverter = function($input_value, $units)
 		{
 			if ($units == 'm') {
 				$input_value = $input_value * 100;
@@ -419,14 +419,14 @@ class Pets extends Model
 				$input_value = $input_value * 30.48;
 			}
 			return $input_value;
-		}
+		};
 		if (is_numeric($height) && is_numeric($length)) {
 
 			if (isset($l_units)) {
-				$length = unitConverter($length, $l_units);
+				$length = $unitConverter($length, $l_units);
 			}
 			if (isset($h_units)) {
-				$height = unitConverter($height, $h_units);
+				$height = $unitConverter($height, $h_units);
 			}
 			$c_height = $height + $extra_lenght;
 			$c_lenght = $length + $extra_lenght;
@@ -600,7 +600,7 @@ class Pets extends Model
 
 
 
-		function get_value($breed)
+		$get_value = function($breed)
 		{
 			if ($breed == "Affenpinscher") {
 				$assign_one = "7-10 pounds";
@@ -1135,8 +1135,8 @@ class Pets extends Model
 				$assing_two = "1";
 			}
 			return array($assign_one, $assing_two);
-		}
-		$names = get_value($select_breed);
+		};
+		$names = $get_value($select_breed);
 		if ($type == "first") {
 			if (is_numeric($weight) && is_numeric($age)) {
 				if ($age_selection == "wks") {

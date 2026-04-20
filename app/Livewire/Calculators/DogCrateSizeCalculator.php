@@ -58,7 +58,11 @@ class DogCrateSizeCalculator extends Component
         $this->l_units =  'in';
         $this->extra_lenght = '5.1';
         $this->detail = null;
-         return redirect()->to(url()->previous() ?? '/');
+        
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget(['calculator_result', 'validation_error', 'scroll_to_result', 'calculator_back_inputs']);
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
 
@@ -90,16 +94,34 @@ class DogCrateSizeCalculator extends Component
         $model = new \App\Models\Pets();
         $result = $model->dog_crate_size($request);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
 
-            return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
-        }
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
 
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                return redirect()->to(url()->previous() ?? '/');
+            }
+        }
     }
 
 

@@ -3154,21 +3154,21 @@ public function sod($request)
 
 // Rebar calculator	
 public function rebar($request){
-	$first = $request->input('first');
-	$units1 = $request->input('units1');
-	$second = $request->input('second');
-	$units2 = $request->input('units2');
-	$third = $request->input('third');
-	$units3 = $request->input('units3');
-	$four = $request->input('four');
-	$units4 = $request->input('units4');
-	$five = $request->input('five');
-	$units5 = $request->input('units5');
-	$six = $request->input('six');
-	$units6 = $request->input('units6');
-	$currancy = $request->input('currancy');
+	$first = $request->first;
+	$units1 = $request->units1;
+	$second = $request->second;
+	$units2 = $request->units2;
+	$third = $request->third;
+	$units3 = $request->units3;
+	$four = $request->four;
+	$units4 = $request->units4;
+	$five = $request->five;
+	$units5 = $request->units5;
+	$six = $request->six;
+	$units6 = $request->units6;
+	$currancy = $request->currancy;
 	$units5 = str_replace($currancy.' ','', $units5);
-	function cm_unit($a,$b){
+	$cm_unit = function($a,$b){
 		if($a == "cm"){
 			$convert = $b * 1;
 		}elseif ($a == "m") {
@@ -3184,9 +3184,9 @@ public function rebar($request){
 		}elseif ($a == "mi") {
 			$convert = $b * 30.48;
 		}
-		return $convert;
-	}
-	function cm_unit2($a,$b){
+		return $convert ?? 0;
+	};
+	$cm_unit2 = function($a,$b){
 		if($a == "mm"){
 			$convert2 = $b / 10;
 		}elseif ($a == "cm") {
@@ -3200,9 +3200,9 @@ public function rebar($request){
 		}elseif ($a == "yd") {
 			$convert2 = $b * 91.44;
 		}
-		return $convert2;
-	}
-	function cm_unit3($a,$b){
+		return $convert2 ?? 0;
+	};
+	$cm_unit3 = function($a,$b){
 		if($a == "cm"){
 			$convert3 = $b * 1;
 		}elseif ($a == "m") {
@@ -3214,16 +3214,16 @@ public function rebar($request){
 		}elseif ($a == "yd") {
 			$convert3 = $b * 91.44;
 		}
-		return $convert3;
-	}
+		return $convert3 ?? 0;
+	};
 	
 	if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($five) && is_numeric($six)) {
-		$first = cm_unit($units1,$first);
-		$second = cm_unit($units2,$second);
-		$third = cm_unit2($units3,$third);
-		$four = cm_unit2($units4,$four);
-		$five = cm_unit3($units5,$five);
-		$six = cm_unit3($units6,$six);
+		$first = $cm_unit($units1,$first);
+		$second = $cm_unit($units2,$second);
+		$third = $cm_unit2($units3,$third);
+		$four = $cm_unit2($units4,$four);
+		$five = $cm_unit3($units5,$five);
+		$six = $cm_unit3($units6,$six);
 		$mul1 = 2 * $four;
 		$grid_len = $first - $mul1;
 		$grid_wid = $second - $mul1;
@@ -6778,14 +6778,14 @@ public function tank($request)
 	// pipe volume calculator
 	public function pipe($request)
 	{
-		$inner_diameter = $request->input('inner_diameter');
-		$inner_diameter_unit = $request->input('inner_diameter_unit');
-		$length = $request->input('length');
-		$length_unit = $request->input('length_unit');
-		$density = $request->input('density');
-		$density_unit = $request->input('density_unit');
+		$inner_diameter = $request->inner_diameter;
+		$inner_diameter_unit = $request->inner_diameter_unit;
+		$length = $request->length;
+		$length_unit = $request->length_unit;
+		$density = $request->density;
+		$density_unit = $request->density_unit;
 
-		function convert_inches2($unit, $value)
+		$convert_inches2 = function($unit, $value)
 		{
 			if ($unit == "cm") {
 				$val1 = $value * 0.393701;
@@ -6800,9 +6800,9 @@ public function tank($request)
 			} else if ($unit == "mm") {
 				$val1 = $value * 0.0393701;
 			}
-			return $val1;
-		}
-		function convert_unit2($unit2, $value2)
+			return $val1 ?? 0;
+		};
+		$convert_unit2 = function($unit2, $value2)
 		{
 			if ($unit2 == "kg/m³") {
 				$val2 = $value2 * 0.000036127;
@@ -6829,15 +6829,15 @@ public function tank($request)
 			} else if ($unit2 == "mg/L") {
 				$val2 = $value2 * 3.6127292e-8;
 			}
-			return $val2;
-		}
+			return $val2 ?? 0;
+		};
 		if (is_numeric($inner_diameter) && is_numeric($length) && is_numeric($density)) {
 			if ($inner_diameter > 0 && $length > 0) {
-				$inv = convert_inches2($inner_diameter_unit, $inner_diameter);
-				$lnv = convert_inches2($length_unit, $length);
+				$inv = $convert_inches2($inner_diameter_unit, $inner_diameter);
+				$lnv = $convert_inches2($length_unit, $length);
 				$k = $inv / 2;
 				$volume = 3.14159265 * $k * $k * $lnv;
-				$wv = convert_unit2($density_unit, $density);
+				$wv = $convert_unit2($density_unit, $density);
 				$weight = $volume * $wv;
 				$this->param['volume'] = $volume;
 				$this->param['weight'] = $weight;

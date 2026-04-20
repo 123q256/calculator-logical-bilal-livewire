@@ -43,40 +43,64 @@ class DeadlineCalculator extends Component
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $this->date = Carbon::now()->format('Y-m-d');
+        $this->period = 'Days';
+        $this->Number = 40;
+        $this->before_after = 'After';
 
-        return redirect()->to(url()->previous() ?? '/');
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget([
+                'calculator_back_inputs',
+                'calculator_result',
+                'validation_error',
+                'scroll_to_result'
+            ]);
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'date'  => $this->date,
-            'period' => $this->period,
-            'Number' => $this->Number,
+            'date'         => $this->date,
+            'period'       => $this->period,
+            'Number'       => $this->Number,
             'before_after' => $this->before_after,
         ];
 
 
-        $model =  new \App\Models\Timedate();
+        $model = new \App\Models\Timedate();
         $result = $model->deadline($request);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
 
-            return redirect()->to(url()->previous() ?? '/');
-        }
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
 
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            }
+        }
     }
 
     public function render()

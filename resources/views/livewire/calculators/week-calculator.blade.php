@@ -42,19 +42,19 @@
                     <div class="space-y-2 overflow-auto">
                         <div class="flex items-center md:space-x-4 space-x-1">
                             <label class="flex items-center cursor-pointer space-x-2">
-                                <input type="radio" wire:model="stype" value="s_date"
+                                <input type="radio" wire:model="inputs.stype" value="s_date"
                                     wire:click="changeOperation('s_date')" class="cursor-pointer" />
                                 <span>{{ $lang[4] }}</span>
                             </label>
 
                             <label class="flex items-center cursor-pointer space-x-2">
-                                <input type="radio" wire:model="stype" value="e_date"
+                                <input type="radio" wire:model="inputs.stype" value="e_date"
                                     wire:click="changeOperation('e_date')" class="cursor-pointer" />
                                 <span>{{ $lang[5] }}</span>
                             </label>
 
                             <label class="flex items-center cursor-pointer space-x-2">
-                                <input type="radio" wire:model="stype" value="date"
+                                <input type="radio" wire:model="inputs.stype" value="date"
                                     wire:click="changeOperation('date')" class="cursor-pointer" />
                                 <span>{{ $lang[6] }}</span>
                             </label>
@@ -68,7 +68,7 @@
                     <div class="space-y-1 md:col-span-2 col-span-6">
                         <label for="current" class="text-sm">{{ $lang[1] }}</label>
                         <div class="w-full py-2">
-                            <input type="date" id="current" wire:model="current"
+                            <input type="date" id="current" wire:model="inputs.current"
                                 class="w-full px-3 py-2 border rounded-md cursor-pointer" />
                         </div>
                     </div>
@@ -76,19 +76,19 @@
                     <p class="text-lg mt-3 md:col-span-1 col-span-6 text-center symble">{{ $this->symbol }}</p>
                     <!-- Show only when stype == date -->
                     <div class="space-y-1 md:col-span-2 col-span-6"
-                        style="{{ $stype === 'date' ? 'display:block' : 'display:none' }}">
+                        style="{{ $inputs['stype'] === 'date' ? 'display:block' : 'display:none' }}">
                         <label for="next" class="text-sm">{{ $lang[2] }}</label>
                         <div class="w-full py-2">
-                            <input type="date" id="next" wire:model="next"
+                            <input type="date" id="next" wire:model="inputs.next"
                                 class="w-full px-3 py-2 border rounded-md cursor-pointer" />
                         </div>
                     </div>
                     <!-- Show only when stype != date -->
                     <div class="space-y-1 md:col-span-2 col-span-6"
-                        style="{{ $stype !== 'date' ? 'display:block' : 'display:none' }}">
+                        style="{{ $inputs['stype'] !== 'date' ? 'display:block' : 'display:none' }}">
                         <label for="number" class="text-sm">{{ $lang[3] }}</label>
                         <div class="w-full py-2">
-                            <input type="number" id="number" wire:model="number"
+                            <input type="number" id="number" wire:model="inputs.number"
                                 class="w-full px-3 py-2 border rounded-md cursor-pointer" autocomplete="off" />
                         </div>
                     </div>

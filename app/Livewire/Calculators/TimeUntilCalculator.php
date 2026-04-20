@@ -8,85 +8,98 @@ use App\Models\Timedate;
 
 class TimeUntilCalculator extends Component
 {
+    public $inputs = [];
     public $error = null;
     public $detail = null;
     public $lang = [];
     public $type = 'calculator';
 
-    public $current;
-    public $next;
     public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
-        $this->detail = session('calculator_result');
-        $this->error = session('validation_error');
 
         if (session()->has('calculator_back_inputs')) {
-            $inputs = session('calculator_back_inputs');
-
-            // Restore inputs from session if available
-            $this->current = $inputs['current'] ?? now()->format('Y-m-d\TH:i');
-            $this->next = $inputs['next'] ?? now()->addYear()->format('Y-m-d\TH:i');
+            $this->inputs = (array)session('calculator_back_inputs');
         } else {
-            // Set defaults if no session inputs
-            $this->current = now()->format('Y-m-d\TH:i');
-            $this->next = now()->addYear()->format('Y-m-d\TH:i');
+            $this->inputs = [
+                'current' => now()->format('Y-m-d\TH:i'),
+                'next' => now()->addYear()->format('Y-m-d\TH:i'),
+            ];
         }
+
+        $this->detail = session('calculator_result');
+        $this->error = session('validation_error');
     }
 
     public function resetForm()
     {
         $this->resetErrorBag();
         $this->resetValidation();
-
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $this->inputs = [
+            'current' => now()->format('Y-m-d\TH:i'),
+            'next' => now()->addYear()->format('Y-m-d\TH:i'),
+        ];
 
-        return redirect()->to(url()->previous() ?? '/');
+        session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
+
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
     {
-        $request = [
-            'current' => $this->current,
-            'next' => $this->next,
-        ];
+        $request = (object)$this->inputs;
 
         $model = new Timedate();
-        $result = $model->time_until((object)$request);
+        $result = $model->time_until($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
-
-            return redirect()->to(url()->previous() ?? '/');
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
     }
 
     public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) {
-                    const offset = 30;
-                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-                    window.scrollTo({ top: top, behavior: 'smooth' });
-                }
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
             JS);
         }
 

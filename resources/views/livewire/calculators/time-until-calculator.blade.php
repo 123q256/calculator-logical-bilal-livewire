@@ -10,14 +10,14 @@
                         <label for="current" class="font-s-14 text-blue">{{ $lang['1'] }}</label>
                         <div class="w-100 py-2">
                             <input type="datetime-local" id="current" class="input cursor-pointer"
-                                wire:model.lazy="current" aria-label="input" />
+                                wire:model.lazy="inputs.current" aria-label="input" />
                         </div>
                     </div>
                     <div class="space-y-2 ">
                         <label for="next" class="font-s-14 text-blue">{{ $lang['2'] }}</label>
                         <div class="w-100 py-2">
                             <input type="datetime-local" id="next" class="input cursor-pointer"
-                                wire:model.lazy="next" aria-label="input" />
+                                wire:model.lazy="inputs.next" aria-label="input" />
                         </div>
                     </div>
                 </div>

@@ -15,7 +15,7 @@
                                 @foreach ($days as $day)
                                     <p wire:click="selectDay({{ $day }})"
                                         class="col cursor-pointer border-r py-2
-                                {{ $number == $day ? 'bg-[#2845F5] text-white font-semibold' : '' }}">
+                                {{ $inputs['number'] == $day ? 'bg-[#2845F5] text-white font-semibold' : '' }}">
                                         {{ $day }} </p>
                                 @endforeach
                             </div>
@@ -25,7 +25,7 @@
                         <div class="space-y-2">
                             <label for="number" class="text-sm">&nbsp;</label>
                             <input type="number" name="number" id="number" class="input border p-2 rounded w-full"
-                                wire:model="number" aria-label="input" autocomplete="off" min="1" />
+                                wire:model="inputs.number" aria-label="input" autocomplete="off" min="1" />
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                         </div>
 
                         <div class="w-full py-2">
-                            <input type="date" name="current" id="current" wire:model="current"
+                            <input type="date" name="current" id="current" wire:model="inputs.current"
                                 class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#38A169]"
                                 aria-label="input" />
                         </div>

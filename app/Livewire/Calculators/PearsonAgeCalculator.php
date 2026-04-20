@@ -42,7 +42,11 @@ class PearsonAgeCalculator extends Component
         $this->date = now()->format('Y-m-d');
         $this->date1 = '1999-11-05';
         $this->detail = null;
-         return redirect()->to(url()->previous() ?? '/');
+        
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget(['calculator_result', 'validation_error', 'scroll_to_result', 'calculator_back_inputs']);
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
 
@@ -70,15 +74,34 @@ class PearsonAgeCalculator extends Component
         $model = new \App\Models\Pets();
         $result = $model->pearson($request); // You must define this method in your Pets model
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('calculator_back_inputs', $request);
-            session()->flash('scroll_to_result', true);
+            $this->detail = $result;
+            $this->error = null;
 
-            return redirect()->to(url()->previous() ?? '/');
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('calculator_back_inputs', $request);
+                session()->flash('scroll_to_result', true);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
     }
 
 

@@ -58,7 +58,8 @@ class AgeCalculator extends Component
         $this->resetErrorBag();
 
         // Session clear karo
-        session()->forget('calculator_result');
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget('calculator_result');
         session()->forget('calculator_back_inputs');
         session()->forget('validation_error');
         // DOB reset — defaults
@@ -73,6 +74,7 @@ class AgeCalculator extends Component
         $this->error  = null;
         $this->detail = null;
         // return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
@@ -90,17 +92,33 @@ class AgeCalculator extends Component
         $model = new \App\Models\EverydayLife();
         $result = $model->age($request);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            $this->detail = $result;
+            $this->error = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->put('calculator_back_inputs', (object)$request);
-            $this->error = null;
-            $this->detail = $result;
-            return;
+                                    return;
             // return redirect()->to(url()->previous() ?? '/');
+                    } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
         }
 
         $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
+        $this->detail = null;
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+        session()->flash('validation_error', $this->error);            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function render()

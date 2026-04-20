@@ -36,21 +36,23 @@ class RoofPitchCalculator extends Component
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
 
-            $this->from = $inputs->from ?? $this->from;
-            $this->x = $inputs->x ?? $this->x;
-            $this->unit = $inputs->unit ?? $this->unit;
-            $this->y = $inputs->y ?? $this->y;
+            $this->from   = $inputs->from   ?? $this->from;
+            $this->x      = $inputs->x      ?? $this->x;
+            $this->unit   = $inputs->unit   ?? $this->unit;
+            $this->y      = $inputs->y      ?? $this->y;
             $this->unit_r = $inputs->unit_r ?? $this->unit_r;
             $this->unit_a = $inputs->unit_a ?? $this->unit_a;
         }
     }
 
-
     public function changeFrom()
     {
-           $this->detail = null;
-        session()->forget(['calculator_result', 'validation_error']);
-        // Agar aapko koi aur logic chalana hai change par
+        $this->detail = null;
+        $this->error  = null;
+
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget(['calculator_result', 'validation_error']);
+        }
     }
 
     // Dropdown toggles
@@ -65,11 +67,9 @@ class RoofPitchCalculator extends Component
         $this->showUnitDropdown = false;
     }
 
-
     public function toggleUnitRDropdown()
     {
         $this->showUnitRDropdown = !$this->showUnitRDropdown;
-        
     }
 
     public function setUnitR($value)
@@ -94,60 +94,90 @@ class RoofPitchCalculator extends Component
         $this->resetErrorBag();
         $this->resetValidation();
 
-        $this->error = null;
+        $this->error  = null;
         $this->detail = null;
+
+        $this->from   = 1;
+        $this->x      = 7;
+        $this->unit   = 'm';
+        $this->y      = 9;
+        $this->unit_r = 'm';
+        $this->unit_a = 'deg';
+
+        $this->showUnitDropdown  = false;
+        $this->showUnitRDropdown = false;
+        $this->showUnitADropdown = false;
 
         session()->forget([
             'calculator_back_inputs',
             'calculator_result',
             'validation_error',
-            'scroll_to_result'
+            'scroll_to_result',
         ]);
 
-        return redirect()->to(url()->previous() ?? '/');
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'from'       => $this->from,
-            'x'          => $this->x,
-            'unit'       => $this->unit,
-            'y'          => $this->y,
-            'unit_r'     => $this->unit_r,
-            'unit_a'     => $this->unit_a,
+            'from'   => $this->from,
+            'x'      => $this->x,
+            'unit'   => $this->unit,
+            'y'      => $this->y,
+            'unit_r' => $this->unit_r,
+            'unit_a' => $this->unit_a,
         ];
-        // dd($request);
-        $model = new Construction();
+
+        $model  = new Construction();
         $result = $model->roof($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
-            $this->error = null;
+            $this->detail = $result;
+            $this->error  = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error  = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
 
-            return redirect()->to(url()->previous() ?? '/');
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
     }
-
-    public function render()
+  public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) {
-                    const offset = 30;
-                    const top = el.getBoundingClientRect().top + window.scrollY - offset;
-                    window.scrollTo({ top: top, behavior: 'smooth' });
-                }
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
             JS);
         }
-
         return view('livewire.calculators.roof-pitch-calculator');
     }
 }

@@ -68,14 +68,29 @@ class LeadTimeCalculator extends Component
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $this->types = 'manufac';
+        $this->pre_time = 25;
+        $this->pre_units = 'days';
+        $this->p_time = 25;
+        $this->p_units = 'days';
+        $this->post_time = 25;
+        $this->post_units = 'days';
+        $this->r_delay = 25;
+        $this->r_units = 'days';
+        $this->s_delay = 25;
+        $this->supply_units = 'days';
+        $this->receive_time = null;
+        $this->place_time = null;
 
-        return redirect()->to(url()->previous() ?? '/');
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget([
+                'calculator_back_inputs',
+                'calculator_result',
+                'validation_error',
+                'scroll_to_result'
+            ]);
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
 
@@ -118,17 +133,35 @@ class LeadTimeCalculator extends Component
         $result = $model->lead($request);
         // dd($result);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
 
-            return redirect()->to(url()->previous() ?? '/');
-        }
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
 
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            }
+        }
     }
 
     public function render()

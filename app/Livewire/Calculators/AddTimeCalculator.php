@@ -7,56 +7,54 @@ use App\Models\Timedate;
 
 class AddTimeCalculator extends Component
 {
+    public $inputs = [];
     public $error = null;
     public $detail = null;
     public $lang = [];
     public $type = 'calculator';
-
-    public $rows = [];
     public $maxRows = 18;
-    public $count_val = 2; // number of rows
-    public $hours_check = true;
-    public $min_check = true;
-    public $sec_check = true;
-    public $milli_check = true;
-
     public $total_time = null;
 
     public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
-        $this->detail = session('calculator_result');
-        $this->error = session('validation_error');
 
         if (session()->has('calculator_back_inputs')) {
-            $saved = session('calculator_back_inputs');
-            $this->rows = $saved->rows;
-            $this->hours_check = $saved->hours_check;
-            $this->min_check = $saved->min_check;
-            $this->sec_check = $saved->sec_check;
-            $this->milli_check = $saved->milli_check;
-            $this->count_val = $saved->count_val;
+            $this->inputs = (array)session('calculator_back_inputs');
         } else {
-            $this->rows = [
-                ['inhour' => null, 'inminutes' => null, 'inseconds' => null, 'inmiliseconds' => null],
-                ['inhour' => null, 'inminutes' => null, 'inseconds' => null, 'inmiliseconds' => null],
+            $this->inputs = [
+                'rows' => [
+                    ['inhour' => null, 'inminutes' => null, 'inseconds' => null, 'inmiliseconds' => null],
+                    ['inhour' => null, 'inminutes' => null, 'inseconds' => null, 'inmiliseconds' => null],
+                ],
+                'count_val' => 2,
+                'hours_check' => true,
+                'min_check' => true,
+                'sec_check' => true,
+                'milli_check' => true,
             ];
-            $this->count_val = count($this->rows);
         }
+
+        $this->detail = session('calculator_result');
+        $this->error = session('validation_error');
     }
 
+    public function toggleColumn($column)
+    {
+        // UI only disabling — no resetting of values
+    }
 
     public function addRow()
     {
-        if (count($this->rows) < $this->maxRows) {
-            $this->rows[] = [
+        if (count($this->inputs['rows']) < $this->maxRows) {
+            $this->inputs['rows'][] = [
                 'inhour' => null,
                 'inminutes' => null,
                 'inseconds' => null,
                 'inmiliseconds' => null
             ];
-            $this->count_val = count($this->rows); // update count
+            $this->inputs['count_val'] = count($this->inputs['rows']);
         } else {
             $this->dispatch('alert', message: 'Max Limit Reached');
         }
@@ -64,76 +62,89 @@ class AddTimeCalculator extends Component
 
     public function removeRow($index)
     {
-        unset($this->rows[$index]);
-        $this->rows = array_values($this->rows);
-        $this->count_val = count($this->rows); // update count
-    }
-
-    /**
-     * Handle checkbox toggle (no value clearing)
-     */
-    public function toggleColumn($column)
-    {
-        // UI only disabling — no resetting of values
+        if (count($this->inputs['rows']) > 2) {
+            unset($this->inputs['rows'][$index]);
+            $this->inputs['rows'] = array_values($this->inputs['rows']);
+            $this->inputs['count_val'] = count($this->inputs['rows']);
+        }
     }
 
     public function resetForm()
     {
         $this->resetErrorBag();
         $this->resetValidation();
-
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $this->inputs = [
+            'rows' => [
+                ['inhour' => null, 'inminutes' => null, 'inseconds' => null, 'inmiliseconds' => null],
+                ['inhour' => null, 'inminutes' => null, 'inseconds' => null, 'inmiliseconds' => null],
+            ],
+            'count_val' => 2,
+            'hours_check' => true,
+            'min_check' => true,
+            'sec_check' => true,
+            'milli_check' => true,
+        ];
 
-        return redirect()->to(url()->previous() ?? '/');
+        session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
+
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
     {
-        // Prepare request object with all data
-        $request = (object) [
-            'rows'         => $this->rows,
-            'hours_check'  => $this->hours_check,
-            'min_check'    => $this->min_check,
-            'sec_check'    => $this->sec_check,
-            'milli_check'  => $this->milli_check,
-            'count_val'    => $this->count_val,
-        ];
+        $request = (object)$this->inputs;
 
         $model = new Timedate();
         $result = $model->add($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
-
-            return redirect()->to(url()->previous() ?? '/'); // fallback if referer not available
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
     }
 
     public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-        const el = document.getElementById('result-section');
-        if (el) {
-            const offset = 30;
-            const top = el.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-       JS);
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
         }
         return view('livewire.calculators.add-time-calculator');
     }

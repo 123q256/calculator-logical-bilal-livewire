@@ -8,120 +8,124 @@ use App\Models\Timedate;
 class WeekCalculator extends Component
 {
 
+    public $inputs = [];
     public $error = null;
     public $detail = null;
     public $lang = [];
     public $type = 'calculator';
-    public $stype = 's_date'; // default selected
-    public $current;
-    public $next;
-    public $number;
-    
 
     public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
+
+        if (session()->has('calculator_back_inputs')) {
+            $this->inputs = (array)session('calculator_back_inputs');
+        } else {
+            $this->inputs = [
+                'stype' => 's_date',
+                'current' => now()->toDateString(),
+                'next' => now()->addMonth()->toDateString(),
+                'number' => null,
+            ];
+        }
+
         $this->detail = session('calculator_result');
         $this->error = session('validation_error');
-
-        // Set default values first
-        $this->current = now()->toDateString();
-        $this->next = now()->addMonth()->toDateString();
-        $this->stype = 's_date';
-        $this->number = null;
-
-        // If previous inputs exist in session, restore them
-        if (session()->has('calculator_back_inputs')) {
-            $inputs = session('calculator_back_inputs');
-
-            $this->stype = $inputs->stype ?? $this->stype;
-            $this->current = $inputs->current ?? $this->current;
-            $this->next = $inputs->next ?? $this->next;
-            $this->number = $inputs->number ?? $this->number;
-        }
     }
 
     public function changeOperation($value)
     {
-        $this->stype = $value;
-        // Reset or modify inputs if needed when stype changes
+        $this->inputs['stype'] = $value;
         if ($value === 'date') {
-            $this->number = null;
+            $this->inputs['number'] = null;
         } else {
-            $this->next = now()->addMonth()->toDateString();
+            $this->inputs['next'] = now()->addMonth()->toDateString();
         }
     }
 
     public function getSymbolProperty()
     {
-        return match ($this->stype) {
+        $stype = $this->inputs['stype'] ?? 's_date';
+        return match ($stype) {
             's_date' => '➕',
             'e_date' => '➖',
             'date'   => '⇢',
             default  => '',
         };
     }
+
     public function resetForm()
     {
         $this->resetErrorBag();
         $this->resetValidation();
-
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $this->inputs = [
+            'stype' => 's_date',
+            'current' => now()->toDateString(),
+            'next' => now()->addMonth()->toDateString(),
+            'number' => null,
+        ];
 
-        return redirect()->to(url()->previous() ?? '/');
+        session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
+
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
-
 
     public function calculate()
     {
-        $request = (object)[
-            'stype'   => $this->stype,
-            'current' => $this->current,
-            'next'    => $this->next,
-            'number'  => $this->number,
-            'type'    => $this->type,
-        ];
-
+        $request = (object)$this->inputs;
 
         $model = new Timedate();
         $result = $model->week_calc($request);
-        // dd($result);
+
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
-
-            return redirect()->to(url()->previous() ?? '/');
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
     }
-
-
 
     public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-        const el = document.getElementById('result-section');
-        if (el) {
-            const offset = 30;
-            const top = el.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-       JS);
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
         }
         return view('livewire.calculators.week-calculator');
     }

@@ -12,7 +12,7 @@
                     <div class="space-y-2">
                         <label for="month" class="text-blue font-s-14">{{ $lang['1'] }}</label>
                         <div class="w-100 py-2">
-                            <select wire:model="month" class="input">
+                            <select wire:model="inputs.month" class="input">
                                 @foreach (range(1, 12) as $m)
                                     <option value="{{ $m }}">
                                         {{ Carbon\Carbon::create()->month($m)->format('F') }}
@@ -24,7 +24,7 @@
                     <div class="space-y-2">
                         <label for="day" class="text-blue font-s-14">{{ $lang['2'] }}</label>
                         <div class="w-100 py-2">
-                            <select wire:model="day" class="input">
+                            <select wire:model="inputs.day" class="input">
                                 @foreach (range(1, 31) as $d)
                                     <option value="{{ $d }}">{{ $d }}</option>
                                 @endforeach
@@ -34,7 +34,7 @@
                     <div class="space-y-2">
                         <label for="year" class="text-blue font-s-14">{{ $lang['3'] }}</label>
                         <div class="w-100 py-2">
-                            <select wire:model="year" class="input">
+                            <select wire:model="inputs.year" class="input">
                                 @foreach (range(1950, 2050) as $y)
                                     <option value="{{ $y }}">{{ $y }}</option>
                                 @endforeach

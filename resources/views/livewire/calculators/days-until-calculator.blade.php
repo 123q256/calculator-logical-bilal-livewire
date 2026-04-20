@@ -92,20 +92,20 @@
                     <div class="space-y-2">
                         <label for="current" class="font-s-14 text-blue">{{ $lang['1'] }}</label>
                         <div class="w-100 py-2">
-                            <input type="date" wire:model="current" name="" id="current" class="input"
+                            <input type="date" wire:model="inputs.current" name="" id="current" class="input"
                                 aria-label="input" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <label for="next" class="font-s-14 text-blue">{{ $lang['2'] ?? 'Next Date' }}</label>
                         <div class="w-100 py-2">
-                            <input type="date" wire:model="next" id="next" class="input" aria-label="input" />
+                            <input type="date" wire:model="inputs.next" id="next" class="input" aria-label="input" />
                         </div>
                     </div>
                     <div class="space-y-2">
                         <label for="next" class="font-s-14 text-blue">{{ $lang['3'] }}</label>
                         <div class="w-100 py-2">
-                            <select wire:model="startEvent" wire:change="changestartEvent" id="startEvent"
+                            <select wire:model="inputs.startEvent" wire:change="changestartEvent" id="startEvent"
                                 class="input">
                                 <option value="empty">---</option>
                                 <option value="Thanksgiving (Canada)">Thanksgiving (Canada)</option>
@@ -125,7 +125,7 @@
                             <span>Include all days?</span>
                             <label class="toggle-switch">
                                 <input type="checkbox" id="chkPassport" wire:change="changeinc_all"
-                                    wire:model="inc_all" />
+                                    wire:model="inputs.inc_all" />
                                 <span class="slider"></span>
                             </label>
                         </div> <br>
@@ -133,42 +133,42 @@
                         <div class="toggle-label col-lg-6 col-12">
                             <span>Include end day?</span>
                             <label class="toggle-switch">
-                                <input type="checkbox" wire:model="inc_day" />
+                                <input type="checkbox" wire:model="inputs.inc_day" />
                                 <span class="slider"></span>
                             </label>
                         </div>
 
                     </div>
 
-                    <div class="px-2 mt-2 {{ $inc_all ? 'hidden' : '' }}" id="dvPassport">
+                    <div class="px-2 mt-2 {{ $inputs['inc_all'] ? 'hidden' : '' }}" id="dvPassport">
                         <label for="currency" class="heading">Days to include:</label>
                         <span class="radio-switch">
                             <input type="checkbox" id="check-0" class="rounded-full w-5 h-5" value="Mon"
-                                wire:model="weekDay">
+                                wire:model="inputs.weekDay">
                             <label for="check-0">M</label>
 
                             <input type="checkbox" id="check-1" class="rounded-full w-5 h-5" value="Tue"
-                                wire:model="weekDay">
+                                wire:model="inputs.weekDay">
                             <label for="check-1">T</label>
 
                             <input type="checkbox" id="check-2" class="rounded-full w-5 h-5" value="Wed"
-                                wire:model="weekDay">
+                                wire:model="inputs.weekDay">
                             <label for="check-2">W</label>
 
                             <input type="checkbox" id="check-3" class="rounded-full w-5 h-5" value="Thu"
-                                wire:model="weekDay">
+                                wire:model="inputs.weekDay">
                             <label for="check-3">T</label>
 
                             <input type="checkbox" id="check-4" class="rounded-full w-5 h-5" value="Fri"
-                                wire:model="weekDay">
+                                wire:model="inputs.weekDay">
                             <label for="check-4">F</label>
 
                             <input type="checkbox" id="check-5" class="rounded-full w-5 h-5" value="Sat"
-                                wire:model="weekDay">
+                                wire:model="inputs.weekDay">
                             <label for="check-5">S</label>
 
                             <input type="checkbox" id="check-6" class="rounded-full w-5 h-5" value="Sun"
-                                wire:model="weekDay">
+                                wire:model="inputs.weekDay">
                             <label for="check-6">S</label>
                         </span>
                         <span class="clearElement"></span>
@@ -197,7 +197,7 @@
                         <div class="lg:w-[50%] md:w-[80%] w-full gap-4 md:text-[18px] text-[16px]">
                             <table class="w-full table-auto px-5">
                                 <tbody>
-                                    @if ($inc_all)
+                                    @if ($inputs['inc_all'])
                                         @isset($detail['totaldays'])
                                             <tr class="border-b p-2">
                                                 <td class="px-4 py-2 font-semibold">Total Days</td>
@@ -213,7 +213,7 @@
                                         @endisset
                                     @endif
 
-                                    @if ($inc_all)
+                                    @if ($inputs['inc_all'])
                                         @isset($detail['weeks'])
                                             <tr class="border-b p-2">
                                                 <td class="px-4 py-2 font-semibold ">Weeks</td>

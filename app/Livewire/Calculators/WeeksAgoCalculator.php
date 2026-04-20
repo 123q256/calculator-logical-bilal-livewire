@@ -8,114 +8,112 @@ use App\Models\Timedate;
 
 class WeeksAgoCalculator extends Component
 {
+    public $inputs = [];
     public $error = null;
     public $detail = null;
     public $lang = [];
     public $type = 'calculator';
-    public $number = null;  // selected day from buttons OR custom input
-    public $customNumber = null; // user-entered custom number
 
     // Array of days to show in boxes
     public $days = [4, 8, 12, 16, 20, 24];
-    public $current;
 
     public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
-        $this->detail = session('calculator_result');
-        $this->error = session('validation_error');
-        $this->current = Carbon::today()->format('Y-m-d');
 
         if (session()->has('calculator_back_inputs')) {
-            $inputs = session('calculator_back_inputs');
-
-            $this->current = $inputs->current ?? $this->current;
-            $this->number = $inputs->number ?? $this->number ?? null;
+            $this->inputs = (array)session('calculator_back_inputs');
+        } else {
+            $this->inputs = [
+                'number' => 20,
+                'current' => Carbon::today()->format('Y-m-d'),
+            ];
         }
+
+        $this->detail = session('calculator_result');
+        $this->error = session('validation_error');
     }
 
     public function setNow()
     {
-        $this->current = Carbon::today()->format('Y-m-d');
+        $this->inputs['current'] = Carbon::today()->format('Y-m-d');
     }
 
     public function selectDay($day)
     {
-        $this->number = $day;
-        $this->customNumber = null;
-    }
-
-    public function updatedNumber($value)
-    {
-        // Optionally you can add validation here or auto-sync logic
-        // For example, ensure number is integer and in $days or empty
-        if (is_numeric($value) && (int)$value > 0) {
-            $this->number = (int)$value;
-        } else {
-            $this->number = null;
-        }
+        $this->inputs['number'] = $day;
     }
 
     public function resetForm()
     {
         $this->resetErrorBag();
         $this->resetValidation();
-
         $this->error = null;
         $this->detail = null;
 
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
+        $this->inputs = [
+            'number' => 20,
+            'current' => Carbon::today()->format('Y-m-d'),
+        ];
 
-        return redirect()->to(url()->previous() ?? '/');
+        session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
+
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
-
 
     public function calculate()
     {
-        $request = (object)[
-            'stype' => $this->stype ?? null,
-            'current' => $this->current ?? null,
-            'next' => $this->next ?? null,
-            'number' => $this->number ?? null,
-            'type' => $this->type ?? null,
-        ];
+        $request = (object)$this->inputs;
 
         $model = new Timedate();
         $result = $model->weeks_ago($request);
-        // dd($result);
+
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            $this->detail = $result;
             $this->error = null;
-
-            return redirect()->to(url()->previous() ?? '/');
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                session()->flash('calculator_back_inputs', $this->inputs);
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-
-        $this->error = $result['error'] ?? 'Something went wrong.';
-        session()->flash('validation_error', $this->error);
-        $this->detail = null;
     }
-
-
 
     public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-        const el = document.getElementById('result-section');
-        if (el) {
-            const offset = 30;
-            const top = el.getBoundingClientRect().top + window.scrollY - offset;
-            window.scrollTo({ top: top, behavior: 'smooth' });
-        }
-       JS);
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
         }
         return view('livewire.calculators.weeks-ago-calculator');
     }

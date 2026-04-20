@@ -8,12 +8,12 @@
             <div class="lg:w-[50%] md:w-[50%] w-full mx-auto">
                 <div class="grid grid-cols-1 gap-4">
                     <div class="space-y-2 relative flex items-center gap-4">
-                        <input type="radio" id="stat" wire:model.live="timeType" value="stat"
+                        <input type="radio" id="stat" wire:model.live="inputs.timeType" value="stat"
                             class="cursor-pointer" />
                         <label for="stat"
                             class="font-s-14 cursor-pointer text-blue pe-lg-3 pe-2">{{ $lang['1'] }}</label>
 
-                        <input type="radio" id="dyna" wire:model.live="timeType" value="dyna"
+                        <input type="radio" id="dyna" wire:model.live="inputs.timeType" value="dyna"
                             class="cursor-pointer" />
                         <label for="dyna" class="font-s-14 cursor-pointer text-blue">{{ $lang['2'] }}</label>
                     </div>
@@ -23,24 +23,24 @@
                     <!-- Time Input Fields -->
                     <div class="flex gap-5 items-center">
                         <div class="w-full">
-                            <input type="number" id="hours" wire:model="hours" min="0" max="23"
+                            <input type="number" id="hours" wire:model="inputs.hours" min="0" max="23"
                                 class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#38A169] 
-            {{ $timeType === 'stat' ? 'bg-gray-200 cursor-not-allowed opacity-50' : '' }}"
-                                @if ($timeType === 'stat') readonly @endif>
+            {{ $inputs['timeType'] === 'stat' ? 'bg-gray-200 cursor-not-allowed opacity-50' : '' }}"
+                                @if ($inputs['timeType'] === 'stat') readonly @endif>
                         </div>
                         <p class="mb-1">:</p>
                         <div class="w-full">
-                            <input type="number" id="minutes" wire:model="minutes" min="0" max="59"
+                            <input type="number" id="minutes" wire:model="inputs.minutes" min="0" max="59"
                                 class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#38A169] 
-            {{ $timeType === 'stat' ? 'bg-gray-200 cursor-not-allowed opacity-50' : '' }}"
-                                @if ($timeType === 'stat') readonly @endif>
+            {{ $inputs['timeType'] === 'stat' ? 'bg-gray-200 cursor-not-allowed opacity-50' : '' }}"
+                                @if ($inputs['timeType'] === 'stat') readonly @endif>
                         </div>
                         <p class="mb-1">:</p>
                         <div class="w-full">
-                            <input type="number" id="seconds" wire:model="seconds" min="0" max="59"
+                            <input type="number" id="seconds" wire:model="inputs.seconds" min="0" max="59"
                                 class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#38A169] 
-            {{ $timeType === 'stat' ? 'bg-gray-200 cursor-not-allowed opacity-50' : '' }}"
-                                @if ($timeType === 'stat') readonly @endif>
+            {{ $inputs['timeType'] === 'stat' ? 'bg-gray-200 cursor-not-allowed opacity-50' : '' }}"
+                                @if ($inputs['timeType'] === 'stat') readonly @endif>
                         </div>
                     </div>
                 </div>
@@ -51,7 +51,7 @@
                         <!-- Hours to Add -->
                         <div class="w-full">
                             <label class="text-sm text-[#38A169]">{{ $lang['3'] }}</label>
-                            <input type="number" id="hrs" wire:model="hrs" min="0"
+                            <input type="number" id="hrs" wire:model="inputs.hrs" min="0"
                                 class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#38A169]"
                                 aria-label="hours to add" />
                         </div>
@@ -61,7 +61,7 @@
                         <!-- Minutes to Add -->
                         <div class="w-full">
                             <label class="text-sm text-[#38A169]">{{ $lang['4'] }}</label>
-                            <input type="number" id="min" wire:model="min" min="0" max="59"
+                            <input type="number" id="min" wire:model="inputs.min" min="0" max="59"
                                 class="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#38A169]"
                                 aria-label="minutes to add" />
                         </div>
@@ -90,18 +90,18 @@
                                 <div class="w-full text-center">
                                     <span class="pr-4 text-sm block md:inline-block">Output Time Format:</span>
                                     <input type="radio" name="time_st" id="twhr" class="cursor-pointer ml-3"
-                                        value="twhr" wire:model.live="outputFormat">
+                                        value="twhr" wire:model.live="inputs.outputFormat">
                                     <label for="twhr" class="text-sm cursor-pointer text-[#38A169] pr-4 md:pr-6">12
                                         Hours am/pm</label>
 
                                     <input type="radio" class="cursor-pointer" name="time_st" id="tfhr"
-                                        value="tfhr" wire:model.live="outputFormat">
+                                        value="tfhr" wire:model.live="inputs.outputFormat">
                                     <label for="tfhr" class="text-sm cursor-pointer text-[#38A169]">24 Hours</label>
 
                                     <div>
                                         <p class="text-xl bg-[#2845F5] text-white px-4 py-2 rounded-lg inline-block my-3">
                                             <strong id="currentTime">
-                                                @if ($outputFormat === 'twhr')
+                                                @if ($inputs['outputFormat'] === 'twhr')
                                                     {{ $detail['hoursadding']->format('h:i:s A') }}
                                                 @else
                                                     {{ $detail['hoursadding']->format('H:i:s') }}
@@ -120,7 +120,7 @@
             <script>
                 document.addEventListener('livewire:init', () => {
                     setInterval(() => {
-                        if (@this.isLive) {
+                        if (@this.inputs['isLive']) {
                             Livewire.dispatch('refreshTime');
                         }
                     }, 1000);

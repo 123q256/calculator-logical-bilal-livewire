@@ -8,7 +8,7 @@
             <div class="lg:w-[60%] md:w-[60%] w-full mx-auto ">
                 <div class="md:flex lg:flex mb-3 justify-content-center pt-1 col-10 mx-auto">
                     <p>
-                        <input type="radio" name="timecheck" id="stat" wire:model="timecheck"
+                        <input type="radio" name="timecheck" id="stat" wire:model="inputs.timecheck"
                             wire:click="changeOperation('stat')" class="cursor-pointer" value="stat">
                         <label for="stat"
                             class="font-s-14 cursor-pointer text-blue pe-lg-3 pe-2">{{ $lang['1'] }}</label>
@@ -17,20 +17,20 @@
                         @endif
                     </p>
                     <p>
-                        <input type="radio" name="timecheck" id="dyna" wire:model="timecheck"
+                        <input type="radio" name="timecheck" id="dyna" wire:model="inputs.timecheck"
                             wire:click="changeOperation('dyna')" class="cursor-pointer pt-2" value="dyna">
                         <label for="dyna" class="font-s-14 cursor-pointer text-blue">{{ $lang['2'] }}</label>
                     </p>
                 </div>
 
 
-                <div class="grid grid-cols-1   mt-3 gap-4 timeclock {{ $timecheck != 'stat' ? 'hidden' : '' }}  ">
+                <div class="grid grid-cols-1   mt-3 gap-4 timeclock {{ $inputs['timecheck'] != 'stat' ? 'hidden' : '' }}  ">
 
                     <div class="flex justify-center">
                         <div class="grid grid-cols-3  lg:w-[70%] md:w-[70%] w-full  gap-4  ">
                             <div class="space-y-2 relative">
                                 <label for="month" class="text-blue font-s-14">{{ $lang['3'] }}</label>
-                                <select wire:model="month" class="input">
+                                <select wire:model="inputs.month" class="input">
                                     @foreach (range(1, 12) as $m)
                                         <option value="{{ $m }}">
                                             {{ Carbon\Carbon::create()->month($m)->format('F') }}
@@ -40,7 +40,7 @@
                             </div>
                             <div class="space-y-2 relative">
                                 <label for="day" class="text-blue font-s-14">{{ $lang['4'] }}</label>
-                                <select wire:model="day" class="input">
+                                <select wire:model="inputs.day" class="input">
                                     @foreach (range(1, 31) as $d)
                                         <option value="{{ $d }}">{{ $d }}</option>
                                     @endforeach
@@ -48,7 +48,7 @@
                             </div>
                             <div class="space-y-2 relative">
                                 <label for="year" class="text-blue font-s-14">{{ $lang['5'] }}</label>
-                                <select wire:model="year" class="input">
+                                <select wire:model="inputs.year" class="input">
                                     @foreach (range(1950, 2050) as $y)
                                         <option value="{{ $y }}">{{ $y }}</option>
                                     @endforeach
@@ -68,7 +68,7 @@
                                     </span>
                                 </div>
                                 <div class="w-100 py-2">
-                                    <input type="time" name="time" wire:model="time" id="time" class="input"
+                                    <input type="time" name="time" wire:model="inputs.time" id="time" class="input"
                                         aria-label="input" autocomplete="off" />
                                 </div>
                             </div>
@@ -77,12 +77,12 @@
 
 
                 </div>
-                <div class="grid grid-cols-1   gap-4 dateclock {{ $timecheck != 'stat' ? '' : 'hidden' }}">
+                <div class="grid grid-cols-1   gap-4 dateclock {{ $inputs['timecheck'] != 'stat' ? '' : 'hidden' }}">
                     <div class="flex justify-center">
                         <div class="space-y-2 relative mt-3">
                             <label for="julian" class="font-s-14 text-blue">{{ $lang['7'] }}</label>
                             <input type="text" name="julian" id="julian" class="input px-3"
-                                placeholder="e.g: 2458759.500000" wire:model="julian" aria-label="input"
+                                placeholder="e.g: 2458759.500000" wire:model="inputs.julian" aria-label="input"
                                 autocomplete="off" />
                         </div>
                     </div>

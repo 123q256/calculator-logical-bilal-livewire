@@ -10,7 +10,7 @@
                     <div class="space-y-2">
                         <label for="number" class="font-s-14 ">{{ $lang['1'] }}:</label>
                         <div class="w-100 pt-1 pb-2">
-                            <input type="number" id="number" class="input" wire:model="number" autocomplete="off" />
+                            <input type="number" id="number" class="input" wire:model="inputs.number" autocomplete="off" />
                         </div>
                     </div>
 
@@ -24,7 +24,7 @@
                             </span>
                         </div>
                         <div class="w-100 py-2">
-                            <input type="date" id="current" class="input" wire:model="current" />
+                            <input type="date" id="current" class="input" wire:model="inputs.current" />
                         </div>
                     </div>
                 </div>

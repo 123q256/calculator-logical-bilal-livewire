@@ -53,9 +53,11 @@ class BmiCalculator extends Component
         $this->height_cm = '175';
         $this->weight    = '160';
 
-        session()->forget(['calculator_result', 'validation_error', 'calculator_back_inputs', 'scroll_to_result']);
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            session()->forget(['calculator_result', 'validation_error', 'calculator_back_inputs', 'scroll_to_result']);
         
         // return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
 
@@ -85,11 +87,13 @@ class BmiCalculator extends Component
         $result = $model->bmi($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            $this->detail = $result;
+            $this->error = null;
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+
             session()->flash('calculator_result', $result);
             session()->put('calculator_back_inputs', $request);
-            $this->error = null;
-             $this->detail = $result;
-            $this->js(<<<'JS'
+                                     $this->js(<<<'JS'
                 $nextTick(() => {
                     const el = document.getElementById('result-section');
                     if (el) {
@@ -100,11 +104,24 @@ class BmiCalculator extends Component
             JS);
             return; 
             // return redirect()->to(url()->previous() ?? '/');
+                    } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
         }
 
-        $this->error  = $result['error'] ?? 'Something went wrong.';
+        $this->error = $result['error'] ?? 'Something went wrong.';
         $this->detail = null;
-        session()->flash('validation_error', $this->error);
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function render()
