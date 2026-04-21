@@ -1,5 +1,5 @@
 <div class="flex justify-between items-center pb-2 border-b-2 border-b-black">
-    <p class="text-blue text-2xl font-semibold">{{ $lang['res'] }}</p>
+    <p class="text-blue text-2xl font-semibold">{{ $lang['res'] ?? 'Result' }}</p>
 
     <div class="flex items-center">
         <div class="flex justify-end items-center space-x-3 pb-2">

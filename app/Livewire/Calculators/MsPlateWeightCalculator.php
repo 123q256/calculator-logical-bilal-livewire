@@ -3,38 +3,37 @@
 namespace App\Livewire\Calculators;
 
 use Livewire\Component;
+use App\Models\Construction;
 
-class AcreageCalculator extends Component
+class MsPlateWeightCalculator extends Component
 {
-
-       public $error;
+    public $error;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $calName;
-    public $calLink;
 
-    public $to_cal = '1';
-    public $length = '4';
+    public $st_type = '7715';
+    public $st_shape = '1';
+    public $length = '6';
     public $length_unit = 'cm';
-    public $width = '4';
+    public $width = '6';
     public $width_unit = 'cm';
-    public $area = '12';
-    public $area_unit = 'm²';
-    public $price = '';
-    public $price_unit = '$/m²';
-    public $currancy = '$';
+    public $thickness = '6';
+    public $thickness_unit = 'cm';
+    public $side = '6';
+    public $side_unit = 'cm';
+    public $diameter = '6';
+    public $diameter_unit = 'cm';
+    public $area = '6';
+    public $area_unit = 'cm²';
+    public $quantity = '5';
 
     public $showDropdown = null;
 
-    public function mount($type = 'calculator', $lang = [], $calName = null, $calLink = null)
+    public function mount($type = 'calculator', $lang = [])
     {
-        $this->calName = $calName;
-        $this->calLink = $calLink;
         $this->type = $type;
         $this->lang = $lang;
-        $this->currancy = $lang['currency'] ?? '$';
-        $this->price_unit = $this->currancy . '/m²';
 
         $this->detail = session('calculator_result');
         $this->error = session('validation_error');
@@ -49,43 +48,61 @@ class AcreageCalculator extends Component
         }
     }
 
-    public function resetForm()
+    public function toggleOverlay($id)
     {
-        $this->reset([
-            'error', 'detail', 'to_cal', 'length', 'length_unit', 'width', 
-            'width_unit', 'area', 'area_unit', 'price'
-        ]);
-        $this->resetErrorBag();
-        session()->forget(['calculator_result', 'validation_error', 'calculator_back_inputs', 'scroll_to_result']);
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+        if ($this->showDropdown === $id) {
+            $this->showDropdown = null;
+        } else {
+            $this->showDropdown = $id;
         }
     }
 
-    public function updatedToCal()
+    public function setUnit($property, $value)
     {
-        $this->detail = null;
-        session()->forget(['calculator_result', 'validation_error']);
+        if (property_exists($this, $property)) {
+            $this->$property = $value;
+        }
+        $this->showDropdown = null;
+    }
+
+    public function resetForm()
+    {
+        $this->reset([
+            'error', 'detail', 'st_type', 'st_shape', 'length', 'length_unit',
+            'width', 'width_unit', 'thickness', 'thickness_unit', 'side',
+            'side_unit', 'diameter', 'diameter_unit', 'area', 'area_unit', 'quantity'
+        ]);
+        $this->resetErrorBag();
+        session()->forget(['calculator_result', 'validation_error', 'calculator_back_inputs', 'scroll_to_result']);
+        
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
     {
         $this->error = null;
         $request = (object)[
-            'to_cal'      => $this->to_cal,
-            'length'      => $this->length,
+            'st_type' => $this->st_type,
+            'st_shape' => $this->st_shape,
+            'length' => $this->length,
             'length_unit' => $this->length_unit,
-            'width'       => $this->width,
-            'width_unit'  => $this->width_unit,
-            'area'        => $this->area,
-            'area_unit'   => $this->area_unit,
-            'price'       => $this->price,
-            'price_unit'  => $this->price_unit,
-            'currancy'    => $this->currancy,
+            'width' => $this->width,
+            'width_unit' => $this->width_unit,
+            'thickness' => $this->thickness,
+            'thickness_unit' => $this->thickness_unit,
+            'side' => $this->side,
+            'side_unit' => $this->side_unit,
+            'diameter' => $this->diameter,
+            'diameter_unit' => $this->diameter_unit,
+            'area' => $this->area,
+            'area_unit' => $this->area_unit,
+            'quantity' => $this->quantity,
         ];
 
-        $model  = new \App\Models\Construction();
-        $result = $model->acreage($request);
+        $model = new Construction();
+        $result = $model->ms($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
@@ -94,7 +111,7 @@ class AcreageCalculator extends Component
             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
                 session()->flash('calculator_result', $result);
                 session()->flash('scroll_to_result', true);
-                session()->put('calculator_back_inputs', $request);
+                session()->flash('calculator_back_inputs', $request);
                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->js(<<<'JS'
@@ -108,7 +125,7 @@ class AcreageCalculator extends Component
                 JS);
             }
         } else {
-            $this->error  = $result['error'] ?? 'Something went wrong.';
+            $this->error = $result['error'] ?? 'Something went wrong.';
             $this->detail = null;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
@@ -129,32 +146,19 @@ class AcreageCalculator extends Component
         }
     }
 
-    public function toggleOverlay($id)
-    {
-        if ($this->showDropdown === $id) {
-            $this->showDropdown = null;
-        } else {
-                        // Toggle dropdown without altering error state
-            $this->showDropdown = $id;
-        }
-    }
-
-    public function setUnit($property, $value)
-    {
-        if (property_exists($this, $property)) {
-            $this->$property = $value;
-        }
-        $this->showDropdown = null;
-    }
-
     public function render()
     {
-            if (session('scroll_to_result')) {
+        if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-                const el = document.getElementById('result-section');
-                if (el) el.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                        window.scrollTo({ top: offset, behavior: 'smooth' });
+                    }
+                }, 100);
             JS);
         }
-        return view('livewire.calculators.acreage-calculator');
+        return view('livewire.calculators.ms-plate-weight-calculator');
     }
 }
