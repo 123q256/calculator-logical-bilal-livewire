@@ -89,33 +89,30 @@ class Construction extends Model
 	// gravel calculator
 	public function gravel($request)
 	{
-		$from = $request->input('from');
-		$to_calculate = $request->input('to_calculate');
-		$length = $request->input('length');
-		$l_unit = $request->input('l_unit');
-		$volume = $request->input('volume');
-		$v_unit = $request->input('v_unit');
-		$width = $request->input('width');
-		$w_unit = $request->input('w_unit');
-		$area = $request->input('area');
-		$a_unit = $request->input('a_unit');
-		$depth = $request->input('depth');
-		$d_unit = $request->input('d_unit');
-		$density = $request->input('density');
-		$dn_unit = $request->input('dn_unit');
-		$price = $request->input('price');
-		$p_unit = $request->input('p_unit');
-		$currancy = $request->input('currancy');
-		$p_unit = str_replace($currancy.' ','', $p_unit);
-		$diameter = $request->input('diameter');
-		$dia_unit = $request->input('dia_unit');
+		$from = $request->from;
+		$to_calculate = $request->to_calculate;
+		$length = $request->length;
+		$l_unit = $request->l_unit;
+		$volume = $request->volume;
+		$v_unit = $request->v_unit;
+		$width = $request->width;
+		$w_unit = $request->w_unit;
+		$area = $request->area;
+		$a_unit = $request->a_unit;
+		$depth = $request->depth;
+		$d_unit = $request->d_unit;
+		$density = $request->density;
+		$dn_unit = $request->dn_unit;
+		$price = $request->price;
+		$p_unit = $request->p_unit;
+		$currancy = $request->currancy;
+		$p_unit = str_replace($currancy . ' ', '', $p_unit);
+		$diameter = $request->diameter;
+		$dia_unit = $request->dia_unit;
+
 		if ($from === 'rec') {
 			if ($to_calculate === '1') {
 				if (is_numeric($length) && is_numeric($width) && is_numeric($depth) && is_numeric($density)) {
-					$length = $length;
-					$width = $width;
-					$depth = $depth;
-					$density = $density;
 					if ($l_unit === 'in') {
 						$length = $length / 12;
 					} elseif ($l_unit === 'yd') {
@@ -153,9 +150,8 @@ class Construction extends Model
 						$density = $density / 16.018;
 					}
 					$weight = round($density * $volume, 3);
-					if (!empty($price)) {
+					if (!empty($price) && is_numeric($price)) {
 						$p_weight = $weight;
-						$price = $price;
 						if ($p_unit === 'kg') {
 							$p_weight = $p_weight / 2.205;
 						} elseif ($p_unit === 'g') {
@@ -163,7 +159,6 @@ class Construction extends Model
 						} elseif ($p_unit === 't') {
 							$p_weight = $p_weight / 2205;
 						}
-						// $price = round($p_weight * $price, 3);
 						$this->param['price'] = round($p_weight * $price, 3);
 					}
 					$this->param['area'] = $area;
@@ -177,13 +172,11 @@ class Construction extends Model
 				}
 			} elseif ($to_calculate === '2') {
 				if (is_numeric($area) && is_numeric($depth) && is_numeric($density)) {
-					$area = $area;
 					if ($a_unit == 'm²') {
 						$area = $area * 10.764;
 					} elseif ($a_unit == 'yd²') {
 						$area = $area * 9;
 					}
-					$depth = $depth;
 					if ($d_unit == 'in') {
 						$depth = $depth / 12;
 					} elseif ($d_unit == 'yd') {
@@ -194,7 +187,6 @@ class Construction extends Model
 						$depth = $depth * 3.28084;
 					}
 					$volume = round($depth * $area, 3); //cube yards
-					$density = $density;
 					if ($dn_unit == 'lb/yd³') {
 						$density = $density / 27;
 					} elseif ($dn_unit == 't/yd³') {
@@ -203,9 +195,8 @@ class Construction extends Model
 						$density = $density / 16.018;
 					}
 					$weight = round($density * $volume, 3);
-					if (!empty($price)) {
+					if (!empty($price) && is_numeric($price)) {
 						$p_weight = $weight;
-						$price = $price;
 						if ($p_unit == 'kg') {
 							$p_weight = $p_weight / 2.205;
 						} elseif ($p_unit == 'g') {
@@ -214,7 +205,6 @@ class Construction extends Model
 							$p_weight = $p_weight / 2205;
 						}
 						$this->param['price'] = round($p_weight * $price, 3);
-						// return $result;
 					}
 					$this->param['area'] = $area;
 					$this->param['weight'] = $weight;
@@ -242,9 +232,8 @@ class Construction extends Model
 						$density = $density / 16.018;
 					}
 					$weight = round($density * $volume, 3);
-					if (!empty($price)) {
+					if (!empty($price) && is_numeric($price)) {
 						$p_weight = $weight;
-						$price = $price;
 						if ($p_unit === 'kg') {
 							$p_weight = $p_weight / 2.205;
 						} elseif ($p_unit === 'g') {
@@ -265,9 +254,6 @@ class Construction extends Model
 			}
 		} else {
 			if (is_numeric($diameter) && is_numeric($density)) {
-				$diameter = $diameter;
-				$depth = $depth;
-				$density = $density;
 				if ($dia_unit === 'in') {
 					$diameter = $diameter / 12;
 				} elseif ($dia_unit === 'yd') {
@@ -296,9 +282,8 @@ class Construction extends Model
 					$density = $density / 16.018;
 				}
 				$weight = round($density * $volume, 3);
-				if (!empty($price)) {
+				if (!empty($price) && is_numeric($price)) {
 					$p_weight = $weight;
-					$price = $price;
 					if ($p_unit === 'kg') {
 						$p_weight = $p_weight / 2.205;
 					} elseif ($p_unit === 'g') {
@@ -307,7 +292,6 @@ class Construction extends Model
 						$p_weight = $p_weight / 2205;
 					}
 					$this->param['price'] = round($p_weight * $price, 3);
-					// return $result;
 				}
 				$this->param['area'] = $area;
 				$this->param['weight'] = $weight;
@@ -324,95 +308,93 @@ class Construction extends Model
 	
 	public function mulch($request)
 	{
-		if ($request->input('m-shape') === '0') {
-			$length = $request->input('length');
-			$length_unit = $request->input('length1');
-			$width = $request->input('width');
-			$width_unit = $request->input('width1');
-			$area = $request->input('sqr-ft');
-			$area_unit = $request->input('sqr-ft1');
-			$depth = $request->input('depth');
-			$depth_unit = $request->input('depth1');
-			$bag_size = $request->input('bag_size');
-			$bag_size1 = $request->input('bag_size1');
-			$price_bag = $request->input('price_bag');
-			$m_type = $request->input('m-type');
-			if ($request->input('check') === 'g1_value' || $request->input('g') === 'g1') {
+		$m_shape = $request->m_shape;
+		$length = $request->length;
+		$length_unit = $request->length1;
+		$width = $request->width;
+		$width_unit = $request->width1;
+		$area = $request->sqr_ft;
+		$area_unit = $request->sqr_ft1;
+		$depth = $request->depth;
+		$depth_unit = $request->depth1;
+		$bag_size = $request->bag_size;
+		$bag_size1 = $request->bag_size1;
+		$price_bag = $request->price_bag;
+		$m_type = $request->m_type;
+		$check = $request->check;
+		$g = $request->g;
+
+		if ($m_shape === '0') {
+			if ($check === 'g1_value' || $g === 'g1') {
 				if (is_numeric($length) && is_numeric($width) && is_numeric($depth)) {
 					if ($length_unit === 'in') {
 						$length = $length / 12;
-					}
-					if ($length_unit === 'yd') {
+					} elseif ($length_unit === 'yd') {
 						$length = $length * 3;
-					}
-					if ($length_unit === 'cm') {
+					} elseif ($length_unit === 'cm') {
 						$length = $length / 30.48;
-					}
-					if ($length_unit === 'm') {
+					} elseif ($length_unit === 'm') {
 						$length = $length * 3.281;
 					}
+
 					if ($width_unit === 'in') {
 						$width = $width / 12;
-					}
-					if ($width_unit === 'yd') {
+					} elseif ($width_unit === 'yd') {
 						$width = $width * 3;
-					}
-					if ($width_unit === 'cm') {
+					} elseif ($width_unit === 'cm') {
 						$width = $width / 30.48;
-					}
-					if ($width_unit === 'm') {
+					} elseif ($width_unit === 'm') {
 						$width = $width * 3.281;
 					}
+
 					if ($depth_unit === 'ft') {
 						$depth = $depth * 12;
-					}
-					if ($depth_unit === 'yd') {
+					} elseif ($depth_unit === 'yd') {
 						$depth = $depth * 36;
-					}
-					if ($depth_unit === 'cm') {
+					} elseif ($depth_unit === 'cm') {
 						$depth = $depth / 2.54;
-					}
-					if ($depth_unit === 'm') {
+					} elseif ($depth_unit === 'm') {
 						$depth = $depth * 39.37;
 					}
+
 					$garden_size = $length * $width;
 					$cubic_yards = ($length * $width * $depth) / 324;
 					$cubic_ft = $cubic_yards * 27;
 					$cubic_meters = $cubic_yards / 1.308;
 					$liters = $cubic_meters * 1000;
-					if (!empty($bag_size)) {
+
+					if (!empty($bag_size) && is_numeric($bag_size)) {
 						if ($bag_size1 === 'm³') {
 							$bag_size = $bag_size * 35.315;
-						}
-						if ($bag_size1 === 'cu yd') {
+						} elseif ($bag_size1 === 'cu yd') {
 							$bag_size = $bag_size * 27;
-						}
-						if ($bag_size1 === 'liters') {
+						} elseif ($bag_size1 === 'liters') {
 							$bag_size = $bag_size / 28.317;
 						}
 						$size = $cubic_ft / $bag_size;
 						$this->param['size'] = round($size, 2);
-						if (!empty($price_bag)) {
+						if (!empty($price_bag) && is_numeric($price_bag)) {
 							$total_cost = $price_bag * $size;
 							$this->param['total_cost'] = round($total_cost, 2);
 						}
 					}
+
 					if ($m_type === '6') {
 						$size1 = $garden_size / 235 * $depth * 2;
 						$this->param['size1'] = round($size1, 2);
-						if (!empty($price_bag)) {
+						if (!empty($price_bag) && is_numeric($price_bag)) {
 							$total_cost1 = $price_bag * $size1;
 							$this->param['total_cost1'] = round($total_cost1, 2);
 						}
-					}
-					if ($m_type === '10') {
+					} elseif ($m_type === '10') {
 						$size1 = $garden_size / 235 * $depth;
 						$this->param['size1'] = round($size1, 2);
-						if (!empty($price_bag)) {
+						if (!empty($price_bag) && is_numeric($price_bag)) {
 							$total_cost1 = $price_bag * $size1;
 							$this->param['total_cost1'] = round($total_cost1, 2);
 						}
 					}
+
 					$this->param['garden_size'] = round($garden_size, 2);
 					$this->param['cubic_yards'] = round($cubic_yards, 2);
 					$this->param['cubic_ft'] = round($cubic_ft, 2);
@@ -425,47 +407,48 @@ class Construction extends Model
 					return  $this->param;
 				}
 			} else {
-				if (is_numeric($length) && is_numeric($width) && is_numeric($depth)) {
+				if (is_numeric($area) && is_numeric($depth)) {
 					if ($area_unit === 'acres') {
 						$area = $area * 43560;
 					}
+
 					$cubic_yards = ($area * $depth) / 324;
 					$cubic_ft = $cubic_yards * 27;
 					$cubic_meters = $cubic_yards / 1.308;
 					$liters = $cubic_meters * 1000;
-					if (is_numeric($bag_size)) {
+
+					if (!empty($bag_size) && is_numeric($bag_size)) {
 						if ($bag_size1 === 'm³') {
 							$bag_size = $bag_size * 35.315;
-						}
-						if ($bag_size1 === 'cu yd') {
+						} elseif ($bag_size1 === 'cu yd') {
 							$bag_size = $bag_size * 27;
-						}
-						if ($bag_size1 === 'liters') {
+						} elseif ($bag_size1 === 'liters') {
 							$bag_size = $bag_size / 28.317;
 						}
 						$size = $cubic_ft / $bag_size;
 						$this->param['size'] = round($size, 2);
-						if (!empty($price_bag)) {
+						if (!empty($price_bag) && is_numeric($price_bag)) {
 							$total_cost = $price_bag * $size;
 							$this->param['total_cost'] = round($total_cost, 2);
 						}
 					}
+
 					if ($m_type === '6') {
 						$size1 = $area / 235 * $depth * 2;
 						$this->param['size1'] = round($size1, 2);
-						if (is_numeric($price_bag)) {
+						if (!empty($price_bag) && is_numeric($price_bag)) {
 							$total_cost1 = $price_bag * $size1;
 							$this->param['total_cost1'] = round($total_cost1, 2);
 						}
-					}
-					if ($m_type === '10') {
+					} elseif ($m_type === '10') {
 						$size1 = $area / 235 * $depth;
 						$this->param['size1'] = round($size1, 2);
-						if (is_numeric($price_bag)) {
+						if (!empty($price_bag) && is_numeric($price_bag)) {
 							$total_cost1 = $price_bag * $size1;
 							$this->param['total_cost1'] = round($total_cost1, 2);
 						}
 					}
+
 					$this->param['garden_size'] = round($area, 2);
 					$this->param['cubic_yards'] = round($cubic_yards, 2);
 					$this->param['cubic_ft'] = round($cubic_ft, 2);
@@ -478,81 +461,71 @@ class Construction extends Model
 					return  $this->param;
 				}
 			}
-		} elseif ($request->input('m-shape') === '1') {
-			$diameter = $request->input('diameter');
-			$diameter_unit = $request->input('diameter1');
-			$depth = $request->input('depth');
-			$depth_unit = $request->input('depth1');
-			$m_type = $request->input('m-type');
-			$bag_size = $request->input('bag_size');
-			$bag_size1 = $request->input('bag_size1');
-			$price_bag = $request->input('price_bag');
+		} elseif ($m_shape === '1') {
+			$diameter = $request->diameter;
+			$diameter_unit = $request->diameter1;
 
 			if (is_numeric($diameter) && is_numeric($depth)) {
 				if ($diameter_unit == 'in') {
 					$diameter = $diameter / 12;
-				}
-				if ($diameter_unit == 'yd') {
+				} elseif ($diameter_unit == 'yd') {
 					$diameter = $diameter * 3;
-				}
-				if ($diameter_unit == 'cm') {
+				} elseif ($diameter_unit == 'cm') {
 					$diameter = $diameter / 30.48;
-				}
-				if ($diameter_unit == 'm') {
+				} elseif ($diameter_unit == 'm') {
 					$diameter = $diameter * 3.281;
 				}
+
 				if ($depth_unit == 'ft') {
 					$depth = $depth * 12;
-				}
-				if ($depth_unit == 'yd') {
+				} elseif ($depth_unit == 'yd') {
 					$depth = $depth * 36;
-				}
-				if ($depth_unit == 'cm') {
+				} elseif ($depth_unit == 'cm') {
 					$depth = $depth / 2.54;
-				}
-				if ($depth_unit == 'm') {
+				} elseif ($depth_unit == 'm') {
 					$depth = $depth * 39.37;
 				}
+
 				$radius = $diameter * 0.5;
 				$garden_size = ($radius * $radius) * 3.1452;
 				$cubic_yards = (($depth / 12) * $garden_size) / 27;
 				$cubic_ft = $cubic_yards * 27;
 				$cubic_meters = $cubic_yards / 1.308;
 				$liters = $cubic_meters * 1000;
-				if (is_numeric($bag_size)) {
+
+				if (!empty($bag_size) && is_numeric($bag_size)) {
 					if ($bag_size1 == 'm³') {
 						$bag_size = $bag_size * 35.315;
-					}
-					if ($bag_size1 == 'cu yd') {
+					} elseif ($bag_size1 == 'cu yd') {
 						$bag_size = $bag_size * 27;
-					}
-					if ($bag_size1 == 'liters') {
+					} elseif ($bag_size1 == 'liters') {
 						$bag_size = $bag_size / 28.317;
 					}
 					$size = $cubic_ft / $bag_size;
 					$this->param['size'] = round($size, 2);
-					if (is_numeric($price_bag)) {
+					if (!empty($price_bag) && is_numeric($price_bag)) {
 						$total_cost = $price_bag * $size;
 						$this->param['total_cost'] = round($total_cost, 2);
 					}
 				}
+
 				if ($m_type === '6') {
 					$size1 = $garden_size / 235 * $depth * 2;
 					$this->param['size1'] = round($size1, 2);
-					if (is_numeric($price_bag)) {
+					if (!empty($price_bag) && is_numeric($price_bag)) {
 						$total_cost1 = $price_bag * $size1;
 						$this->param['total_cost1'] = round($total_cost1, 2);
 					}
-				}
-				if ($m_type === '10') {
+				} elseif ($m_type === '10') {
 					$size1 = $garden_size / 235 * $depth;
 					$this->param['size1'] = round($size1, 2);
-					if (!empty($price_bag)) {
+					if (!empty($price_bag) && is_numeric($price_bag)) {
 						$total_cost1 = $price_bag * $size1;
 						$this->param['total_cost1'] = round($total_cost1, 2);
 					}
 				}
-				$this->param['garden_size'] = round($garden_size);
+
+				$this->param['garden_size'] = round($garden_size, 2);
 				$this->param['cubic_yards'] = round($cubic_yards, 2);
 				$this->param['cubic_ft'] = round($cubic_ft, 2);
 				$this->param['cubic_meters'] = round($cubic_meters, 2);
@@ -563,91 +536,81 @@ class Construction extends Model
 				$this->param['error'] = 'Please! Check Your Input';
 				return  $this->param;
 			}
-		} elseif ($request->input('m-shape') === '2') {
-			$side1 = $request->input('side1');
-			$side1_unit = $request->input('side11');
-			$side2 = $request->input('side2');
-			$side2_unit = $request->input('side21');
-			$depth = $request->input('depth');
-			$depth_unit = $request->input('depth1');
-			$m_type = $request->input('m-type');
-			$bag_size = $request->input('bag_size');
-			$bag_size1 = $request->input('bag_size1');
+		} elseif ($m_shape === '2') {
+			$side1 = $request->side1;
+			$side1_unit = $request->side11;
+			$side2 = $request->side2;
+			$side2_unit = $request->side21;
+
 			if (is_numeric($side1) && is_numeric($side2) && is_numeric($depth)) {
 				if ($side1_unit == 'in') {
 					$side1 = $side1 / 12;
-				}
-				if ($side1_unit == 'yd') {
+				} elseif ($side1_unit == 'yd') {
 					$side1 = $side1 * 3;
-				}
-				if ($side1_unit == 'cm') {
+				} elseif ($side1_unit == 'cm') {
 					$side1 = $side1 / 30.48;
-				}
-				if ($side1_unit == 'm') {
+				} elseif ($side1_unit == 'm') {
 					$side1 = $side1 * 3.281;
 				}
+
 				if ($side2_unit == 'in') {
 					$side2 = $side2 / 12;
-				}
-				if ($side2_unit == 'yd') {
+				} elseif ($side2_unit == 'yd') {
 					$side2 = $side2 * 3;
-				}
-				if ($side2_unit == 'cm') {
+				} elseif ($side2_unit == 'cm') {
 					$side2 = $side2 / 30.48;
-				}
-				if ($side2_unit == 'm') {
+				} elseif ($side2_unit == 'm') {
 					$side2 = $side2 * 3.281;
 				}
+
 				if ($depth_unit == 'ft') {
 					$depth = $depth * 12;
-				}
-				if ($depth_unit == 'yd') {
+				} elseif ($depth_unit == 'yd') {
 					$depth = $depth * 36;
-				}
-				if ($depth_unit == 'cm') {
+				} elseif ($depth_unit == 'cm') {
 					$depth = $depth / 2.54;
-				}
-				if ($depth_unit == 'm') {
+				} elseif ($depth_unit == 'm') {
 					$depth = $depth * 39.37;
 				}
+
 				$garden_size = $side1 * $side2 * 0.5;
-				$cubic_yards = (($depth / 12) * $garden_size) / 27;;
+				$cubic_yards = (($depth / 12) * $garden_size) / 27;
 				$cubic_ft = $cubic_yards * 27;
 				$cubic_meters = $cubic_yards / 1.308;
 				$liters = $cubic_meters * 1000;
-				if (!empty($bag_size)) {
+
+				if (!empty($bag_size) && is_numeric($bag_size)) {
 					if ($bag_size1 == 'm³') {
 						$bag_size = $bag_size * 35.315;
-					}
-					if ($bag_size1 == 'cu yd') {
+					} elseif ($bag_size1 == 'cu yd') {
 						$bag_size = $bag_size * 27;
-					}
-					if ($bag_size1 == 'liters') {
+					} elseif ($bag_size1 == 'liters') {
 						$bag_size = $bag_size / 28.317;
 					}
 					$size = $cubic_ft / $bag_size;
 					$this->param['size'] = round($size, 2);
-					if (!empty($price_bag)) {
+					if (!empty($price_bag) && is_numeric($price_bag)) {
 						$total_cost = $price_bag * $size;
 						$this->param['total_cost'] = round($total_cost, 2);
 					}
 				}
-				if ($m_type == 6) {
+
+				if ($m_type == '6') {
 					$size1 = $garden_size / 235 * $depth * 2;
 					$this->param['size1'] = round($size1, 2);
-					if (!empty($price_bag)) {
+					if (!empty($price_bag) && is_numeric($price_bag)) {
 						$total_cost1 = $price_bag * $size1;
 						$this->param['total_cost1'] = round($total_cost1, 2);
 					}
-				}
-				if ($m_type == 10) {
+				} elseif ($m_type == '10') {
 					$size1 = $garden_size / 235 * $depth;
 					$this->param['size1'] = round($size1, 2);
-					if (!empty($price_bag)) {
+					if (!empty($price_bag) && is_numeric($price_bag)) {
 						$total_cost1 = $price_bag * $size1;
 						$this->param['total_cost1'] = round($total_cost1, 2);
 					}
 				}
+
 				$this->param['garden_size'] = round($garden_size, 2);
 				$this->param['cubic_yards'] = round($cubic_yards, 2);
 				$this->param['cubic_ft'] = round($cubic_ft, 2);
@@ -3801,70 +3764,73 @@ public function material($request){
 	// Decking Calculator
 	public function decking($request)
 	{
-		$deck_length = trim($request->input('deck_length'));
-		$deck_length_unit = trim($request->input('deck_length_unit'));
-		$deck_width = trim($request->input('deck_width'));
-		$deck_width_unit = trim($request->input('deck_width_unit'));
-		$board_length = trim($request->input('board_length'));
-		$board_length_unit = trim($request->input('board_length_unit'));
-		$board_width = trim($request->input('board_width'));
-		$board_width_unit = trim($request->input('board_width_unit'));
-		$material = trim($request->input('material'));
-		$Price = trim($request->input('price'));
-		$Cost = trim($request->input('Cost'));
-		function unit_change($deck_length, $deck_length_unit)
-		{
-			if ($deck_length_unit === "cm") {
-				$deck_length = $deck_length * 30.48;
-			} elseif ($deck_length_unit === "m") {
-				$deck_length = $deck_length / 3.28084;
-			} elseif ($deck_length_unit === "in") {
-				$deck_length = $deck_length * 12;
-			} elseif ($deck_length_unit === "ft") {
-				$deck_length = $deck_length;
+		$deck_length = $request->deck_length;
+		$deck_length_unit = $request->deck_length_unit;
+		$deck_width = $request->deck_width;
+		$deck_width_unit = $request->deck_width_unit;
+		$board_length = $request->board_length;
+		$board_length_unit = $request->board_length_unit;
+		$board_width = $request->board_width;
+		$board_width_unit = $request->board_width_unit;
+		$material = $request->material;
+		$Price = $request->price;
+		$Cost = $request->Cost;
+
+		if (!function_exists('decking_unit_change')) {
+			function decking_unit_change($deck_length, $deck_length_unit)
+			{
+				if ($deck_length_unit === "cm") {
+					$deck_length = $deck_length * 30.48;
+				} elseif ($deck_length_unit === "m") {
+					$deck_length = $deck_length / 3.28084;
+				} elseif ($deck_length_unit === "in") {
+					$deck_length = $deck_length * 12;
+				} elseif ($deck_length_unit === "ft") {
+					$deck_length = $deck_length;
+				}
+				return $deck_length;
 			}
-			return $deck_length;
 		}
+
 		if (is_numeric($deck_length) && is_numeric($deck_width) && is_numeric($board_length) && is_numeric($board_width) && is_numeric($Price) && is_numeric($Cost)) {
 
 			if ($deck_length == 0) {
 				$this->param['error'] = 'length value cannot be equal to zero';
-				return false;
+				return $this->param;
 			}
 
 			if ($deck_width == 0) {
 				$this->param['error'] = 'width value cannot be equal to zero';
-				return false;
+				return $this->param;
 			}
 
 			if ($board_length == 0) {
 				$this->param['error'] = 'length value cannot be equal to zero';
-				return false;
+				return $this->param;
 			}
 
 			if ($board_width == 0) {
 				$this->param['error'] = 'width value cannot be equal to zero';
-				return false;
+				return $this->param;
 			}
 			if ($Price == 0) {
 				$this->param['error'] = 'price per board value cannot be equal to zero';
-				return false;
+				return $this->param;
 			}
 			if ($Cost == 0) {
 				$this->param['error'] = 'cost of fasteners value cannot be equal to zero';
-				return false;
+				return $this->param;
 			}
 
-
-			$deck_length = unit_change($deck_length, $deck_length_unit);
-			$deck_width = unit_change($deck_width, $deck_width_unit);
-			$board_length = unit_change($board_length, $board_length_unit);
-			$board_width = unit_change($board_width, $board_width_unit);
+			$deck_length = decking_unit_change($deck_length, $deck_length_unit);
+			$deck_width = decking_unit_change($deck_width, $deck_width_unit);
+			$board_length = decking_unit_change($board_length, $board_length_unit);
+			$board_width = decking_unit_change($board_width, $board_width_unit);
 			$size_deck = $deck_length * $deck_width; //ans 1
 			$size_board = $board_length * $board_width; //ans 2
 			$numbers = round($size_deck / $size_board * 1.1); //ans 3
-			$material = $size_deck / 100;
-			$nails = $material * 350; //ans 4
+			$mat_val = $size_deck / 100;
+			$nails = $mat_val * 350; //ans 4
 			$clips = $nails / 2; //ans 5
 			$price_boards = $numbers * $Price; //ans 6
 			$Cost_boards = $price_boards + $Cost; //ans 7
@@ -3887,26 +3853,25 @@ public function material($request){
 // Sonotube Calculator
 public function sonotube($request)
 {
-	$size_unit = trim($request->input('size_unit'));
-	$height = trim($request->input('height'));
-	$height_unit = trim($request->input('height_unit'));
-	$quantity = trim($request->input('quantity'));
-	$concerete_mix_unit = trim($request->input('concerete_mix_unit'));
-	$density = trim($request->input('density'));
-	$density_unit = trim($request->input('density_unit'));
-	$concrete_ratio_unit = trim($request->input('concrete_ratio_unit'));
-	$bag_size = trim($request->input('bag_size'));
-	$bag_size_unit = trim($request->input('bag_size_unit'));
-	$waste = trim($request->input('waste'));
-	$Cost_bag_mix = trim($request->input('Cost_bag_mix'));
-	$Cost_of_cement = trim($request->input('Cost_of_cement'));
-	$Cost_of_cement_unit = trim($request->input('Cost_of_cement_unit'));
-	$Cost_of_sand = trim($request->input('Cost_of_sand'));
-	$Cost_of_sand_unit = trim($request->input('Cost_of_sand_unit'));
-	$Cost_of_gravel = trim($request->input('Cost_of_gravel'));
-	$Cost_of_gravel_unit = trim($request->input('Cost_of_gravel_unit'));
+	$size_unit = $request->size_unit;
+	$height = $request->height;
+	$height_unit = $request->height_unit;
+	$quantity = $request->quantity;
+	$concerete_mix_unit = $request->concerete_mix_unit;
+	$density = $request->density;
+	$density_unit = $request->density_unit;
+	$concrete_ratio_unit = $request->concrete_ratio_unit;
+	$bag_size = $request->bag_size;
+	$bag_size_unit = $request->bag_size_unit;
+	$waste = $request->waste;
+	$Cost_bag_mix = $request->Cost_bag_mix;
+	$Cost_of_cement = $request->Cost_of_cement;
+	$Cost_of_cement_unit = $request->Cost_of_cement_unit;
+	$Cost_of_sand = $request->Cost_of_sand;
+	$Cost_of_sand_unit = $request->Cost_of_sand_unit;
+	$Cost_of_gravel = $request->Cost_of_gravel;
+	$Cost_of_gravel_unit = $request->Cost_of_gravel_unit;
 
-	// dd($request->input());
 	if ($size_unit === "6 (15.24 cm)") {
 		$size = 6 / 2;
 	} elseif ($size_unit === "8 (20.32 cm)") {
@@ -3949,61 +3914,71 @@ public function sonotube($request)
 		$size = 54 / 2;
 	} elseif ($size_unit === "60 (152.40 cm)") {
 		$size = 60 / 2;
+	} else {
+		$size = 16 / 2; // Default
 	}
 
-	function section_height($height, $height_unit)
-	{
-		if ($height_unit === "cm") {
-			$height = $height * 2.54;
-		} elseif ($height_unit === "m") {
-			$height = $height / 39.37;
-		} elseif ($height_unit === "in") {
-			$height = $height;
-		} elseif ($height_unit === "ft") {
-			$height = $height / 12;
-		} elseif ($height_unit === "yd") {
-			$height = $height / 36;
+	if (!function_exists('section_height')) {
+		function section_height($height, $height_unit)
+		{
+			if ($height_unit === "cm") {
+				$height = $height * 2.54;
+			} elseif ($height_unit === "m") {
+				$height = $height / 39.37;
+			} elseif ($height_unit === "in") {
+				$height = $height;
+			} elseif ($height_unit === "ft") {
+				$height = $height / 12;
+			} elseif ($height_unit === "yd") {
+				$height = $height / 36;
+			}
+			return $height;
 		}
-		return $height;
 	}
 
 
-	function section_density($density, $density_unit)
-	{
-		if ($density_unit === "kg/m³") {
-			$density = $density * 16.01846;
-		} elseif ($density_unit === "lb/cu ft") {
-			$density = $density;
-		} elseif ($density_unit === "lb/cu yd") {
-			$density = $density * 27;
-		} elseif ($density_unit === "g/cm³") {
-			$density = $density * 0.01601846;
+	if (!function_exists('section_density')) {
+		function section_density($density, $density_unit)
+		{
+			if ($density_unit === "kg/m³") {
+				$density = $density * 16.01846;
+			} elseif ($density_unit === "lb/cu ft") {
+				$density = $density;
+			} elseif ($density_unit === "lb/cu yd") {
+				$density = $density * 27;
+			} elseif ($density_unit === "g/cm³") {
+				$density = $density * 0.01601846;
+			}
+			return $density;
 		}
-		return $density;
 	}
 
-	function section_bag_size($bag_size, $bag_size_unit)
-	{
-		if ($bag_size_unit === "kg") {
-			// No conversion needed as it's already in kg
-		} elseif ($bag_size_unit === "lb") {
-			$bag_size = $bag_size * 2.205;
+	if (!function_exists('section_bag_size')) {
+		function section_bag_size($bag_size, $bag_size_unit)
+		{
+			if ($bag_size_unit === "kg") {
+				// No conversion needed as it's already in kg
+			} elseif ($bag_size_unit === "lb") {
+				$bag_size = $bag_size * 2.205;
+			}
+			return $bag_size;
 		}
-		return $bag_size;
 	}
 
-	function section_two($Cost_of_cement, $Cost_of_cement_unit)
-	{
-		if ($Cost_of_cement_unit === "cm³") {
-			$Cost_of_cement = $Cost_of_cement * 28320;
-		} elseif ($Cost_of_cement_unit === "m³") {
-			$Cost_of_cement = $Cost_of_cement / 35.315;
-		} elseif ($Cost_of_cement_unit === "cu ft") {
-			// No conversion needed as it's already in cu ft
-		} elseif ($Cost_of_cement_unit === "cu yd") {
-			$Cost_of_cement = $Cost_of_cement / 27;
+	if (!function_exists('section_two')) {
+		function section_two($Cost_of_cement, $Cost_of_cement_unit)
+		{
+			if ($Cost_of_cement_unit === "cm³") {
+				$Cost_of_cement = $Cost_of_cement * 28320;
+			} elseif ($Cost_of_cement_unit === "m³") {
+				$Cost_of_cement = $Cost_of_cement / 35.315;
+			} elseif ($Cost_of_cement_unit === "cu ft") {
+				// No conversion needed as it's already in cu ft
+			} elseif ($Cost_of_cement_unit === "cu yd") {
+				$Cost_of_cement = $Cost_of_cement / 27;
+			}
+			return $Cost_of_cement;
 		}
-		return $Cost_of_cement;
 	}
 
 	if (is_numeric($height) && is_numeric($quantity)) {
@@ -4083,6 +4058,8 @@ public function sonotube($request)
 					$ratio_of_sand = 2;
 				} elseif ($concrete_ratio_unit === "1:1.5:3 (20.0 MPa or 2900 psi)") {
 					$ratio_of_sand = 1.5;
+				} else {
+					$ratio_of_sand = 5; // Default
 				}
 				$value_sand = $total_volume * $ratio_of_sand / (($size * 2)); //Answer p_2 3
 
@@ -4096,6 +4073,8 @@ public function sonotube($request)
 					$ratio_of_gravel = 4;
 				} elseif ($concrete_ratio_unit === "1:1.5:3 (20.0 MPa or 2900 psi)") {
 					$ratio_of_gravel = 3;
+				} else {
+					$ratio_of_gravel = 10; // Default
 				}
 				$value_gravel = $total_volume * $ratio_of_gravel / (($size * 2)); //Answer p_2 4
 
