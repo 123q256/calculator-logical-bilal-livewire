@@ -5,7 +5,7 @@ namespace App\Livewire\Calculators;
 use Livewire\Component;
 use App\Models\Construction;
 
-class SandCalculator extends Component
+class AsphaltCalculator extends Component
 {
     public $error = null;
     public $detail = null;
@@ -13,40 +13,35 @@ class SandCalculator extends Component
     public $lang = [];
     public $currancy = '$';
 
-    // Inputs
-    public $shape = '0'; // 0: Rectangular, 1: Circular
-    public $g = 'g1'; // g1: By Dimensions, g2: By Area, g3: By Volume
-    public $length = '10';
-    public $length_unit = 'ft';
-    public $width = '10';
-    public $width_unit = 'ft';
-    public $area = '100';
-    public $area_unit = 'ft²';
-    public $depth = '2';
-    public $depth_unit = 'in';
-    public $volume = '20';
-    public $volume_unit = 'ft³';
-    public $density = '100';
-    public $density_unit = 'lb/ft³';
-    public $mass_price = '';
-    public $mass_price_unit = 'lb'; // Default will be prefixed with currency in mount
-    public $volume_price = '';
-    public $volume_price_unit = 'ft³'; // Default will be prefixed with currency in mount
-    public $diameter = '10';
-    public $diameter_unit = 'ft';
-    public $c_price = '';
+    // Form Fields
+    public $cal = 'lwt';
+    public $length = 24;
+    public $length_unit = 'cm';
+    public $width = 10;
+    public $width_unit = 'cm';
+    public $area = 10;
+    public $area_unit = 'm²';
+    public $depth = 15;
+    public $depth_unit = 'cm';
+    public $volume = 15;
+    public $volume_unit = 'm³';
+    public $density = 12;
+    public $density_unit = 'kg/m³';
+    public $cs_depth = 15;
+    public $cs_depth_unit = 'cm';
+    public $depth_dr = 15;
+    public $depth_dr_unit = 'cm';
+    public $cost = 15;
+    public $cost_unit = '$ kg';
 
     public $showDropdown = null;
 
-    public function mount($type = 'calculator', $lang = [])
+    public function mount($type = 'calculator', $lang = [], $currancy = '$')
     {
         $this->type = $type;
         $this->lang = $lang;
-        $this->currancy = $lang['currency'] ?? '$';
-
-        // Set default currency-prefixed units
-        $this->mass_price_unit = $this->currancy . 'lb';
-        $this->volume_price_unit = $this->currancy . 'ft³';
+        $this->currancy = $currancy;
+        $this->cost_unit = $currancy . ' kg';
 
         $this->detail = session('calculator_result');
         $this->error = session('validation_error');
@@ -66,13 +61,10 @@ class SandCalculator extends Component
         $this->showDropdown = ($this->showDropdown === $dropdown) ? null : $dropdown;
     }
 
-    public function setUnit($property, $value)
+    public function setUnit($field, $value)
     {
-        if (property_exists($this, $property)) {
-            $this->$property = $value;
-        }
+        $this->$field = $value;
         $this->showDropdown = null;
-        $this->detail = null;
     }
 
     public function updated($propertyName)
@@ -83,8 +75,11 @@ class SandCalculator extends Component
 
     public function resetForm()
     {
-        $this->reset(['error', 'detail', 'length', 'width', 'area', 'depth', 'volume', 'density', 'mass_price', 'volume_price', 'diameter', 'c_price']);
         $this->resetErrorBag();
+        $this->resetValidation();
+
+        $this->error = null;
+        $this->detail = null;
 
         session()->forget([
             'calculator_back_inputs',
@@ -102,8 +97,7 @@ class SandCalculator extends Component
     {
         $this->error = null;
         $request = (object)[
-            'shape' => $this->shape,
-            'g' => $this->g,
+            'cal' => $this->cal,
             'length' => $this->length,
             'length_unit' => $this->length_unit,
             'width' => $this->width,
@@ -116,20 +110,18 @@ class SandCalculator extends Component
             'volume_unit' => $this->volume_unit,
             'density' => $this->density,
             'density_unit' => $this->density_unit,
-            'mass_price' => $this->mass_price,
-            'mass_price_unit' => $this->mass_price_unit,
-            'volume_price' => $this->volume_price,
-            'volume_price_unit' => $this->volume_price_unit,
-            'diameter' => $this->diameter,
-            'diameter_unit' => $this->diameter_unit,
-            'c_price' => $this->c_price,
-            'hiddencurrancy' => $this->currancy,
+            'cs_depth' => $this->cs_depth,
+            'cs_depth_unit' => $this->cs_depth_unit,
+            'depth_dr' => $this->depth_dr,
+            'depth_dr_unit' => $this->depth_dr_unit,
+            'cost' => $this->cost,
+            'cost_unit' => $this->cost_unit,
         ];
 
         $model = new Construction();
-        $result = $model->sand($request);
+        $result = $model->asphalt($request);
 
-        if (!empty($result['RESULT']) && $result['RESULT'] == 1 || isset($result['weight'])) {
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
 
@@ -141,6 +133,7 @@ class SandCalculator extends Component
             }
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
+            session()->flash('validation_error', $this->error);
             $this->detail = null;
         }
     }
@@ -158,6 +151,6 @@ class SandCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.sand-calculator');
+        return view('livewire.calculators.asphalt-calculator');
     }
 }

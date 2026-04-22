@@ -628,452 +628,366 @@ class Construction extends Model
 	// sand calculator
 	public function sand($request)
 	{
-		$length = $request->input('length');
-		$length_unit = $request->input('length_unit');
-		$width = $request->input('width');
-		$width_unit = $request->input('width_unit');
-		$area = $request->input('area');
-		$area_unit = $request->input('area_unit');
-		$depth = $request->input('depth');
-		$depth_unit = $request->input('depth_unit');
-		$volume = $request->input('volume');
-		$volume_unit = $request->input('volume_unit');
-		$density = $request->input('density');
-		$density_unit = $request->input('density_unit');
-		$mass_price = $request->input('mass_price');
-		$mass_price_unit = $request->input('mass_price_unit');
-		$volume_price = $request->input('volume_price');
-		$volume_price_unit = $request->input('volume_price_unit');
-		$shape = $request->input('shape');
-		$g = $request->input('g');
-		$diameter = $request->input('diameter');
-		$diameter_unit = $request->input('diameter_unit');
-		$depth = $request->input('depth');
-		$depth_unit = $request->input('depth_unit');
-		$c_price = $request->input('c_price');
-		$hiddencurrancy = $request->input('hiddencurrancy');
+		$length = $request->length;
+		$length_unit = $request->length_unit;
+		$width = $request->width;
+		$width_unit = $request->width_unit;
+		$area = $request->area;
+		$area_unit = $request->area_unit;
+		$depth = $request->depth;
+		$depth_unit = $request->depth_unit;
+		$volume = $request->volume;
+		$volume_unit = $request->volume_unit;
+		$density = $request->density;
+		$density_unit = $request->density_unit;
+		$mass_price = $request->mass_price;
+		$mass_price_unit = $request->mass_price_unit;
+		$volume_price = $request->volume_price;
+		$volume_price_unit = $request->volume_price_unit;
+		$shape = $request->shape;
+		$g = $request->g;
+		$diameter = $request->diameter;
+		$diameter_unit = $request->diameter_unit;
+		$c_price = $request->c_price;
+		$hiddencurrancy = $request->hiddencurrancy;
 
-
-		if($area_unit == 'mm²'){
-		$area_unit = 'mm2';
-		}else if($area_unit == 'cm²'){
-		$area_unit = 'cm2';
-		}else if($area_unit == 'm²'){
-		$area_unit = 'mm2';
-		}else if($area_unit == 'in²'){
-		$area_unit = 'm2';
-		}else if($area_unit == 'ft²'){
-		$area_unit = 'in2';
-		}else if($area_unit == 'yd²'){
-		$area_unit = 'yd2';
-		}else if($area_unit == 'hectares'){
-		$area_unit = 'ha';
-		}else if($area_unit == 'acres'){
-		$area_unit = 'ac';
-      	}else if($area_unit == 'soccer fields'){
-		$area_unit = 'sf';
-	   }
-
-
-	   if($volume_unit == 'mm³'){
-		$volume_unit = 'mm3';
-		}else if($volume_unit == 'cm³'){
-		$volume_unit = 'cm3';
-		}else if($volume_unit == 'm³'){
-		$volume_unit = 'm3';
-		}else if($volume_unit == 'in³'){
-		$volume_unit = 'in3';
-		}else if($volume_unit == 'ft³'){
-		$volume_unit = 'ft3';
-		}else if($volume_unit == 'yd³'){
-		$volume_unit = 'yd3';
+		if ($area_unit == 'mm²') {
+			$area_unit = 'mm2';
+		} else if ($area_unit == 'cm²') {
+			$area_unit = 'cm2';
+		} else if ($area_unit == 'm²') {
+			$area_unit = 'm2';
+		} else if ($area_unit == 'in²') {
+			$area_unit = 'in2';
+		} else if ($area_unit == 'ft²') {
+			$area_unit = 'ft2';
+		} else if ($area_unit == 'yd²') {
+			$area_unit = 'yd2';
+		} else if ($area_unit == 'hectares') {
+			$area_unit = 'ha';
+		} else if ($area_unit == 'acres') {
+			$area_unit = 'ac';
+		} else if ($area_unit == 'soccer fields') {
+			$area_unit = 'sf';
 		}
 
-		if($density_unit == 'kg/m³'){
+		if ($volume_unit == 'mm³') {
+			$volume_unit = 'mm3';
+		} else if ($volume_unit == 'cm³') {
+			$volume_unit = 'cm3';
+		} else if ($volume_unit == 'm³') {
+			$volume_unit = 'm3';
+		} else if ($volume_unit == 'in³') {
+			$volume_unit = 'in3';
+		} else if ($volume_unit == 'ft³') {
+			$volume_unit = 'ft3';
+		} else if ($volume_unit == 'yd³') {
+			$volume_unit = 'yd3';
+		}
+
+		if ($density_unit == 'kg/m³') {
 			$density_unit = 'kg_m3';
-			}else if($density_unit == 't/m³'){
+		} else if ($density_unit == 't/m³') {
 			$density_unit = 't_m3';
-			}else if($density_unit == 'g/cm³'){
+		} else if ($density_unit == 'g/cm³') {
 			$density_unit = 'g_cm3';
-			}else if($density_unit == 'oz/in³'){
+		} else if ($density_unit == 'oz/in³') {
 			$density_unit = 'oz_in3';
-			}else if($density_unit == 'lb/in³'){
+		} else if ($density_unit == 'lb/in³') {
 			$density_unit = 'lb_in3';
-			}else if($density_unit == 'lb/ft³'){
+		} else if ($density_unit == 'lb/ft³') {
 			$density_unit = 'lb_ft3';
-		   }else if($density_unit == 'lb/yd³'){
+		} else if ($density_unit == 'lb/yd³') {
 			$density_unit = 'lb_yd3';
-			}
+		}
 
+		if ($mass_price_unit == $hiddencurrancy . 'µg') {
+			$mass_price_unit = 'ug';
+		} else if ($mass_price_unit == $hiddencurrancy . 'mg') {
+			$mass_price_unit = 'mg';
+		} else if ($mass_price_unit == $hiddencurrancy . 'g') {
+			$mass_price_unit = 'g';
+		} else if ($mass_price_unit == $hiddencurrancy . 'kg') {
+			$mass_price_unit = 'kg';
+		} else if ($mass_price_unit == $hiddencurrancy . 't') {
+			$mass_price_unit = 't';
+		} else if ($mass_price_unit == $hiddencurrancy . 'lb') {
+			$mass_price_unit = 'lb';
+		} else if ($mass_price_unit == $hiddencurrancy . 'stone') {
+			$mass_price_unit = 'stone';
+		} else if ($mass_price_unit == $hiddencurrancy . 'US ton') {
+			$mass_price_unit = 'us_ton';
+		} else if ($mass_price_unit == $hiddencurrancy . 'Long ton') {
+			$mass_price_unit = 'long_ton';
+		}
 
-			if($mass_price_unit == $hiddencurrancy.'µg'){
-				$mass_price_unit = 'ug';
-				}else if($mass_price_unit == $hiddencurrancy.'mg'){
-				$mass_price_unit = 'mg';
-				}else if($mass_price_unit == $hiddencurrancy.'g'){
-				$mass_price_unit = 'g';
-				}else if($mass_price_unit == $hiddencurrancy.'kg'){
-				$mass_price_unit = 'kg';
-				}else if($mass_price_unit == $hiddencurrancy.'t'){
-				$mass_price_unit = 't';
-				}else if($mass_price_unit == $hiddencurrancy.'lb'){
-				$mass_price_unit = 'lb';
-			   }else if($mass_price_unit == $hiddencurrancy.'stone'){
-				$mass_price_unit = 'stone';
-				}else if($mass_price_unit == $hiddencurrancy.'US ton'){
-					$mass_price_unit = $hiddencurrancy.'us_ton';
-				}else if($mass_price_unit == 'Long ton'){
-				$mass_price_unit = $hiddencurrancy.'long_ton';
-				}
-
-				if($volume_price_unit == $hiddencurrancy.'mm³'){
-					$volume_price_unit = 'mm3';
-					}else if($volume_price_unit == $hiddencurrancy.'cm³'){
-					$volume_price_unit = 'cm3';
-					}else if($volume_price_unit == $hiddencurrancy.'m³'){
-					$volume_price_unit = 'm3';
-					}else if($volume_price_unit == $hiddencurrancy.'in³'){
-					$volume_price_unit = 'in3';
-					}else if($volume_price_unit == $hiddencurrancy.'ft³'){
-					$volume_price_unit = 'ft3';
-			    	}else if($volume_price_unit == $hiddencurrancy.'yd³'){
-					$volume_price_unit = 'yd3';
-					}
-
+		if ($volume_price_unit == $hiddencurrancy . 'mm³') {
+			$volume_price_unit = 'mm3';
+		} else if ($volume_price_unit == $hiddencurrancy . 'cm³') {
+			$volume_price_unit = 'cm3';
+		} else if ($volume_price_unit == $hiddencurrancy . 'm³') {
+			$volume_price_unit = 'm3';
+		} else if ($volume_price_unit == $hiddencurrancy . 'in³') {
+			$volume_price_unit = 'in3';
+		} else if ($volume_price_unit == $hiddencurrancy . 'ft³') {
+			$volume_price_unit = 'ft3';
+		} else if ($volume_price_unit == $hiddencurrancy . 'yd³') {
+			$volume_price_unit = 'yd3';
+		}
 
 		if ($shape === '0') {
-			// Storing input values in variables
-			// Method 1
 			if ($g == 'g1') {
 				if (is_numeric($length) && is_numeric($width) && is_numeric($depth) && is_numeric($density)) {
-					// Conversion of length units in feet
 					if ($length_unit === 'mm') {
 						$length = $length / 305;
-					}
-					if ($length_unit === 'cm') {
+					} elseif ($length_unit === 'cm') {
 						$length = $length / 30.48;
-					}
-					if ($length_unit === 'm') {
+					} elseif ($length_unit === 'm') {
 						$length = $length * 3.281;
-					}
-					if ($length_unit === 'in') {
+					} elseif ($length_unit === 'in') {
 						$length = $length / 12;
-					}
-					if ($length_unit === 'yd') {
+					} elseif ($length_unit === 'yd') {
 						$length = $length * 3;
 					}
-					// Conversion of width units in feet
+
 					if ($width_unit === 'mm') {
 						$width = $width / 305;
-					}
-					if ($width_unit === 'cm') {
+					} elseif ($width_unit === 'cm') {
 						$width = $width / 30.48;
-					}
-					if ($width_unit === 'm') {
+					} elseif ($width_unit === 'm') {
 						$width = $width * 3.281;
-					}
-					if ($width_unit === 'in') {
+					} elseif ($width_unit === 'in') {
 						$width = $width / 12;
-					}
-					if ($width_unit === 'yd') {
+					} elseif ($width_unit === 'yd') {
 						$width = $width * 3;
 					}
-					// Conversion of depth units in feet
+
 					if ($depth_unit === 'in') {
 						$depth = $depth / 12;
-					}
-					if ($depth_unit === 'yd') {
+					} elseif ($depth_unit === 'yd') {
 						$depth = $depth * 3;
-					}
-					if ($depth_unit === 'cm') {
+					} elseif ($depth_unit === 'cm') {
 						$depth = $depth / 30.48;
-					}
-					if ($depth_unit === 'm') {
+					} elseif ($depth_unit === 'm') {
 						$depth = $depth * 3.281;
 					}
-					// Conversion of density units in pound/cubic feet
+
 					if ($density_unit === 'kg_m3') {
 						$density = $density * 0.062428;
-					}
-					if ($density_unit === 't_m3' || $density_unit === 'g_cm3') {
+					} elseif ($density_unit === 't_m3' || $density_unit === 'g_cm3') {
 						$density = $density * 62.428;
-					}
-					if ($density_unit === 'oz_in3') {
+					} elseif ($density_unit === 'oz_in3') {
 						$density = $density * 108;
-					}
-					if ($density_unit === 'lb_in3') {
+					} elseif ($density_unit === 'lb_in3') {
 						$density = $density * 1728;
-					}
-					if ($density_unit === 'lb_yd3') {
+					} elseif ($density_unit === 'lb_yd3') {
 						$density = $density * 0.037037;
 					}
-					// Calculation
+
 					$area = $length * $width;
 					$volume = $area * $depth;
 					$weight = $volume * $density;
 					$weight = $weight * 0.000453592;
-					// Conversion of volume units for display
+
 					$mm3 = $volume * 28316847;
 					$cm3 = $volume * 28316.85;
 					$m3 = $volume * 0.02831685;
 					$in3 = $volume * 1728;
 					$yd3 = $volume * 0.037037;
-					// Conversion of weight units for display
-					$g = $weight * 1000000;
+
+					$g_res = $weight * 1000000;
 					$kg = $weight * 1000;
 					$oz = $weight * 35273.96;
 					$lb = $weight * 2204.623;
 					$stone = $weight * 157.473;
 					$us_ton = $weight * 1.102311;
 					$long_ton = $weight * 0.984207;
+
 					$this->param = [
 						'mm3' => round($mm3, 2),
 						'cm3' => round($cm3, 2),
 						'm3' => round($m3, 2),
 						'in3' => round($in3, 2),
 						'yd3' => round($yd3, 2),
-						// Sending weight units
-						'g' => round($g, 2),
+						'g' => round($g_res, 2),
 						'kg' => round($kg, 2),
 						'oz' => round($oz, 2),
 						'lb' => round($lb, 2),
 						'stone' => round($stone, 2),
 						'us_ton' => round($us_ton, 2),
 						'long_ton' => round($long_ton, 2),
-						// Sending main results
 						'volume' => round($volume, 4),
 						'weight' => round($weight, 4),
 					];
+
 					if (is_numeric($mass_price)) {
 						if ($mass_price_unit === 'ug') {
 							$mass_price = $mass_price * 1000000000000;
-						}
-						if ($mass_price_unit === 'mg') {
+						} elseif ($mass_price_unit === 'mg') {
 							$mass_price = $mass_price * 1000000000;
-						}
-						if ($mass_price_unit === 'g') {
+						} elseif ($mass_price_unit === 'g') {
 							$mass_price = $mass_price * 1000000;
-						}
-						if ($mass_price_unit === 'dag') {
+						} elseif ($mass_price_unit === 'dag') {
 							$mass_price = $mass_price * 100000;
-						}
-						if ($mass_price_unit === 'kg') {
+						} elseif ($mass_price_unit === 'kg') {
 							$mass_price = $mass_price * 1000;
-						}
-						if ($mass_price_unit === 'gr') {
+						} elseif ($mass_price_unit === 'gr') {
 							$mass_price = $mass_price * 15432358.35;
-						}
-						if ($mass_price_unit === 'dr') {
+						} elseif ($mass_price_unit === 'dr') {
 							$mass_price = $mass_price * 564383.39;
-						}
-						if ($mass_price_unit === 'oz') {
+						} elseif ($mass_price_unit === 'oz') {
 							$mass_price = $mass_price * 35273.96;
-						}
-						if ($mass_price_unit === 'lb') {
+						} elseif ($mass_price_unit === 'lb') {
 							$mass_price = $mass_price * 2204.62;
-						}
-						if ($mass_price_unit === 'stone') {
+						} elseif ($mass_price_unit === 'stone') {
 							$mass_price = $mass_price * 157.47;
-						}
-						if ($mass_price_unit === 'us_ton') {
+						} elseif ($mass_price_unit === 'us_ton') {
 							$mass_price = $mass_price * 1.10;
-						}
-						if ($mass_price_unit === 'long_ton') {
+						} elseif ($mass_price_unit === 'long_ton') {
 							$mass_price = $mass_price / 0.98;
 						}
-						// Calculation & Sending
-						$cost = $mass_price * $weight;
-						$this->param['cost'] = round($cost, 2);
-						// dd($result,'end');
+						$this->param['cost'] = round($mass_price * $weight, 2);
 					}
-					// Conversion of volume price units in feet
+
 					if (is_numeric($volume_price)) {
 						if ($volume_price_unit === 'mm3') {
 							$volume_price = $volume_price * 764554857.98;
-						}
-						if ($volume_price_unit === 'cm3') {
+						} elseif ($volume_price_unit === 'cm3') {
 							$volume_price = $volume_price * 764554.86;
-						}
-						if ($volume_price_unit === 'm3') {
+						} elseif ($volume_price_unit === 'm3') {
 							$volume_price = $volume_price * 0.76;
-						}
-						if ($volume_price_unit === 'in3') {
+						} elseif ($volume_price_unit === 'in3') {
 							$volume_price = $volume_price * 46656;
-						}
-						if ($volume_price_unit === 'yd3') {
+						} elseif ($volume_price_unit === 'yd3') {
 							$volume_price = $volume_price * 27;
 						}
-						// Calculation & Sending
-						$weight = $weight / 1.22;
-						$cost = $volume_price * $weight;
-						$this->param['cost'] = round($cost, 2);
+						$this->param['cost'] = round($volume_price * ($weight / 1.22), 2);
 					}
 
 					return $this->param;
-					// dd($result,'endif');
 				} else {
 					$this->param['error'] = 'please check your inputs...';
 					return $this->param;
 				}
-				// Method 2
 			} elseif ($g === 'g2') {
 				if (is_numeric($area) && is_numeric($depth) && is_numeric($density)) {
-					// Conversion of length units in square feet
 					if ($area_unit === 'mm2') {
 						$area = $area * 0.0000107639;
-					}
-					if ($area_unit === 'cm2') {
+					} elseif ($area_unit === 'cm2') {
 						$area = $area * 0.00107639;
-					}
-					if ($area_unit === 'm2') {
+					} elseif ($area_unit === 'm2') {
 						$area = $area * 10.7639;
-					}
-					if ($area_unit === 'in2') {
+					} elseif ($area_unit === 'in2') {
 						$area = $area * 0.00694444;
-					}
-					if ($area_unit === 'yd2') {
+					} elseif ($area_unit === 'yd2') {
 						$area = $area * 9;
-					}
-					if ($area_unit === 'ha') {
+					} elseif ($area_unit === 'ha') {
 						$area = $area * 107639;
-					}
-					if ($area_unit === 'ac') {
+					} elseif ($area_unit === 'ac') {
 						$area = $area * 43560;
-					}
-					if ($area_unit === 'sf') {
+					} elseif ($area_unit === 'sf') {
 						$area = $area * 76854.3;
 					}
-					// Conversion of depth units in feet
+
 					if ($depth_unit === 'in') {
 						$depth = $depth / 12;
-					}
-					if ($depth_unit === 'yd') {
+					} elseif ($depth_unit === 'yd') {
 						$depth = $depth * 3;
-					}
-					if ($depth_unit === 'cm') {
+					} elseif ($depth_unit === 'cm') {
 						$depth = $depth / 30.48;
-					}
-					if ($depth_unit === 'm') {
+					} elseif ($depth_unit === 'm') {
 						$depth = $depth * 3.281;
 					}
-					// Conversion of density units in pound/cubic feet
+
 					if ($density_unit === 'kg_m3') {
 						$density = $density * 0.062428;
-					}
-					if ($density_unit === 't_m3' || $density_unit === 'g_cm3') {
+					} elseif ($density_unit === 't_m3' || $density_unit === 'g_cm3') {
 						$density = $density * 62.428;
-					}
-					if ($density_unit === 'oz_in3') {
+					} elseif ($density_unit === 'oz_in3') {
 						$density = $density * 108;
-					}
-					if ($density_unit === 'lb_in3') {
+					} elseif ($density_unit === 'lb_in3') {
 						$density = $density * 1728;
-					}
-					if ($density_unit === 'lb_yd3') {
+					} elseif ($density_unit === 'lb_yd3') {
 						$density = $density * 0.037037;
 					}
-					// Calculation
+
 					$volume = $area * $depth;
 					$weight = $volume * $density;
 					$weight = $weight * 0.000453592;
-					// Conversion of volume units for display
+
 					$mm3 = $volume * 28316847;
 					$cm3 = $volume * 28316.85;
 					$m3 = $volume * 0.02831685;
 					$in3 = $volume * 1728;
 					$yd3 = $volume * 0.037037;
-					// Conversion of weight units for display
-					$g = $weight * 1000000;
+
+					$g_res = $weight * 1000000;
 					$kg = $weight * 1000;
 					$oz = $weight * 35273.96;
 					$lb = $weight * 2204.623;
 					$stone = $weight * 157.473;
 					$us_ton = $weight * 1.102311;
 					$long_ton = $weight * 0.984207;
-					// Sending volume units
+
 					$this->param = [
 						'mm3' => round($mm3, 2),
 						'cm3' => round($cm3, 2),
 						'm3' => round($m3, 2),
 						'in3' => round($in3, 2),
 						'yd3' => round($yd3, 2),
-						// Sending weight units
-						'g' => round($g, 2),
+						'g' => round($g_res, 2),
 						'kg' => round($kg, 2),
 						'oz' => round($oz, 2),
 						'lb' => round($lb, 2),
 						'stone' => round($stone, 2),
 						'us_ton' => round($us_ton, 2),
 						'long_ton' => round($long_ton, 2),
-						// Sending main results
 						'volume' => round($volume, 4),
 						'weight' => round($weight, 4),
 					];
 
-					// dd($this->param);
-					// Conversion of mass price units in ton
 					if (is_numeric($mass_price)) {
 						if ($mass_price_unit === 'ug') {
 							$mass_price = $mass_price * 1000000000000;
-						}
-						if ($mass_price_unit === 'mg') {
+						} elseif ($mass_price_unit === 'mg') {
 							$mass_price = $mass_price * 1000000000;
-						}
-						if ($mass_price_unit === 'g') {
+						} elseif ($mass_price_unit === 'g') {
 							$mass_price = $mass_price * 1000000;
-						}
-						if ($mass_price_unit === 'dag') {
+						} elseif ($mass_price_unit === 'dag') {
 							$mass_price = $mass_price * 100000;
-						}
-						if ($mass_price_unit === 'kg') {
+						} elseif ($mass_price_unit === 'kg') {
 							$mass_price = $mass_price * 1000;
-						}
-						if ($mass_price_unit === 'gr') {
+						} elseif ($mass_price_unit === 'gr') {
 							$mass_price = $mass_price * 15432358.35;
-						}
-						if ($mass_price_unit === 'dr') {
+						} elseif ($mass_price_unit === 'dr') {
 							$mass_price = $mass_price * 564383.39;
-						}
-						if ($mass_price_unit === 'oz') {
+						} elseif ($mass_price_unit === 'oz') {
 							$mass_price = $mass_price * 35273.96;
-						}
-						if ($mass_price_unit === 'lb') {
+						} elseif ($mass_price_unit === 'lb') {
 							$mass_price = $mass_price * 2204.62;
-						}
-						if ($mass_price_unit === 'stone') {
+						} elseif ($mass_price_unit === 'stone') {
 							$mass_price = $mass_price * 157.47;
-						}
-						if ($mass_price_unit === 'us_ton') {
+						} elseif ($mass_price_unit === 'us_ton') {
 							$mass_price = $mass_price * 1.10;
-						}
-						if ($mass_price_unit === 'long_ton') {
+						} elseif ($mass_price_unit === 'long_ton') {
 							$mass_price = $mass_price / 0.98;
 						}
-						// Calculation & Sending
-						$cost = $mass_price * $weight;
-						$this->param['cost'] = round($cost, 2);
+						$this->param['cost'] = round($mass_price * $weight, 2);
 					}
-					// Conversion of volume price units in feet
+
 					if (is_numeric($volume_price)) {
 						if ($volume_price_unit === 'mm3') {
 							$volume_price = $volume_price * 764554857.98;
-						}
-						if ($volume_price_unit === 'cm3') {
+						} elseif ($volume_price_unit === 'cm3') {
 							$volume_price = $volume_price * 764554.86;
-						}
-						if ($volume_price_unit === 'm3') {
+						} elseif ($volume_price_unit === 'm3') {
 							$volume_price = $volume_price * 0.76;
-						}
-						if ($volume_price_unit === 'in3') {
+						} elseif ($volume_price_unit === 'in3') {
 							$volume_price = $volume_price * 46656;
-						}
-						if ($volume_price_unit === 'yd3') {
+						} elseif ($volume_price_unit === 'yd3') {
 							$volume_price = $volume_price * 27;
 						}
-						// Calculation & Sending
-						$weight = $weight / 1.22;
-						$cost = $volume_price * $weight;
-						$this->param['cost'] = round($cost, 2);
+						$this->param['cost'] = round($volume_price * ($weight / 1.22), 2);
 					}
 
 					return $this->param;
@@ -1081,127 +995,98 @@ class Construction extends Model
 					$this->param['error'] = 'please check your inputs...';
 					return $this->param;
 				}
-				// Method 3				
 			} else {
 				if (is_numeric($volume) && is_numeric($density)) {
-					// Conversion of volume units in cubic feet
 					if ($volume_unit === 'mm3') {
 						$volume = $volume * 0.0000000353147;
-					}
-					if ($volume_unit === 'cm3') {
+					} elseif ($volume_unit === 'cm3') {
 						$volume = $volume * 0.0000353147;
-					}
-					if ($volume_unit === 'm3') {
+					} elseif ($volume_unit === 'm3') {
 						$volume = $volume * 35.3147;
-					}
-					if ($volume_unit === 'in3') {
+					} elseif ($volume_unit === 'in3') {
 						$volume = $volume * 0.000578704;
-					}
-					if ($volume_unit === 'yd3') {
+					} elseif ($volume_unit === 'yd3') {
 						$volume = $volume * 27;
 					}
-					// Conversion of density units in pound/cubic feet
+
 					if ($density_unit === 'kg_m3') {
 						$density = $density * 0.062428;
-					}
-					if ($density_unit === 't_m3' || $density_unit === 'g_cm3') {
+					} elseif ($density_unit === 't_m3' || $density_unit === 'g_cm3') {
 						$density = $density * 62.428;
-					}
-					if ($density_unit === 'oz_in3') {
+					} elseif ($density_unit === 'oz_in3') {
 						$density = $density * 108;
-					}
-					if ($density_unit === 'lb_in3') {
+					} elseif ($density_unit === 'lb_in3') {
 						$density = $density * 1728;
-					}
-					if ($density_unit === 'lb_yd3') {
+					} elseif ($density_unit === 'lb_yd3') {
 						$density = $density * 0.037037;
 					}
-					// Calculation
+
 					$weight = $volume * $density;
 					$weight = $weight * 0.000453592;
-					// Conversion of weight units for display
-					$g = $weight * 1000000;
+
+					$g_res = $weight * 1000000;
 					$kg = $weight * 1000;
 					$oz = $weight * 35273.96;
 					$lb = $weight * 2204.623;
 					$stone = $weight * 157.473;
 					$us_ton = $weight * 1.102311;
 					$long_ton = $weight * 0.984207;
+
 					$this->param = [
-						'g' => round($g, 2),
+						'g' => round($g_res, 2),
 						'kg' => round($kg, 2),
 						'oz' => round($oz, 2),
 						'lb' => round($lb, 2),
 						'stone' => round($stone, 2),
 						'us_ton' => round($us_ton, 2),
 						'long_ton' => round($long_ton, 2),
-						// Sending main results
 						'weight' => round($weight, 4),
 					];
 
-					// Sending weight units
-					// Conversion of mass price units in ton
 					if (is_numeric($mass_price)) {
 						if ($mass_price_unit === 'ug') {
 							$mass_price = $mass_price * 1000000000000;
-						}
-						if ($mass_price_unit === 'mg') {
+						} elseif ($mass_price_unit === 'mg') {
 							$mass_price = $mass_price * 1000000000;
-						}
-						if ($mass_price_unit === 'g') {
+						} elseif ($mass_price_unit === 'g') {
 							$mass_price = $mass_price * 1000000;
-						}
-						if ($mass_price_unit === 'dag') {
+						} elseif ($mass_price_unit === 'dag') {
 							$mass_price = $mass_price * 100000;
-						}
-						if ($mass_price_unit === 'kg') {
+						} elseif ($mass_price_unit === 'kg') {
 							$mass_price = $mass_price * 1000;
-						}
-						if ($mass_price_unit === 'gr') {
+						} elseif ($mass_price_unit === 'gr') {
 							$mass_price = $mass_price * 15432358.35;
-						}
-						if ($mass_price_unit === 'dr') {
+						} elseif ($mass_price_unit === 'dr') {
 							$mass_price = $mass_price * 564383.39;
-						}
-						if ($mass_price_unit === 'oz') {
+						} elseif ($mass_price_unit === 'oz') {
 							$mass_price = $mass_price * 35273.96;
-						}
-						if ($mass_price_unit === 'lb') {
+						} elseif ($mass_price_unit === 'lb') {
 							$mass_price = $mass_price * 2204.62;
-						}
-						if ($mass_price_unit === 'stone') {
+						} elseif ($mass_price_unit === 'stone') {
 							$mass_price = $mass_price * 157.47;
-						}
-						if ($mass_price_unit === 'us_ton') {
+						} elseif ($mass_price_unit === 'us_ton') {
 							$mass_price = $mass_price * 1.10;
-						}
-						if ($mass_price_unit === 'long_ton') {
+						} elseif ($mass_price_unit === 'long_ton') {
 							$mass_price = $mass_price / 0.98;
 						}
-						// Calculation & Sending
-						$cost = $mass_price * $weight;
-						$this->param['cost'] = round($cost, 2);
+						$this->param['cost'] = round($mass_price * $weight, 2);
 					}
-					// Conversion of volume in required units
-					if (!empty($volume_price)) {
+
+					if (!empty($volume_price) && is_numeric($volume_price)) {
 						if ($volume_price_unit === 'mm3') {
-							$volume = $volume * 28316847;
+							$v_conv = $volume * 28316847;
+						} elseif ($volume_price_unit === 'cm3') {
+							$v_conv = $volume * 28316.85;
+						} elseif ($volume_price_unit === 'm3') {
+							$v_conv = $volume * 0.02831685;
+						} elseif ($volume_price_unit === 'in3') {
+							$v_conv = $volume * 1728;
+						} elseif ($volume_price_unit === 'yd3') {
+							$v_conv = $volume * 0.037037;
+						} else {
+							$v_conv = $volume;
 						}
-						if ($volume_price_unit === 'cm3') {
-							$volume = $volume * 28316.85;
-						}
-						if ($volume_price_unit === 'm3') {
-							$volume = $volume * 0.02831685;
-						}
-						if ($volume_price_unit === 'in3') {
-							$volume = $volume * 1728;
-						}
-						if ($volume_price_unit === 'yd3') {
-							$volume = $volume * 0.037037;
-						}
-						// Calculation & Sending
-						$cost = $volume_price * $volume;
-						$this->param['cost'] = round($cost, 2);
+						$this->param['cost'] = round($volume_price * $v_conv, 2);
 					}
 					return $this->param;
 				} else {
@@ -1210,65 +1095,56 @@ class Construction extends Model
 				}
 			}
 		}
-		// Cirlce Shape
+
 		if ($shape === '1') {
-			// Storing input values in variables
-			// Conversion of diameter units in feet
 			if (is_numeric($diameter) && is_numeric($depth)) {
 				if ($diameter_unit === 'in') {
 					$diameter = $diameter / 12;
-				}
-				if ($diameter_unit === 'yd') {
+				} elseif ($diameter_unit === 'yd') {
 					$diameter = $diameter * 3;
-				}
-				if ($diameter_unit === 'cm') {
+				} elseif ($diameter_unit === 'cm') {
 					$diameter = $diameter / 30.48;
-				}
-				if ($diameter_unit === 'm') {
+				} elseif ($diameter_unit === 'm') {
 					$diameter = $diameter * 3.281;
 				}
-				// Conversion of depth units in feet
+
 				if ($depth_unit === 'in') {
 					$depth = $depth * 0.0833333;
-				}
-				if ($depth_unit === 'yd') {
+				} elseif ($depth_unit === 'yd') {
 					$depth = $depth * 3;
-				}
-				if ($depth_unit === 'cm') {
+				} elseif ($depth_unit === 'cm') {
 					$depth = $depth * 0.0328084;
-				}
-				if ($depth_unit === 'm') {
+				} elseif ($depth_unit === 'm') {
 					$depth = $depth * 3.28084;
 				}
-				// Calculation
+
 				$radius = $diameter / 2;
-				$diameter = pi() * pow($radius, 2);
-				$volume = $diameter * $depth;
+				$area_circ = pi() * pow($radius, 2);
+				$volume = $area_circ * $depth;
 				$weight = $volume * 100;
 				$weight = $weight * 0.000453592;
-				// Conversion of volume units for display
+
 				$mm3 = $volume * 28316847;
 				$cm3 = $volume * 28316.85;
 				$m3 = $volume * 0.02831685;
 				$in3 = $volume * 1728;
 				$yd3 = $volume * 0.037037;
-				// Conversion of weight units for display
-				$g = $weight * 1000000;
+
+				$g_res = $weight * 1000000;
 				$kg = $weight * 1000;
 				$oz = $weight * 35274;
 				$lb = $weight * 2204.62;
 				$stone = $weight * 157.473;
 				$us_ton = $weight * 1.10231;
 				$long_ton = $weight * 0.984207;
-				// Sending volume units
+
 				$this->param = [
 					'mm3' => round($mm3, 4),
 					'cm3' => round($cm3, 4),
 					'm3' => round($m3, 4),
 					'in3' => round($in3, 4),
 					'yd3' => round($yd3, 4),
-					'g' => round($g, 2),
-					// Sending weight units
+					'g' => round($g_res, 2),
 					'kg' => round($kg, 2),
 					'oz' => round($oz, 2),
 					'lb' => round($lb, 2),
@@ -1276,14 +1152,11 @@ class Construction extends Model
 					'us_ton' => round($us_ton, 2),
 					'long_ton' => round($long_ton, 2),
 					'volume' => round($volume, 4),
-					// Sending main results
 					'weight' => round($weight, 4),
 				];
-				// dd($result);
-				// Calculation of price unit
-				if (!empty($c_price)) {
-					$cost = $c_price * $weight;
-					$this->param['cost'] = round($cost, 2);
+
+				if (!empty($c_price) && is_numeric($c_price)) {
+					$this->param['cost'] = round($c_price * $weight, 2);
 				}
 				return $this->param;
 			} else {
@@ -1298,204 +1171,172 @@ class Construction extends Model
 	// concrete calculator
 	public function concrete($request)
 	{
-		$operations = $request->input('operations');
-		$first = $request->input('first');
-		$second = $request->input('second');
-		$third = $request->input('third');
-		$four = $request->input('four');
-		$five = $request->input('five');
-		$fiveb = $request->input('fiveb');
-		$quantity = $request->input('quantity');
-		$units1 = $request->input('units1');
-		$units2 = $request->input('units2');
-		$units3 = $request->input('units3');
-		$units4 = $request->input('units4');
-		$units5 = $request->input('units5');
-		$price_unit = $request->input('price_unit');
-		$price = $request->input('price');
+		$operations = $request->operations;
+		$first = $request->first;
+		$second = $request->second;
+		$third = $request->third;
+		$four = $request->four;
+		$five = $request->five;
+		$fiveb = $request->fiveb;
+		$quantity = $request->quantity ?? 1;
+		$units1 = $request->units1;
+		$units2 = $request->units2;
+		$units3 = $request->units3;
+		$units4 = $request->units4;
+		$units5 = $request->units5;
+		$price_unit = $request->price_unit;
+		$price = $request->price;
 
-		if($price_unit == 'ft³'){
+		if ($price_unit == 'ft³') {
 			$price_unit = '1';
-		}else if($price_unit == 'yd³'){
+		} else if ($price_unit == 'yd³') {
 			$price_unit = '2';
-
-		}else if($price_unit == 'ft³'){
+		} else if ($price_unit == 'm³') {
 			$price_unit = '3';
-
-			}
-		function calculate_con($a, $b)
-		{
-			if ($b == "ft") {
-				$convert = $a * 1;
-			} elseif ($b == "in") {
-				$convert = $a * 0.0833333;
-			} elseif ($b == "yd") {
-				$convert = $a * 3;
-			} elseif ($b == "cm") {
-				$convert = $a * 0.0328084;
-			} elseif ($b == "m") {
-				$convert = $a * 3.28084;
-			}
-			return $convert;
 		}
+
+		if (!function_exists('calculate_con_local')) {
+			function calculate_con_local($a, $b)
+			{
+				if ($b == "ft") {
+					return $a;
+				} elseif ($b == "in") {
+					return $a * 0.0833333;
+				} elseif ($b == "yd") {
+					return $a * 3;
+				} elseif ($b == "cm") {
+					return $a * 0.0328084;
+				} elseif ($b == "m") {
+					return $a * 3.28084;
+				}
+				return $a;
+			}
+		}
+
+		$cubic_feet = 0;
 		if ($operations == "3") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$third = calculate_con($third, $units3);
+			if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$third = calculate_con_local($third, $units3);
 				$cubic_feet = $first * $second * $third;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		} else if ($operations == "4") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$sq_val = $second / 2;
-				$final_val = $sq_val * $sq_val;
-				$area = 3.14 * $final_val;
+			if (is_numeric($first) && is_numeric($second)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$radius = $second / 2;
+				$area = 3.14159 * ($radius * $radius);
 				$cubic_feet = $first * $area;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		} else if ($operations == "5") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$third = calculate_con($third, $units3);
+			if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$third = calculate_con_local($third, $units3);
 				$cubic_feet = $first * $second * $third;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		} else if ($operations == "6") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$third = calculate_con($third, $units3);
+			if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$third = calculate_con_local($third, $units3);
 				$cubic_feet = $first * $second * $third;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		} else if ($operations == "7") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$third = calculate_con($third, $units3);
+			if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$third = calculate_con_local($third, $units3);
 				$cubic_feet = $first * $second * $third;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		} else if ($operations == "8") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$area = 3.14 * ($second / 2) ^ 2;
+			if (is_numeric($first) && is_numeric($second)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$area = 3.14159 * pow($second / 2, 2);
 				$cubic_feet = $first * $area;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		} else if ($operations == "9") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($fiveb) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$third = calculate_con($third, $units3);
-				$four = calculate_con($four, $units4);
+			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($fiveb)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$third = calculate_con_local($third, $units3);
+				$four = calculate_con_local($four, $units4);
 				$middle = $second * $fiveb;
 				$step1 = $first * $middle * $four;
 				$step2 = $third * $middle * $four;
 				$cubic_feet = $step1 + $step2;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		} else if ($operations == "10") {
-			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($five) && is_numeric($quantity)) {
-				$first = calculate_con($first, $units1);
-				$second = calculate_con($second, $units2);
-				$third = calculate_con($third, $units3);
-				$four = calculate_con($four, $units4);
-				$five = calculate_con($five, $units5);
+			if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($five)) {
+				$first = calculate_con_local($first, $units1);
+				$second = calculate_con_local($second, $units2);
+				$third = calculate_con_local($third, $units3);
+				$four = calculate_con_local($four, $units4);
+				$five = calculate_con_local($five, $units5);
 				$mid = $second + $four;
 				$step1 = $first * $mid * $five;
 				$step2 = $third * $four * $five;
 				$cubic_feet = $step1 + $step2;
-				$cubic_yard = $cubic_feet / 27;
-				$cubic_meter = $cubic_feet * 0.0283;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
-				return  $this->param;
+				return $this->param;
 			}
 		}
-		if (isset($quantity)) {
+
+		if (is_numeric($quantity)) {
 			$cubic_feet = $cubic_feet * $quantity;
-			$cubic_yard = $cubic_yard * $quantity;
-			$cubic_meter = $cubic_meter * $quantity;
 		}
+
+		$cubic_yard = $cubic_feet / 27;
+		$cubic_meter = $cubic_feet * 0.0283168;
+
 		if (is_numeric($price)) {
 			if ($price_unit == "1") {
-				$ft_price = $cubic_feet * $price;
-				$ft_price = number_format($ft_price, 2);
-				$this->param['ft_price'] = $ft_price;
+				$this->param['ft_price'] = number_format($cubic_feet * $price, 2);
 			} else if ($price_unit == "2") {
-				$yd_price = $cubic_yard * $price;
-				$yd_price = number_format($yd_price, 2);
-				$this->param['yd_price'] = $yd_price;
+				$this->param['yd_price'] = number_format($cubic_yard * $price, 2);
 			} else if ($price_unit == "3") {
-				$m_price = $cubic_meter * $price;
-				$m_price = number_format($m_price, 2);
-				$this->param['m_price'] = $m_price;
+				$this->param['m_price'] = number_format($cubic_meter * $price, 2);
 			}
 		}
-		if (is_float($cubic_feet)) {
-			$cubic_feet = number_format($cubic_feet, 2);
-		}
-		$cubic_yard = number_format($cubic_yard, 2);
-		$cubic_meter = number_format($cubic_meter, 2);
-		$lb = 133 * (int)$cubic_feet;
-		$kg = (int)$cubic_meter * 2130;
-		$lb_40 = $lb / 40;
-		$lb_40 = number_format($lb_40, 2);
-		$lb_60 = $lb / 60;
-		$lb_60 = number_format($lb_60, 2);
-		$lb_80 = $lb / 80;
-		$lb_80 = number_format($lb_80, 2);
-		$kg_40 = $kg / 40;
-		$kg_40 = number_format($kg_40, 2);
-		$kg_60 = $kg / 60;
-		$kg_60 = number_format($kg_60, 2);
-		$kg_80 = $kg / 80;
-		$kg_80 = number_format($kg_80, 2);
-		$this->param['lb'] = $lb;
-		$this->param['kg'] = $kg;
-		$this->param['lb_40'] = $lb_40;
-		$this->param['lb_60'] = $lb_60;
-		$this->param['lb_80'] = $lb_80;
-		$this->param['kg_40'] = $kg_40;
-		$this->param['kg_60'] = $kg_60;
-		$this->param['kg_80'] = $kg_80;
-		$this->param['cubic_feet'] = $cubic_feet;
-		$this->param['cubic_yard'] = $cubic_yard;
-		$this->param['cubic_meter'] = $cubic_meter;
+
+		$lb = 133 * $cubic_feet;
+		$kg = $cubic_meter * 2130;
+
+		$this->param['lb'] = round($lb, 2);
+		$this->param['kg'] = round($kg, 2);
+		$this->param['lb_40'] = number_format($lb / 40, 2);
+		$this->param['lb_60'] = number_format($lb / 60, 2);
+		$this->param['lb_80'] = number_format($lb / 80, 2);
+		$this->param['kg_40'] = number_format($kg / 40, 2);
+		$this->param['kg_60'] = number_format($kg / 60, 2);
+		$this->param['kg_80'] = number_format($kg / 80, 2);
+		$this->param['cubic_feet'] = number_format($cubic_feet, 2);
+		$this->param['cubic_yard'] = number_format($cubic_yard, 2);
+		$this->param['cubic_meter'] = number_format($cubic_meter, 2);
 		$this->param['RESULT'] = 1;
 		return $this->param;
 	}
@@ -1504,271 +1345,212 @@ class Construction extends Model
 // Asphalt Calculator
 public function asphalt($request)
 {
-	$submit = $request->input('submit');
-	$cal = $request->input('cal');
-	$length = $request->input('length');
-	$length_unit = $request->input('length_unit');
-	$width = $request->input('width');
-	$width_unit = $request->input('width_unit');
-	$area = $request->input('area');
-	$area_unit = $request->input('area_unit');
-	$depth = $request->input('depth');
-	$depth_unit = $request->input('depth_unit');
-	$volume = $request->input('volume');
-	$volume_unit = $request->input('volume_unit');
-	$density = $request->input('density');
-	$density_unit = $request->input('density_unit');
-	$cs_depth = $request->input('cs_depth');
-	$cs_depth_unit = $request->input('cs_depth_unit');
-	$depth_dr = $request->input('depth_dr');
-	$depth_dr_unit = $request->input('depth_dr_unit');
-	$cost = $request->input('cost');
-	$cost_unit = $request->input('cost_unit');
-	if ($submit) {
-		if (is_numeric($length)) {
-			if ($length_unit === 'km') {
-				$length = $length / 0.001;
-			} elseif ($length_unit === 'ft') {
-				$length = $length / 3.281;
-			} elseif ($length_unit === 'yd') {
-				$length = $length / 1.0936;
-			} elseif ($length_unit === 'mi') {
-				$length = $length / 0.0006214;
-			}
+	$cal = $request->cal;
+	$length = $request->length;
+	$length_unit = $request->length_unit;
+	$width = $request->width;
+	$width_unit = $request->width_unit;
+	$area = $request->area;
+	$area_unit = $request->area_unit;
+	$depth = $request->depth;
+	$depth_unit = $request->depth_unit;
+	$volume = $request->volume;
+	$volume_unit = $request->volume_unit;
+	$density = $request->density;
+	$density_unit = $request->density_unit;
+	$cs_depth = $request->cs_depth;
+	$cs_depth_unit = $request->cs_depth_unit;
+	$depth_dr = $request->depth_dr;
+	$depth_dr_unit = $request->depth_dr_unit;
+	$cost = $request->cost;
+	$cost_unit = $request->cost_unit;
+
+	if (is_numeric($length)) {
+		if ($length_unit === 'km') {
+			$length = $length / 0.001;
+		} elseif ($length_unit === 'ft') {
+			$length = $length / 3.281;
+		} elseif ($length_unit === 'yd') {
+			$length = $length / 1.0936;
+		} elseif ($length_unit === 'mi') {
+			$length = $length / 0.0006214;
 		}
-		if (is_numeric($width)) {
-			if ($width_unit === 'km') {
-				$width = $width / 0.001;
-			} elseif ($width_unit === 'ft') {
-				$width = $width / 3.281;
-			} elseif ($width_unit === 'yd') {
-				$width = $width / 1.0936;
-			} elseif ($width_unit === 'mi') {
-				$width = $width / 0.0006214;
-			}
+	}
+	if (is_numeric($width)) {
+		if ($width_unit === 'km') {
+			$width = $width / 0.001;
+		} elseif ($width_unit === 'ft') {
+			$width = $width / 3.281;
+		} elseif ($width_unit === 'yd') {
+			$width = $width / 1.0936;
+		} elseif ($width_unit === 'mi') {
+			$width = $width / 0.0006214;
 		}
-		if (is_numeric($area)) {
-			if ($area_unit === 'km2') {
-				$area = $area / 0.000001;
-			} elseif ($area_unit === 'in2') {
-				$area = $area / 1550;
-			} elseif ($area_unit === 'ft2') {
-				$area = $area / 10.764;
-			}
+	}
+	if (is_numeric($area)) {
+		if ($area_unit === 'km2' || $area_unit === 'km²') {
+			$area = $area / 0.000001;
+		} elseif ($area_unit === 'in2' || $area_unit === 'in²') {
+			$area = $area / 1550;
+		} elseif ($area_unit === 'ft2' || $area_unit === 'ft²') {
+			$area = $area / 10.764;
 		}
-		if (is_numeric($depth)) {
-			if ($depth_unit === 'mm') {
-				$depth = $depth / 10;
-			} elseif ($depth_unit === 'm') {
-				$depth = $depth / 0.01;
-			} elseif ($depth_unit === 'in') {
-				$depth = $depth / 0.3937;
-			} elseif ($depth_unit === 'ft') {
-				$depth = $depth / 0.03281;
-			}
+	}
+	if (is_numeric($depth)) {
+		if ($depth_unit === 'mm') {
+			$depth = $depth / 10;
+		} elseif ($depth_unit === 'm') {
+			$depth = $depth / 0.01;
+		} elseif ($depth_unit === 'in') {
+			$depth = $depth / 0.3937;
+		} elseif ($depth_unit === 'ft') {
+			$depth = $depth / 0.03281;
 		}
-		if (is_numeric($volume)) {
-			if ($volume_unit === 'cu_ft') {
-				$volume = $volume / 35.315;
-			} elseif ($volume_unit === 'us_gal') {
-				$volume = $volume / 264.17;
-			} elseif ($volume_unit === 'uk_gal') {
-				$volume = $volume / 219.97;
-			}
+	}
+	if (is_numeric($volume)) {
+		if ($volume_unit === 'cu_ft' || $volume_unit === 'cu ft') {
+			$volume = $volume / 35.315;
+		} elseif ($volume_unit === 'us_gal' || $volume_unit === 'US Gal') {
+			$volume = $volume / 264.17;
+		} elseif ($volume_unit === 'uk_gal' || $volume_unit === 'UK Gal') {
+			$volume = $volume / 219.97;
 		}
-		if (is_numeric($density)) {
-			if ($density_unit === 'lb_cu_ft') {
-				$density = $density / 0.06243;
-			}
+	}
+	if (is_numeric($density)) {
+		if ($density_unit === 'lb_cu_ft' || $density_unit === 'lb/cu ft') {
+			$density = $density / 0.06243;
 		}
-		if (is_numeric($cs_depth)) {
-			if ($cs_depth_unit === 'mm') {
-				$cs_depth = $cs_depth / 25.4;
-			} elseif ($cs_depth_unit === 'cm') {
-				$cs_depth = $cs_depth / 2.54;
-			} elseif ($cs_depth_unit === 'm') {
-				$cs_depth = $cs_depth / 0.0254;
-			} elseif ($cs_depth_unit === 'ft') {
-				$cs_depth = $cs_depth / 0.08333;
-			}
+	}
+	if (is_numeric($cs_depth)) {
+		if ($cs_depth_unit === 'mm') {
+			$cs_depth = $cs_depth / 25.4;
+		} elseif ($cs_depth_unit === 'cm') {
+			$cs_depth = $cs_depth / 2.54;
+		} elseif ($cs_depth_unit === 'm') {
+			$cs_depth = $cs_depth / 0.0254;
+		} elseif ($cs_depth_unit === 'ft') {
+			$cs_depth = $cs_depth / 0.08333;
 		}
-		if (is_numeric($depth_dr)) {
-			if ($cs_depth_unit === 'mm') {
-				$cs_depth = $cs_depth / 25.4;
-			} elseif ($cs_depth_unit === 'cm') {
-				$cs_depth = $cs_depth / 2.54;
-			} elseif ($cs_depth_unit === 'm') {
-				$cs_depth = $cs_depth / 0.0254;
-			} elseif ($cs_depth_unit === 'ft') {
-				$cs_depth = $cs_depth / 0.08333;
-			}
+	}
+	if (is_numeric($depth_dr)) {
+		if ($depth_dr_unit === 'mm') {
+			$depth_dr = $depth_dr / 25.4;
+		} elseif ($depth_dr_unit === 'cm') {
+			$depth_dr = $depth_dr / 2.54;
+		} elseif ($depth_dr_unit === 'm') {
+			$depth_dr = $depth_dr / 0.0254;
+		} elseif ($depth_dr_unit === 'ft') {
+			$depth_dr = $depth_dr / 0.08333;
 		}
-		if (is_numeric($cost)) {
-			if ($cost_unit === 'kg') {
-				$cost = $cost * 1000;
-			} elseif ($cost_unit === 'lb') {
-				$cost = $cost * 2204.62;
-			} elseif ($cost_unit === 'us_ton') {
-				$cost = $cost * 1.10;
-			} elseif ($cost_unit === 'long_ton') {
-				$cost = $cost * 0.98;
-			}
+	}
+	if (is_numeric($cost)) {
+		if (str_contains($cost_unit, 'kg')) {
+			$cost = $cost * 1000;
+		} elseif (str_contains($cost_unit, 'lb')) {
+			$cost = $cost * 2204.62;
+		} elseif (str_contains($cost_unit, 'us_ton')) {
+			$cost = $cost * 1.10;
+		} elseif (str_contains($cost_unit, 'long_ton')) {
+			$cost = $cost * 0.98;
 		}
-		if ($cal === 'lwt' && is_numeric($length) && is_numeric($width) && is_numeric($depth) && is_numeric($density)) {
-			$area = $length * $width;
-			$volume = ($area * $depth) / 100;
-			$asphalt = ($volume * $density) * 0.001;
-			$kg = $asphalt * 1000;
-			$lb = $asphalt * 2204.6;
-			$us_ton = $asphalt * 1.1023;
-			$long_ton = $asphalt * 0.9842;
-			if (is_numeric($cost)) {
-				$total_cost = $cost * $asphalt;
-				$this->param['total_cost'] = $total_cost;
-			}
-			$this->param['asphalt'] = round($asphalt, 5);
-			$this->param['area'] = $area;
-			$this->param['volume'] = $volume;
-			$this->param['kg'] = $kg;
-			$this->param['lb'] = $lb;
-			$this->param['us_ton'] = $us_ton;
-			$this->param['long_ton'] = $long_ton;
-		} elseif ($cal === 'at' && is_numeric($area) && is_numeric($depth) && is_numeric($density)) {
-			$volume = ($area * $depth) / 100;
-			$asphalt = ($volume * $density) * 0.001;
-			$kg = $asphalt * 1000;
-			$lb = $asphalt * 2204.6;
-			$us_ton = $asphalt * 1.1023;
-			$long_ton = $asphalt * 0.9842;
-			if (is_numeric($cost)) {
-				$total_cost = $cost * $asphalt;
-				$this->param['total_cost'] = $total_cost;
-			}
-			$this->param['asphalt'] = round($asphalt, 5);
-			$this->param['volume'] = $volume;
-			$this->param['kg'] = $kg;
-			$this->param['lb'] = $lb;
-			$this->param['us_ton'] = $us_ton;
-			$this->param['long_ton'] = $long_ton;
-		} elseif ($cal === 'vad' && is_numeric($volume) && is_numeric($density)) {
-			$asphalt = ($volume * $density) * 0.001;
-			$kg = $asphalt * 1000;
-			$lb = $asphalt * 2204.6;
-			$us_ton = $asphalt * 1.1023;
-			$long_ton = $asphalt * 0.9842;
-			if (is_numeric($cost)) {
-				$total_cost = $cost * $asphalt;
-				$this->param['total_cost'] = $total_cost;
-			}
-			$this->param['asphalt'] = round($asphalt, 5);
-			$this->param['kg'] = $kg;
-			$this->param['lb'] = $lb;
-			$this->param['us_ton'] = $us_ton;
-			$this->param['long_ton'] = $long_ton;
-		} elseif ($cal === 'csn' && is_numeric($area) && is_numeric($depth) && is_numeric($cs_depth)) {
-			$volume = ($area * $depth) / 100;
-			$asphalt = ($volume * 2400) * 0.001;
-			$area = $area / 0.0929;
-			$stone = ($area * $cs_depth) / 180;
-			$kg = $asphalt * 1000;
-			$lb = $asphalt * 2204.6;
-			$us_ton = $asphalt * 1.1023;
-			$long_ton = $asphalt * 0.9842;
-			if (is_numeric($cost)) {
-				$total_cost = $cost * $asphalt;
-				$this->param['total_cost'] = $total_cost;
-			}
-			$this->param['asphalt'] = round($asphalt, 5);
-			$this->param['stone'] = round($stone, 5);
-			$this->param['kg'] = $kg;
-			$this->param['lb'] = $lb;
-			$this->param['us_ton'] = $us_ton;
-			$this->param['long_ton'] = $long_ton;
-		} elseif ($cal === 'dtbr' && is_numeric($area) && is_numeric($depth) && is_numeric($depth_dr)) {
-			$volume = ($area * $depth) / 100;
-			$asphalt = ($volume * $density) * 0.001;
-			$area = $area / 0.0929;
-			$dirt = ($area * $depth_dr) / 320;
-			$kg = $asphalt * 1000;
-			$lb = $asphalt * 2204.6;
-			$us_ton = $asphalt * 1.1023;
-			$long_ton = $asphalt * 0.9842;
-			if (is_numeric($cost)) {
-				$total_cost = $cost * $asphalt;
-				$this->param['total_cost'] = $total_cost;
-			}
-			$this->param['asphalt'] = round($asphalt, 5);
-			$this->param['dirt'] = round($dirt, 5);
-			$this->param['kg'] = $kg;
-			$this->param['lb'] = $lb;
-			$this->param['us_ton'] = $us_ton;
-			$this->param['long_ton'] = $long_ton;
-		} else {
-			$this->param['error'] = 'Please! Check Your Input';
-			return $this->param;
-		}
-		$this->param['RESULT'] = 1;
-		return $this->param;
+	}
+
+	if ($cal === 'lwt' && is_numeric($length) && is_numeric($width) && is_numeric($depth) && is_numeric($density)) {
+		$area_val = $length * $width;
+		$volume_val = ($area_val * $depth) / 100;
+		$asphalt = ($volume_val * $density) * 0.001;
+		$this->param['area'] = round($area_val, 4);
+		$this->param['volume'] = round($volume_val, 4);
+	} elseif ($cal === 'at' && is_numeric($area) && is_numeric($depth) && is_numeric($density)) {
+		$volume_val = ($area * $depth) / 100;
+		$asphalt = ($volume_val * $density) * 0.001;
+		$this->param['volume'] = round($volume_val, 4);
+	} elseif ($cal === 'vad' && is_numeric($volume) && is_numeric($density)) {
+		$asphalt = ($volume * $density) * 0.001;
+	} elseif ($cal === 'csn' && is_numeric($area) && is_numeric($depth) && is_numeric($cs_depth)) {
+		$volume_val = ($area * $depth) / 100;
+		$asphalt = ($volume_val * 2400) * 0.001;
+		$area_ft2 = $area / 0.0929;
+		$stone = ($area_ft2 * $cs_depth) / 180;
+		$this->param['stone'] = round($stone, 5);
+	} elseif ($cal === 'dtbr' && is_numeric($area) && is_numeric($depth) && is_numeric($depth_dr)) {
+		$volume_val = ($area * $depth) / 100;
+		$asphalt = ($volume_val * 2400) * 0.001; // Using standard density if not provided
+		$area_ft2 = $area / 0.0929;
+		$dirt = ($area_ft2 * $depth_dr) / 320;
+		$this->param['dirt'] = round($dirt, 5);
 	} else {
 		$this->param['error'] = 'Please! Check Your Input';
 		return $this->param;
 	}
+
+	$this->param['asphalt'] = round($asphalt, 5);
+	$this->param['kg'] = round($asphalt * 1000, 2);
+	$this->param['lb'] = round($asphalt * 2204.6, 2);
+	$this->param['us_ton'] = round($asphalt * 1.1023, 4);
+	$this->param['long_ton'] = round($asphalt * 0.9842, 4);
+
+	if (is_numeric($cost)) {
+		$this->param['total_cost'] = round($cost * $asphalt, 2);
+	}
+
+	$this->param['RESULT'] = 1;
+	return $this->param;
 }
 
 
 	// Paver calculator
 	public function paver($request)
 	{
-		$operations = $request->input('operations');
-		$first = $request->input('first');
-		$second = $request->input('second');
-		$third = $request->input('third');
-		$four = $request->input('four');
-		$fiveb = $request->input('fiveb');
-		$units1 = $request->input('units1');
-		$units2 = $request->input('units2');
-		$units3 = $request->input('units3');
-		$units4 = $request->input('units4');
-		$price = $request->input('price');
-		$cost = $request->input('cost');
-		$cost_unit = $request->input('cost_unit');
-		$currancy = $request->input('currancy');
-		$price_unit = $request->input('price_unit');
+		$operations = $request->operations;
+		$first = $request->first;
+		$second = $request->second;
+		$third = $request->third;
+		$four = $request->four;
+		$fiveb = $request->fiveb;
+		$units1 = $request->units1;
+		$units2 = $request->units2;
+		$units3 = $request->units3;
+		$units4 = $request->units4;
+		$price = $request->price;
+		$cost = $request->cost;
+		$cost_unit = $request->cost_unit;
+		$currancy = $request->currancy;
+		$price_unit = $request->price_unit;
 
 
-		if($price_unit == $currancy.'ft²'){
+		if($price_unit == $currancy.'ft²' || $price_unit == $currancy.' ft²'){
 			$price_unit = '1';
-		}else if($price_unit == $currancy.'m²'){
+		}else if($price_unit == $currancy.'m²' || $price_unit == $currancy.' m²'){
 			$price_unit = '2';
 		}
 
-		if($cost_unit == $currancy.'ft²'){
+		if($cost_unit == $currancy.'ft²' || $cost_unit == $currancy.' ft²'){
 			$cost_unit = '1';
-		}else if($cost_unit == $currancy.'m²'){
+		}else if($cost_unit == $currancy.'m²' || $cost_unit == $currancy.' m²'){
 			$cost_unit = '2';
 		}
-
-
-		function unit_convertc($a, $b)
-		{
-			if ($b == "ft") {
-				$convert = $a * 1;
-			} elseif ($b == "in") {
-				$convert = $a * 0.0833333;
-			} elseif ($b == "yd") {
-				$convert = $a * 3;
-			} elseif ($b == "cm") {
-				$convert = $a * 0.0328084;
-			} elseif ($b == "m") {
-				$convert = $a * 3.28084;
-			} elseif ($b == "mi") {
-				$convert = $a * 5280;
-			} elseif ($b == "km") {
-				$convert = $a * 3281;
+		if (!function_exists('App\Models\unit_convertc')) {
+			function unit_convertc($a, $b)
+			{
+				if ($b == "ft") {
+					$convert = $a * 1;
+				} elseif ($b == "in") {
+					$convert = $a * 0.0833333;
+				} elseif ($b == "yd") {
+					$convert = $a * 3;
+				} elseif ($b == "cm") {
+					$convert = $a * 0.0328084;
+				} elseif ($b == "m") {
+					$convert = $a * 3.28084;
+				} elseif ($b == "mi") {
+					$convert = $a * 5280;
+				} elseif ($b == "km") {
+					$convert = $a * 3281;
+				}
+				return $convert;
 			}
-			return $convert;
 		}
-
 		if ($operations == "3") {
 			if (is_numeric($first) && is_numeric($second)) {
 				$first = unit_convertc($first, $units1);
@@ -1822,6 +1604,7 @@ public function asphalt($request)
 			$this->param['price_p'] = $price_p;
 
 			if (!empty($price) && !empty($cost)) {
+				$cost_p = 0;
 				if ($cost_unit == "1") {
 					$cost_p = $cost * $area_ans * 1;
 				} elseif ($cost_unit == "2") {
@@ -1840,7 +1623,7 @@ public function asphalt($request)
 				return $this->param;
 			}
 		}
-
+		$this->param['RESULT'] = 1;
 		return $this->param;
 	}
 
@@ -1848,62 +1631,70 @@ public function asphalt($request)
 	public function fence($request)
 	{
 		// dd($request->all());
-		$f_length = $request->input('f_length');
-		$fl_units = $request->input('fl_units');
-		$post_space = $request->input('post_space');
-		$po_units = $request->input('po_units');
-		$first = $request->input('first');
-		$units1 = $request->input('units1');
-		$second = $request->input('second');
-		$p_width = $request->input('p_width');
-		$pw_units = $request->input('pw_units');
-		$p_spacing = $request->input('p_spacing');
-		$ps_units = $request->input('ps_units');
-		$third = $request->input('third');
-		$units3 = $request->input('units3');
-		$four = $request->input('four');
-		$units4 = $request->input('units4');
-		$drop1 = $request->input('drop1');
-		$drop2 = $request->input('drop2');
-		$drop3 = $request->input('drop3');
-		// dd($request->input());
-		function convert_units($a, $b)
-		{
-			if ($b == "ft") {
-				$convert = $a * 1;
-			} elseif ($b == "in") {
-				$convert = $a * 0.0833333;
-			} elseif ($b == "yd") {
-				$convert = $a * 3;
-			} elseif ($b == "cm") {
-				$convert = $a * 0.0328084;
-			} elseif ($b == "m") {
-				$convert = $a * 3.28084;
-			} elseif ($b == "mi") {
-				$convert = $a * 5280;
-			} elseif ($b == "km") {
-				$convert = $a * 3281;
+		$f_length = $request->f_length;
+		$fl_units = $request->fl_units;
+		$post_space = $request->post_space;
+		$po_units = $request->po_units;
+		$first = $request->first;
+		$units1 = $request->units1;
+		$second = $request->second;
+		$p_width = $request->p_width;
+		$pw_units = $request->pw_units;
+		$p_spacing = $request->p_spacing;
+		$ps_units = $request->ps_units;
+		$third = $request->third;
+		$units3 = $request->units3;
+		$four = $request->four;
+		$units4 = $request->units4;
+		$drop1 = $request->drop1;
+		$drop2 = $request->drop2;
+		$drop3 = $request->drop3;
+
+		if (!function_exists('App\Models\convert_units')) {
+			function convert_units($a, $b)
+			{
+				$convert = $a;
+				$b = trim((string)$b);
+				if ($b == "ft") {
+					$convert = $a * 1;
+				} elseif ($b == "in") {
+					$convert = $a * 0.0833333;
+				} elseif ($b == "yd") {
+					$convert = $a * 3;
+				} elseif ($b == "cm") {
+					$convert = $a * 0.0328084;
+				} elseif ($b == "m") {
+					$convert = $a * 3.28084;
+				} elseif ($b == "mi") {
+					$convert = $a * 5280;
+				} elseif ($b == "km") {
+					$convert = $a * 3281;
+				}
+				return $convert;
 			}
-			return $convert;
 		}
-		function fconvert_inches($a, $b)
-		{
-			if ($b == "ft") {
-				$inches = $a * 12;
-			} elseif ($b == "in") {
-				$inches = $a * 1;
-			} elseif ($b == "yd") {
-				$inches = $a * 36;
-			} elseif ($b == "cm") {
-				$inches = $a / 2.54;
-			} elseif ($b == "m") {
-				$inches = $a * 39.37;
-			} elseif ($b == "mi") {
-				$inches = $a / 1000;
-			} elseif ($b == "km") {
-				$inches = $a * 39370;
+		if (!function_exists('App\Models\fconvert_inches')) {
+			function fconvert_inches($a, $b)
+			{
+				$inches = $a;
+				$b = trim((string)$b);
+				if ($b == "ft") {
+					$inches = $a * 12;
+				} elseif ($b == "in") {
+					$inches = $a * 1;
+				} elseif ($b == "yd") {
+					$inches = $a * 36;
+				} elseif ($b == "cm") {
+					$inches = $a / 2.54;
+				} elseif ($b == "m") {
+					$inches = $a * 39.37;
+				} elseif ($b == "mi") {
+					$inches = $a / 1000;
+				} elseif ($b == "km") {
+					$inches = $a * 39370;
+				}
+				return $inches;
 			}
-			return $inches;
 		}
 		if (is_numeric($f_length) && is_numeric($post_space)) {
 			$f_length = convert_units($f_length, $fl_units);
@@ -1926,13 +1717,10 @@ public function asphalt($request)
 			if ($drop1 == "2") {
 				$first = convert_units($first, $units1);
 				$post_heigth = $first * 1.5;
-				$post_heigth = number_format($post_heigth, 2);
 			} else if ($drop1 == "1") {
 				$first = convert_units($first, $units1);
 				$post_heigth = $first;
-				$post_heigth = number_format($post_heigth, 2);
 				$fence_heigth = $first / 1.5;
-				$fence_heigth = number_format($fence_heigth, 2);
 			}
 		} else {
 			$this->param['error'] = 'Please! Enter the date';
@@ -1996,9 +1784,7 @@ public function asphalt($request)
 		}
 		if (!empty($c_volume)) {
 			$ft_volume = $c_volume / 1728;
-			$ft_volume = number_format($ft_volume, 2);
 			$yd_volume = $c_volume / 46656;
-			$yd_volume = number_format($yd_volume, 2);
 		}
 		if (!empty($no_post)) {
 			$this->param['no_post'] = $no_post;
@@ -2007,10 +1793,10 @@ public function asphalt($request)
 			$this->param['no_sections'] = $no_sections;
 		}
 		if (!empty($post_heigth)) {
-			$this->param['post_heigth'] = $post_heigth;
+			$this->param['post_heigth'] = number_format($post_heigth, 2);
 		}
 		if (!empty($fence_heigth)) {
-			$this->param['fence_heigth'] = $fence_heigth;
+			$this->param['fence_heigth'] = number_format($fence_heigth, 2);
 		}
 		if (!empty($no_rails)) {
 			$this->param['no_rails'] = $no_rails;
@@ -4546,226 +4332,220 @@ public function roof_replacement($request)
 	}
 
 // square footage calc
-public function square_footage($request)
-{
-	$width = $request->input('width');
-	$axisa = $request->input('axisa');
-	$axisb = $request->input('axisb');
-	$inner_length_unit = $request->input('inner_length_unit');
-	$axisa_unit = $request->input('axisa_unit');
-	$axisb_unit = $request->input('axisb_unit');
-	$shape_unit = $request->input('shape_unit');
-	$sidealength = $request->input('sidealength');
-	$sideblength = $request->input('sideblength');
-	$quantity = $request->input('quantity');
-	$height = $request->input('height');
-	$length = $request->input('length');
-	$inner_length = $request->input('inner_length');
-	$inner_width = $request->input('inner_width');
-	$length_unit = $request->input('length_unit');
-	$width_unit = $request->input('width_unit');
-	$diameter = $request->input('diameter');
-	$diameter_unit = $request->input('diameter_unit');
-	$inner_diameter = $request->input('inner_diameter');
-	$inner_diameter_unit = $request->input('inner_diameter_unit');
-	$inner_width_unit = $request->input('inner_width_unit');
-	$border_width = $request->input('border_width');
-	$border_width_unit = $request->input('border_width_unit');
-	$sidealength_unit = $request->input('sidealength_unit');
-	$sideblength_unit = $request->input('sideblength_unit');
-	$sideclength_unit = $request->input('sideclength_unit');
-	$sideclength = $request->input('sideclength');
-	$radius = $request->input('radius');
-	$radius_unit = $request->input('radius_unit');
-	$angle = $request->input('angle');
-	$sides = $request->input('sides');
-	$outer_diameter = $request->input('outer_diameter');
-	$outer_diameter_unit = $request->input('outer_diameter_unit');
-	$height_unit = $request->input('height_unit');
-	$base_unit = $request->input('base_unit');
-	$base = $request->input('base');
-	$room_unit = $request->input('room_unit');
-	$price = $request->input('price');
-	$price_unit = $request->input('price_unit');
-	// dd($inner_width[0]);
+    public function square_footage($request)
+    {
+        $width = $request->width;
+        $axisa = $request->axisa;
+        $axisb = $request->axisb;
+        $inner_length_unit = $request->inner_length_unit;
+        $axisa_unit = $request->axisa_unit;
+        $axisb_unit = $request->axisb_unit;
+        $shape_unit = $request->shape_unit;
+        $sidealength = $request->sidealength;
+        $sideblength = $request->sideblength;
+        $quantity = $request->quantity ?? 1;
+        $height = $request->height;
+        $length = $request->length;
+        $inner_length = $request->inner_length;
+        $inner_width = $request->inner_width;
+        $length_unit = $request->length_unit;
+        $width_unit = $request->width_unit;
+        $diameter = $request->diameter;
+        $diameter_unit = $request->diameter_unit;
+        $inner_diameter = $request->inner_diameter;
+        $inner_diameter_unit = $request->inner_diameter_unit;
+        $inner_width_unit = $request->inner_width_unit;
+        $border_width = $request->border_width;
+        $border_width_unit = $request->border_width_unit;
+        $sidealength_unit = $request->sidealength_unit;
+        $sideblength_unit = $request->sideblength_unit;
+        $sideclength_unit = $request->sideclength_unit;
+        $sideclength = $request->sideclength;
+        $radius = $request->radius;
+        $radius_unit = $request->radius_unit;
+        $angle = $request->angle;
+        $sides = $request->sides;
+        $outer_diameter = $request->outer_diameter;
+        $outer_diameter_unit = $request->outer_diameter_unit;
+        $height_unit = $request->height_unit;
+        $base_unit = $request->base_unit;
+        $base = $request->base;
+        $room_unit = $request->room_unit;
+        $price = $request->price;
+        $price_unit = $request->price_unit;
 
-	function calculate($a, $b)
-	{
-		if ($a == "in") {
-			$convert1 = $b * 0.0833333;
-		} elseif ($a == "ft") {
-			$convert1 = $b * 1;
-		} elseif ($a == "yd") {
-			$convert1 = $b * 3;
-		} elseif ($a == "mm") {
-			$convert1 = $b * 0.00328084;
-		} elseif ($a == "cm") {
-			$convert1 = $b * 0.0328084;
-		} elseif ($a == "m") {
-			$convert1 = $b * 3.28084;
-		}
-		return $convert1;
-	}
-	$i = 0;
-	$sum = 0;
-	if ($room_unit == "1" || $room_unit == "2") {
-		while ($i < count($shape_unit)) {
-			if ($shape_unit[$i] == "sq") {
-				if (is_numeric($sidealength[$i]) && is_numeric($quantity)) {
-					$conversion = calculate($sidealength_unit[$i], $sidealength[$i]);
-					$area = $conversion * $conversion * $quantity;
-				} else {
-					// dd('s');
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} else if ($shape_unit[$i] == "rec") {
-				if (is_numeric($length[$i]) && is_numeric($width[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($length_unit[$i], $length[$i]);
-					$answer2 = calculate($width_unit[$i], $width[$i]);
-					$area = $answer1 * $answer2 * $quantity;
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "recbor") {
-				if (is_numeric($inner_width[$i]) && is_numeric($inner_length[$i]) && is_numeric($border_width[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($inner_length_unit[$i], $length[$i]);
-					$answer2 = calculate($inner_width_unit[$i], $inner_width[$i]);
-					$answer3 = calculate($border_width_unit[$i], $border_width[$i]);
-					$inner_area = $answer1 * $answer2;
-					$total_area = ($answer1 + (2 * $answer3)) * (($answer2 + (2 * $answer3)));
-					$area = $total_area - $inner_area;
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "tra") {
-				if (is_numeric($sidealength[$i]) && is_numeric($sideblength[$i]) && is_numeric($height[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($sidealength_unit[$i], $sidealength[$i]);
-					$answer2 = calculate($sideblength_unit[$i], $sideblength[$i]);
-					$answer3 = calculate($height_unit[$i], $height[$i]);
-					$area = (($answer1 + $answer2) / 2) * ($answer3);
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "para") {
-				if (is_numeric($base[$i]) && is_numeric($height[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($base_unit[$i], $base[$i]);
-					$answer2 = calculate($height_unit[$i], $height[$i]);
-					$area = $answer1 * $answer2;
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "tri") {
-				if (is_numeric($sidealength[$i]) && is_numeric($sideblength[$i]) && is_numeric($sideclength[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($sidealength_unit[$i], $sidealength[$i]);
-					$answer2 = calculate($sideblength_unit[$i], $sideblength[$i]);
-					$answer3 = calculate($sideclength_unit[$i], $sideclength[$i]);
-					$area = (1 / 4) * sqrt(($answer1 + $answer2 + $answer3) * ($answer2 + $answer3 - $answer1) * ($answer3 + $answer1 - $answer2) * ($answer1 + $answer2 - $answer3));
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "cir") {
-				if (is_numeric($diameter[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($diameter_unit[$i], $diameter[$i]);
-					//Pi x (Diameter/2)^2
-					$area = ((3.14 * (($answer1 / 2) * ($answer1 / 2))));
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "ell") {
-				if (is_numeric($axisa[$i]) && is_numeric($axisb[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($axisa_unit[$i], $axisa[$i]);
-					$answer2 = calculate($axisb_unit[$i], $axisb[$i]);
-					$area = (($answer1 * $answer2) * 3.14);
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "sec") {
-				if (is_numeric($radius[$i]) && is_numeric($angle[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($radius_unit[$i], $radius[$i]);
-					$area = (3.14 * $answer1 * $answer1) * ($angle / 360);
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "hex") {
-				if (is_numeric($sidealength[$i]) && is_numeric($quantity)) {
-					//(3√3 s2)/2
-					$answer1 = calculate($sidealength_unit[$i], $sidealength[$i]);
-					$area = ((3 * sqrt(3)) * ($answer1 * $answer1) / 2);
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "oct") {
-				if (is_numeric($sidealength[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($sidealength_unit[$i], $sidealength[$i]);
-					$area = (2 * ($answer1 * $answer1) * (1 + sqrt(2)));
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "ann") {
-				if (is_numeric($inner_diameter[$i]) && is_numeric($outer_diameter[$i]) && is_numeric($quantity)) {
-					$an1 = calculate($outer_diameter_unit[$i], $outer_diameter[$i]);
-					$an2 = calculate($inner_diameter_unit[$i], $inner_diameter[$i]);
-					$outer_area = (3.14 * (($an1 / 2) * ($an1 / 2)));
-					$inner_area = (3.14 * (($an2 / 2) * ($an2 / 2)));
-					$area = $outer_area - $inner_area;
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			} elseif ($shape_unit[$i] == "cirborder") {
-				if (is_numeric($border_width[$i]) && is_numeric($inner_diameter[$i]) && is_numeric($quantity)) {
-					$answer1 = calculate($inner_diameter_unit[$i], $inner_diameter[$i]);
-					$answer2 = calculate($border_width_unit[$i], $border_width[$i]);
-					$outer_diameter = $answer1 + (2 * $answer2);
-					$outer_area = 3.14 * (($outer_diameter / 2) * ($outer_diameter / 2));
-					$inner_area = 3.14 * (($answer1 / 2) * ($answer1 / 2));
-					$area = $outer_area - $inner_area;
-				} else {
-					$this->param['error'] = 'Please! Check Your Input.';
-					return $this->param;
-				}
-			}
-			$i++;
-			$sum = $sum + $area;
-		}
-		if ($price !== "") {
-			if ($price_unit == "ft²") {
-				$convert_price = $price * 1;
-			} elseif ($price_unit == "yd²") {
-				$convert_price = $price * 0.11;
-			} elseif ($price_unit == "m²") {
-				$convert_price = $price * 0.09;
-			}
-			$this->param['ans'] = $sum;
-			$this->param['sqyards'] = $sum * 0.11111;
-			$this->param['sqmeters'] = $sum * 0.092903;
-			$this->param['acres'] = $sum * 0.0000229568;
-			$this->param['cost'] = $sum * $convert_price;
-			$this->param['RESULT'] = 1;
+        $calculate = function ($unit, $val) {
+            return match ($unit) {
+                'in' => $val * 0.0833333,
+                'ft' => $val * 1.0,
+                'yd' => $val * 3.0,
+                'mm' => $val * 0.00328084,
+                'cm' => $val * 0.0328084,
+                'm' => $val * 3.28084,
+                default => $val,
+            };
+        };
 
-			return $this->param;
-		} else {
-			$this->param['ans'] = $sum * $quantity;
-			$this->param['sqyards'] = $sum * 0.11111;
-			$this->param['sqmeters'] = $sum * 0.092903;
-			$this->param['acres'] = $sum * 0.0000229568;
-			$this->param['RESULT'] = 1;
+        $i = 0;
+        $sum = 0;
+        $shape_unit = (array)$shape_unit;
 
-			return $this->param;
-		}
-	}
-}
+        if ($room_unit == "1" || $room_unit == "2") {
+            while ($i < count($shape_unit)) {
+                $area = 0;
+                $shape = $shape_unit[$i];
+
+                if ($shape == "sq") {
+                    if (is_numeric($sidealength[$i])) {
+                        $conversion = $calculate($sidealength_unit[$i], $sidealength[$i]);
+                        $area = $conversion * $conversion;
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } else if ($shape == "rec") {
+                    if (is_numeric($length[$i]) && is_numeric($width[$i])) {
+                        $answer1 = $calculate($length_unit[$i], $length[$i]);
+                        $answer2 = $calculate($width_unit[$i], $width[$i]);
+                        $area = $answer1 * $answer2;
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "recbor") {
+                    if (is_numeric($inner_width[$i]) && is_numeric($inner_length[$i]) && is_numeric($border_width[$i])) {
+                        $answer1 = $calculate($inner_length_unit[$i], $inner_length[$i]);
+                        $answer2 = $calculate($inner_width_unit[$i], $inner_width[$i]);
+                        $answer3 = $calculate($border_width_unit[$i], $border_width[$i]);
+                        $inner_area = $answer1 * $answer2;
+                        $total_area = ($answer1 + (2 * $answer3)) * (($answer2 + (2 * $answer3)));
+                        $area = $total_area - $inner_area;
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "tra") {
+                    if (is_numeric($sidealength[$i]) && is_numeric($sideblength[$i]) && is_numeric($height[$i])) {
+                        $answer1 = $calculate($sidealength_unit[$i], $sidealength[$i]);
+                        $answer2 = $calculate($sideblength_unit[$i], $sideblength[$i]);
+                        $answer3 = $calculate($height_unit[$i], $height[$i]);
+                        $area = (($answer1 + $answer2) / 2) * ($answer3);
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "para") {
+                    if (is_numeric($base[$i]) && is_numeric($height[$i])) {
+                        $answer1 = $calculate($base_unit[$i], $base[$i]);
+                        $answer2 = $calculate($height_unit[$i], $height[$i]);
+                        $area = $answer1 * $answer2;
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "tri") {
+                    if (is_numeric($sidealength[$i]) && is_numeric($sideblength[$i]) && is_numeric($sideclength[$i])) {
+                        $answer1 = $calculate($sidealength_unit[$i], $sidealength[$i]);
+                        $answer2 = $calculate($sideblength_unit[$i], $sideblength[$i]);
+                        $answer3 = $calculate($sideclength_unit[$i], $sideclength[$i]);
+                        $area = (1 / 4) * sqrt(($answer1 + $answer2 + $answer3) * ($answer2 + $answer3 - $answer1) * ($answer3 + $answer1 - $answer2) * ($answer1 + $answer2 - $answer3));
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "cir") {
+                    if (is_numeric($diameter[$i])) {
+                        $answer1 = $calculate($diameter_unit[$i], $diameter[$i]);
+                        $area = (3.14 * (($answer1 / 2) * ($answer1 / 2)));
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "ell") {
+                    if (is_numeric($axisa[$i]) && is_numeric($axisb[$i])) {
+                        $answer1 = $calculate($axisa_unit[$i], $axisa[$i]);
+                        $answer2 = $calculate($axisb_unit[$i], $axisb[$i]);
+                        $area = (($answer1 * $answer2) * 3.14);
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "sec") {
+                    if (is_numeric($radius[$i]) && is_numeric($angle[$i])) {
+                        $answer1 = $calculate($radius_unit[$i], $radius[$i]);
+                        $area = (3.14 * $answer1 * $answer1) * ($angle[$i] / 360);
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "hex") {
+                    if (is_numeric($sidealength[$i])) {
+                        $answer1 = $calculate($sidealength_unit[$i], $sidealength[$i]);
+                        $area = ((3 * sqrt(3)) * ($answer1 * $answer1) / 2);
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "oct") {
+                    if (is_numeric($sidealength[$i])) {
+                        $answer1 = $calculate($sidealength_unit[$i], $sidealength[$i]);
+                        $area = (2 * ($answer1 * $answer1) * (1 + sqrt(2)));
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "ann") {
+                    if (is_numeric($inner_diameter[$i]) && is_numeric($outer_diameter[$i])) {
+                        $an1 = $calculate($outer_diameter_unit[$i], $outer_diameter[$i]);
+                        $an2 = $calculate($inner_diameter_unit[$i], $inner_diameter[$i]);
+                        $outer_area = (3.14 * (($an1 / 2) * ($an1 / 2)));
+                        $inner_area = (3.14 * (($an2 / 2) * ($an2 / 2)));
+                        $area = $outer_area - $inner_area;
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                } elseif ($shape == "cirborder") {
+                    if (is_numeric($border_width[$i]) && is_numeric($inner_diameter[$i])) {
+                        $answer1 = $calculate($inner_diameter_unit[$i], $inner_diameter[$i]);
+                        $answer2 = $calculate($border_width_unit[$i], $border_width[$i]);
+                        $od = $answer1 + (2 * $answer2);
+                        $outer_area = 3.14 * (($od / 2) * ($od / 2));
+                        $inner_area = 3.14 * (($answer1 / 2) * ($answer1 / 2));
+                        $area = $outer_area - $inner_area;
+                    } else {
+                        $this->param['error'] = 'Please! Check Your Input.';
+                        return $this->param;
+                    }
+                }
+                $sum += $area;
+                $i++;
+            }
+
+            if (is_numeric($quantity)) {
+                $sum = $sum * $quantity;
+            }
+
+            if (!empty($price) && is_numeric($price)) {
+                $convert_price = match ($price_unit) {
+                    'ft²' => $price * 1.0,
+                    'yd²' => $price * 0.111111,
+                    'm²' => $price * 0.092903,
+                    default => $price,
+                };
+                $this->param['cost'] = $sum * $convert_price;
+            }
+
+            $this->param['ans'] = $sum;
+            $this->param['sqyards'] = $sum * 0.111111;
+            $this->param['sqmeters'] = $sum * 0.092903;
+            $this->param['acres'] = $sum * 0.0000229568;
+            $this->param['RESULT'] = 1;
+
+            return $this->param;
+        }
+        return $this->param;
+    }
 
 // cubic-feet-calculator
 public function cubic($request)

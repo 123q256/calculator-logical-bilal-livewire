@@ -1,594 +1,348 @@
 <div>
-   <style>
-    .current_input {
-        display: none;
-        transition: display 0.5s ease-in-out;
-    }
-
-    .button {
-        transform: rotate(360deg);
-        transition: .5s ease-in-out;
-    }
-
-    .show {
-        display: flex;
-    }
-
-    .rotate {
-        transform: rotate(180deg);
-    }
-</style>
-
-<form wire:submit.prevent="calculate">
-    <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg  space-y-6 my-3">
-        @if (isset($error))
-            <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
-        @endif
-        <div class="lg:w-[60%] md:w-[60%] w-full mx-auto ">
-            <div class="grid grid-cols-12 mt-3  gap-2">
-                <div class="col-span-12">
-                    <label for="shape" class="label">{{ $lang['1'] }}:</label>
-                    <div class="w-100 py-2">
-                        <select name="shape" id="shape" class="input">
-                            <option value="0"
-                                {{ isset($_POST['shape']) && $_POST['shape'] == '0' ? 'selected' : '' }}>
-                                {{ $lang['2'] }}</option>
-                            <option value="1"
-                                {{ isset($_POST['shape']) && $_POST['shape'] == '1' ? 'selected' : '' }}>
-                                {{ $lang['3'] }}</option>
-                        </select>
+   <form wire:submit.prevent="calculate">
+        <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 my-3">
+            @if ($error)
+                <p class="text-red-500 text-lg font-semibold w-full text-center">{{ $error }}</p>
+            @endif
+            <div class="lg:w-[60%] md:w-[60%] w-full mx-auto">
+                <div class="grid grid-cols-12 mt-3 gap-4">
+                    <!-- Shape Selection -->
+                    <div class="col-span-12">
+                        <label for="shape" class="label">{{ $lang['1'] ?? 'Shape' }}:</label>
+                        <div class="w-full py-2">
+                            <select wire:model.live="shape" id="shape" class="input">
+                                <option value="0">{{ $lang['2'] ?? 'Rectangular' }}</option>
+                                <option value="1">{{ $lang['3'] ?? 'Circular' }}</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div
-                    class="col-span-12 chose {{ isset($_POST['shape']) && $_POST['shape'] !== '0' ? 'hidden' : 'd-block' }}">
-                    <div class="grid grid-cols-12 mt-3  gap-2">
-                        <div class="col-span-6 ">
-                            <input type="radio" name="g" id="g1" value="g1" checked
-                                {{ isset($_POST['check']) && $_POST['check'] === 'g1' ? 'checked' : '' }}>
-                            <label for="g1" class="label pe-lg-3 pe-2">{{ $lang['4'] }}:</label>
+
+                    @if ($shape === '0')
+                        <!-- Mode Selection for Rectangular -->
+                        <div class="col-span-12">
+                            <div class="grid grid-cols-12 gap-4">
+                                <div class="col-span-4 flex items-center space-x-2">
+                                    <input type="radio" wire:model.live="g" id="g1" value="g1">
+                                    <label for="g1" class="label text-sm">{{ $lang['4'] ?? 'Dimensions' }}</label>
+                                </div>
+                                <div class="col-span-4 flex items-center space-x-2">
+                                    <input type="radio" wire:model.live="g" id="g2" value="g2">
+                                    <label for="g2" class="label text-sm">{{ $lang['5'] ?? 'Area' }}</label>
+                                </div>
+                                <div class="col-span-4 flex items-center space-x-2">
+                                    <input type="radio" wire:model.live="g" id="g3" value="g3">
+                                    <label for="g3" class="label text-sm">{{ $lang['6'] ?? 'Volume' }}</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mode-specific Inputs -->
+                        @if ($g === 'g1')
+                            <div class="col-span-6">
+                                <label for="length" class="label">{{ $lang['7'] ?? 'Length' }}:</label>
+                                <div class="relative w-full">
+                                    <input type="number" wire:model="length" id="length" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                    <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('length_unit_dropdown')">{{ $length_unit }} ▾</label>
+                                    @if ($showDropdown === 'length_unit_dropdown')
+                                        <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                            @foreach (["mm", "cm", "m", "in", "ft", "yd"] as $unit)
+                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('length_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="col-span-6">
+                                <label for="width" class="label">{{ $lang['8'] ?? 'Width' }}:</label>
+                                <div class="relative w-full">
+                                    <input type="number" wire:model="width" id="width" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                    <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('width_unit_dropdown')">{{ $width_unit }} ▾</label>
+                                    @if ($showDropdown === 'width_unit_dropdown')
+                                        <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                            @foreach (["mm", "cm", "m", "in", "ft", "yd"] as $unit)
+                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('width_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @elseif ($g === 'g2')
+                            <div class="col-span-12">
+                                <label for="area" class="label">{{ $lang['9'] ?? 'Area' }}:</label>
+                                <div class="relative w-full">
+                                    <input type="number" wire:model="area" id="area" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                    <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('area_unit_dropdown')">{{ $area_unit }} ▾</label>
+                                    @if ($showDropdown === 'area_unit_dropdown')
+                                        <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                            @foreach (["mm²", "cm²", "m²", "in²", "ft²", "yd²", "hectares", "acres", "soccer fields"] as $unit)
+                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('area_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @elseif ($g === 'g3')
+                            <div class="col-span-12">
+                                <label for="volume" class="label">{{ $lang['10'] ?? 'Volume' }}:</label>
+                                <div class="relative w-full">
+                                    <input type="number" wire:model="volume" id="volume" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                    <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('volume_unit_dropdown')">{{ $volume_unit }} ▾</label>
+                                    @if ($showDropdown === 'volume_unit_dropdown')
+                                        <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                            @foreach (["mm³", "cm³", "m³", "in³", "ft³", "yd³"] as $unit)
+                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('volume_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+
+                        <!-- Depth (Only for g1 and g2) -->
+                        @if ($g !== 'g3')
+                            <div class="col-span-12">
+                                <label for="depth" class="label">{{ $lang['11'] ?? 'Depth' }}:</label>
+                                <div class="relative w-full">
+                                    <input type="number" wire:model="depth" id="depth" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                    <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('depth_unit_dropdown')">{{ $depth_unit }} ▾</label>
+                                    @if ($showDropdown === 'depth_unit_dropdown')
+                                        <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                            @foreach (["mm", "cm", "m", "in", "ft", "yd"] as $unit)
+                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('depth_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endif
+                    @else
+                        <!-- Circular Inputs -->
+                        <div class="col-span-6">
+                            <label for="diameter" class="label">{{ $lang['12'] ?? 'Diameter' }}:</label>
+                            <div class="relative w-full">
+                                <input type="number" wire:model="diameter" id="diameter" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('diameter_unit_dropdown')">{{ $diameter_unit }} ▾</label>
+                                @if ($showDropdown === 'diameter_unit_dropdown')
+                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                        @foreach (["mm", "cm", "m", "in", "ft", "yd"] as $unit)
+                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('diameter_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
                         </div>
                         <div class="col-span-6">
-                            <input type="radio" name="g" id="g2" value="g2"
-                                {{ isset($_POST['check']) && $_POST['check'] === 'g2' ? 'checked' : '' }}>
-                            <label for="g2" class="label pe-lg-3 pe-2">{{ $lang['5'] }}:</label>
-                        </div>
-                        <div class="col-span-12 ">
-                            <input type="radio" name="g" id="g3" value="g3"
-                                {{ isset($_POST['check']) && $_POST['check'] === 'g3' ? 'checked' : '' }}>
-                            <label for="g3" class="label">{{ $lang['6'] }}:</label>
-                            <input type="hidden" name="check" id="check" value="g1">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-12 mt-3  gap-4">
-                <div class="col-span-6 pe-lg-3">
-                    <div
-                        class="col-span-12 length {{ isset($_POST['shape']) && $_POST['shape'] !== '0' ? 'hidden' : 'd-block' }} {{ isset($_POST['check']) && $_POST['check'] !== 'g1' ? 'hidden' : 'd-block' }}">
-                        <label for="length" class="label">{{ $lang['7'] }}:</label>
-                        <div class="relative w-full ">
-                            <input type="number" name="length" id="length" step="any"
-                                class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                value="{{ isset($_POST['length']) ? $_POST['length'] : '24' }}" aria-label="input"
-                                placeholder="00" oninput="checkInput()" />
-                            <label for="length_unit" class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                onclick="toggleDropdown('length_unit_dropdown')">{{ isset($_POST['length_unit']) ? $_POST['length_unit'] : 'cm' }}
-                                ▾</label>
-                            <input type="text" name="length_unit"
-                                value="{{ isset($_POST['length_unit']) ? $_POST['length_unit'] : 'cm' }}" id="length_unit"
-                                class="hidden">
-                            <div id="length_unit_dropdown"
-                                class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                to="length_unit">
-                                @foreach (['cm', 'm', 'in', 'ft', 'yd'] as $name)
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('length_unit', '{{ $name }}')"> {{ $name }}
-                                    </p>
-                                @endforeach
+                            <label for="depth_circ" class="label">{{ $lang['11'] ?? 'Depth' }}:</label>
+                            <div class="relative w-full">
+                                <input type="number" wire:model="depth" id="depth_circ" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('depth_circ_unit_dropdown')">{{ $depth_unit }} ▾</label>
+                                @if ($showDropdown === 'depth_circ_unit_dropdown')
+                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                        @foreach (["mm", "cm", "m", "in", "ft", "yd"] as $unit)
+                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('depth_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    </div>
-                    <div
-                        class="col-span-12 width {{ isset($_POST['shape']) && $_POST['shape'] !== '0' ? 'hidden' : 'd-block' }} {{ isset($_POST['check']) && $_POST['check'] !== 'g1' ? 'hidden' : 'd-block' }}">
-                        <label for="width" class="label">{{ $lang['8'] }}:</label>
-                        <div class="relative w-full ">
-                            <input type="number" name="width" id="width" step="any"
-                                class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                value="{{ isset($_POST['width']) ? $_POST['width'] : '8' }}" aria-label="input"
-                                placeholder="00" oninput="checkInput()" />
-                            <label for="width_unit" class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                onclick="toggleDropdown('width_unit_dropdown')">{{ isset($_POST['width_unit']) ? $_POST['width_unit'] : 'cm' }}
-                                ▾</label>
-                            <input type="text" name="width_unit"
-                                value="{{ isset($_POST['width_unit']) ? $_POST['width_unit'] : 'cm' }}" id="width_unit"
-                                class="hidden">
-                            <div id="width_unit_dropdown"
-                                class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                to="width_unit">
-                                @foreach (['cm', 'm', 'in', 'ft', 'yd'] as $name)
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('width_unit', '{{ $name }}')"> {{ $name }}
-                                    </p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="col-span-12 area {{ isset($_POST['check']) && $_POST['check'] === 'g2' ? 'd-block' : 'hidden' }}">
-                        <label for="area" class="label">{{ $lang['9'] }}:</label>
-                        <div class="relative w-full ">
-                            <input type="number" name="area" id="area" step="any"
-                                class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                value="{{ isset($_POST['area']) ? $_POST['area'] : '10' }}" aria-label="input"
-                                placeholder="00" oninput="checkInput()" />
-                            <label for="area_unit" class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                onclick="toggleDropdown('area_unit_dropdown')">{{ isset($_POST['area_unit']) ? $_POST['area_unit'] : 'mm²' }}
-                                ▾</label>
-                            <input type="text" name="area_unit"
-                                value="{{ isset($_POST['area_unit']) ? $_POST['area_unit'] : 'mm²' }}" id="area_unit"
-                                class="hidden">
-                            <div id="area_unit_dropdown"
-                                class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                to="area_unit">
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer" onclick="setUnit('area_unit', 'mm²')">
-                                    mm²</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer" onclick="setUnit('area_unit', 'cm²')">
-                                    cm²</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer" onclick="setUnit('area_unit', 'm²')">
-                                    m²</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer" onclick="setUnit('area_unit', 'in²')">
-                                    in²</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer" onclick="setUnit('area_unit', 'ft²')">
-                                    ft²</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer" onclick="setUnit('area_unit', 'yd²')">
-                                    yd²</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('area_unit', 'hectares')"> hectares</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('area_unit', 'acres')"> acres</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('area_unit', 'soccer fields')"> soccer fields</p>
-                            </div>
-                        </div>
-                    </div>
+                    @endif
 
-                    <div
-                        class="col-span-12 volume {{ isset($_POST['check']) && $_POST['check'] === 'g3' ? 'd-block' : 'hidden' }}">
-                        <label for="volume" class="label">{{ $lang['10'] }}:</label>
-                        <div class="relative w-full ">
-                            <input type="number" name="volume" id="volume" step="any"
-                                class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                value="{{ isset($_POST['volume']) ? $_POST['volume'] : '15' }}" aria-label="input"
-                                placeholder="00" oninput="checkInput()" />
-                            <label for="volume_unit" class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                onclick="toggleDropdown('volume_unit_dropdown')">{{ isset($_POST['volume_unit']) ? $_POST['volume_unit'] : 'mm³' }}
-                                ▾</label>
-                            <input type="text" name="volume_unit"
-                                value="{{ isset($_POST['volume_unit']) ? $_POST['volume_unit'] : 'mm³' }}"
-                                id="volume_unit" class="hidden">
-                            <div id="volume_unit_dropdown"
-                                class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                to="volume_unit">
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('volume_unit', 'mm³')"> mm³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('volume_unit', 'cm³')"> cm³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('volume_unit', 'm³')"> m³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('volume_unit', 'in³')"> in³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('volume_unit', 'ft³')"> ft³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('volume_unit', 'yd³')"> yd³</p>
+                    <!-- Density (Always visible for shape 0) -->
+                    @if ($shape === '0' || $shape === '1')
+                        <div class="col-span-12">
+                            <label for="density" class="label">{{ $lang['13'] ?? 'Density' }}:</label>
+                            <div class="relative w-full">
+                                <input type="number" wire:model="density" id="density" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('density_unit_dropdown')">{{ $density_unit }} ▾</label>
+                                @if ($showDropdown === 'density_unit_dropdown')
+                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                        @foreach (["kg/m³", "t/m³", "g/cm³", "oz/in³", "lb/in³", "lb/ft³", "lb/yd³"] as $unit)
+                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('density_unit', '{{ $unit }}')">{{ $unit }}</p>
+                                        @endforeach
+                                    </div>
+                                @endif
                             </div>
                         </div>
-                    </div>
-                    <div
-                        class="col-span-12 diameter {{ isset($_POST['shape']) && $_POST['shape'] === '1' ? 'd-block' : 'hidden' }}">
-                        <label for="diameter" class="label">{{ $lang['11'] }}:</label>
-                        <div class="relative w-full ">
-                            <input type="number" name="diameter" id="diameter" step="any"
-                                class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                value="{{ isset($_POST['diameter']) ? $_POST['diameter'] : '15' }}" aria-label="input"
-                                placeholder="00" oninput="checkInput()" />
-                            <label for="diameter_unit" class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                onclick="toggleDropdown('diameter_unit_dropdown')">{{ isset($_POST['diameter_unit']) ? $_POST['diameter_unit'] : 'cm' }}
-                                ▾</label>
-                            <input type="text" name="diameter_unit"
-                                value="{{ isset($_POST['diameter_unit']) ? $_POST['diameter_unit'] : 'cm' }}"
-                                id="diameter_unit" class="hidden">
-                            <div id="diameter_unit_dropdown"
-                                class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                to="diameter_unit">
-                                @foreach (['cm', 'm', 'in', 'ft', 'yd'] as $name)
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('diameter_unit', '{{ $name }}')">
-                                        {{ $name }}</p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="col-span-12 depth {{ isset($_POST['check']) && $_POST['check'] === 'g3' ? 'hidden' : 'd-block' }}">
-                        <label for="depth" class="label">{{ $lang['12'] }}:</label>
-                        <div class="relative w-full ">
-                            <input type="number" name="depth" id="depth" step="any"
-                                class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                value="{{ isset($_POST['depth']) ? $_POST['depth'] : '10' }}" aria-label="input"
-                                placeholder="00" oninput="checkInput()" />
-                            <label for="depth_unit" class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                onclick="toggleDropdown('depth_unit_dropdown')">{{ isset($_POST['depth_unit']) ? $_POST['depth_unit'] : 'cm' }}
-                                ▾</label>
-                            <input type="text" name="depth_unit"
-                                value="{{ isset($_POST['depth_unit']) ? $_POST['depth_unit'] : 'cm' }}" id="depth_unit"
-                                class="hidden">
-                            <div id="depth_unit_dropdown"
-                                class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                to="depth_unit">
-                                @foreach (['cm', 'm', 'in', 'ft', 'yd'] as $name)
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('depth_unit', '{{ $name }}')"> {{ $name }}
-                                    </p>
-                                @endforeach
-                            </div>
-                        </div>
-                    </div>
-                    <div
-                        class="col-span-12 density {{ isset($_POST['shape']) && $_POST['shape'] !== '0' ? 'hidden' : 'd-block' }} {{ isset($_POST['shape']) && $_POST['shape'] === '2' ? 'hidden' : 'd-block' }}">
-                        <label for="density" class="label">{{ $lang['13'] }}:</label>
-                        <div class="relative w-full ">
-                            <input type="number" name="density" id="density" step="any"
-                                class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                value="{{ isset($_POST['density']) ? $_POST['density'] : '10' }}" aria-label="input"
-                                placeholder="00" oninput="checkInput()" />
-                            <label for="density_unit" class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                onclick="toggleDropdown('density_unit_dropdown')">{{ isset($_POST['density_unit']) ? $_POST['density_unit'] : 'kg/m³' }}
-                                ▾</label>
-                            <input type="text" name="density_unit"
-                                value="{{ isset($_POST['density_unit']) ? $_POST['density_unit'] : 'kg/m³' }}"
-                                id="density_unit" class="hidden">
-                            <div id="density_unit_dropdown"
-                                class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                to="density_unit">
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('density_unit', 'kg/m³')"> kg/m³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('density_unit', 't/m³')"> t/m³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('density_unit', 'g/cm³')"> g/cm³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('density_unit', 'oz/in³')"> oz/in³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('density_unit', 'lb/in³')"> lb/in³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('density_unit', 'lb/ft³')"> lb/ft³</p>
-                                <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                    onclick="setUnit('density_unit', 'lb/yd³')"> lb/yd³</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    @endif
 
-                <div class="col-span-6 ps-lg-3 flex items-center">
-                    <img src="{{ asset('images/sand-square.webp') }}" alt="ShapeImage" class="max-width imgset"
-                        width="320px" height="130px">
-                </div>
-                <div class="col-span-12 cursor-pointer current_gpa flex items-center justify-center my-3">
-                    <strong class="pe-lg-3">{{ $lang['14'] }}:</strong>
-                    <img src="{{ asset('images/new-down.webp') }}" class="right button mx-2" alt="cost"
-                        width="16px" height="16px">
-                </div>
-                <div
-                    class="col-span-12 current_input {{ (isset($_POST['mass_price']) && $_POST['mass_price'] !== '') || (isset($_POST['c_price']) && $_POST['c_price'] !== '') ? 'show' : 'current_input' }}">
-                    <div class="grid grid-cols-12 mt-3  gap-4">
-                        <div
-                            class="col-span-6 c_price {{ isset($_POST['shape']) && $_POST['shape'] !== '0' ? 'd-block' : 'hidden' }}">
-                            <label for="c_price" class="label">{{ $lang['17'] }}:</label>
-                            <div class="w-100 py-2 position-relative">
-                                <input type="number" step="any" name="c_price" id="c_price" class="input"
-                                    aria-label="input" value="{{ isset($_POST['c_price']) ? $_POST['c_price'] : '' }}" />
-                                <span class="text-blue input-unit">{{ $currancy }}</span>
-                            </div>
-                        </div>
-                        <div
-                            class="col-span-6 price {{ isset($_POST['shape']) && $_POST['shape'] !== '0' ? 'hidden' : 'd-block' }}">
-                            <label for="mass_price" class="label">{{ $lang['15'] }}:</label>
-                            <div class="relative w-full ">
-                                <input type="number" name="mass_price" id="mass_price" step="any"
-                                    class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                    value="{{ isset($_POST['mass_price']) ? $_POST['mass_price'] : '5' }}"
-                                    aria-label="input" placeholder="00" oninput="checkInput()" />
-                                <label for="mass_price_unit"
-                                    class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                    onclick="toggleDropdown('mass_price_unit_dropdown')">{{ isset($_POST['mass_price_unit']) ? $_POST['mass_price_unit'] : $currancy . ' ' . 't' }}
-                                    ▾</label>
-                                <input type="text" name="mass_price_unit"
-                                    value="{{ isset($_POST['mass_price_unit']) ? $_POST['mass_price_unit'] : $currancy . ' ' . 't' }}"
-                                    id="mass_price_unit" class="hidden">
-                                <div id="mass_price_unit_dropdown"
-                                    class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                    to="mass_price_unit">
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} µg')">
-                                        {{ $currancy }} µg</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} mg')">
-                                        {{ $currancy }} mg</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} g')">
-                                        {{ $currancy }} g</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} kg')">
-                                        {{ $currancy }} kg</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} t')">
-                                        {{ $currancy }} t</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} lb')">
-                                        {{ $currancy }} lb</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} stone')">
-                                        {{ $currancy }} stone</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} US ton')">
-                                        {{ $currancy }} US ton</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('mass_price_unit', '{{ $currancy }} Long ton')">
-                                        {{ $currancy }} Long ton</p>
+                    <!-- Price Section -->
+                    <div class="col-span-12 pt-4">
+                        <p class="font-bold text-blue-600 border-b pb-2 mb-4 uppercase text-sm tracking-wider">{{ $lang['14'] ?? 'Price calculations' }}</p>
+                        <div class="grid grid-cols-12 gap-4">
+                            @if ($shape === '0')
+                                <div class="col-span-6">
+                                    <label for="mass_price" class="label">{{ $lang['15'] ?? 'By Mass' }}:</label>
+                                    <div class="relative w-full">
+                                        <input type="number" wire:model="mass_price" id="mass_price" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                        <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('mass_price_unit_dropdown')">{{ $mass_price_unit }} ▾</label>
+                                        @if ($showDropdown === 'mass_price_unit_dropdown')
+                                            <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                                @foreach (["µg", "mg", "g", "kg", "t", "lb", "stone", "US ton", "Long ton"] as $unit)
+                                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('mass_price_unit', '{{ $currancy . $unit }}')">{{ $currancy . $unit }}</p>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                                <input type="hidden" name="hiddencurrancy" value="{{ $currancy }}" />
-                            </div>
-                        </div>
-                        <div
-                            class="col-span-6 optional {{ isset($_POST['shape']) && $_POST['shape'] !== '0' ? 'hidden' : 'd-block' }}">
-                            <label for="volume_price" class="label">{{ $lang['16'] }}:</label>
-                            <div class="relative w-full ">
-                                <input type="number" name="volume_price" id="volume_price" step="any"
-                                    class="border border-gray-300 p-2 rounded-lg focus:ring-2  w-full"
-                                    value="{{ isset($_POST['volume_price']) ? $_POST['volume_price'] : '' }}"
-                                    aria-label="input" placeholder="00" oninput="checkInput()" />
-                                <label for="volume_price_unit"
-                                    class="absolute cursor-pointer text-sm underline right-6 top-4"
-                                    onclick="toggleDropdown('volume_price_unit_dropdown')">{{ isset($_POST['volume_price_unit']) ? $_POST['volume_price_unit'] : $currancy . ' ' . 't' }}
-                                    ▾</label>
-                                <input type="text" name="volume_price_unit"
-                                    value="{{ isset($_POST['volume_price_unit']) ? $_POST['volume_price_unit'] : $currancy . ' ' . 't' }}"
-                                    id="volume_price_unit" class="hidden">
-                                <div id="volume_price_unit_dropdown"
-                                    class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 hidden"
-                                    to="volume_price_unit">
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('volume_price_unit', '{{ $currancy }} mm³')">
-                                        {{ $currancy }} mm³</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('volume_price_unit', '{{ $currancy }} cm³')">
-                                        {{ $currancy }} cm³</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('volume_price_unit', '{{ $currancy }} m³')">
-                                        {{ $currancy }} m³</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('volume_price_unit', '{{ $currancy }} in³')">
-                                        {{ $currancy }} in³</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('volume_price_unit', '{{ $currancy }} ft³')">
-                                        {{ $currancy }} ft³</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer"
-                                        onclick="setUnit('volume_price_unit', '{{ $currancy }} yd³')">
-                                        {{ $currancy }} yd³</p>
-
+                                <div class="col-span-6">
+                                    <label for="volume_price" class="label">{{ $lang['16'] ?? 'By Volume' }}:</label>
+                                    <div class="relative w-full">
+                                        <input type="number" wire:model="volume_price" id="volume_price" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
+                                        <label class="absolute cursor-pointer text-sm underline right-6 top-4" wire:click="toggleOverlay('volume_price_unit_dropdown')">{{ $volume_price_unit }} ▾</label>
+                                        @if ($showDropdown === 'volume_price_unit_dropdown')
+                                            <div class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg border">
+                                                @foreach (["mm³", "cm³", "m³", "in³", "ft³", "yd³"] as $unit)
+                                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('volume_price_unit', '{{ $currancy . $unit }}')">{{ $currancy . $unit }}</p>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            @else
+                                <div class="col-span-12">
+                                    <label for="c_price" class="label">{{ $lang['17'] ?? 'Price per unit weight' }}:</label>
+                                    <div class="relative w-full">
+                                        <input type="number" wire:model="c_price" id="c_price" step="any" class="input" />
+                                        <span class="absolute right-4 top-4 text-blue">{{ $currancy }}</span>
+                                    </div>
+                                </div>
+                            @endif
+
+                    </div> 
+                </div> 
             </div>
+        </div> 
             @if ($type == 'calculator')
                 @include('inc.button')
-            @endif
-            @if ($type == 'widget')
+            @else
                 @include('inc.widget-button')
             @endif
-        </div>
-    <hr>
-        @isset($detail)
-            <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
+             
+</div>
+<hr>
+            @isset($detail)
+   <div id="result-section" wire:loading.remove wire:target="calculate"
+                class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
                 <div class="">
                     @if ($type == 'calculator')
                         @include('inc.copy-pdf')
                     @endif
-                    <div class="rounded-lg  flex items-center justify-center">
-                        <div class="w-full mt-3">
-                            <div class="w-full my-1">
-                                <div class="w-full md:w-[60%] lg:w-[60%] text-[18px]">
-                                    <table class="w-full">
-                                        @if (isset($detail['volume']))
-                                            <tr>
-                                                <td width="40%" class="border-b py-2">
-                                                    <strong>{{ $lang['18'] }}</strong></td>
-                                                <td class="border-b py-2">{{ $detail['volume'] }} (ft³)</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="pt-3 pb-2">{{ $lang['19'] }}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-b py-2">{{ $lang['18'] }}</td>
-                                                <td class="border-b py-2">{{ $detail['mm3'] }} cubic milimeters (mm³)
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-b py-2">{{ $lang['18'] }}</td>
-                                                <td class="border-b py-2">{{ $detail['cm3'] }} cubic centimeters (cm³)
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-b py-2">{{ $lang['18'] }}</td>
-                                                <td class="border-b py-2">{{ $detail['m3'] }} cubic meters (m³)</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-b py-2">{{ $lang['18'] }}</td>
-                                                <td class="border-b py-2">{{ $detail['in3'] }} cubic inches (in³)</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="border-b py-2">{{ $lang['18'] }}</td>
-                                                <td class="border-b py-2">{{ $detail['yd3'] }} cubic yards (yd³)</td>
-                                            </tr>
-                                        @endif
+                    
+                    <div class="rounded-lg flex items-center justify-center">
+                        <div class="w-full">
+                            <div class="w-full md:w-[90%] lg:w-[80%] overflow-auto font-s-18">
+                                <table class="w-full border-collapse">
+                                    <!-- Main Volume -->
+                                    @if (isset($detail['volume']))
                                         <tr>
-                                            <td class="border-b pb-2 pt-4"><strong>{{ $lang['20'] }}</strong></td>
-                                            <td class="border-b pb-2 pt-4">
-                                                {{ $detail['weight'] }} t
-                                            </td>
+                                            <td width="50%" class="border-b py-2 font-bold">Volume</td>
+                                            <td class="border-b py-2 text-blue-600 font-bold">{{ number_format($detail['volume'], 2) }} (ft³)</td>
                                         </tr>
+                                    @endif
+
+                                    <!-- Other Volume Units -->
+                                    <tr>
+                                        <td colspan="2" class="py-2 text-sm text-gray-500 font-semibold italic">Result in other units</td>
+                                    </tr>
+                                    @if (isset($detail['mm3']))
                                         <tr>
-                                            <td colspan="2" class="pt-3 pb-2">{{ $lang['19'] }}</td>
+                                            <td class="border-b py-2 px-4">Volume</td>
+                                            <td class="border-b py-2">{{ number_format($detail['mm3'], 2) }} cubic milimeters (mm³)</td>
                                         </tr>
+                                    @endif
+                                    @if (isset($detail['cm3']))
                                         <tr>
-                                            <td class="border-b py-2">{{ $lang['20'] }}</td>
-                                            <td class="border-b py-2">{{ $detail['g'] }} grams (g)</td>
+                                            <td class="border-b py-2 px-4">Volume</td>
+                                            <td class="border-b py-2">{{ number_format($detail['cm3'], 2) }} cubic centimeters (cm³)</td>
                                         </tr>
+                                    @endif
+                                    @if (isset($detail['m3']))
                                         <tr>
-                                            <td class="border-b py-2">{{ $lang['20'] }}</td>
-                                            <td class="border-b py-2">{{ $detail['kg'] }} kilograms (kg)</td>
+                                            <td class="border-b py-2 px-4">Volume</td>
+                                            <td class="border-b py-2">{{ number_format($detail['m3'], 2) }} cubic meters (m³)</td>
                                         </tr>
+                                    @endif
+                                    @if (isset($detail['in3']))
                                         <tr>
-                                            <td class="border-b py-2">{{ $lang['20'] }}</td>
-                                            <td class="border-b py-2">{{ $detail['oz'] }} ounces (oz)</td>
+                                            <td class="border-b py-2 px-4">Volume</td>
+                                            <td class="border-b py-2">{{ number_format($detail['in3'], 2) }} cubic inches (in³)</td>
                                         </tr>
+                                    @endif
+                                    @if (isset($detail['yd3']))
                                         <tr>
-                                            <td class="border-b py-2">{{ $lang['20'] }}</td>
-                                            <td class="border-b py-2">{{ $detail['lb'] }} pounds (lb)</td>
+                                            <td class="border-b py-2 px-4">Volume</td>
+                                            <td class="border-b py-2">{{ number_format($detail['yd3'], 2) }} cubic yards (yd³)</td>
                                         </tr>
+                                    @endif
+
+                                    <!-- Main Weight -->
+                                    @if (isset($detail['weight']))
                                         <tr>
-                                            <td class="border-b py-2">{{ $lang['20'] }}</td>
-                                            <td class="border-b py-2">{{ $detail['stone'] }} stones (stone)</td>
+                                            <td class="border-b py-2 font-bold pt-6">Weight</td>
+                                            <td class="border-b py-2 text-blue-600 font-bold pt-6">{{ number_format($detail['weight'], 2) }} t</td>
                                         </tr>
+                                    @endif
+
+                                    <!-- Other Weight Units -->
+                                    <tr>
+                                        <td colspan="2" class="py-2 text-sm text-gray-500 font-semibold italic">Result in other units</td>
+                                    </tr>
+                                    @if (isset($detail['g']))
                                         <tr>
-                                            <td class="border-b py-2">{{ $lang['20'] }}</td>
-                                            <td class="border-b py-2">{{ $detail['us_ton'] }} US short tons (US ton)</td>
+                                            <td class="border-b py-2 px-4">Weight</td>
+                                            <td class="border-b py-2">{{ number_format($detail['g'], 2) }} grams (g)</td>
                                         </tr>
+                                    @endif
+                                    @if (isset($detail['kg']))
                                         <tr>
-                                            <td class="border-b py-2">{{ $lang['20'] }}</td>
-                                            <td class="border-b py-2">{{ $detail['long_ton'] }} imperial tons (Long ton)
-                                            </td>
+                                            <td class="border-b py-2 px-4">Weight</td>
+                                            <td class="border-b py-2">{{ number_format($detail['kg'], 2) }} kilograms (kg)</td>
                                         </tr>
-                                        @if (isset($detail['cost']))
-                                            <tr>
-                                                <td class="border-b py-2">{{ $lang['21'] }}</td>
-                                                <td class="border-b py-2">
-                                                    {{ $currancy . ' ' . $detail['cost'] }}
-                                                </td>
-                                            </tr>
-                                        @endif
-                                    </table>
-                                </div>
+                                    @endif
+                                    @if (isset($detail['oz']))
+                                        <tr>
+                                            <td class="border-b py-2 px-4">Weight</td>
+                                            <td class="border-b py-2">{{ number_format($detail['oz'], 2) }} ounces (oz)</td>
+                                        </tr>
+                                    @endif
+                                    @if (isset($detail['lb']))
+                                        <tr>
+                                            <td class="border-b py-2 px-4">Weight</td>
+                                            <td class="border-b py-2">{{ number_format($detail['lb'], 2) }} pounds (lb)</td>
+                                        </tr>
+                                    @endif
+                                    @if (isset($detail['stone']))
+                                        <tr>
+                                            <td class="border-b py-2 px-4">Weight</td>
+                                            <td class="border-b py-2">{{ number_format($detail['stone'], 2) }} stones (stone)</td>
+                                        </tr>
+                                    @endif
+                                    @if (isset($detail['us_ton']))
+                                        <tr>
+                                            <td class="border-b py-2 px-4">Weight</td>
+                                            <td class="border-b py-2">{{ number_format($detail['us_ton'], 2) }} US short tons (US ton)</td>
+                                        </tr>
+                                    @endif
+                                    @if (isset($detail['long_ton']))
+                                        <tr>
+                                            <td class="border-b py-2 px-4">Weight</td>
+                                            <td class="border-b py-2">{{ number_format($detail['long_ton'], 2) }} imperial tons (Long ton)</td>
+                                        </tr>
+                                    @endif
+
+                                    <!-- Cost -->
+                                    @if (isset($detail['cost']))
+                                        <tr>
+                                            <td class="border-b py-2 font-bold pt-6 text-green-700">Cost</td>
+                                            <td class="border-b py-2 text-green-700 font-bold pt-6">{{ $currancy }}{{ number_format($detail['cost'], 2) }}</td>
+                                        </tr>
+                                    @endif
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        @endisset
-        </div>
-</form>
-@push('calculatorJS')
-    <script>
-        var length = document.querySelector('.length');
-        var width = document.querySelector('.width');
-        var area = document.querySelector('.area');
-        var volume = document.querySelector('.volume');
-        var diameter = document.querySelector('.diameter');
-        var depth = document.querySelector('.depth');
-        var density = document.querySelector('.density');
-        var c_price = document.querySelector('.c_price');
-        var price = document.querySelector('.price');
-        var optional = document.querySelector('.optional');
-        var chose = document.querySelector('.chose');
-        var imgset = document.querySelector('.imgset');
-        var check = document.getElementById('check');
-        document.getElementById('shape').addEventListener('change', function() {
-            var value = this.value;
-            if (value === "0") {
-                length.style.display = "block";
-                imgset.setAttribute('src', "{{ asset('images/sand-square.webp') }}");
-                width.style.display = "block";
-                depth.style.display = "block";
-                density.style.display = "block";
-                price.style.display = "block";
-                optional.style.display = "block";
-                chose.style.display = "block";
-                diameter.style.display = "none";
-                volume.style.display = "none";
-                area.style.display = "none";
-                c_price.style.display = "none";
-            } else if (value === "1") {
-                imgset.setAttribute('src', "{{ asset('images/sand-circle.webp') }}");
-                length.style.display = "none";
-                width.style.display = "none";
-                density.style.display = "none";
-                chose.style.display = "none";
-                depth.style.display = "block";
-                diameter.style.display = "block";
-                c_price.style.display = "block";
-                volume.style.display = "none";
-                area.style.display = "none";
-                price.style.display = "none";
-                optional.style.display = "none";
-            }
-        });
-
-        @if (isset($_POST['shape']) && $_POST['shape'] !== '0')
-            imgset.setAttribute("src", "{{ asset('images/sand-circle.webp') }}");
-        @else
-            imgset.setAttribute("src", "{{ asset('images/sand-square.webp') }}");
-        @endif
-
-        document.getElementById('g1').addEventListener('click', function() {
-            check.value = 'g1';
-            length.style.display = "block";
-            width.style.display = "block";
-            depth.style.display = "block";
-            density.style.display = "block";
-            price.style.display = "block";
-            optional.style.display = "block";
-            diameter.style.display = "none";
-            volume.style.display = "none";
-            area.style.display = "none";
-            c_price.style.display = "none";
-        });
-        document.getElementById('g2').addEventListener('click', function() {
-            check.value = 'g2';
-            length.style.display = "none";
-            width.style.display = "none";
-            diameter.style.display = "none";
-            depth.style.display = "block";
-            density.style.display = "block";
-            price.style.display = "block";
-            optional.style.display = "block";
-            area.style.display = "block";
-            volume.style.display = "none";
-            c_price.style.display = "none";
-
-        });
-        document.getElementById('g3').addEventListener('click', function() {
-            check.value = 'g3';
-            length.style.display = "none";
-            width.style.display = "none";
-            diameter.style.display = "none";
-            depth.style.display = "none";
-            density.style.display = "block ";
-            price.style.display = "block";
-            optional.style.display = "block";
-            volume.style.display = "block";
-            area.style.display = "none";
-            c_price.style.display = "none";
-        });
-        document.querySelector('.current_gpa').addEventListener('click', function() {
-            var view = document.querySelector('.current_input');
-            var button = document.querySelector('.button');
-            view.classList.remove('hidden');
-            view.classList.toggle('show');
-            button.classList.toggle('rotate');
-        });
-    </script>
-@endpush
+            @endisset
+    </form>
 </div>
