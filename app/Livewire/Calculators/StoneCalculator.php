@@ -31,10 +31,12 @@ class StoneCalculator extends Component
 
     public $showDropdown = null;
 
-    public function mount($type = 'calculator', $lang = [])
+    public function mount($type = 'calculator', $lang = [], $currancy = null)
     {
         $this->type = $type;
         $this->lang = $lang;
+        $this->currancy = $currancy ?? $lang['currency'] ?? '$';
+        $this->price_unit = $this->currancy . ' per ton';
         $this->detail = session('calculator_result');
         $this->error = session('validation_error');
 
@@ -138,6 +140,15 @@ class StoneCalculator extends Component
             } else {
                 $this->detail = $result;
                 $this->error = null;
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
                 return;
             }
         }

@@ -128,6 +128,16 @@ class GravelCalculator extends Component
                 session()->flash('scroll_to_result', true);
                 session()->flash('calculator_back_inputs', (array)$request);
                 return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
             }
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';

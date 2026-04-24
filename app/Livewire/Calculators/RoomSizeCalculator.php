@@ -16,46 +16,12 @@ class RoomSizeCalculator extends Component
     public $perce = 0;
     public $rooms = [];
 
-    public function mount($type = 'calculator', $lang = [])
+    public function mount($type = 'calculator', $lang = [], $currancy = null)
     {
         $this->type = $type;
         $this->lang = $lang;
         $this->detail = session('calculator_result');
         $this->error = session('validation_error');
-
-        if (session()->has('calculator_back_inputs')) {
-            $inputs = session('calculator_back_inputs');
-            $this->name = $inputs->name ?? 'feet';
-            $this->perce = $inputs->perce ?? 0;
-            
-            // Reconstruct rooms array from back inputs
-            $this->rooms = [];
-            if ($this->name == 'feet') {
-                $lf = (array)($inputs->lenght_f ?? []);
-                $li = (array)($inputs->lenght_in ?? []);
-                $wf = (array)($inputs->width_f ?? []);
-                $wi = (array)($inputs->width_in ?? []);
-                $count = count($lf);
-                for ($i = 0; $i < $count; $i++) {
-                    $this->rooms[] = [
-                        'lenght_f' => $lf[$i] ?? '',
-                        'lenght_in' => $li[$i] ?? '',
-                        'width_f' => $wf[$i] ?? '',
-                        'width_in' => $wi[$i] ?? '',
-                    ];
-                }
-            } else {
-                $lm = (array)($inputs->lenght_m ?? []);
-                $wm = (array)($inputs->width_m ?? []);
-                $count = count($lm);
-                for ($i = 0; $i < $count; $i++) {
-                    $this->rooms[] = [
-                        'lenght_m' => $lm[$i] ?? '',
-                        'width_m' => $wm[$i] ?? '',
-                    ];
-                }
-            }
-        }
 
         if (empty($this->rooms)) {
             $this->addRoom();
@@ -67,14 +33,17 @@ class RoomSizeCalculator extends Component
         $this->detail = null;
     }
 
-    public function setName($val)
+    public function setTab($val)
     {
-        $this->name = $val;
-        $this->detail = null;
-        // Reset rooms if switching tabs to ensure clean state
-        $this->rooms = [];
-        $this->addRoom();
+        if ($this->name !== $val) {
+            $this->name = $val;
+            $this->detail = null;
+            // Reset rooms if switching tabs to ensure clean state
+            $this->rooms = [];
+            $this->addRoom();
+        }
     }
+
 
     public function addRoom()
     {
@@ -129,8 +98,14 @@ class RoomSizeCalculator extends Component
     {
         // Build request object with arrays as expected by the model
         $reqData = [
-            'name'  => $this->name,
-            'perce' => $this->perce,
+            'name'      => $this->name,
+            'perce'     => $this->perce,
+            'lenght_f'  => [],
+            'lenght_in' => [],
+            'width_f'   => [],
+            'width_in'  => [],
+            'lenght_m'  => [],
+            'width_m'   => [],
         ];
 
         if ($this->name == 'feet') {
@@ -158,6 +133,15 @@ class RoomSizeCalculator extends Component
             } else {
                 $this->detail = $result;
                 $this->error = null;
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
                 return;
             }
         }

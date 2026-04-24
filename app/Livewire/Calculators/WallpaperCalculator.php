@@ -172,6 +172,15 @@ class WallpaperCalculator extends Component
             } else {
                 $this->detail = $result;
                 $this->error = null;
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
                 return;
             }
         }

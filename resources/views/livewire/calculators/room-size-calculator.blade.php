@@ -1,27 +1,27 @@
 <div>
     <form wire:submit.prevent="calculate">
-        @if(!isset($detail))
-            <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 my-3">
+   
+            <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 mb-3">
                 @if (isset($error))
                     <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
                 @endif
                 
                 <div class="lg:w-[80%] md:w-[80%] w-full mx-auto">
-                    <div class="grid grid-cols-12 mt-3 gap-2">
+                    <div class="grid grid-cols-12 gap-2">
                         <div class="col-span-12 flex justify-center">
-                            <img src="{{ asset('images/room_size.svg') }}" alt="Room Size" class="w-full md:w-[50%] lg:w-[50%] h-auto">
+                            <img src="{{ asset('images/room_size.png') }}" alt="Room Size" class="w-full md:w-[50%] lg:w-[50%] h-auto">
                         </div>
                         
                         <div class="col-span-12">
                             <div class="col-12 col-lg-9 mx-auto mt-2 lg:w-[50%] w-full">
                                 <div class="flex flex-wrap items-center bg-blue-100 border border-blue-500 text-center rounded-lg px-1">
                                     <div class="lg:w-1/2 w-full px-2 py-1">
-                                        <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white {{ $name == 'feet' ? 'tagsUnit' : '' }}" wire:click="setName('feet')">
+                                        <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white {{ $name == 'feet' ? 'tagsUnit' : '' }}" wire:click="setTab('feet')">
                                             {{ $lang['2'] ?? 'Feet / Inches' }}
                                         </div>
                                     </div>
                                     <div class="lg:w-1/2 w-full px-2 py-1">
-                                        <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white {{ $name == 'meter' ? 'tagsUnit' : '' }}" wire:click="setName('meter')">
+                                        <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white {{ $name == 'meter' ? 'tagsUnit' : '' }}" wire:click="setTab('meter')">
                                             {{ $lang['1'] ?? 'Meters' }}
                                         </div>
                                     </div>
@@ -106,7 +106,8 @@
                     @include('inc.widget-button')
                 @endif
             </div>
-        @else
+            <hr>
+        @isset($detail)
             <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
                 <div class="">
                     @if ($type == 'calculator')
@@ -115,7 +116,7 @@
                     <div class="rounded-lg w-full items-center justify-center">
                         <div class="w-full mt-3">
                             <div class="w-full">
-                                <div class="w-full md:w-[70%] lg:w-[70%] font-s-18">
+                                <div class="w-full md:w-[80%] lg:w-[80%] text-[18px] overflow-auto">
                                     <table class="w-full">
                                         @if ($name == 'feet')
                                             <tr>
@@ -124,18 +125,30 @@
                                             </tr>
                                             @if ($perce != 0)
                                                 <tr>
-                                                    <td class="border-b py-3"><strong>{{ $lang['8'] ?? 'Total' }} {{ $lang['9'] ?? 'with' }} {{ $perce }}% {{ $lang['10'] ?? 'Waste' }}</strong></td>
+                                                    <td class="border-b py-3"><strong>{{ $lang['8'] ?? 'Total Area' }} with {{ $perce }}% {{ $lang['10'] ?? 'Waste' }}</strong></td>
                                                     <td class="border-b py-3 font-bold text-red-600">{{ round($detail['perc'], 3) }} ft²</td>
                                                 </tr>
                                             @endif
                                             <tr>
-                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Area' }} ({{ $lang['11'] ?? 'Square Inches' }})</td>
+                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Total area' }} (Square Inch)</td>
                                                 <td class="border-b py-3 text-sm italic">{{ round($detail['f_r_s'] * 144, 3) }} in²</td>
                                             </tr>
+                                            @if ($perce != 0)
+                                                <tr>
+                                                    <td class="border-b py-3 text-gray-600 text-sm italic">Total area waste (Square Inch)</td>
+                                                    <td class="border-b py-3 text-sm italic">{{ round($detail['perc'] * 144, 3) }} in²</td>
+                                                </tr>
+                                            @endif
                                             <tr>
-                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Area' }} ({{ $lang['12'] ?? 'Square Meters' }})</td>
+                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Total area' }} (Square Meter)</td>
                                                 <td class="border-b py-3 text-sm italic">{{ round($detail['f_r_s'] / 10.764, 3) }} m²</td>
                                             </tr>
+                                            @if ($perce != 0)
+                                                <tr>
+                                                    <td class="border-b py-3 text-gray-600 text-sm italic">Total area waste (Square Meter)</td>
+                                                    <td class="border-b py-3 text-sm italic">{{ round($detail['perc'] / 10.764, 3) }} m²</td>
+                                                </tr>
+                                            @endif
                                         @else
                                             <tr>
                                                 <td class="border-b py-3"><strong>{{ $lang['8'] ?? 'Total Area' }}</strong></td>
@@ -143,26 +156,33 @@
                                             </tr>
                                             @if ($perce != 0)
                                                 <tr>
-                                                    <td class="border-b py-3"><strong>{{ $lang['8'] ?? 'Total' }} {{ $lang['9'] ?? 'with' }} {{ $perce }}% {{ $lang['10'] ?? 'Waste' }}</strong></td>
+                                                    <td class="border-b py-3"><strong>{{ $lang['8'] ?? 'Total Area' }} with {{ $perce }}% {{ $lang['10'] ?? 'Waste' }}</strong></td>
                                                     <td class="border-b py-3 font-bold text-red-600">{{ round($detail['perc'], 3) }} m²</td>
                                                 </tr>
                                             @endif
                                             <tr>
-                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Area' }} (Square Feet)</td>
+                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Total area' }} (Square Feet)</td>
                                                 <td class="border-b py-3 text-sm italic">{{ round($detail['m_r_s'] * 10.764, 3) }} ft²</td>
                                             </tr>
+                                            @if ($perce != 0)
+                                                <tr>
+                                                    <td class="border-b py-3 text-gray-600 text-sm italic">Total area waste (Square Feet)</td>
+                                                    <td class="border-b py-3 text-sm italic">{{ round($detail['perc'] * 10.764, 3) }} ft²</td>
+                                                </tr>
+                                            @endif
                                             <tr>
-                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Area' }} (Square Inches)</td>
+                                                <td class="border-b py-3 text-gray-600 text-sm italic">{{ $lang['8'] ?? 'Total area' }} (Square Inches)</td>
                                                 <td class="border-b py-3 text-sm italic">{{ round($detail['m_r_s'] * 1550, 3) }} in²</td>
                                             </tr>
+                                            @if ($perce != 0)
+                                                <tr>
+                                                    <td class="border-b py-3 text-gray-600 text-sm italic">Total area waste (Square Inches)</td>
+                                                    <td class="border-b py-3 text-sm italic">{{ round($detail['perc'] * 1550, 3) }} in²</td>
+                                                </tr>
+                                            @endif
                                         @endif
                                     </table>
                                 </div>
-                            </div>
-                            <div class="w-full text-center mt-10">
-                                <button type="button" wire:click="resetForm" class="bg-gray-800 text-white hover:bg-black transition-colors duration-200 font-bold text-sm rounded-full px-8 py-3 uppercase">
-                                    {{ $lang['reset'] ?? 'RESET' }}
-                                </button>
                             </div>
                         </div>
                     </div>

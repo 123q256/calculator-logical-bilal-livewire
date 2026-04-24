@@ -129,6 +129,15 @@ class RampCalculator extends Component
                 $this->error = null;
                 $this->js('if (window.MathJax && window.MathJax.typesetPromise) { MathJax.typesetPromise(); }');
                 $this->dispatch('math-updated');
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
                 return;
             }
         }

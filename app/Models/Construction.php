@@ -3417,11 +3417,11 @@ public function material($request){
 	        }
 	    }
 	    if (is_numeric($price)) {
-	        if($price_unit == "per ton"){
-	            array_walk($array, function(&$v) use($price) {$v *= $price;});
-	            $price_ton = $array;
+	        if (strpos($price_unit, 'per ton') !== false) {
+				$price_ton = $array;
+	            array_walk($price_ton, function(&$v) use($price) { $v *= $price; });
 	            $this->param['price_ton'] = $price_ton;	
-	        }else {
+	        } else {
 	            $price_cu = $price * $cubicyd1;
 	            $this->param['price_cu'] = $price_cu;	
 	        }
@@ -6270,13 +6270,13 @@ public function tank($request)
 	public function room($request)
     {
 		$submit = trim( $request->name );
-		$lenght_f = $request->lenght_f;
-		$lenght_in = $request->lenght_in;
-		$width_f = $request->width_f;
-		$width_in = $request->width_in;
-		$perce = $request->perce;
-		$lenght_m = $request->lenght_m;
-		$width_m = $request->width_m;
+		$lenght_f = $request->lenght_f ?? [];
+		$lenght_in = $request->lenght_in ?? [];
+		$width_f = $request->width_f ?? [];
+		$width_in = $request->width_in ?? [];
+		$perce = $request->perce ?? 0;
+		$lenght_m = $request->lenght_m ?? [];
+		$width_m = $request->width_m ?? [];
 		if($submit == 'feet'){
 			$length1=count($lenght_f);
 			$width1=count($width_f);
