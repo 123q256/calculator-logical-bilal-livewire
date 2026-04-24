@@ -215,49 +215,82 @@
                         @include('inc.copy-pdf')
                     @endif
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-5">
-                        
+                    <div class="w-full gap-8 mt-5">
                         <!-- Primary Material Count -->
-                        <div class="space-y-4">
-                            <div class="bg-blue-50/50 p-6 rounded-xl border border-blue-100 text-center">
-                                <h3 class="text-blue-800 text-sm uppercase tracking-widest mb-1 font-bold">{{ $lang['16'] ?? 'Number of Posts' }}</h3>
-                                <div class="text-4xl font-black text-blue-900">{{ number_format($detail['no_post'] ?? 0) }}</div>
+                    <div class="grid grid-cols-12 gap-4 mb-3">
+    
+                        <!-- Left Column -->
+                        <div class="col-span-12 md:col-span-6">
+                            <div class="bg-blue-50/50 p-6 rounded-xl border border-blue-100 
+                                        text-center h-full flex flex-col justify-center items-center">
+                                    <h3 class="text-blue-800 text-md uppercase tracking-widest mb-1 font-bold">
+                                        {{ $lang['16'] ?? 'Number of Posts' }}
+                                    </h3>       
+                                    <div class="text-4xl font-black text-blue-900">
+                                        {{ number_format($detail['no_post'] ?? 0) }}
+                                    </div>
+                                </div>
                             </div>
-                            
-                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
-                                <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Material Breakdown</h3>
+    
+                        <!-- Right Column -->
+                        <div class="col-span-12 md:col-span-6">
+                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 overflow-auto">
+                                <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">
+                                    Material Breakdown
+                                </h3>
+
                                 <table class="w-full text-sm">
                                     @isset($detail['no_sections'])
                                     <tr>
-                                        <td class="py-2 text-gray-600 font-medium">{{ $lang['22'] ?? 'Fence Sections' }}</td>
-                                        <td class="py-2 text-right font-bold">{{ number_format($detail['no_sections']) }}</td>
+                                        <td class="py-2 text-gray-600 font-medium">
+                                            {{ $lang['22'] ?? 'Fence Sections' }}
+                                        </td>
+                                        <td class="py-2 text-right font-bold">
+                                                {{ number_format($detail['no_sections']) }}
+                                        </td>
                                     </tr>
                                     @endisset
+
                                     @isset($detail['no_rails'])
                                     <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600 font-medium">{{ $lang['14'] ?? 'Total Rails' }}</td>
-                                        <td class="py-2 text-right font-bold">{{ number_format($detail['no_rails']) }}</td>
+                                        <td class="py-2 text-gray-600 font-medium">
+                                            {{ $lang['14'] ?? 'Total Rails' }}
+                                        </td>
+                                        <td class="py-2 text-right font-bold">
+                                            {{ number_format($detail['no_rails']) }}
+                                        </td>
                                     </tr>
                                     @endisset
+
                                     @isset($detail['rails_section'])
                                     <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600 font-medium">{{ $lang['15'] ?? 'Rails per Section' }}</td>
-                                        <td class="py-2 text-right font-bold">{{ number_format($detail['rails_section']) }}</td>
+                                        <td class="py-2 text-gray-600 font-medium">
+                                            {{ $lang['15'] ?? 'Rails per Section' }}
+                                        </td>
+                                        <td class="py-2 text-right font-bold">
+                                            {{ number_format($detail['rails_section']) }}
+                                        </td>
                                     </tr>
                                     @endisset
+
                                     @isset($detail['no_pickets'])
                                     <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600 font-medium">{{ $lang['23'] ?? 'Number of Pickets' }}</td>
-                                        <td class="py-2 text-right font-bold">{{ number_format($detail['no_pickets']) }}</td>
+                                        <td class="py-2 text-gray-600 font-medium">
+                                            {{ $lang['23'] ?? 'Number of Pickets' }}
+                                        </td>
+                                        <td class="py-2 text-right font-bold">
+                                            {{ number_format($detail['no_pickets']) }}
+                                        </td>
                                     </tr>
                                     @endisset
                                 </table>
                             </div>
                         </div>
-
+                    </div>
+                </div>
                         <!-- Secondary Volume & Pricing -->
                         <div class="space-y-4">
-                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200">
+                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 overflow-auto">
                                 <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Concrete Required (Post Holes)</h3>
                                 <table class="w-full text-sm">
                                     @isset($detail['c_volume'])

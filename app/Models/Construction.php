@@ -2010,20 +2010,20 @@ public function acreage($request)
 
 public function topsoil($request)
 	{
-		$length = $request->input('length');
-		$width = $request->input('width');
-		$depth = $request->input('depth');
-		$area = $request->input('area');
-		$length_unit = $request->input('length_unit');
-		$width_unit = $request->input('width_unit');
-		$depth_unit = $request->input('depth_unit');
-		$area_unit = $request->input('area_unit');
-		$calculation_unit = $request->input('calculation_unit');
-		$purchase_unit = $request->input('purchase_unit');
-		$bag_size = $request->input('bag_size');
-		$bag_size_unit = $request->input('bag_size_unit');
-		$price_per_bag = $request->input('price_per_bag');
-		$price_per_ton = $request->input('price_per_ton');
+		$length = $request->length;
+		$width = $request->width;
+		$depth = $request->depth;
+		$area = $request->area;
+		$length_unit = $request->length_unit;
+		$width_unit = $request->width_unit;
+		$depth_unit = $request->depth_unit;
+		$area_unit = $request->area_unit;
+		$calculation_unit = $request->calculation_unit;
+		$purchase_unit = $request->purchase_unit;
+		$bag_size = $request->bag_size;
+		$bag_size_unit = $request->bag_size_unit;
+		$price_per_bag = $request->price_per_bag;
+		$price_per_ton = $request->price_per_ton;
 		$ton = 0.05;
 
 		function calculate10($a, $b)
@@ -2199,44 +2199,45 @@ public function topsoil($request)
 // tile calculator 
 public function tile($request)
 {
-	$area_length = $request->input('area_length');
-	$area_length_unit = $request->input('area_length_unit');
-	$area_width = $request->input('area_width');
-	$area_width_unit = $request->input('area_width_unit');
-	$tile_length = $request->input('tile_length');
-	$tile_length_unit = $request->input('tile_length_unit');
-	$tile_width = $request->input('tile_width');
-	$tile_width_unit = $request->input('tile_width_unit');
-	$gap_size = $request->input('gap_size');
-	$gap_size_unit = $request->input('gap_size_unit');
-	$waste = $request->input('waste');
-	$price = $request->input('price');
-	$price_unit = $request->input('price_unit');
-	$box_size = $request->input('box_size');
-	$total_area = $request->input('total_area');
-	$total_area_unit = $request->input('total_area_unit');
-	$calculation_unit = $request->input('calculation_unit');
-	$currency = $request->input('currency');
+	$area_length = $request->area_length ?? null;
+	$area_length_unit = $request->area_length_unit ?? null;
+	$area_width = $request->area_width ?? null;
+	$area_width_unit = $request->area_width_unit ?? null;
+	$tile_length = $request->tile_length ?? null;
+	$tile_length_unit = $request->tile_length_unit ?? null;
+	$tile_width = $request->tile_width ?? null;
+	$tile_width_unit = $request->tile_width_unit ?? null;
+	$gap_size = $request->gap_size ?? null;
+	$gap_size_unit = $request->gap_size_unit ?? null;
+	$waste = $request->waste ?? null;
+	$price = $request->price ?? null;
+	$price_unit = $request->price_unit ?? null;
+	$box_size = $request->box_size ?? null;
+	$total_area = $request->total_area ?? null;
+	$total_area_unit = $request->total_area_unit ?? null;
+	$calculation_unit = $request->calculation_unit ?? null;
+	$currency = $request->currency ?? null;
 
 
-	if($price_unit == $currency.'tile'){
+	if($price_unit == $currency.' tile' || $price_unit == 'tile'){
 		$price_unit = 'tile';
-	} else if($price_unit == $currency.'box'){
+	} else if($price_unit == $currency.' box' || $price_unit == 'box'){
 		$price_unit = 'box';
-	} else if($price_unit == $currency.'inch²'){
+	} else if($price_unit == $currency.' inch²' || $price_unit == 'inch²'){
 		$price_unit = 'in²';
-	} else if($price_unit == $currency.'feet²'){
+	} else if($price_unit == $currency.' feet²' || $price_unit == 'feet²'){
 		$price_unit = 'ft²';
-	} else if($price_unit == $currency.'yard²'){
+	} else if($price_unit == $currency.' yard²' || $price_unit == 'yard²'){
 		$price_unit = 'yd²';
-	} else if($price_unit == $currency.'acre'){
+	} else if($price_unit == $currency.' acre' || $price_unit == 'acre'){
 		$price_unit = 'ac';
-	} else if($price_unit == $currency.'meter²'){
+	} else if($price_unit == $currency.' meter²' || $price_unit == 'meter²'){
 		$price_unit = 'm²';
 	}
 
-	function convert_inches($a, $b)
+	$convert_inches = function ($a, $b)
 	{
+		$convert2 = 0;
 		if ($b == "ft") {
 			$convert2 = $a * 12;
 		} elseif ($b == "in") {
@@ -2251,9 +2252,10 @@ public function tile($request)
 			$convert2 = $a * 0.0393701;
 		}
 		return $convert2;
-	}
-	function convert_feet($c, $d)
+	};
+	$convert_feet = function ($c, $d)
 	{
+		$convert = 0;
 		if ($c == "ft") {
 			$convert = $d * 1;
 		} elseif ($c == "in") {
@@ -2268,9 +2270,10 @@ public function tile($request)
 			$convert = $d * 0.00328084;
 		}
 		return $convert;
-	}
-	function captain($q, $r)
+	};
+	$captain = function ($q, $r)
 	{
+		$ans = 0;
 		if ($q == "sq ft") {
 			$ans = $r * 144;
 		} else if ($q == "sq m") {
@@ -2283,11 +2286,11 @@ public function tile($request)
 			$ans = $r * 0.155;
 		}
 		return $ans;
-	}
+	};
 	if ($calculation_unit == "1") {
 		if (is_numeric($area_length) && is_numeric($area_width)) {
-			$area_length_value = convert_inches($area_length, $area_length_unit);
-			$area_width_value = convert_inches($area_width, $area_width_unit);
+			$area_length_value = $convert_inches($area_length, $area_length_unit);
+			$area_width_value = $convert_inches($area_width, $area_width_unit);
 			$a1 = $area_length_value * $area_width_value;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
@@ -2295,7 +2298,7 @@ public function tile($request)
 		}
 	} else if ($calculation_unit == "2") {
 		if (is_numeric($total_area)) {
-			$area_length_value = captain($total_area_unit, $total_area);
+			$area_length_value = $captain($total_area_unit, $total_area);
 			$area_width_value = 1;
 			$a1 = $area_length_value * $area_width_value;
 		} else {
@@ -2305,19 +2308,17 @@ public function tile($request)
 	}
 
 	if (is_numeric($tile_length) && is_numeric($tile_width) && is_numeric($gap_size) && is_numeric($waste)) {
-		$tile_length_value = convert_inches($tile_length, $tile_length_unit);
-		$tile_width_value = convert_inches($tile_width, $tile_width_unit);
-		$gap_size_value = convert_inches($gap_size, $gap_size_unit);
+		$tile_length_value = $convert_inches($tile_length, $tile_length_unit);
+		$tile_width_value = $convert_inches($tile_width, $tile_width_unit);
+		$gap_size_value = $convert_inches($gap_size, $gap_size_unit);
 		$a2 = ($tile_length_value + $gap_size_value) * ($tile_width_value + $gap_size_value);
 		$formula = $a1 / $a2;
 		if ($waste != "") {
 			$diff = ($waste / 100) * $formula;
 			$final_formula = $formula + $diff;
 		}
-		//Calculate Area Size
-		$size1 = convert_feet($area_length_unit, $area_length);
-		$size2 = convert_feet($area_width_unit, $area_width);
-		$calculate_size = $size1 * $size2;
+		//Calculate Area Size (in square feet)
+		$calculate_size = $a1 / 144;
 		if ($box_size != "") {
 			if ($box_size < 0) {
 				$this->param['error'] = 'Please! Enter Positive Value';
@@ -2335,6 +2336,7 @@ public function tile($request)
 				$this->param['error'] = 'Please! Enter Positive Value';
 				return $this->param;
 			} else if (is_numeric($price)) {
+				$p = 0;
 				if ($price_unit == "tile") {
 					$p = $final_formula * $price;
 				} else if ($price_unit == "box") {
@@ -2379,19 +2381,19 @@ public function tile($request)
 // flooring calculator
 public function flooring($request)
 {
-	$room_length = $request->input('room_length');
-	$room_length_unit = $request->input('room_length_unit');
-	$room_width = $request->input('room_width');
-	$room_width_unit = $request->input('room_width_unit');
-	$cost = $request->input('cost');
-	$cost_unit = $request->input('cost_unit');
-	$waste_factor = $request->input('waste_factor');
-	$currancy = $request->input('currancy');
+	$room_length = $request->room_length ?? null;
+	$room_length_unit = $request->room_length_unit ?? null;
+	$room_width = $request->room_width ?? null;
+	$room_width_unit = $request->room_width_unit ?? null;
+	$cost = $request->cost ?? null;
+	$cost_unit = $request->cost_unit ?? null;
+	$waste_factor = $request->waste_factor ?? null;
+	$currancy = $request->currancy ?? null;
 	$cost_unit = str_replace($currancy, '', $cost_unit);
-	// dd($cost_unit);
 
-	function unit_convert1($unit, $value)
+	$unit_convert1 = function($unit, $value)
 	{
+		$val1 = 0;
 		if ($unit == "cm") {
 			$val1 = $value * 0.01;
 		} else if ($unit == "m") {
@@ -2402,10 +2404,11 @@ public function flooring($request)
 			$val1 = $value * 0.3048;
 		}
 		return $val1;
-	}
+	};
 
-	function unit_convert2($unit, $value)
+	$unit_convert2 = function($unit, $value)
 	{
+		$val2 = 0;
 		if ($unit == " ft²") {
 			$val2 = 10.76 * $value;
 		} else if ($unit == " yd²") {
@@ -2414,13 +2417,13 @@ public function flooring($request)
 			$val2 = 1 * $value;
 		}
 		return $val2;
-	}
+	};
 	$sum = 0;
 	$y = 0;
 	while ($y < count($room_length_unit) && $y < count($room_width_unit)) {
 		if ($room_length_unit[$y] == "cm" || $room_length_unit[$y] == "m" || $room_length_unit[$y] == "in" || $room_length_unit[$y] == "ft") {
 			if (is_numeric($room_length[$y])) {
-				$length_value = unit_convert1($room_length_unit[$y], $room_length[$y]);
+				$length_value = $unit_convert1($room_length_unit[$y], $room_length[$y]);
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
 				return $this->param;
@@ -2428,7 +2431,7 @@ public function flooring($request)
 		}
 		if ($room_width_unit[$y] == "cm" || $room_width_unit[$y] == "m" || $room_width_unit[$y] == "in" || $room_width_unit[$y] == "ft") {
 			if (is_numeric($room_width[$y])) {
-				$width_value = unit_convert1($room_width_unit[$y], $room_width[$y]);
+				$width_value = $unit_convert1($room_width_unit[$y], $room_width[$y]);
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
 				return $this->param;
@@ -2439,7 +2442,7 @@ public function flooring($request)
 	}
 	if (!empty($cost) && empty($waste_factor)) {
 		if (is_numeric($cost)) {
-			$cost_value = unit_convert2($cost_unit, $cost);
+			$cost_value = $unit_convert2($cost_unit, $cost);
 			$this->param['price'] = $cost_value * $sum;
 			$this->param['area'] = $sum;
 			$this->param['total_material'] = $sum;
@@ -2449,7 +2452,7 @@ public function flooring($request)
 		}
 	} else if (!empty($cost) && !empty($waste_factor)) {
 		if (is_numeric($cost) && is_numeric($waste_factor)) {
-			$cost_value = unit_convert2($cost_unit, $cost);
+			$cost_value = $unit_convert2($cost_unit, $cost);
 			$waste_factorr = $sum * $waste_factor / 100;
 			$this->param['area'] = $sum;
 			$this->param['total_material'] = $sum + $waste_factorr;
@@ -3152,25 +3155,26 @@ public function material($request){
 
 	// Stud Calculator
 	public function stud($request){
-		$want                    = $request->input('want');
-		$wall_end_stud           = $request->input('wall_end_stud');
-		$wall_on                 = $request->input('wall_on');
-		$hight                   = $request->input('hight');
-		$hight_unit              = $request->input('hight_unit');
-		$length                  = $request->input('length');
-		$length_unit             = $request->input('length_unit');
-		$stud_spacing            = $request->input('stud_spacing');
-		$stud_spacing_unit       = $request->input('stud_spacing_unit');
-		$stud_width              = $request->input('stud_width');
-		$stud_width_unit         = $request->input('stud_width_unit');
-		$rim_joist_width         = $request->input('rim_joist_width');
-		$rim_joist_width_unit    = $request->input('rim_joist_width_unit');
-		$subfloor_thickness      = $request->input('subfloor_thickness');
-		$subfloor_thickness_unit = $request->input('subfloor_thickness_unit');
-		$estimated_waste         = $request->input('estimated_waste');
-		$stud_price              = $request->input('stud_price');
+		$want                    = $request->want;
+		$wall_end_stud           = $request->wall_end_stud;
+		$wall_on                 = $request->wall_on;
+		$hight                   = $request->hight;
+		$hight_unit              = $request->hight_unit;
+		$length                  = $request->length;
+		$length_unit             = $request->length_unit;
+		$stud_spacing            = $request->stud_spacing;
+		$stud_spacing_unit       = $request->stud_spacing_unit;
+		$stud_width              = $request->stud_width;
+		$stud_width_unit         = $request->stud_width_unit;
+		$rim_joist_width         = $request->rim_joist_width;
+		$rim_joist_width_unit    = $request->rim_joist_width_unit;
+		$subfloor_thickness      = $request->subfloor_thickness;
+		$subfloor_thickness_unit = $request->subfloor_thickness_unit;
+		$estimated_waste         = $request->estimated_waste;
+		$stud_price              = $request->stud_price;
 
-		function convert_to_in($unit, $value){
+		$convert_to_in = function($unit, $value){
+			$ans = 0;
 			if ($unit == 'in') {
 				$ans = $value;
 			}
@@ -3181,12 +3185,12 @@ public function material($request){
 				$ans = $value * 12;
 			}
 			return $ans;
-		}
+		};
 
 		if(!empty($want) && is_numeric($wall_end_stud) && is_numeric($hight) && is_numeric($length) && is_numeric($stud_spacing)){
-			$length_in       = convert_to_in($length_unit, $length);
-			$hight_in        = convert_to_in($hight_unit, $hight);
-			$stud_spacing_in = convert_to_in($stud_spacing_unit, $stud_spacing);
+			$length_in       = $convert_to_in($length_unit, $length);
+			$hight_in        = $convert_to_in($hight_unit, $hight);
+			$stud_spacing_in = $convert_to_in($stud_spacing_unit, $stud_spacing);
 
 			$studs       = ceil(($length_in / $stud_spacing_in) + 1 + $wall_end_stud);
 			$studs_cost  = $studs * $stud_price;
@@ -3204,8 +3208,8 @@ public function material($request){
 
 			if($want == 'sheet' || $want == 'all'){
 				if(is_numeric($rim_joist_width) && is_numeric($subfloor_thickness)){
-					$rim_joist_width_in    = convert_to_in($rim_joist_width_unit, $rim_joist_width);
-					$subfloor_thickness_in = convert_to_in($subfloor_thickness_unit, $subfloor_thickness); 
+					$rim_joist_width_in    = $convert_to_in($rim_joist_width_unit, $rim_joist_width);
+					$subfloor_thickness_in = $convert_to_in($subfloor_thickness_unit, $subfloor_thickness); 
 					$extra                 = (($rim_joist_width_in + $subfloor_thickness_in) * $length_in) / 144 ; 
 					$sheets_req            = round(($wall_area_ft + $extra) / 32, 3);
 
@@ -3219,7 +3223,7 @@ public function material($request){
 
 			if($want == 'board' || $want == 'all'){
 				if(is_numeric($stud_width)){
-					$stud_width_in = convert_to_in($stud_width_unit, $stud_width);
+					$stud_width_in = $convert_to_in($stud_width_unit, $stud_width);
 					$board_footage = ($stud_width_in * 96) / 12;
 
 					$this->param['board_footage'] = $board_footage;
@@ -3249,24 +3253,24 @@ public function material($request){
 
 	// Stone Calculator
 	public function stone($request){
-		$selection = trim( $request->input( 'selection'));
-		$length = trim( $request->input( 'length'));
-		$length_unit = trim( $request->input( 'length_unit'));
-		$width = trim( $request->input( 'width'));
-		$width_unit = trim( $request->input( 'width_unit'));
-		$area = trim( $request->input( 'area'));
-		$area_unit = trim( $request->input( 'area_unit'));
-		$depth = trim( $request->input( 'depth'));
-		$depth_unit = trim( $request->input( 'depth_unit'));
-		$volume = trim( $request->input( 'volume'));
-		$volume_unit = trim( $request->input( 'volume_unit'));
-		$material = trim( $request->input( 'material'));
-		$price = trim( $request->input( 'price'));
-		$price_unit = trim( $request->input( 'price_unit'));
-		$currancy = $request->input('currancy');
+		$selection = trim($request->selection);
+		$length = trim($request->length);
+		$length_unit = trim($request->length_unit);
+		$width = trim($request->width);
+		$width_unit = trim($request->width_unit);
+		$area = trim($request->area);
+		$area_unit = trim($request->area_unit);
+		$depth = trim($request->depth);
+		$depth_unit = trim($request->depth_unit);
+		$volume = trim($request->volume);
+		$volume_unit = trim($request->volume_unit);
+		$material = trim($request->material);
+		$price = trim($request->price);
+		$price_unit = trim($request->price_unit);
+		$currancy = $request->currancy;
 		$price_unit = str_replace($currancy . ' ', '', $price_unit);
 		
-	    function unit_ft($a,$b){
+	    $unit_ft = function ($a,$b){
 	        if($b == "cm"){
 	            $ans1 = $a/30.48;
 	        }elseif($b == "m"){
@@ -3277,30 +3281,36 @@ public function material($request){
 	            $ans1 = $a*3;
 	        }elseif($b == "ft"){
 	            $ans1 = $a*1;
-	        }
+	        } else {
+				$ans1 = $a;
+			}
 	        return $ans1;
-	    }
-	    function unit_area($aa,$bb){
+	    };
+	    $unit_area = function ($aa,$bb){
 	        if($bb =="ft²"){
 	            $ans2 = $aa * 1;
 	        }else if ($bb == "yd²"){
 	            $ans2 = $aa*9;
 	        }else if($bb == "m²"){
 	            $ans2 = $aa*10.764;
-	        }
+	        } else {
+				$ans2 = $aa;
+			}
 	        return $ans2;
-	    }
-	    function unit_vol($a,$b){
+	    };
+	    $unit_vol = function ($a,$b){
 	        if($b == "ft³"){
 	            $ans3 = $a*1;
 	        }else if($b == "yd³"){
 	            $ans3 = $a*27;
 	        }else if($b == "m³"){
 	            $ans3 = $a*35.315;
-	        }
+	        } else {
+				$ans3 = $a;
+			}
 	        return $ans3;
-	    }
-	    function material_val($a,$b){
+	    };
+	    $material_val = function ($a,$b){
 	        if($b =="105"){
 	            $tons1 = $a*1.4;
 	            $tons2 = $a*1.7;
@@ -3310,22 +3320,25 @@ public function material($request){
 	        }else if($b == "160"){
 	            $tons1 = $a*1.5;
 	            $tons2 = $a*1.7;
-	        }else if ($b = "145"){
+	        }else if ($b == "145"){
 	            $tons1 = $a*1.3;
 	            $tons2 = $a*1.5;
-	        }else if($b = "168"){
+	        }else if($b == "168"){
 	            $tons1 = $a*1.5;
 	            $tons2 = $a*1.7;
-	        }else if($b = "188"){
+	        }else if($b == "188"){
 	            $tons1 = $a*1;
 	            $tons2 = $a*1.3;
-	        }else if ($b = "100"){
+	        }else if ($b == "100"){
 	            $tons1 = $a*1.7;
 	            $tons2 = $a*2;
-	        }
+	        } else {
+				$tons1 = $a * 1.5; // fallback
+				$tons2 = $a * 1.7;
+			}
 	        return array($tons1, $tons2);
-	    }
-	    function material_m($a,$b){
+	    };
+	    $material_m = function ($a,$b){
 	        if($b =="105"){
 	            $tons1 = $a*1.66;
 	            $tons2 = $a*2.02;
@@ -3335,29 +3348,32 @@ public function material($request){
 	        }else if($b == "160"){
 	            $tons1 = $a*1;
 	            $tons2 = $a*2.02;
-	        }else if ($b = "145"){
+	        }else if ($b == "145"){
 	            $tons1 = $a*1.54;
 	            $tons2 = $a*1.78;
-	        }else if($b = "168"){
+	        }else if($b == "168"){
 	            $tons1 = $a*1.78;
 	            $tons2 = $a*2.02;
-	        }else if($b = "188"){
+	        }else if($b == "188"){
 	            $tons1 = $a*1.19;
 	            $tons2 = $a*1.54;
-	        }else if ($b = "100"){
+	        }else if ($b == "100"){
 	            $tons1 = $a*2.02;
 	            $tons2 = $a*2.34;
-	        }
+	        } else {
+				$tons1 = $a * 1.78;
+				$tons2 = $a * 2.02;
+			}
 	        return array($tons1, $tons2);
-	    }
+	    };
 	    if($selection == "1"){
 			if (is_numeric($length) && is_numeric($width) && is_numeric($depth)) {
-				$length = unit_ft($length,$length_unit);
-				$width = unit_ft($width,$width_unit);
-				$depth = unit_ft($depth,$depth_unit);
+				$length = $unit_ft($length,$length_unit);
+				$width = $unit_ft($width,$width_unit);
+				$depth = $unit_ft($depth,$depth_unit);
 	            $cubicyd = $length * $width * $depth;
 	            $cubicyd1 = $cubicyd /27;
-	            $array = material_val($cubicyd1 ,$material);
+	            $array = $material_val($cubicyd1 ,$material);
 	            $this->param['cubicyd1'] = $cubicyd1;
 	            $this->param['array'] = $array;
 	        }else{
@@ -3366,15 +3382,15 @@ public function material($request){
 	        }
 	    }else if($selection == "2"){
 	        if (is_numeric($area) && is_numeric($depth)) {
-				$area = unit_area($area,$area_unit);
-				$depth = unit_ft($depth,$depth_unit);
+				$area = $unit_area($area,$area_unit);
+				$depth = $unit_ft($depth,$depth_unit);
 	            if($area_unit === "3" && $depth_unit === "m"){
 	                $cubicyd = ($area / 10.764) * ($depth / 3.281);
 	            }else{
 	                $cubicyd =$area * $depth;
 	            }
 	            $cubicyd1 = $cubicyd/27;
-	            $array = material_val($cubicyd1 ,$material);
+	            $array = $material_val($cubicyd1 ,$material);
 	            $this->param['array'] = $array;
 	            $this->param['cubicyd1'] = $cubicyd1;
 	        }else{
@@ -3385,13 +3401,13 @@ public function material($request){
 	        if (is_numeric($volume)) {
 	            if($volume_unit === "1"){
 	                $cubicyd1 = $volume / 27;
-	                $array = material_val($cubicyd1,$material);
+	                $array = $material_val($cubicyd1,$material);
 	            }else if($volume_unit === "2"){
 	                $cubicyd1 = $volume;
-	                $array = material_val($cubicyd1,$material);
+	                $array = $material_val($cubicyd1,$material);
 	            }else{
 	                $cubicyd1 = $volume;
-	                $array =material_m($cubicyd1,$material);
+	                $array =$material_m($cubicyd1,$material);
 	            }
 	            $this->param['cubicyd1'] = $cubicyd1;
 	            $this->param['array'] = $array;
@@ -5190,7 +5206,7 @@ public function yard($request)
 		}
 	}else if ($operations=="11") {
 		if (is_numeric($first) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
+			$first=$calculate($first,$units1);
 			$area=pow($first, 3);
 			$cubic_feet=$area;
 			$cubic_yard=$cubic_feet / 27;
@@ -5203,8 +5219,8 @@ public function yard($request)
 		}
 	}else if($operations=="12"){
 		if (is_numeric($first) && is_numeric($second) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
 			$sq_val=pow($first, 2);
 			$cubic_feet=$sq_val * $second * 3.14;
 			$cubic_yard=$cubic_feet / 27;
@@ -5218,9 +5234,9 @@ public function yard($request)
 	}else if ($operations=="13") {
 		// dd('not get answer');
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
-			$third=calculate($third,$units3);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
+			$third=$calculate($third,$units3);
 			if ($first > $second) {
 				$sq_first=pow($first, 2);
 				$sq_second=pow($second, 2);
@@ -5241,7 +5257,7 @@ public function yard($request)
 		}
 	}else if ($operations=="14") {
 		if (is_numeric($first) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
+			$first=$calculate($first,$units1);
 			$r_cube=pow($first, 3);
 			$final=2 * 3.14 * $r_cube;
 			$cubic_feet=$final / 3;
@@ -5255,8 +5271,8 @@ public function yard($request)
 		}
 	}else if ($operations=="15") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($quantity)) {
-			$first=calculate($first,$units1);
-			$second=calculate($second,$units2);
+			$first=$calculate($first,$units1);
+			$second=$calculate($second,$units2);
 			$r_cube=pow($first, 2);
 			$height_ans=$second / 3;
 			$cubic_feet=3.14 * $r_cube * $height_ans;
@@ -5270,8 +5286,8 @@ public function yard($request)
 		}
 	}else if ($operations=="16") {
 		if (is_numeric($extra_area) && is_numeric($second) && is_numeric($quantity)) {
-			$extra_area=calculate_square($extra_area,$extra_units);
-			$second=calculate($second,$units2);
+			$extra_area=$calculate_square($extra_area,$extra_units);
+			$second=$calculate($second,$units2);
 			$v=$extra_area * $second;
 			$cubic_feet=$v / 3;
 			$cubic_yard=$cubic_feet / 27;
@@ -5284,8 +5300,8 @@ public function yard($request)
 		}
 	}else if ($operations=="17") {
 		if (is_numeric($extra_area) && is_numeric($second) && is_numeric($quantity)) {
-			$extra_area=calculate_square($extra_area,$extra_units);
-			$second=calculate($second,$units2);
+			$extra_area=$calculate_square($extra_area,$extra_units);
+			$second=$calculate($second,$units2);
 			$cubic_feet=$extra_area * $second;
 			$cubic_yard=$cubic_feet / 27;
 			$cubic_meter=$cubic_feet * 0.0283;
@@ -5338,20 +5354,21 @@ public function yard($request)
 // Tank Volume calculator
 public function tank($request)
 {
-	$operations = $request->input('operations');
-	$first = $request->input('first');
-	$second = $request->input('second');
-	$third = $request->input('third');
-	$four = $request->input('four');
-	$units1 = $request->input('units1');
-	$units2 = $request->input('units2');
-	$units3 = $request->input('units3');
-	$units4 = $request->input('units4');
-	$fill_units = $request->input('fill_units');
-	$fill = $request->input('fill');
-	// dd($request->input());
-	function inches_con($a, $b)
+	$operations = $request->operations ?? null;
+	$first = $request->first ?? null;
+	$second = $request->second ?? null;
+	$third = $request->third ?? null;
+	$four = $request->four ?? null;
+	$units1 = $request->units1 ?? null;
+	$units2 = $request->units2 ?? null;
+	$units3 = $request->units3 ?? null;
+	$units4 = $request->units4 ?? null;
+	$fill_units = $request->fill_units ?? null;
+	$fill = $request->fill ?? null;
+
+	$inches_con = function ($a, $b)
 	{
+		$ins = 0;
 		if ($b == "ft") {
 			$ins = $a * 12;
 		} elseif ($b == "in") {
@@ -5364,16 +5381,16 @@ public function tank($request)
 			$ins = $a / 25.4;
 		}
 		return $ins;
-	}
+	};
 	if ($operations == "3") {
 		if (is_numeric($first) && is_numeric($second)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
 			$r = $second / 2;
 			$sq_r = pow($r, 2);
 			$v_tank = 3.14 * $sq_r * $first;
 			if (is_numeric($fill)) {
-				$fill = inches_con($fill, $fill_units);
+				$fill = $inches_con($fill, $fill_units);
 				if ($fill <= $second) {
 					$a_ans1 = $r - $fill;
 					$f_ans1 = $a_ans1 / $r;
@@ -5400,13 +5417,13 @@ public function tank($request)
 		}
 	} else if ($operations == "4") {
 		if (is_numeric($first) && is_numeric($second)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
 			$r = $second / 2;
 			$sq_r = pow($r, 2);
 			$v_tank = 3.14 * $sq_r * $first;
 			if (is_numeric($fill)) {
-				$fill = inches_con($fill, $fill_units);
+				$fill = $inches_con($fill, $fill_units);
 				if ($fill <= $first) {
 					$v_fill = 3.14 * $sq_r * $fill;
 					$per1 = $fill / $first;
@@ -5422,12 +5439,12 @@ public function tank($request)
 		}
 	} else if ($operations == "5") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
-			$third = inches_con($third, $units3);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
+			$third = $inches_con($third, $units3);
 			$v_tank = $first * $second * $third;
 			if (is_numeric($fill)) {
-				$fill = inches_con($fill, $fill_units);
+				$fill = $inches_con($fill, $fill_units);
 				if ($fill <= $first) {
 					$v_fill = $second * $third * $fill;
 					$per1 = $fill / $first;
@@ -5443,9 +5460,9 @@ public function tank($request)
 		}
 	} else if ($operations == "6") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
-			$third = inches_con($third, $units3);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
+			$third = $inches_con($third, $units3);
 			if ($second > $first) {
 				$r = $first / 2;
 				$sq_r = pow($r, 2);
@@ -5455,7 +5472,7 @@ public function tank($request)
 				$pi_sqr = 3.14 * $sq_r;
 				$v_tank = ($pi_sqr + $ra) * $third;
 				if (is_numeric($fill)) {
-					$fill = inches_con($fill, $fill_units);
+					$fill = $inches_con($fill, $fill_units);
 					if ($fill <= $first) {
 						$a_ans1 = $r - $fill;
 						$f_ans1 = $a_ans1 / $r;
@@ -5483,9 +5500,9 @@ public function tank($request)
 		}
 	} else if ($operations == "7") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
-			$third = inches_con($third, $units3);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
+			$third = $inches_con($third, $units3);
 			if ($first > $second) {
 				$r = $second / 2;
 				$sq_r = pow($r, 2);
@@ -5495,7 +5512,7 @@ public function tank($request)
 				$pi_sqr = 3.14 * $sq_r;
 				$v_tank = ($pi_sqr + $ra) * $third;
 				if (is_numeric($fill)) {
-					$fill = inches_con($fill, $fill_units);
+					$fill = $inches_con($fill, $fill_units);
 					if ($fill <= $first) {
 						if ($fill < $r) {
 							$a_ans1 = $r - $fill;
@@ -5543,8 +5560,8 @@ public function tank($request)
 		}
 	} else if ($operations == "8") {
 		if (is_numeric($first) && is_numeric($second)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
 			$r = $second / 2;
 			$sq_r = pow($r, 2);
 			$pi_sqr = 3.14 * $sq_r;
@@ -5552,7 +5569,7 @@ public function tank($request)
 			$ra_a = $ra + $first;
 			$v_tank = $pi_sqr * $ra_a;
 			if (is_numeric($fill)) {
-				$fill = inches_con($fill, $fill_units);
+				$fill = $inches_con($fill, $fill_units);
 				if ($fill <= $second) {
 					$a_ans1 = $r - $fill;
 					$f_ans1 = $a_ans1 / $r;
@@ -5586,8 +5603,8 @@ public function tank($request)
 		}
 	} else if ($operations == "9") {
 		if (is_numeric($first) && is_numeric($second)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
 			$r = $second / 2;
 			$sq_r = pow($r, 2);
 			$pi_sqr = 3.14 * $sq_r;
@@ -5595,7 +5612,7 @@ public function tank($request)
 			$ra_a = $ra + $first;
 			$v_tank = $pi_sqr * $ra_a;
 			if (is_numeric($fill)) {
-				$fill = inches_con($fill, $fill_units);
+				$fill = $inches_con($fill, $fill_units);
 				$conditon = $first + $second;
 				$r_length = $r + $first;
 				if ($fill <= $conditon) {
@@ -5633,13 +5650,13 @@ public function tank($request)
 		}
 	} else if ($operations == "12") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
-			$third = inches_con($third, $units3);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
+			$third = $inches_con($third, $units3);
 			$h4 = $first / 4;
 			$v_tank = 3.14 * $second * $third * $h4;
 			if (is_numeric($fill)) {
-				$fill = inches_con($fill, $fill_units);
+				$fill = $inches_con($fill, $fill_units);
 				if ($fill <= $first) {
 					$w4 = $second / 4;
 					$sq_fill = pow($fill, 2);
@@ -5670,10 +5687,10 @@ public function tank($request)
 		}
 	} else if ($operations == "13") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
-			$third = inches_con($third, $units3);
-			$four = inches_con($four, $units4);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
+			$third = $inches_con($third, $units3);
+			$four = $inches_con($four, $units4);
 			if ($first > $second) {
 
 				// cylinder volume
@@ -5725,10 +5742,10 @@ public function tank($request)
 		}
 	} else if ($operations == "14") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
-			$third = inches_con($third, $units3);
-			$four = inches_con($four, $units4);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
+			$third = $inches_con($third, $units3);
+			$four = $inches_con($four, $units4);
 			if ($second > $first) {
 				$R_top = $first / 2;
 				$sq_Rtop = pow($R_top, 2);
@@ -5771,9 +5788,9 @@ public function tank($request)
 		}
 	} else if ($operations == "15") {
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
-			$first = inches_con($first, $units1);
-			$second = inches_con($second, $units2);
-			$third = inches_con($third, $units3);
+			$first = $inches_con($first, $units1);
+			$second = $inches_con($second, $units2);
+			$third = $inches_con($third, $units3);
 			if ($first > $second) {
 				$R_top = $first / 2;
 				$sq_Rtop = pow($R_top, 2);
@@ -5782,7 +5799,7 @@ public function tank($request)
 				$main_part = $sq_Rtop + $R_top * $R_bot + $sq_Rbot;
 				$v_tank = 0.3333333333 * 3.14 * $third * $main_part;
 				if (is_numeric($fill)) {
-					$fill = inches_con($fill, $fill_units);
+					$fill = $inches_con($fill, $fill_units);
 					if ($fill <= $first) {
 						$diff = $first - $second;
 						$z2 = $second / $diff;
@@ -5811,12 +5828,12 @@ public function tank($request)
 		}
 	} else if ($operations == "16") {
 		if (is_numeric($first)) {
-			$first = inches_con($first, $units1);
+			$first = $inches_con($first, $units1);
 			$r = $first / 2;
 			$cube_r = pow($r, 3);
 			$v_tank = 1.333333333 * 3.14 * $cube_r;
 			if (is_numeric($fill)) {
-				$fill = inches_con($fill, $fill_units);
+				$fill = $inches_con($fill, $fill_units);
 				if ($fill < $first) {
 					$r2 = $fill / 2;
 					$cube_r2 = pow($r2, 3);
@@ -5878,37 +5895,38 @@ public function tank($request)
 	// wallpaper calculator
 	public function wallpaper($request)
 	{
-		//  dd($request->all());
-		$type = $request->input('type');
-		$room_length = $request->input('room_length');
-		$room_length_unit = $request->input('room_length_unit');
-		$room_width = $request->input('room_width');
-		$room_width_unit = $request->input('room_width_unit');
-		$room_height = $request->input('room_height');
-		$room_height_unit = $request->input('room_height_unit');
-		$door_height = $request->input('door_height');
-		$door_height_unit = $request->input('door_height_unit');
-		$door_width = $request->input('door_width');
-		$door_width_unit = $request->input('door_width_unit');
-		$no_of_doors = $request->input('no_of_doors');
-		$window_height = $request->input('window_height');
-		$window_height_unit = $request->input('window_height_unit');
-		$window_width = $request->input('window_width');
-		$window_width_unit = $request->input('window_width_unit');
-		$no_of_windows = $request->input('no_of_windows');
-		$roll_length = $request->input('roll_length');
-		$roll_length_unit = $request->input('roll_length_unit');
-		$roll_width = $request->input('roll_width');
-		$roll_width_unit = $request->input('roll_width_unit');
-		$cost = $request->input('cost');
-		$pattern = $request->input('pattern');
-		$pattern_unit = $request->input('pattern_unit');
-		$wall_width = $request->input('wall_width');
-		$wall_width_unit = $request->input('wall_width_unit');
-		$wall_height = $request->input('wall_height');
-		$wall_height_unit = $request->input('wall_height_unit');
-		function unit_convert($unit, $value)
+		$type = $request->type ?? null;
+		$room_length = $request->room_length ?? null;
+		$room_length_unit = $request->room_length_unit ?? null;
+		$room_width = $request->room_width ?? null;
+		$room_width_unit = $request->room_width_unit ?? null;
+		$room_height = $request->room_height ?? null;
+		$room_height_unit = $request->room_height_unit ?? null;
+		$door_height = $request->door_height ?? null;
+		$door_height_unit = $request->door_height_unit ?? null;
+		$door_width = $request->door_width ?? null;
+		$door_width_unit = $request->door_width_unit ?? null;
+		$no_of_doors = $request->no_of_doors ?? null;
+		$window_height = $request->window_height ?? null;
+		$window_height_unit = $request->window_height_unit ?? null;
+		$window_width = $request->window_width ?? null;
+		$window_width_unit = $request->window_width_unit ?? null;
+		$no_of_windows = $request->no_of_windows ?? null;
+		$roll_length = $request->roll_length ?? null;
+		$roll_length_unit = $request->roll_length_unit ?? null;
+		$roll_width = $request->roll_width ?? null;
+		$roll_width_unit = $request->roll_width_unit ?? null;
+		$cost = $request->cost ?? null;
+		$pattern = $request->pattern ?? null;
+		$pattern_unit = $request->pattern_unit ?? null;
+		$wall_width = $request->wall_width ?? null;
+		$wall_width_unit = $request->wall_width_unit ?? null;
+		$wall_height = $request->wall_height ?? null;
+		$wall_height_unit = $request->wall_height_unit ?? null;
+
+		$unit_convert = function($unit, $value)
 		{
+			$val1 = 0;
 			if ($unit == "cm") {
 				$val1 = $value * 0.01;
 			} else if ($unit == "m") {
@@ -5921,11 +5939,11 @@ public function tank($request)
 				$val1 = $value * 0.9144;
 			}
 			return $val1;
-		}
+		};
 		if ($type == "1") {
 			if (is_numeric($wall_width) && is_numeric($wall_height) && $wall_width > 0 && $wall_height > 0) {
-				$wall_width_value = unit_convert($wall_width_unit, $wall_width);
-				$wall_height_value = unit_convert($wall_height_unit, $wall_height);
+				$wall_width_value = $unit_convert($wall_width_unit, $wall_width);
+				$wall_height_value = $unit_convert($wall_height_unit, $wall_height);
 				$wall_area = $wall_height_value * $wall_width_value;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
@@ -5933,9 +5951,9 @@ public function tank($request)
 			}
 		} else if ($type == "2") {
 			if (is_numeric($room_length) && is_numeric($room_width) && is_numeric($room_height) && $room_length > 0 && $room_width > 0 && $room_height > 0) {
-				$rlv = unit_convert($room_length_unit, $room_length);
-				$rwv = unit_convert($room_width_unit, $room_width);
-				$wall_height_value = unit_convert($room_height_unit, $room_height);
+				$rlv = $unit_convert($room_length_unit, $room_length);
+				$rwv = $unit_convert($room_width_unit, $room_width);
+				$wall_height_value = $unit_convert($room_height_unit, $room_height);
 				$wall_area = (($rlv + $rwv) + ($rlv + $rwv)) * $wall_height_value;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
@@ -5943,24 +5961,24 @@ public function tank($request)
 			}
 		}
 		if (is_numeric($door_height) && is_numeric($door_width) && is_numeric($no_of_doors) && $door_height > 0 && $door_height > 0 && $no_of_doors > 0) {
-			$door_width_value = unit_convert($door_width_unit, $door_width);
-			$door_height_value = unit_convert($door_height_unit, $door_height);
+			$door_width_value = $unit_convert($door_width_unit, $door_width);
+			$door_height_value = $unit_convert($door_height_unit, $door_height);
 			$door_area = $door_height_value * $door_width_value * $no_of_doors;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
 			return $this->param;
 		}
 		if (is_numeric($window_height) && is_numeric($window_width) && is_numeric($no_of_doors) && $window_height > 0 && $window_height > 0 && $no_of_doors > 0) {
-			$window_width_value = unit_convert($window_width_unit, $window_width);
-			$window_height_value = unit_convert($window_height_unit, $window_height);
+			$window_width_value = $unit_convert($window_width_unit, $window_width);
+			$window_height_value = $unit_convert($window_height_unit, $window_height);
 			$window_area = $window_height_value * $window_width_value * $no_of_windows;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
 			return $this->param;
 		}
 		if (is_numeric($roll_length) && is_numeric($roll_width) && is_numeric($pattern)) {
-			$roll_width_value = unit_convert($roll_width_unit, $roll_width);
-			$roll_length_value = unit_convert($roll_length_unit, $roll_length);
+			$roll_width_value = $unit_convert($roll_width_unit, $roll_width);
+			$roll_length_value = $unit_convert($roll_length_unit, $roll_length);
 			$roll_area = $roll_width_value * $roll_length_value;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
@@ -6184,31 +6202,30 @@ public function tank($request)
 		$w_units = trim($request->w_units);
 		$side = trim($request->side ?? 0);
 		$s_units = trim($request->s_units ?? 'cm');
-		$quantity = trim($request->quantity ?? 1);
-		$price = trim($request->price);
+		$quantity = is_numeric($request->quantity) ? (float)$request->quantity : 1;
+		$price = is_numeric($request->price) ? (float)$request->price : null;
 
-		if (!function_exists('meterconvert')) {
-            function meterconvert($a,$b){
-                if ($b == 'mm') {
-                    $convert = $a / 1000;
-                } else if ($b == 'cm') {
-                    $convert = $a / 100;
-                } else if ($b == 'in') {
-                    $convert = $a / 39.37;
-                } else if ($b == 'ft') {
-                    $convert = $a / 3.281;
-                } else if ($b == 'yd') {
-                    $convert = $a / 1.094;
-                } else {
-                    $convert = $a;
-                }
-                return $convert;
-            }
-        }
+		$meterconvert = function ($a,$b){
+			$a = is_numeric($a) ? (float)$a : 0;
+			if ($b == 'mm') {
+				$convert = $a / 1000;
+			} else if ($b == 'cm') {
+				$convert = $a / 100;
+			} else if ($b == 'in') {
+				$convert = $a / 39.37;
+			} else if ($b == 'ft') {
+				$convert = $a / 3.281;
+			} else if ($b == 'yd') {
+				$convert = $a / 1.094;
+			} else {
+				$convert = $a;
+			}
+			return $convert;
+		};
 
-		$length_m = meterconvert($length,$l_units);
-		$width_m = meterconvert($width,$w_units);
-		$side_m = meterconvert($side,$s_units);
+		$length_m = $meterconvert($length,$l_units);
+		$width_m = $meterconvert($width,$w_units);
+		$side_m = $meterconvert($side,$s_units);
 		
         $res_m2 = 0;
 		if ($volume_select === 1) {
@@ -6224,12 +6241,17 @@ public function tank($request)
             $radi =	$length_m / 2;
             $res_m2 = (3.1416) * pow($radi, 2);
 		} else {
-            if (is_numeric($length_m) && is_numeric($width_m) && is_numeric($side_m)) {
-                $res_m2 = 0.25 * sqrt(($length_m+$width_m+$side_m)* (-$length_m+$width_m+$side_m) * ($length_m-$width_m+$side_m) * ($length_m+$width_m-$side_m));
-            } else {
-                $this->param['error'] = 'Please! Check Your Inputs';
-                return $this->param;
-            }
+			if (is_numeric($length_m) && is_numeric($width_m) && is_numeric($side_m)) {
+				$val = ($length_m+$width_m+$side_m)* (-$length_m+$width_m+$side_m) * ($length_m-$width_m+$side_m) * ($length_m+$width_m-$side_m);
+				if ($val < 0) {
+					$this->param['error'] = 'Impossible Triangle: The sum of two sides must be greater than the third side.';
+					return $this->param;
+				}
+				$res_m2 = 0.25 * sqrt($val);
+			} else {
+				$this->param['error'] = 'Please! Check Your Inputs';
+				return $this->param;
+			}
 		}
 
         $res_m2 = $res_m2 * $quantity;
@@ -6247,14 +6269,14 @@ public function tank($request)
 	// ROOM SIZE CALCULATOR
 	public function room($request)
     {
-		$submit = trim( $request->input( 'name' ));
-		$lenght_f = $request->input( 'lenght_f' );
-		$lenght_in = $request->input( 'lenght_in' );
-		$width_f = $request->input( 'width_f' );
-		$width_in = $request->input( 'width_in' );
-		$perce = $request->input( 'perce' );
-		$lenght_m = $request->input( 'lenght_m' );
-		$width_m = $request->input( 'width_m' );
+		$submit = trim( $request->name );
+		$lenght_f = $request->lenght_f;
+		$lenght_in = $request->lenght_in;
+		$width_f = $request->width_f;
+		$width_in = $request->width_in;
+		$perce = $request->perce;
+		$lenght_m = $request->lenght_m;
+		$width_m = $request->width_m;
 		if($submit == 'feet'){
 			$length1=count($lenght_f);
 			$width1=count($width_f);
@@ -6787,17 +6809,17 @@ public function tank($request)
 		// Ramp Calculator
 		public function ramp($request)
 		{
-			$appli = trim($request->input('appli'));
-			$unit = trim($request->input('unit'));
-			$unit0 = trim($request->input('unit0'));
-			$unit1 = trim($request->input('unit1'));
-			$unit2 = trim($request->input('unit2'));
-			$r_type = trim($request->input('r_type'));
-			$no = trim($request->input('no'));
-			$no1 = trim($request->input('no1'));
-			$no2 = trim($request->input('no2'));
-			$width = trim($request->input('width'));
-			$calc = trim($request->input('calc'));
+			$appli = trim($request->appli ?? '');
+			$unit = trim($request->unit ?? '');
+			$unit0 = trim($request->unit0 ?? '');
+			$unit1 = trim($request->unit1 ?? '');
+			$unit2 = trim($request->unit2 ?? '');
+			$r_type = trim($request->r_type ?? '');
+			$no = trim($request->no ?? '');
+			$no1 = trim($request->no1 ?? '');
+			$no2 = trim($request->no2 ?? '');
+			$width = trim($request->width ?? '');
+			$calc = trim($request->calc ?? '');
 	
 			if ($calc == "one") {
 				if (is_numeric($no)) {
@@ -6855,8 +6877,9 @@ public function tank($request)
 					return $this->param;
 				}
 			} else {
-				function ramp($a, $b)
+				$ramp_converter = function ($a, $b)
 				{
+					$unit_v = 0;
 					if ($a == "mm") {
 						$unit_v = $b / 10;
 					} elseif ($a == "cm") {
@@ -6869,11 +6892,11 @@ public function tank($request)
 						$unit_v = $b * 30.48;
 					}
 					return $unit_v;
-				}
-				$no1 = ramp($unit0, $no1);
-				$no2 = ramp($unit1, $no2);
-				$width = ramp($unit2, $width);
-				if (is_numeric($no) && is_numeric($no2) && is_numeric($width)) {
+				};
+				$no1 = $ramp_converter($unit0, $no1);
+				$no2 = $ramp_converter($unit1, $no2);
+				$width = $ramp_converter($unit2, $width);
+				if (is_numeric($no1) && is_numeric($no2) && is_numeric($width)) {
 					$Hypotenuse1 = (pow($no1, 2)) + (pow($no2, 2));
 					$Hypotenuse = sqrt($Hypotenuse1);
 					$alpha1 = ((pow($no2, 2)) + (pow($Hypotenuse, 2))) - (pow($no1, 2));
@@ -6906,3 +6929,6 @@ public function tank($request)
 		}
 
 }
+
+
+
