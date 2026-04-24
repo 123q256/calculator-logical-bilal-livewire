@@ -6900,12 +6900,12 @@ public function tank($request)
 					$Hypotenuse1 = (pow($no1, 2)) + (pow($no2, 2));
 					$Hypotenuse = sqrt($Hypotenuse1);
 					$alpha1 = ((pow($no2, 2)) + (pow($Hypotenuse, 2))) - (pow($no1, 2));
-					$alpha2 = $alpha1  / (2 * $no2 * $Hypotenuse);
+					$alpha2 = (2 * $no2 * $Hypotenuse) != 0 ? $alpha1 / (2 * $no2 * $Hypotenuse) : 0;
 					$alpha = acos($alpha2) * 180 / Pi();
 					$beta = 90 - $alpha;
 					$area = ($no1 * $no2) + ($width * ($no1 + $no2 + $Hypotenuse));
 					$volume = ($no1 * $no2 * $width) / 2;
-					$sv = $area / $volume;
+					$sv = $volume != 0 ? $area / $volume : 0;
 					$this->param['unit']     		= $unit;
 					$this->param['Hypotenuse']   	= round($Hypotenuse, 3);
 					$this->param['Hypotenuse1']   	= $Hypotenuse1;
