@@ -5,7 +5,7 @@ namespace App\Livewire\Calculators;
 use App\Models\Chemistry;
 use Livewire\Component;
 
-class ChemicalEquationBalancerCalculator extends Component
+class LimitingReactantCalculator extends Component
 {
     public $eq = 'Fe + O2 = Fe2O3';
     public $error = null;
@@ -29,7 +29,7 @@ class ChemicalEquationBalancerCalculator extends Component
 
     public $reactants = [];
     public $products = [];
-    public $mode = 'stoichiometry';
+    public $mode = 'limiting';
     public $limiting_message = '';
 
     public function setEquation($value)
@@ -81,26 +81,11 @@ class ChemicalEquationBalancerCalculator extends Component
         }
     }
 
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
-        // Reset inputs
-        foreach ($this->reactants as &$r) { $r['moles'] = ''; $r['weight'] = ''; }
-        foreach ($this->products as &$p) { $p['moles'] = ''; $p['weight'] = ''; }
-        $this->limiting_message = '';
-    }
-
     // --- Backend Stoichiometry Logic ---
 
     public function updatedReactants($value, $key)
     {
         $this->handleInputUpdate('reactants', $key, $value);
-    }
-
-    public function updatedProducts($value, $key)
-    {
-        if ($this->mode === 'limiting') return; // Cannot edit products in limiting mode
-        $this->handleInputUpdate('products', $key, $value);
     }
 
     private function handleInputUpdate($group, $keyPath, $value)
@@ -110,49 +95,7 @@ class ChemicalEquationBalancerCalculator extends Component
         list($index, $field) = explode('.', $keyPath);
         $index = intval($index);
         
-        if ($this->mode === 'stoichiometry') {
-            $this->calculateStoichiometry($group, $index, $field, floatval($value));
-        } else {
-            $this->calculateLimitingReagent($index, $field, floatval($value));
-        }
-    }
-
-    private function calculateStoichiometry($sourceGroup, $sourceIndex, $sourceField, $value)
-    {
-        $sourceItem = $this->{$sourceGroup}[$sourceIndex];
-        $coeff = floatval($sourceItem['coeff']);
-        $molarMass = floatval($sourceItem['molar_mass']);
-        
-        $moles = ($sourceField === 'moles') ? $value : ($value / $molarMass);
-        $factor = $moles / $coeff;
-
-        foreach ($this->reactants as $i => &$r) {
-            if ($sourceGroup === 'reactants' && $i === $sourceIndex) {
-                if ($sourceField === 'moles') {
-                    $r['weight'] = round($value * $molarMass, 6);
-                } else {
-                    $r['moles'] = round($value / $molarMass, 6);
-                }
-                continue;
-            }
-            $itemMoles = $factor * $r['coeff'];
-            $r['moles'] = round($itemMoles, 6);
-            $r['weight'] = round($itemMoles * $r['molar_mass'], 6);
-        }
-
-        foreach ($this->products as $i => &$p) {
-            if ($sourceGroup === 'products' && $i === $sourceIndex) {
-                if ($sourceField === 'moles') {
-                    $p['weight'] = round($value * $molarMass, 6);
-                } else {
-                    $p['moles'] = round($value / $molarMass, 6);
-                }
-                continue;
-            }
-            $itemMoles = $factor * $p['coeff'];
-            $p['moles'] = round($itemMoles, 6);
-            $p['weight'] = round($itemMoles * $p['molar_mass'], 6);
-        }
+        $this->calculateLimitingReagent($index, $field, floatval($value));
     }
 
     private function calculateLimitingReagent($sourceIndex, $sourceField, $value)
@@ -182,7 +125,7 @@ class ChemicalEquationBalancerCalculator extends Component
         }
 
         if ($allFilled) {
-            $this->limiting_message = "Limiting Reagent: " . $limitingReactantName;
+            $this->limiting_message = "The Limiting reagent is " . $limitingReactantName;
             foreach ($this->products as &$p) {
                 $moles = $minFactor * $p['coeff'];
                 $p['moles'] = round($moles, 6);
@@ -264,6 +207,6 @@ class ChemicalEquationBalancerCalculator extends Component
 
     public function render()
     {
-        return view('livewire.calculators.chemical-equation-balancer-calculator');
+        return view('livewire.calculators.limiting-reactant-calculator');
     }
 }
