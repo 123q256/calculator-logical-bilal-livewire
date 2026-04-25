@@ -1,0 +1,10 @@
+<option value="joules per gram per kelvin (J/(g.K)">J/(g·K)</option>
+<option value="joules per kilogram per kelvin J/(kg.k)">J/(kg·K)</option>
+<option value="calories per kilogram per kelvin cal/(kg.k)">cal/(kg·K)</option>
+<option value="calories per gram per kelvin (cal/g.k)">cal/g·K</option>
+<option value="kilocalories per kilogram per kelvin kcal/(kg.k)">kcal/(kg·K)</option>
+<option value="joules per kilogram per celsius J/(kg·°C)">J/(kg·°C)</option>
+<option value="joules per gram per celsius J/(g·°C)">J/(g·°C)</option>
+<option value="calories per kilogram per celsius cal/(kg·°C)">cal/(kg·°C)</option>
+<option value="calories per gram per celsius cal/(g·°C)">cal/(g·°C)</option>
+<option value="kilocalories per kilogram per celsius kcal/(kg·°C)">kcal/(kg·°C)</option>

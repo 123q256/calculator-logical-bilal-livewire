@@ -7,22 +7,18 @@ use Illuminate\Validation\ValidationException;
 
 class IdealGasLawCalculator extends Component
 {
-    // ─── Core Props ───────────────────────────────────────────────
     public $error;
     public $detail = null;
     public $type   = 'calculator';
     public $lang   = [];
     public $calName;
     public $calLink;
-
-    // ─── Form Fields ──────────────────────────────────────────────
-    public $method = 'press'; // press | volume | temp | sub
+    public $method = 'press';
     public $x      = '3';
     public $y      = '2';
     public $z      = '2';
     public $R      = '8.3144626';
 
-    // ─── Unit Fields ──────────────────────────────────────────────
     public $x_v_unit = 'm³';
     public $x_t_unit = '°C';
     public $y_s_unit = 'mol';
@@ -30,10 +26,8 @@ class IdealGasLawCalculator extends Component
     public $z_t_unit = '°C';
     public $z_p_unit = 'Pa';
 
-    // ─── Dropdown ─────────────────────────────────────────────────
     public $openDropdown = null;
 
-    // ─── Mount ────────────────────────────────────────────────────
     public function mount($type = 'calculator', $lang = [], $calName = null, $calLink = null)
     {
         $this->calName = $calName;
@@ -43,7 +37,6 @@ class IdealGasLawCalculator extends Component
         $this->detail  = session('calculator_result');
         $this->error   = session('validation_error');
 
-        // Back button se wapas aane pe inputs restore karo
         if ($back = session('calculator_back_inputs')) {
             $this->method   = $back->method   ?? 'press';
             $this->x        = $back->x        ?? '3';
@@ -58,8 +51,6 @@ class IdealGasLawCalculator extends Component
             $this->z_p_unit = $back->z_p_unit ?? 'Pa';
         }
     }
-
-    // ─── Dropdown Helpers ─────────────────────────────────────────
     public function toggleDropdown(string $name): void
     {
         $this->openDropdown = ($this->openDropdown === $name) ? null : $name;
@@ -77,13 +68,12 @@ class IdealGasLawCalculator extends Component
     {
         $this->openDropdown = null;
     }
-
-    // ─── Reset ────────────────────────────────────────────────────
     public function resetForm(): void
     {
         $this->resetErrorBag();
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error']);
+        }
 
         $this->error    = null;
         $this->detail   = null;
@@ -98,10 +88,7 @@ class IdealGasLawCalculator extends Component
         $this->z_t_unit = '°C';
         $this->z_p_unit = 'Pa';
     }
-
-    // ─── Calculate ────────────────────────────────────────────────
-    public function calculate()  // void nahi — redirect return karna hai
-    {
+    public function calculate() {
              try {
               $this->validate([
             'method' => 'required|in:press,volume,temp,sub',
@@ -136,50 +123,49 @@ class IdealGasLawCalculator extends Component
 
         $model  = new \App\Models\Chemistry();
         $result = $model->gas($request);
-       if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
-            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
 
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
-                                    $this->js(<<<'JS'
-                $nextTick(() => {
-                    const el = document.getElementById('result-section');
-                    if (el) {
-                        const top = el.getBoundingClientRect().top + window.scrollY - 50;
-                        window.scrollTo({ top: top, behavior: 'smooth' });
-                    }
-                });
-            JS);
-            return; 
-        //    return redirect()->to(url()->previous() ?? '/');
-        } 
-                    } else {
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            } else {
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         const el = document.getElementById('result-section');
                         if (el) {
-                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
                             window.scrollTo({ top: offset, behavior: 'smooth' });
                         }
                     }, 100);
                 JS);
+                return;
             }
         }
-        // dd($result);
-         $this->error = $result['error'] ?? 'Something went wrong.';
+
+        $this->error = $result['error'] ?? 'Something went wrong.';
         $this->detail = null;
+
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-        session()->flash('validation_error', $this->error);            return redirect()->to(url()->previous() ?? '/');
+            session()->flash('validation_error', $this->error);
+            return redirect()->to(url()->previous() ?? '/');
         }
-   
     }
 
-    // ─── Render ───────────────────────────────────────────────────
     public function render()
     {
+           if (session('scroll_to_result')) {
+            $this->js(<<<'JS'
+                const el = document.getElementById('result-section');
+                if (el) {
+                    const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
+            JS);
+        }
         return view('livewire.calculators.ideal-gas-law-calculator');
     }
 }

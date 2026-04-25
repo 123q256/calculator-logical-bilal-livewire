@@ -11,10 +11,7 @@ use GuzzleHttp\Client;
 class Chemistry extends Model
 {
     public $param;
-
-    // Ideal Gas Law Calculator
     public function gas($request){
-		// dd($request);
 		if(is_numeric($request->x) && is_numeric($request->y) && is_numeric($request->z)){
 			if ($request->method==='press') {
 				$volum=$request->x;
@@ -188,7 +185,6 @@ class Chemistry extends Model
             return $this->param;
 		}
 	}
-
     // Mole Fraction Calculator
     public function mole_frac($request){
 		//  dd($request->all());
@@ -614,14 +610,22 @@ class Chemistry extends Model
 			if ($request->unit_x==='lbs') {
 				$mass=$mass * 454;
 			}
-			$mole=round($mass / $request->ly,2);
-			$ans=round($request->dx * $request->dy,2);
-			$st=round($request->dx*($request->sx/$mole),2);
+			if ($request->ly == 0) {
+				$this->param['error'] = 'Molar weight cannot be zero.';
+				return $this->param;
+			}
+			$mole = round($mass / $request->ly, 2);
+			if ($mole == 0) {
+				$this->param['error'] = 'Calculated moles cannot be zero. Please check your inputs.';
+				return $this->param;
+			}
+			$ans = round($request->dx * $request->dy, 2);
+			$st = round($request->dx * ($request->sx / $mole), 2);
 			$this->param['RESULT'] = 1;
 			$this->param['mole'] = $mole;
 			$this->param['st'] = $st;
 			$this->param['ans'] = $ans;
-            return $this->param;
+			return $this->param;
 		}else{
             $this->param['error'] = 'Please! Check Your Input.';
             return $this->param;
@@ -712,6 +716,7 @@ class Chemistry extends Model
 			$count=count($values);
 			$this->param['formula'] = $formula;
 			$this->param['count'] = $count;
+			$this->param['RESULT'] = 1;
             return $this->param;
 		}else{
             $this->param['error'] = 'Please! Check Your Input.';
@@ -731,6 +736,7 @@ class Chemistry extends Model
         $v2_unit=$request->v2_unit;
         $t2=$request->t2;
         $t2_unit=$request->t2_unit;
+        $p_unit=$request->p_unit;
         $p=$request->p;
         $n=$request->n;
         $R=$request->R;
@@ -753,9 +759,9 @@ class Chemistry extends Model
 				}
 			}
 			if(is_numeric($t1)){
-				if($t1_unit==='c'){
+				if($t1_unit==='c' || $t1_unit==='°C'){
 					$t1=$t1+273.15;
-				}elseif($t1_unit==='f'){
+				}elseif($t1_unit==='f' || $t1_unit==='°F'){
 					$t1=($t1-32)*(5/9)+273.15;
 				}
 			}
@@ -775,35 +781,35 @@ class Chemistry extends Model
 				}
 			}
 			if(is_numeric($t2)){
-				if($t2_unit==='°C'){
+				if($t2_unit==='°C' || $t2_unit==='c'){
 					$t2=$t2+273.15;
-				}elseif($t2_unit==='°F'){
+				}elseif($t2_unit==='°F' || $t2_unit==='f'){
 					$t2=($t2-32)*(5/9)+273.15;
 				}
 			}
 			if(is_numeric($p)){
-				if($v2_unit==='bar'){
-					$v2=$v2/0.00001;
-				}elseif($v2_unit==='psi'){
-					$v2=$v2/0.00014504;
-				}elseif($v2_unit==='at'){
-					$v2=$v2/0.000010197;
-				}elseif($v2_unit==='atm'){
-					$v2=$v2/0.00000987;
-				}elseif($v2_unit==='Torr'){
-					$v2=$v2/0.0075;
-				}elseif($v2_unit==='hPa'){
-					$v2=$v2/0.01;
-				}elseif($v2_unit==='kPa'){
-					$v2=$v2/0.001;
-				}elseif($v2_unit==='MPa'){
-					$v2=$v2/0.000001;
-				}elseif($v2_unit==='GPa'){
-					$v2=$v2/0.000000001;
-				}elseif($v2_unit==='in Hg'){
-					$v2=$v2/0.0002953;
-				}elseif($v2_unit==='mmHg'){
-					$v2=$v2/0.0075;
+				if($p_unit==='bar'){
+					$p=$p/0.00001;
+				}elseif($p_unit==='psi'){
+					$p=$p/0.00014504;
+				}elseif($p_unit==='at'){
+					$p=$p/0.000010197;
+				}elseif($p_unit==='atm'){
+					$p=$p/0.00000987;
+				}elseif($p_unit==='Torr'){
+					$p=$p/0.0075;
+				}elseif($p_unit==='hPa'){
+					$p=$p/0.01;
+				}elseif($p_unit==='kPa'){
+					$p=$p/0.001;
+				}elseif($p_unit==='MPa'){
+					$p=$p/0.000001;
+				}elseif($p_unit==='GPa'){
+					$p=$p/0.000000001;
+				}elseif($p_unit==='in Hg'){
+					$p=$p/0.0002953;
+				}elseif($p_unit==='mmHg'){
+					$p=$p/0.0075;
 				}
 			}
 			if($find==='v1' && is_numeric($t1) && is_numeric($v2) && is_numeric($t2)){
@@ -1052,7 +1058,6 @@ class Chemistry extends Model
   
     // Chemical Equation Balancer Calculator
 	public function chemical($request){
-		//  dd($request->all());
 		$eq=$request->eq;
 		if (preg_match("/\<|\&|php|print_r|print|echo|script|%/i", $eq)) {
 			$this->param['error'] = 'Please Enter Valid Input.';
@@ -1284,7 +1289,7 @@ class Chemistry extends Model
                     "ans_um" => $ma_um.' μM',
                     "ans_mm" => $ma_mm.' mM',
                 ];
-
+				  $this->param['RESULT'] = 1;
                 return $this->param;
             }elseif($cal==='va' && is_numeric($ma) && is_numeric($hp) && is_numeric($mb) && is_numeric($vb) && is_numeric($oh)){
                 $va=($oh*$mb*$vb)/($ma*$hp);
@@ -1297,14 +1302,14 @@ class Chemistry extends Model
                     'ans_ul' => $va_ul.' μL',
                     'ans_ml' => $va_ml.' mL',
                 ];
-
+				  $this->param['RESULT'] = 1;
                 return $this->param;
             }elseif($cal==='hp' && is_numeric($ma) && is_numeric($va) && is_numeric($mb) && is_numeric($vb) && is_numeric($oh)){
                 $hp=($oh*$mb*$vb)/($ma*$va);
                 $this->param = [
                     'ans' => $hp,
                 ];
-
+				  $this->param['RESULT'] = 1;
                 return $this->param;
             }elseif($cal==='mb' && is_numeric($ma) && is_numeric($va) && is_numeric($hp) && is_numeric($vb) && is_numeric($oh)){
                 $mb=($hp*$ma*$va)/($oh*$vb);
@@ -1319,7 +1324,7 @@ class Chemistry extends Model
                     'ans_um' => $mb_um.' μM',
                     'ans_mm' => $mb_mm.' mM',
                 ];
-
+				  $this->param['RESULT'] = 1;
                 return $this->param;
             }elseif($cal==='vb' && is_numeric($ma) && is_numeric($va) && is_numeric($hp) && is_numeric($mb) && is_numeric($oh)){
                 $vb=($hp*$ma*$va)/($oh*$mb);
@@ -1332,14 +1337,14 @@ class Chemistry extends Model
                     'ans_ul' => $vb_ul.' μL',
                     'ans_ml' => $vb_ml.' mL',
                 ];
-
+				  $this->param['RESULT'] = 1;
                 return $this->param;
             }elseif($cal==='oh' && is_numeric($ma) && is_numeric($va) && is_numeric($hp) && is_numeric($mb) && is_numeric($vb)){
                 $oh=($hp*$ma*$va)/($vb*$mb);
                 $this->param = [
                     'ans' => $oh,
                 ];
-
+				  $this->param['RESULT'] = 1;
                 return $this->param;
             }else{
                 $this->param['error'] = 'Please! Check Your Input.';
@@ -3814,7 +3819,6 @@ class Chemistry extends Model
 
     // pH Calculator
   	public function ph($request){
-		// dd($request->all());
         $concentration=$request->concentration;
         $con_units=$request->con_units;
         if (isset($request->chemical_name)) {
@@ -4076,7 +4080,6 @@ class Chemistry extends Model
 			$this->param['pka'] = $pka;
 		}
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
         return $this->param;
 	}
 
@@ -4149,27 +4152,31 @@ class Chemistry extends Model
         $chemical_equation=$request->chemical_equation;
         $total_pressure=$request->total_pressure;
 
-        function convert_unit($a,$b){
-           if($a=="M"){
-               $val1=$b*1;
-           }else if($a=="mM"){
-               $val1=$b*0.001;
-           }else if($a=="μM"){
-               $val1=$b*0.000001;
-           }else if($a=="nM"){
-               $val1=$b*0.000000001;
-           }else if($a=="pM"){
-               $val1=$b*0.000000000001;
-           }else if($a=="fM"){
-               $val1=$b*0.000000000000001;
-           }else if($a=="aM"){
-               $val1=$b*0;
-           }else if($a=="zM"){
-               $val1=$b*0;
-           }else if($a=="yM"){
-               $val1=$b*0;
-           }
-           return $val1;
+        if (!function_exists('convert_unit')) {
+            function convert_unit($a,$b){
+               if($a=="M"){
+                   $val1=$b*1;
+               }else if($a=="mM"){
+                   $val1=$b*0.001;
+               }else if($a=="μM"){
+                   $val1=$b*0.000001;
+               }else if($a=="nM"){
+                   $val1=$b*0.000000001;
+               }else if($a=="pM"){
+                   $val1=$b*0.000000000001;
+               }else if($a=="fM"){
+                   $val1=$b*0.000000000000001;
+               }else if($a=="aM"){
+                   $val1=$b*1e-18;
+               }else if($a=="zM"){
+                   $val1=$b*1e-21;
+               }else if($a=="yM"){
+                   $val1=$b*1e-24;
+               }else{
+                   $val1=$b;
+               }
+               return $val1;
+            }
         }
 
         if(preg_match("/\<|\>|\&|php|print_r|print|echo|script|&|%/i",$chemical_equation)){
@@ -4188,7 +4195,12 @@ class Chemistry extends Model
                     $four_power=pow($four_value,$d);
                     $second_power=pow($second_value,$b);
                     $first_power=pow($first_value,$a);
-                    $Kc=($third_power*$four_power)/($second_power*$first_power);
+                    $denominator = $second_power * $first_power;
+                    if ($denominator == 0) {
+                        $this->param['error'] = 'Division by zero. Please ensure reactant concentrations are greater than zero.';
+                        return $this->param;
+                    }
+                    $Kc=($third_power*$four_power)/$denominator;
                     $this->param['answer'] = $Kc;
                     $this->param['opt']=$selection;
                     //$this->param['chemical_equation']=$chemical_equation;
@@ -4292,66 +4304,72 @@ class Chemistry extends Model
         $temp_unit=$request->temp_unit;
         $amount=$request->amount;
 
-		function pre($unit,$value){
-			if($unit=="Pa"){
-				$val1=$value*1;
-			}else if($unit=="Bar"){
-				$val1=$value*100000;
-			}else if($unit=="psi"){
-				$val1=$value*6895;
-			}else if($unit=="at"){
-				$val1=$value*98068;
-			}else if($unit=="atm"){
-				$val1=$value*101325;
-			}else if($unit=="Torr"){
-				$val1=$value*133.32;
-			}else if($unit=="hPa"){
-				$val1=$value*100;
-			}else if($unit=="kPa"){
-				$val1=$value*1000;
-			}else if($unit=="MPa"){
-				$val1=$value*1000;
-			}else if($unit=="Gpa"){
-				$val1=$value*1000000000;
-			}else if($unit=="in Hg"){
-				$val1=$value*3386.4;
-			}else if($unit=="mmHg"){
-				$val1=$value*133.32;
-			}
-			return $val1;
-		}
-		function vol($unit2,$value2){
-			if($unit2=="mm³"){
-				$val2=$value2*0.000000001;
-			}else if($unit2=="cm³"){
-				$val2=$value2*0.000001;
-			}else if($unit2=="dm³"){
-				$val2=$value2*0.001;
-			}else if($unit2=="m³"){
-				$val2=$value2*1;
-			}else if($unit2=="in³"){
-				$val2=$value2*0.000016387;
-			}else if($unit2=="ft³"){
-				$val2=$value2*0.028317;
-			}else if($unit2=="yd³"){
-				$val2=$value2*0.7646;
-			}else if($unit2=="ml"){
-				$val2=$value2*0.000001;
-			}else if($unit2=="liters"){
-				$val2=$value2*0.001;
-			}
-			return $val2;
-		}
-		function temp($unit3,$value3){
-			if($unit3=="°C"){
-				$val3=$value3+273.15;
-			}else if($unit3=="°F"){
-				$val3=($value3-32)*(5/9)+273.15;
-			}else if($unit3=="K"){
-				$val3=$value3*1;
-			}
-			return $val3; 
-		}
+        if (!function_exists('pre')) {
+            function pre($unit,$value){
+                if($unit=="Pa"){
+                    $val1=$value*1;
+                }else if($unit=="Bar"){
+                    $val1=$value*100000;
+                }else if($unit=="psi"){
+                    $val1=$value*6895;
+                }else if($unit=="at"){
+                    $val1=$value*98068;
+                }else if($unit=="atm"){
+                    $val1=$value*101325;
+                }else if($unit=="Torr"){
+                    $val1=$value*133.32;
+                }else if($unit=="hPa"){
+                    $val1=$value*100;
+                }else if($unit=="kPa"){
+                    $val1=$value*1000;
+                }else if($unit=="MPa"){
+                    $val1=$value*1000;
+                }else if($unit=="Gpa"){
+                    $val1=$value*1000000000;
+                }else if($unit=="in Hg"){
+                    $val1=$value*3386.4;
+                }else if($unit=="mmHg"){
+                    $val1=$value*133.32;
+                }
+                return $val1;
+            }
+        }
+        if (!function_exists('vol')) {
+            function vol($unit2,$value2){
+                if($unit2=="mm³"){
+                    $val2=$value2*0.000000001;
+                }else if($unit2=="cm³"){
+                    $val2=$value2*0.000001;
+                }else if($unit2=="dm³"){
+                    $val2=$value2*0.001;
+                }else if($unit2=="m³"){
+                    $val2=$value2*1;
+                }else if($unit2=="in³"){
+                    $val2=$value2*0.000016387;
+                }else if($unit2=="ft³"){
+                    $val2=$value2*0.028317;
+                }else if($unit2=="yd³"){
+                    $val2=$value2*0.7646;
+                }else if($unit2=="ml"){
+                    $val2=$value2*0.000001;
+                }else if($unit2=="liters"){
+                    $val2=$value2*0.001;
+                }
+                return $val2;
+            }
+        }
+        if (!function_exists('temp')) {
+            function temp($unit3,$value3){
+                if($unit3=="°C"){
+                    $val3=$value3+273.15;
+                }else if($unit3=="°F"){
+                    $val3=($value3-32)*(5/9)+273.15;
+                }else if($unit3=="K"){
+                    $val3=$value3*1;
+                }
+                return $val3; 
+            }
+        }
 
 		if($find=="1"){//Find Volume V2
 			if(is_numeric($p1) && is_numeric($v1) && is_numeric($p2)){
@@ -4462,57 +4480,63 @@ class Chemistry extends Model
         $temp_two=$request->temp_two;
         $temp_two_unit=$request->temp_two_unit;
 
-		function pre($unit,$value){
-			if($unit=="Pa"){
-				$val1=$value*1;
-			}else if($unit=="kPa"){
-				$val1=$value*1000;
-			}else if($unit=="Bar"){
-				$val1=$value*100000;
-			}else if($unit=="atm"){
-				$val1=$value*101325;
-			}else if($unit=="hPa"){
-				$val1=$value*100;
-			}else if($unit=="mbar"){
-				$val1=$value*100;
-			}else if($unit=="mmHg"){
-				$val1=$value*133.32;
-			}
-			return $val1;
-		}
-		function vol($unit2,$value2){
-			if($unit2=="m³"){
-				$val2=$value2*1;
-			}else if($unit2=="l"){
-				$val2=$value2*0.001;
-			}else if($unit2=="ml"){
-				$val2=$value2*0.000001;
-			}else if($unit2=="ft³"){
-				$val2=$value2*0.0283168;
-			}else if($unit2=="in³"){
-				$val2=$value2*1.63871e-5;
-			}
-			return $val2;
-		}
-		function temp($unit3,$value3){
-			if($unit3=="°C"){
-				$val3=$value3+273.15;
-			}else if($unit3=="°F"){
-				$val3=($value3-32)*(5/9)+273.15;
-			}else if($unit3=="K"){
-				$val3=$value3*1;
-			}
-			return $val3; 
-		}
+        if (!function_exists('pre_c')) {
+            function pre_c($unit,$value){
+                if($unit=="Pa"){
+                    $val1=$value*1;
+                }else if($unit=="kPa"){
+                    $val1=$value*1000;
+                }else if($unit=="Bar"){
+                    $val1=$value*100000;
+                }else if($unit=="atm"){
+                    $val1=$value*101325;
+                }else if($unit=="hPa"){
+                    $val1=$value*100;
+                }else if($unit=="mbar"){
+                    $val1=$value*100;
+                }else if($unit=="mmHg"){
+                    $val1=$value*133.32;
+                }
+                return $val1;
+            }
+        }
+        if (!function_exists('vol_c')) {
+            function vol_c($unit2,$value2){
+                if($unit2=="m³"){
+                    $val2=$value2*1;
+                }else if($unit2=="l"){
+                    $val2=$value2*0.001;
+                }else if($unit2=="ml"){
+                    $val2=$value2*0.000001;
+                }else if($unit2=="ft³"){
+                    $val2=$value2*0.0283168;
+                }else if($unit2=="in³"){
+                    $val2=$value2*1.63871e-5;
+                }
+                return $val2;
+            }
+        }
+        if (!function_exists('temp_c')) {
+            function temp_c($unit3,$value3){
+                if($unit3=="°C"){
+                    $val3=$value3+273.15;
+                }else if($unit3=="°F"){
+                    $val3=($value3-32)*(5/9)+273.15;
+                }else if($unit3=="K"){
+                    $val3=$value3*1;
+                }
+                return $val3; 
+            }
+        }
 
 		if($calculation=="1"){//Temperature Two
             if(is_numeric($pressure_one) && is_numeric($pressure_two) && is_numeric($volume_one) && is_numeric($volume_two) && is_numeric($temp_one)){
 				$method=1;
-				$pressure_two_value=pre($pressure_two_unit,$pressure_two);
-				$pressure_one_value=pre($pressure_one_unit,$pressure_one);
-				$volume_two_value=vol($volume_two_unit,$volume_two);
-				$volume_one_value=vol($volume_one_unit,$volume_one);
-				$temp_one_value=temp($temp_one_unit,$temp_one);
+				$pressure_two_value=pre_c($pressure_two_unit,$pressure_two);
+				$pressure_one_value=pre_c($pressure_one_unit,$pressure_one);
+				$volume_two_value=vol_c($volume_two_unit,$volume_two);
+				$volume_one_value=vol_c($volume_one_unit,$volume_one);
+				$temp_one_value=temp_c($temp_one_unit,$temp_one);
 				$tf =((($pressure_two_value*$volume_two_value*$temp_one_value)/($pressure_one_value*$volume_one_value))*100)/100;
 				$this->param['temperature']=$tf;
 			}else{
@@ -4522,11 +4546,11 @@ class Chemistry extends Model
 		}else if($calculation=="2"){//Volume One
 			$method=2;
 			if(is_numeric($pressure_one) && is_numeric($pressure_two) && is_numeric($temp_two) && is_numeric($volume_two) && is_numeric($temp_one)){
-				$pressure_two_value=pre($pressure_two_unit,$pressure_two);
-				$pressure_one_value=pre($pressure_one_unit,$pressure_one);
-				$volume_two_value=vol($volume_two_unit,$volume_two);
-				$temp_two_value=temp($temp_two_unit,$temp_two);
-				$temp_one_value=temp($temp_one_unit,$temp_one);
+				$pressure_two_value=pre_c($pressure_two_unit,$pressure_two);
+				$pressure_one_value=pre_c($pressure_one_unit,$pressure_one);
+				$volume_two_value=vol_c($volume_two_unit,$volume_two);
+				$temp_two_value=temp_c($temp_two_unit,$temp_two);
+				$temp_one_value=temp_c($temp_one_unit,$temp_one);
 				$vi =((($pressure_two_value*$volume_two_value*$temp_one_value)/($temp_two_value*$pressure_one_value))*100)/100;
 				$this->param['volume']=$vi;
 			}else{
@@ -4536,11 +4560,11 @@ class Chemistry extends Model
 		}else if($calculation=="3"){//Pressure One
 			$method=3;
 			if(is_numeric($volume_one) && is_numeric($pressure_two) && is_numeric($temp_two) && is_numeric($volume_two) && is_numeric($temp_one)){
-				$pressure_two_value=pre($pressure_two_unit,$pressure_two);
-				$volume_one_value=vol($volume_one_unit,$volume_one);
-				$volume_two_value=vol($volume_two_unit,$volume_two);
-				$temp_two_value=temp($temp_two_unit,$temp_two);
-				$temp_one_value=temp($temp_one_unit,$temp_one);
+				$pressure_two_value=pre_c($pressure_two_unit,$pressure_two);
+				$volume_one_value=vol_c($volume_one_unit,$volume_one);
+				$volume_two_value=vol_c($volume_two_unit,$volume_two);
+				$temp_two_value=temp_c($temp_two_unit,$temp_two);
+				$temp_one_value=temp_c($temp_one_unit,$temp_one);
 				$pi =((($pressure_two_value*$volume_two_value*$temp_one_value)/($temp_two_value*$volume_one_value))*100)/100;
 				$this->param['pressure']=$pi;
 			}else{
@@ -4550,11 +4574,11 @@ class Chemistry extends Model
 		}else if($calculation=="4"){//Temperature One
 			$method=4;
 			if(is_numeric($volume_one) && is_numeric($pressure_two) && is_numeric($temp_two) && is_numeric($volume_two) && is_numeric($pressure_one)){
-				 $pressure_two_value=pre($pressure_two_unit,$pressure_two);
-				 $volume_one_value=vol($volume_one_unit,$volume_one);
-				 $volume_two_value=vol($volume_two_unit,$volume_two);
-				 $temp_two_value=temp($temp_two_unit,$temp_two);
-				 $pressure_one_value=pre($pressure_one_unit,$pressure_one);
+				 $pressure_two_value=pre_c($pressure_two_unit,$pressure_two);
+				 $volume_one_value=vol_c($volume_one_unit,$volume_one);
+				 $volume_two_value=vol_c($volume_two_unit,$volume_two);
+				 $temp_two_value=temp_c($temp_two_unit,$temp_two);
+				 $pressure_one_value=pre_c($pressure_one_unit,$pressure_one);
 				$ti=((($pressure_one_value*$volume_one_value*$temp_two_value)/($pressure_two_value*$volume_two_value))*100)/100;
 				$this->param['temperature']=$ti;
 			}else{
@@ -4564,11 +4588,11 @@ class Chemistry extends Model
 		}else if($calculation=="5"){//Volume Two
 			$method=5;
 			if(is_numeric($volume_one) && is_numeric($pressure_two) && is_numeric($temp_two) && is_numeric($temp_one) && is_numeric($pressure_one)){
-				 $pressure_two_value=pre($pressure_two_unit,$pressure_two);
-				 $volume_one_value=vol($volume_one_unit,$volume_one);
-				 $temp_one_value=temp($temp_one_unit,$temp_two);
-				 $temp_two_value=temp($temp_two_unit,$temp_two);
-				 $pressure_one_value=pre($pressure_one_unit,$pressure_one);
+				 $pressure_two_value=pre_c($pressure_two_unit,$pressure_two);
+				 $volume_one_value=vol_c($volume_one_unit,$volume_one);
+				 $temp_one_value=temp_c($temp_one_unit,$temp_two);
+				 $temp_two_value=temp_c($temp_two_unit,$temp_two);
+				 $pressure_one_value=pre_c($pressure_one_unit,$pressure_one);
 				 $vf=((($temp_two_value*$pressure_one_value*$volume_one_value)/($temp_one_value*$pressure_two_value))*100)/100;
 				 $this->param['volume']=$vf;
 			}else{
@@ -4578,11 +4602,11 @@ class Chemistry extends Model
 		}else if($calculation=="6"){//Pressure Two
 			$method=6;
 			if(is_numeric($volume_one) && is_numeric($pressure_one) && is_numeric($temp_two) && is_numeric($volume_two) && is_numeric($temp_one)){
-				$pressure_one_value=pre($pressure_one_unit,$pressure_one);
-				$volume_one_value=vol($volume_one_unit,$volume_one);
-				$volume_two_value=vol($volume_two_unit,$volume_two);
-				$temp_two_value=temp($temp_two_unit,$temp_two);
-				$temp_one_value=temp($temp_one_unit,$temp_one);
+				$pressure_one_value=pre_c($pressure_one_unit,$pressure_one);
+				$volume_one_value=vol_c($volume_one_unit,$volume_one);
+				$volume_two_value=vol_c($volume_two_unit,$volume_two);
+				$temp_two_value=temp_c($temp_two_unit,$temp_two);
+				$temp_one_value=temp_c($temp_one_unit,$temp_one);
 				$pf=((($temp_two_value*$pressure_one_value*$volume_one_value)/($temp_one_value*$volume_two_value))*100)/100;
 				$this->param['pressure']=$pf;
 			}else{
@@ -4795,73 +4819,79 @@ class Chemistry extends Model
         $amount=$request->amount;
         $v1=$request->v1;
 
-		function pre($unit,$value){
-			if($unit=="Pa"){
-				$val1=$value*1;
-			}else if($unit=="Bar"){
-				$val1=$value*100000;
-			}else if($unit=="psi"){
-				$val1=$value*6895;
-			}else if($unit=="at"){
-				$val1=$value*98068;
-			}else if($unit=="atm"){
-				$val1=$value*101325;
-			}else if($unit=="Torr"){
-				$val1=$value*133.32;
-			}else if($unit=="hPa"){
-				$val1=$value*100;
-			}else if($unit=="kPa"){
-				$val1=$value*1000;
-			}else if($unit=="MPa"){
-				$val1=$value*1000;
-			}else if($unit=="GPa"){
-				$val1=$value*1000000000;
-			}else if($unit=="inHg"){
-				$val1=$value*3386.4;
-			}else if($unit=="mmHg"){
-				$val1=$value*133.32;
-			}
-			return $val1;
-		}
-		function vol($unit2,$value2){
-			if($unit2=="mm³"){
-				$val2=$value2*0.000000001;
-			}else if($unit2=="cm³"){
-				$val2=$value2*0.000001;
-			}else if($unit2=="dm³"){
-				$val2=$value2*0.001;
-			}else if($unit2=="m³"){
-				$val2=$value2*1;
-			}else if($unit2=="in³"){
-				$val2=$value2*0.000016387;
-			}else if($unit2=="ft³"){
-				$val2=$value2*0.028317;
-			}else if($unit2=="yd³"){
-				$val2=$value2*0.7646;
-			}else if($unit2=="ml"){
-				$val2=$value2*0.000001;
-			}else if($unit2=="liters"){
-				$val2=$value2*0.001;
-			}
-			return $val2;
-		}
-		function temp($unit3,$value3){
-			if($unit3=="°C"){
-				$val3=$value3+273.15;
-			}else if($unit3=="°F"){
-				$val3=($value3-32)*(5/9)+273.15;
-			}else if($unit3=="K"){
-				$val3=$value3*1;
-			}
-			return $val3; 
-		}
+        if (!function_exists('pre_g')) {
+            function pre_g($unit,$value){
+                if($unit=="Pa"){
+                    $val1=$value*1;
+                }else if($unit=="Bar"){
+                    $val1=$value*100000;
+                }else if($unit=="psi"){
+                    $val1=$value*6895;
+                }else if($unit=="at"){
+                    $val1=$value*98068;
+                }else if($unit=="atm"){
+                    $val1=$value*101325;
+                }else if($unit=="Torr"){
+                    $val1=$value*133.32;
+                }else if($unit=="hPa"){
+                    $val1=$value*100;
+                }else if($unit=="kPa"){
+                    $val1=$value*1000;
+                }else if($unit=="MPa"){
+                    $val1=$value*1000;
+                }else if($unit=="GPa"){
+                    $val1=$value*1000000000;
+                }else if($unit=="inHg"){
+                    $val1=$value*3386.4;
+                }else if($unit=="mmHg"){
+                    $val1=$value*133.32;
+                }
+                return $val1;
+            }
+        }
+        if (!function_exists('vol_g')) {
+            function vol_g($unit2,$value2){
+                if($unit2=="mm³"){
+                    $val2=$value2*0.000000001;
+                }else if($unit2=="cm³"){
+                    $val2=$value2*0.000001;
+                }else if($unit2=="dm³"){
+                    $val2=$value2*0.001;
+                }else if($unit2=="m³"){
+                    $val2=$value2*1;
+                }else if($unit2=="in³"){
+                    $val2=$value2*0.000016387;
+                }else if($unit2=="ft³"){
+                    $val2=$value2*0.028317;
+                }else if($unit2=="yd³"){
+                    $val2=$value2*0.7646;
+                }else if($unit2=="ml"){
+                    $val2=$value2*0.000001;
+                }else if($unit2=="liters"){
+                    $val2=$value2*0.001;
+                }
+                return $val2;
+            }
+        }
+        if (!function_exists('temp_g')) {
+            function temp_g($unit3,$value3){
+                if($unit3=="°C"){
+                    $val3=$value3+273.15;
+                }else if($unit3=="°F"){
+                    $val3=($value3-32)*(5/9)+273.15;
+                }else if($unit3=="K"){
+                    $val3=$value3*1;
+                }
+                return $val3; 
+            }
+        }
+
 		if($selection=="1"){//Final Temperature (T2)
 			$method=1;
 			if(is_numeric($p1) && is_numeric($p2) && is_numeric($t1)){
-				$p1_value=pre($p1_unit,$p1);
-				$p2_value=temp($p2_unit,$p2);
-				$t1_value=temp($t1_unit,$t1);
-				// dd($p2_value);
+				$p1_value=pre_g($p1_unit,$p1);
+				$p2_value=pre_g($p2_unit,$p2);
+				$t1_value=temp_g($t1_unit,$t1);
 				$temp2=($t1_value*$p2_value)/$p1_value;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
@@ -4870,9 +4900,9 @@ class Chemistry extends Model
 		}else if($selection=="2"){//Final Pressure (P2)
 			$method=2;
 			if(is_numeric($t1) && is_numeric($t2) && is_numeric($p1)){
-				$p1_value=pre($p1_unit,$p1);
-				$t1_value=temp($t1_unit,$t1);
-				$t2_value=temp($t2_unit,$t2);
+				$p1_value=pre_g($p1_unit,$p1);
+				$t1_value=temp_g($t1_unit,$t1);
+				$t2_value=temp_g($t2_unit,$t2);
 				$temp2=($p1_value*$t2_value)/$t1_value;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
@@ -4881,9 +4911,9 @@ class Chemistry extends Model
 		}else if($selection=="3"){//Initial Pressure (P1)
 			$method=3;
 			if(is_numeric($t1) && is_numeric($t2) && is_numeric($p2)){
-				$p2_value=pre($p2_unit,$p2);
-				$t1_value=temp($t1_unit,$t1);
-				$t2_value=temp($t2_unit,$t2);
+				$p2_value=pre_g($p2_unit,$p2);
+				$t1_value=temp_g($t1_unit,$t1);
+				$t2_value=temp_g($t2_unit,$t2);
 				$temp2=($t1_value*$p2_value)/$t2_value;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
@@ -4892,36 +4922,35 @@ class Chemistry extends Model
 		}else if($selection=="4"){//Initial Temperature (T1)
 			$method=4;
 			if(is_numeric($p1) && is_numeric($p2) && is_numeric($t2)){
-				$p1_value=pre($p1_unit,$p1);
-				$p2_value=temp($p2_unit,$p2);
-				$t2_value=temp($t2_unit,$t2);
-
+				$p1_value=pre_g($p1_unit,$p1);
+				$p2_value=pre_g($p2_unit,$p2);
+				$t2_value=temp_g($t2_unit,$t2);
 				$temp2=($t2_value/$p2_value)*$p1_value;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
 			}
-		}else if($selection=="5"){
+		}else if($selection=="5"){//Volume
 			$method=5;
 			if(is_numeric($p1) && is_numeric($t1) && is_numeric($amount) && is_numeric($R)){
-				$p1_value=pre($p1_unit,$p1);
-				$p2_value=temp($p2_unit,$p2);
-				$t2_value=temp($t2_unit,$t2);
-				// dd($p2_value);
-				$calculate_volume=($amount*$R*$t1)/$p1;
+				$p1_value=pre_g($p1_unit,$p1);
+				$t1_value=temp_g($t1_unit,$t1);
+				$calculate_volume=($amount*$R*$t1_value)/$p1_value;
 				$this->param['calculate_volume']=$calculate_volume;
 				$this->param['method']=$method;
 				$this->param['RESULT'] = 1;
-				dd($this->param);
                 return $this->param;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
 			}
-		}else if($selection=="6"){
+		}else if($selection=="6"){//Amount of gas
 			$method=6;
 			if(is_numeric($p1) && is_numeric($t1) && is_numeric($v1) && is_numeric($R)){
-				$n=($p1*$v1)/($R*$t1);
+                $p1_value=pre_g($p1_unit,$p1);
+				$t1_value=temp_g($t1_unit,$t1);
+                $v1_value=vol_g($request->v1_unit,$v1);
+				$n=($p1_value*$v1_value)/($R*$t1_value);
 				$this->param['n']=$n;
 				$this->param['method']=$method;
 				$this->param['RESULT'] = 1;
@@ -4932,21 +4961,17 @@ class Chemistry extends Model
 			}
 		}
 		$amount_of_gas=1;
-		$calculate_volume=($amount_of_gas*$R*$t1)/$p1;
+		$calculate_volume=($amount_of_gas*$R*temp_g($t1_unit,$t1))/pre_g($p1_unit,$p1);
 		$this->param['volume']=$calculate_volume;
 		$this->param['amount_of_gas']=$amount_of_gas;
 		$this->param['method']=$method;
 		$this->param['temp']=$temp2;
-		$this->param['method']=$method;
 		$this->param['RESULT'] = 1;
-            // dd($this->param);
-
         return $this->param;
 	}
 
     // Mass Percent Calculator
 	public function mass($request){
-		// dd($request->all());
         $find=$request->find;
         $mass_solute=$request->mass_solute;
         $mass_solute_unit=$request->mass_solute_unit;
@@ -4970,157 +4995,49 @@ class Chemistry extends Model
         $six_value=$request->six_value;
         $six_value_unit=$request->six_value_unit;
 
-		function mass_convert($unit2,$value2){
-			if($unit2=="µg"){
-				$val3=$value2*0.000000001;
-			}else if($unit2=="mg"){
-				$val3=$value2*0.000001;
-			}else if($unit2=="g"){
-				$val3=$value2*0.001;
-			}else if($unit2=="dag"){
-				$val3=$value2*0.01;
-			}else if($unit2=="kg"){
-				$val3=$value2*1;
-			}else if($unit2=="t"){
-				$val3=$value2*1000;
-			}else if($unit2=="oz"){
-				$val3=$value2*0.02835;
-			}else if($unit2=="lbs"){
-				$val3=$value2*0.4536;
-			}
-			return $val3;
-		}
-		function find_atomic_mass($value_unit,$value){
-			if($value_unit=="Atomic mass amu"){
-				$val1=12;
-			}else if($value_unit=="H (Hydrogen)"){
-				$val1=1.00784*$value;
-				$val2=1.00784;
-			}else if($value_unit=="He (Helium)"){
-				$val1=4.002602*$value;
-				$val2=4.002602;
-			}else if($value_unit=="Li (Lithium)"){
-				$val1=6.941*$value;
-				$val2=6.941;
-			}else if($value_unit=="Be (Beryllium)"){
-				$val1=9.0122*$value;
-				$val2=9.0122;
-			}else if($value_unit=="B (Boron)"){
-				$val1=10.811*$value;
-				$val2=10.811;
-			}else if($value_unit=="C (Carbon)"){
-				$val1=12.011*$value;
-				$val2=12.011;
-			}else if($value_unit=="N (Nitrogen)"){
-				$val1=14.0067*$value;
-				$val2=14.0067;
-			}else if($value_unit=="O (Oxygen)"){
-				$val1=15.9994*$value;
-				$val2=15.9994;
-			}else if($value_unit=="F (Fluorine)"){
-				$val1=18.998403*$value;
-				$val2=18.998403*$value;
-			}else if($value_unit=="Ne (Neon)"){
-				$val1=20.179*$value;
-				$val2=20.179;
-			}else if($value_unit=="Na (Sodium)"){
-				$val1=22.98977*$value;
-				$val2=22.98977;
-			}else if($value_unit=="Mg (Magnesium)"){
-				$val1=24.305*$value;
-				$val2=24.305;
-			}else if($value_unit=="Al (Aluminium)"){
-				$val1=26.98154*$value;
-				$val2=26.98154;
-			}else if($value_unit=="Si (Silicon)"){
-				$val1=28.0855*$value;
-				$val2=28.0855;
-			}else if($value_unit=="P (Phosphorus)"){
-				$val1=30.97376*$value;
-				$val2=30.97376;
-			}else if($value_unit=="S (Sulfur)"){
-				$val1=32.06*$value;
-				$val2=32.06;
-			}else if($value_unit=="Cl (Chlorine)"){
-				$val1=35.453*$value;
-				$val2=35.453;
-			}else if($value_unit=="Ar (Argon)"){
-				$val1=39.0983*$value;
-				$val2=39.0983;
-			}else if($value_unit=="K (Potassium)"){
-				$val1=39.948*$value;
-				$val2=39.948;
-			}else if($value_unit=="Ca (Calcium)"){
-				$val1=40.08*$value;
-				$val2=40.08;
-			}else if($value_unit=="Sc (Scandium)"){
-				$val1=44.9559*$value;
-				$val2=44.9559;
-			}else if($value_unit=="Ti (Titanium)"){
-				$val1=47.90*$value;
-				$val2=47.90;
-			}else if($value_unit=="V (Vanadium)"){
-				$val1=50.9415*$value;
-				$val2=50.9415;
-			}else if($value_unit=="Cr (Chromium)"){
-				$val1=51.996*$value;
-				$val2=51.996;
-			}else if($value_unit=="Mn (Manganese)"){
-				$val1=54.9380*$value;
-				$val2=54.9380;
-			}else if($value_unit=="Fe (Iron)"){
-				$val1=55.847*$value;
-				$val2=55.847;
-			}else if($value_unit=="Co ( Cobalt)"){
-				$val1=58.9332*$value;
-				$val2=58.9332;
-			}else if($value_unit=="Ni (Nickel)"){
-				$val1=58.70*$value;
-				$val2=58.70;
-			}else if($value_unit=="Cu (Copper)"){
-				$val1=63.546*$value;
-				$val2=63.546;
-			}else if($value_unit=="V (Vanadium)"){
-				$val1=50.9415*$value;
-				$val2=50.9415;
-			}else if($value_unit=="Zn (Zinc)"){
-				$val1=65.38*$value;
-				$val2=65.38;
-			}
-			return array($val1,$val2);
-		}
+        if (!function_exists('mass_convert_m')) {
+            function mass_convert_m($unit2,$value2){
+                $factors = ["µg"=>1e-9, "mg"=>1e-6, "g"=>1e-3, "dag"=>1e-2, "kg"=>1, "t"=>1000, "oz"=>0.02835, "lbs"=>0.4536];
+                return isset($factors[$unit2]) ? $value2 * $factors[$unit2] : $value2;
+            }
+        }
+        if (!function_exists('find_atomic_mass_m')) {
+            function find_atomic_mass_m($value_unit,$value){
+                $atomic_masses = [
+                    "H (Hydrogen)"=>1.00784, "He (Helium)"=>4.002602, "Li (Lithium)"=>6.941, "Be (Beryllium)"=>9.0122,
+                    "B (Boron)"=>10.811, "C (Carbon)"=>12.011, "N (Nitrogen)"=>14.0067, "O (Oxygen)"=>15.9994,
+                    "F (Fluorine)"=>18.998403, "Ne (Neon)"=>20.179, "Na (Sodium)"=>22.98977, "Mg (Magnesium)"=>24.305,
+                    "Al (Aluminium)"=>26.98154, "Si (Silicon)"=>28.0855, "P (Phosphorus)"=>30.97376, "S (Sulfur)"=>32.06,
+                    "Cl (Chlorine)"=>35.453, "Ar (Argon)"=>39.948, "K (Potassium)"=>39.0983, "Ca (Calcium)"=>40.08,
+                    "Sc (Scandium)"=>44.9559, "Ti (Titanium)"=>47.90, "V (Vanadium)"=>50.9415, "Cr (Chromium)"=>51.996,
+                    "Mn (Manganese)"=>54.9380, "Fe (Iron)"=>55.847, "Co (Cobalt)"=>58.9332, "Ni (Nickel)"=>58.70,
+                    "Cu (Copper)"=>63.546, "Zn (Zinc)"=>65.38
+                ];
+                $mass = isset($atomic_masses[$value_unit]) ? $atomic_masses[$value_unit] * $value : ($value_unit == "Atomic mass amu" ? 12 : 0);
+                return array($mass, isset($atomic_masses[$value_unit]) ? $atomic_masses[$value_unit] : 12);
+            }
+        }
+
 		if($find=="1"){//Mass Percentage
 			$method=1;
 			if(is_numeric($mass_solute) && is_numeric($mass_solvent)){
-				$mass_solute_value=mass_convert($mass_solute_unit,$mass_solute);
-				$mass_solvent_value=mass_convert($mass_solvent_unit,$mass_solvent);
+				$mass_solute_value=mass_convert_m($mass_solute_unit,$mass_solute);
+				$mass_solvent_value=mass_convert_m($mass_solvent_unit,$mass_solvent);
 				$mass_solution=$mass_solute_value+$mass_solvent_value;
-				// $mass_percent=($mass_solute_value/$mass_solution)*100;
-				if ($mass_solution != 0) {
-					$mass_percent = ($mass_solute_value / $mass_solution) * 100;
-				} else {
-					$mass_percent = 0; // Default value or alternative handling
-				}
+				$mass_percent = ($mass_solution != 0) ? ($mass_solute_value / $mass_solution) * 100 : 0;
 				$this->param['mass_solution']=$mass_solution;
 				$this->param['mass_percent']=$mass_percent;
-				$this->param['method']=$method;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
 			}
-			
 		}else if($find=="2"){//Mass Solute
+			$method=2;
 			if(is_numeric($mass_solvent) && is_numeric($mass_percentage)){
-				$method=2;
-				if(is_numeric($mass_solvent) && is_numeric($mass_percentage)){
-					$mass_solute=$mass_solvent*$mass_percentage/100+($mass_solvent/$mass_percentage);
-					$mass_solution=$mass_solvent+$mass_solute;
-					$this->param['mass_solution']=$mass_solution;
-					$this->param['mass_solute']=$mass_solute;
-				}else{
-                    $this->param['error'] = 'Please! Check Your Input.';
-                    return $this->param;
-				}
+				$mass_solute=($mass_solvent*$mass_percentage)/(100-$mass_percentage);
+				$mass_solution=$mass_solvent+$mass_solute;
+				$this->param['mass_solution']=$mass_solution;
+				$this->param['mass_solute']=$mass_solute;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
@@ -5128,7 +5045,7 @@ class Chemistry extends Model
 		}else if($find=="3"){//Mass Solvent
 			$method=3;
 			if(is_numeric($mass_solute) && is_numeric($mass_percentage)){
-				$mass_solvent=$mass_solute*100/$mass_percentage-$mass_solute;
+				$mass_solvent=($mass_solute*100/$mass_percentage)-$mass_solute;
 				$mass_solution=$mass_solute+$mass_solvent;
 				$this->param['mass_solution']=$mass_solution;
 				$this->param['mass_solvent']=$mass_solvent;
@@ -5139,10 +5056,9 @@ class Chemistry extends Model
 		}else if($find=="4"){//Mass Percentage for a Chemical
 			$method=4;
 			if(is_numeric($mass_chemical) && is_numeric($total_mass_compound)){
-				$mass_chemical_value=mass_convert($mass_chemical_unit,$mass_chemical);
-				$mass_compound_value=mass_convert($total_mass_compound_unit,$total_mass_compound);
-				$mass_percent=($mass_chemical_value*100)/$mass_compound_value;
-			    $this->param['mass_percent']=$mass_percent;
+				$mass_chemical_value=mass_convert_m($mass_chemical_unit,$mass_chemical);
+				$mass_compound_value=mass_convert_m($total_mass_compound_unit,$total_mass_compound);
+				$this->param['mass_percent']=($mass_compound_value != 0) ? ($mass_chemical_value*100)/$mass_compound_value : 0;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
@@ -5150,100 +5066,38 @@ class Chemistry extends Model
 		}else if($find=="5"){//Mass of chemical
 			$method=5;
 			if(is_numeric($total_mass_compound) && is_numeric($mass_percentage)){
-				$mass_compound_value=mass_convert($total_mass_compound_unit,$total_mass_compound);
-				$mass_of_chemical=($mass_percentage/100)*$mass_compound_value;
-				$this->param['mass_of_chemical']=$mass_of_chemical;
+				$mass_compound_value=mass_convert_m($total_mass_compound_unit,$total_mass_compound);
+				$this->param['mass_of_chemical']=($mass_percentage/100)*$mass_compound_value;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
 			}
 		}else if($find=="6"){//Total Mass of Compound
 			$method=6;
-		// dd($mass_chemical);
-
 			if(is_numeric($mass_chemical) && is_numeric($mass_percentage)){
-				$mass_chemical_value=mass_convert($mass_chemical_unit,$mass_chemical);
-				$total_mass_compound=($mass_percentage/100)*$mass_chemical_value;
-				$this->param['total_mass_compound']=$total_mass_compound;
+				$mass_chemical_value=mass_convert_m($mass_chemical_unit,$mass_chemical);
+				$this->param['total_mass_compound']=($mass_percentage != 0) ? ($mass_chemical_value*100)/$mass_percentage : 0;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
 			}
-		}else if($find=="7"){
+		}else if($find=="7"){//Percent Composition
 			$method=7;
-			if($first_value!=""){
-				if(is_numeric($first_value)){
-					$value=1;
-					$root=find_atomic_mass($first_value_unit,$first_value);
-					$atomic_value_one=find_atomic_mass($first_value_unit,$first_value);
-					$call[]=$root[0];
-					$this->param['punk']=$first_value;
-					$this->param['punk1']=$root[1];
-					$this->param['value1']=$value;
-					$this->param['name1']=$first_value_unit;
-					$this->param['atomic1']=$atomic_value_one;
-
-                    if(is_numeric($second_value) && $second_value!=""){
-                        $value=2;
-                        $root2=find_atomic_mass($second_value_unit,$second_value);
-                        $atomic_value_two=find_atomic_mass($second_value_unit,$second_value);
-                        $call[]=$root2[0];
-                        $this->param['punk2']=$second_value;
-                        $this->param['punk3']=$root2[1];
-                        $this->param['value2']=$value;
-                        $this->param['name2']=$second_value_unit;
-                        $this->param['atomic2']=$atomic_value_two;
-                    }
-                    if(is_numeric($third_value) && $third_value!=""){
-                        $value=3;
-                        $root3=find_atomic_mass($third_value_unit,$third_value);
-                        $atomic_value_three=find_atomic_mass($third_value_unit,$third_value);
-                        $call[]=$root3[0];
-                        $this->param['punk4']=$third_value;
-                        $this->param['punk5']=$root3[1];
-                        $this->param['value3']=$value;
-                        $this->param['name3']=$third_value_unit;
-                        $this->param['atomic3']=$atomic_value_three;
-                    }
-                    if(is_numeric($four_value) && $four_value!=""){
-                        $value=4;
-                        $root4=find_atomic_mass($four_value_unit,$four_value);
-                        $atomic_value_four=find_atomic_mass($four_value_unit,$four_value);
-                        $call[]=$root4[0];
-                        $this->param['punk6']=$four_value;
-                        $this->param['punk7']=$root4[1];
-                        $this->param['value4']=$value;
-                        $this->param['name4']=$four_value_unit;
-                        $this->param['atomic4']=$atomic_value_four;
-                    }
-                    if(is_numeric($five_value) && $five_value!=""){
-                        $value=5;
-                        $root5=find_atomic_mass($five_value_unit,$five_value);
-                        $atomic_value_five=find_atomic_mass($five_value_unit,$five_value);
-                        $call[]=$root5[0];
-                        $this->param['punk8']=$five_value;
-                        $this->param['punk9']=$root5[1];
-                        $this->param['value5']=$value;
-                        $this->param['name5']=$five_value_unit;
-                        $this->param['atomic5']=$atomic_value_five;
-                    }
-                    if(is_numeric($six_value) && $six_value!=""){
-                        $value=6;
-                        $root6=find_atomic_mass($six_value_unit,$six_value);
-                        $atomic_value_six=find_atomic_mass($six_value_unit,$six_value);
-                        $call[]=$root6[0];
-                        $this->param['punk10']=$six_value;
-                        $this->param['punk11']=$root6[1];
-                        $this->param['value6']=$value;
-                        $this->param['name6']=$five_value_unit;
-                        $this->param['atomic6']=$atomic_value_six;
-                    }
-                    $total_mass=array_sum($call);
-                    $this->param['call']=$total_mass;
-				}else{
-                    $this->param['error'] = 'Please! Check Your Input.';
-                    return $this->param;
+			if(is_numeric($first_value)){
+				$call = [];
+				$inputs = [['u'=>$first_value_unit, 'v'=>$first_value, 'i'=>''], ['u'=>$second_value_unit, 'v'=>$second_value, 'i'=>'2'], ['u'=>$third_value_unit, 'v'=>$third_value, 'i'=>'4'], ['u'=>$four_value_unit, 'v'=>$four_value, 'i'=>'6'], ['u'=>$five_value_unit, 'v'=>$five_value, 'i'=>'8'], ['u'=>$six_value_unit, 'v'=>$six_value, 'i'=>'10']];
+				foreach($inputs as $key => $in){
+					if(is_numeric($in['v']) && $in['v'] != ""){
+						$res = find_atomic_mass_m($in['u'], $in['v']);
+						$call[] = $res[0];
+						$this->param['punk'.($key>0 ? $in['i'] : "")] = $in['v'];
+						$this->param['punk'.($key>0 ? ($in['i']+1) : "1")] = $res[1];
+						$this->param['value'.($key+1)] = $key+1;
+						$this->param['name'.($key+1)] = $in['u'];
+						$this->param['atomic'.($key+1)] = $res[1];
+					}
 				}
+				$this->param['call'] = array_sum($call);
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
@@ -19339,6 +19193,11 @@ class Chemistry extends Model
             $rightSide = (-$deltaHvap / $R) * (1 / $t2 - 1 / $t1);
             $p2 = $p1 * exp($rightSide);
             $xsolvent = $p_sol  * $x_sol;
+
+            if (is_infinite($p2)) {
+                $this->param['error'] = 'The calculation resulted in infinity due to the extreme temperature difference.';
+				 return $this->param;
+            }
         } else {
             $this->param['error'] = 'Please! Check Your Input.';
             return $this->param;
@@ -19353,7 +19212,7 @@ class Chemistry extends Model
     // Rate Constant Calculator
     public function rate($request){
 
-	    // dd($request->all());
+	    // dd($request);
         $unit_x = trim($request->unit_x);
         $module_x = trim($request->module_x);
         $module_y = trim($request->module_y);
@@ -19492,6 +19351,7 @@ class Chemistry extends Model
                     $rate_res = $k_res * $conca;
                     $rate_res = sprintf('%f', $rate_res);
                 }else{
+				
                     $check = false;
                 }
             } else {
@@ -19669,10 +19529,11 @@ class Chemistry extends Model
                 }
             }
         }
-
+	
         if($check == true){
-            $this->param['rate_res'] = $rate_res;
+			$this->param['rate_res'] = $rate_res;
             $this->param['k_res'] = $k_res;
+			  $this->param['RESULT'] = 1;
             // $this->param['heat_capacity'] = $heat_capacity;
             // $this->param['in_temp'] = $in_temp;
             // $this->param['fin_temp'] = $fin_temp;
@@ -19705,151 +19566,154 @@ class Chemistry extends Model
         $final_unit = trim($request->final_unit);
         $pre_two_unit = trim($request->pre_two_unit);
 
-        function joules_unit($products, $products_unit){
-            if ($products_unit == "j/mol*K") {
-                // Already in the desired unit, no conversion needed
-                return $products;
-            } elseif ($products_unit == "kj/mol*K") {
-                return $products * 1000;
-            } elseif ($products_unit == "mj/mol*K") {
-                return $products * 1000000;
-            } elseif ($products_unit == "wh/mol*K") {
-                return $products * 3600;
-            } elseif ($products_unit == "kwh/mol*K") {
-                return $products * 3.6e+6;
-            } elseif ($products_unit == "ft-lb/mol*K") {
-                return $products / 0.7375621493;
-            } elseif ($products_unit == "cal/mol*K") {
-                return $products * 4.184;
-            } elseif ($products_unit == "kcal/mol*K") {
-                return $products * 4184;
-            } elseif ($products_unit == "ev/mol*K") {
-                return $products / 6.242e+18;
-            }
-            return null;
-        }
-        function joulez_unit($products, $products_unit){
-            if ($products_unit == "j") {
-                // Already in the desired unit, no conversion needed
-                return $products;
-            } elseif ($products_unit == "kj") {
-                return $products * 1000;
-            } elseif ($products_unit == "mj") {
-                return $products * 1000000;
-            } elseif ($products_unit == "wh") {
-                return $products * 3600;
-            } elseif ($products_unit == "kwh") {
-                return $products * 3.6e+6;
-            } elseif ($products_unit == "ft-lb") {
-                return $products / 0.7375621493;
-            } elseif ($products_unit == "cal") {
-                return $products * 4.184;
-            } elseif ($products_unit == "kcal") {
-                return $products * 4184;
-            } elseif ($products_unit == "ev") {
-                return $products / 6.242e+18;
-            }
-            return null;
-        }
-        function joulesz_unit($products, $products_unit){
-            if ($products_unit == "j/K") {
-                // Already in the desired unit, no conversion needed
-                return $products;
-            } elseif ($products_unit == "kj/K") {
-                return $products * 1000;
-            } elseif ($products_unit == "mj/K") {
-                return $products * 1000000;
-            } elseif ($products_unit == "wh/K") {
-                return $products * 3600;
-            } elseif ($products_unit == "kwh/K") {
-                return $products * 3.6e+6;
-            } elseif ($products_unit == "ft-lb/K") {
-                return $products / 0.7375621493;
-            } elseif ($products_unit == "cal/K") {
-                return $products * 4.184;
-            } elseif ($products_unit == "kcal/K") {
-                return $products * 4184;
-            } elseif ($products_unit == "ev/K") {
-                return $products / 6.242e+18;
-            }
-            return null;
-        }
-        function temp_unit($temperature, $temperature_unit){
-            if ($temperature_unit == "°C") {
-                // Convert Celsius to Kelvin
-                $temperature = $temperature + 273.15;
-				// dd($temperature);
-				// dd($temperature);
-            } elseif ($temperature_unit == "°F") {
-                // Convert Fahrenheit to Kelvin
-                $temperature = ($temperature - 32) * (5 / 9) + 273.15;
-            } elseif ($temperature_unit == "K") {
-                // Temperature is already in Kelvin
-                // No conversion needed
-            } else {
+        if (!function_exists('joules_unit')) {
+            function joules_unit($products, $products_unit){
+                if ($products_unit == "j/mol*K") {
+                    return $products;
+                } elseif ($products_unit == "kj/mol*K") {
+                    return $products * 1000;
+                } elseif ($products_unit == "mj/mol*K") {
+                    return $products * 1000000;
+                } elseif ($products_unit == "wh/mol*K") {
+                    return $products * 3600;
+                } elseif ($products_unit == "kwh/mol*K") {
+                    return $products * 3.6e+6;
+                } elseif ($products_unit == "ft-lb/mol*K") {
+                    return $products / 0.7375621493;
+                } elseif ($products_unit == "cal/mol*K") {
+                    return $products * 4.184;
+                } elseif ($products_unit == "kcal/mol*K") {
+                    return $products * 4184;
+                } elseif ($products_unit == "ev/mol*K") {
+                    return $products / 6.242e+18;
+                }
                 return null;
             }
-
-            return $temperature;
         }
-        function firstunit($initial, $initial_unit){
-            if ($initial_unit == "mm³") {
-                return $initial;
-            } elseif ($initial_unit == "cm³") {
-                return $initial * 1000;
-            } elseif ($initial_unit == "dm³") {
-                return $initial * 1000000;
-            } elseif ($initial_unit == "m³") {
-                return $initial * 1000000000;
-            } elseif ($initial_unit == "in³") {
-                return $initial / 0.00006102;
-            } elseif ($initial_unit == "ft³") {
-                return $initial * 28316846.592;
-            } elseif ($initial_unit == "ml") {
-                return $initial / 0.001;
-            } elseif ($initial_unit == "cl") {
-                return $initial * 10000;
-            } elseif ($initial_unit == "l") {
-                return $initial * 1000000;
-            } elseif ($initial_unit == "US gal") {
-                return $initial * 3785411.784;
-            } elseif ($initial_unit == "UK gal") {
-                return $initial * 4546090.05;
-            } elseif ($initial_unit == "US fl oz") {
-                return $initial / 0.000033814;
-            } elseif ($initial_unit == "UK fl oz") {
-                return $initial / 0.000035195;
-            } else {
-                return "Unit not supported";
+        if (!function_exists('joulez_unit')) {
+            function joulez_unit($products, $products_unit){
+                if ($products_unit == "j") {
+                    return $products;
+                } elseif ($products_unit == "kj") {
+                    return $products * 1000;
+                } elseif ($products_unit == "mj") {
+                    return $products * 1000000;
+                } elseif ($products_unit == "wh") {
+                    return $products * 3600;
+                } elseif ($products_unit == "kwh") {
+                    return $products * 3.6e+6;
+                } elseif ($products_unit == "ft-lb") {
+                    return $products / 0.7375621493;
+                } elseif ($products_unit == "cal") {
+                    return $products * 4.184;
+                } elseif ($products_unit == "kcal") {
+                    return $products * 4184;
+                } elseif ($products_unit == "ev") {
+                    return $products / 6.242e+18;
+                }
+                return null;
             }
         }
-        function sec_unit($initial, $pre_one_unit){
-            if ($pre_one_unit == "Pa") {
-                return $initial;
-            } elseif ($pre_one_unit == "Bar") {
-                return $initial * 100000;
-            } elseif ($pre_one_unit == "psi") {
-                return $initial * 6895;
-            } elseif ($pre_one_unit == "at") {
-                return $initial / 0.0000101972;
-            } elseif ($pre_one_unit == "atm") {
-                return $initial / 0.000009869;
-            } elseif ($pre_one_unit == "Torr") {
-                return $initial * 133.3;
-            } elseif ($pre_one_unit == "hPa") {
-                return $initial * 100;
-            } elseif ($pre_one_unit == "kPa") {
-                return $initial * 1000;
-            } elseif ($pre_one_unit == "MPa") {
-                return $initial * 1000000;
-            } elseif ($pre_one_unit == "GPa") {
-                return $initial * 1000000000;
-            } elseif ($pre_one_unit == "inHg") {
-                return $initial * 3386.39;
-            } elseif ($pre_one_unit == "mmHg") {
-                return $initial * 133.322;
-            } else {
-                return "Unit not supported";
+        if (!function_exists('joulesz_unit')) {
+            function joulesz_unit($products, $products_unit){
+                if ($products_unit == "j/K") {
+                    return $products;
+                } elseif ($products_unit == "kj/K") {
+                    return $products * 1000;
+                } elseif ($products_unit == "mj/K") {
+                    return $products * 1000000;
+                } elseif ($products_unit == "wh/K") {
+                    return $products * 3600;
+                } elseif ($products_unit == "kwh/K") {
+                    return $products * 3.6e+6;
+                } elseif ($products_unit == "ft-lb/K") {
+                    return $products / 0.7375621493;
+                } elseif ($products_unit == "cal/K") {
+                    return $products * 4.184;
+                } elseif ($products_unit == "kcal/K") {
+                    return $products * 4184;
+                } elseif ($products_unit == "ev/K") {
+                    return $products / 6.242e+18;
+                }
+                return null;
+            }
+        }
+        if (!function_exists('temp_unit')) {
+            function temp_unit($temperature, $temperature_unit){
+                if ($temperature_unit == "°C") {
+                    $temperature = $temperature + 273.15;
+                } elseif ($temperature_unit == "°F") {
+                    $temperature = ($temperature - 32) * (5 / 9) + 273.15;
+                } elseif ($temperature_unit == "K") {
+                    // Already in Kelvin
+                } else {
+                    return null;
+                }
+                return $temperature;
+            }
+        }
+        if (!function_exists('firstunit')) {
+            function firstunit($initial, $initial_unit){
+                if ($initial_unit == "mm³") {
+                    return $initial;
+                } elseif ($initial_unit == "cm³") {
+                    return $initial * 1000;
+                } elseif ($initial_unit == "dm³") {
+                    return $initial * 1000000;
+                } elseif ($initial_unit == "m³") {
+                    return $initial * 1000000000;
+                } elseif ($initial_unit == "in³") {
+                    return $initial / 0.00006102;
+                } elseif ($initial_unit == "ft³") {
+                    return $initial * 28316846.592;
+                } elseif ($initial_unit == "ml") {
+                    return $initial / 0.001;
+                } elseif ($initial_unit == "cl") {
+                    return $initial * 10000;
+                } elseif ($initial_unit == "l") {
+                    return $initial * 1000000;
+                } elseif ($initial_unit == "US gal") {
+                    return $initial * 3785411.784;
+                } elseif ($initial_unit == "UK gal") {
+                    return $initial * 4546090.05;
+                } elseif ($initial_unit == "US fl oz") {
+                    return $initial / 0.000033814;
+                } elseif ($initial_unit == "UK fl oz") {
+                    return $initial / 0.000035195;
+                } else {
+                    return "Unit not supported";
+                }
+            }
+        }
+        if (!function_exists('sec_unit')) {
+            function sec_unit($initial, $pre_one_unit){
+                if ($pre_one_unit == "Pa") {
+                    return $initial;
+                } elseif ($pre_one_unit == "Bar") {
+                    return $initial * 100000;
+                } elseif ($pre_one_unit == "psi") {
+                    return $initial * 6895;
+                } elseif ($pre_one_unit == "at") {
+                    return $initial / 0.0000101972;
+                } elseif ($pre_one_unit == "atm") {
+                    return $initial / 0.000009869;
+                } elseif ($pre_one_unit == "Torr") {
+                    return $initial * 133.3;
+                } elseif ($pre_one_unit == "hPa") {
+                    return $initial * 100;
+                } elseif ($pre_one_unit == "kPa") {
+                    return $initial * 1000;
+                } elseif ($pre_one_unit == "MPa") {
+                    return $initial * 1000000;
+                } elseif ($pre_one_unit == "GPa") {
+                    return $initial * 1000000000;
+                } elseif ($pre_one_unit == "inHg") {
+                    return $initial * 3386.39;
+                } elseif ($pre_one_unit == "mmHg") {
+                    return $initial * 133.322;
+                } else {
+                    return "Unit not supported";
+                }
             }
         }
 
@@ -19946,74 +19810,78 @@ class Chemistry extends Model
         $final = trim($request->final);
         $final_unit = trim($request->final_unit);
 
-        function unitToLiters($final, $final_unit){
-            if ($final_unit == "mm³") {
-                return $final / 1e+9; // Convert from mm³ to liters
-            } elseif ($final_unit == "cm³") {
-                return $final / 1000; // Convert from cm³ to liters
-            } elseif ($final_unit == "dm³") {
-                return $final; // Already in liters
-            } elseif ($final_unit == "m³") {
-                return $final * 1000; // Convert from m³ to liters
-            } elseif ($final_unit == "in³") {
-                return $final / 61023.7; // Convert from in³ to liters
-            } elseif ($final_unit == "ft³") {
-                return $final * 28.3168; // Convert from ft³ to liters
-            } elseif ($final_unit == "yd³") {
-                return $final / 764.555; // Convert from yd³ to liters
-            } elseif ($final_unit == "ml") {
-                return $final / 1000; // Convert from milliliters to liters
-            } elseif ($final_unit == "cl") {
-                return $final / 100; // Convert from centiliters to liters
-            } elseif ($final_unit == "l") {
-                return $final; // Already in liters
-            } elseif ($final_unit == "US gal") {
-                return $final * 3.78541; // Convert from US gallons to liters
-            } elseif ($final_unit == "UK gal") {
-                return $final * 4.54609; // Convert from UK gallons to liters
-            } elseif ($final_unit == "US fl oz") {
-                return $final / 33.814; // Convert from US fluid ounces to liters
-            } elseif ($final_unit == "UK fl oz") {
-                return $final / 35.1951; // Convert from UK fluid ounces to liters
-            } elseif ($final_unit == "cups") {
-                return $final * 0.284131; // Convert from cups to liters
-            } elseif ($final_unit == "tbsp") {
-                return $final / 67.628; // Convert from tablespoons to liters
-            } elseif ($final_unit == "tsp") {
-                return $final / 202.884; // Convert from teaspoons to liters
-            } elseif ($final_unit == "US qt") {
-                return $final * 0.946353; // Convert from US quarts to liters
-            } elseif ($final_unit == "UK qt") {
-                return $final * 1.13652; // Convert from UK quarts to liters
-            } elseif ($final_unit == "US pt") {
-                return $final / 1.05669; // Convert from US pints to liters
-            } elseif ($final_unit == "UK pt") {
-                return $final / 1.13652; // Convert from UK pints to liters
-            } else {
-                return null;
+        if (!function_exists('unitToLiters')) {
+            function unitToLiters($final, $final_unit){
+                if ($final_unit == "mm³") {
+                    return $final / 1e+9;
+                } elseif ($final_unit == "cm³") {
+                    return $final / 1000;
+                } elseif ($final_unit == "dm³") {
+                    return $final;
+                } elseif ($final_unit == "m³") {
+                    return $final * 1000;
+                } elseif ($final_unit == "in³") {
+                    return $final / 61023.7;
+                } elseif ($final_unit == "ft³") {
+                    return $final * 28.3168;
+                } elseif ($final_unit == "yd³") {
+                    return $final / 764.555;
+                } elseif ($final_unit == "ml") {
+                    return $final / 1000;
+                } elseif ($final_unit == "cl") {
+                    return $final / 100;
+                } elseif ($final_unit == "l") {
+                    return $final;
+                } elseif ($final_unit == "US gal") {
+                    return $final * 3.78541;
+                } elseif ($final_unit == "UK gal") {
+                    return $final * 4.54609;
+                } elseif ($final_unit == "US fl oz") {
+                    return $final / 33.814;
+                } elseif ($final_unit == "UK fl oz") {
+                    return $final / 35.1951;
+                } elseif ($final_unit == "cups") {
+                    return $final * 0.284131;
+                } elseif ($final_unit == "tbsp") {
+                    return $final / 67.628;
+                } elseif ($final_unit == "tsp") {
+                    return $final / 202.884;
+                } elseif ($final_unit == "US qt") {
+                    return $final * 0.946353;
+                } elseif ($final_unit == "UK qt") {
+                    return $final * 1.13652;
+                } elseif ($final_unit == "US pt") {
+                    return $final / 1.05669;
+                } elseif ($final_unit == "UK pt") {
+                    return $final / 1.13652;
+                } else {
+                    return null;
+                }
             }
         }
-        function convertToMolar($concentration, $concentration_unit){
-            if ($concentration_unit == "M") {
-                return $concentration;
-            } elseif ($concentration_unit == "mM") {
-                return $concentration / 1000;
-            } elseif ($concentration_unit == "μM") {
-                return $concentration / 1000000;
-            } elseif ($concentration_unit == "nM") {
-                return $concentration / 1000000000;
-            } elseif ($concentration_unit == "pM") {
-                return $concentration / 1000000000000;
-            } elseif ($concentration_unit == "fM") {
-                return $concentration / 1000000000000000;
-            } elseif ($concentration_unit == "aM") {
-                return $concentration / 1e+18;
-            } elseif ($concentration_unit == "zM") {
-                return $concentration / 1e+21;
-            } elseif ($concentration_unit == "yM") {
-                return $concentration / 1e+24;
-            } else {
-                return null;
+        if (!function_exists('convertToMolar')) {
+            function convertToMolar($concentration, $concentration_unit){
+                if ($concentration_unit == "M") {
+                    return $concentration;
+                } elseif ($concentration_unit == "mM") {
+                    return $concentration / 1000;
+                } elseif ($concentration_unit == "μM") {
+                    return $concentration / 1000000;
+                } elseif ($concentration_unit == "nM") {
+                    return $concentration / 1000000000;
+                } elseif ($concentration_unit == "pM") {
+                    return $concentration / 1000000000000;
+                } elseif ($concentration_unit == "fM") {
+                    return $concentration / 1000000000000000;
+                } elseif ($concentration_unit == "aM") {
+                    return $concentration / 1e+18;
+                } elseif ($concentration_unit == "zM") {
+                    return $concentration / 1e+21;
+                } elseif ($concentration_unit == "yM") {
+                    return $concentration / 1e+24;
+                } else {
+                    return null;
+                }
             }
         }
 
@@ -20036,5 +19904,74 @@ class Chemistry extends Model
         $this->param['RESULT'] = 1;
 
         return $this->param;
+    }
+
+    public function calculateMolarMass($formula)
+    {
+        $atomic_weights = [
+            'H' => 1.00794, 'He' => 4.002602, 'Li' => 6.941, 'Be' => 9.012182, 'B' => 10.811, 'C' => 12.0107, 'N' => 14.0067, 'O' => 15.9994, 'F' => 18.9984032, 'Ne' => 20.1797,
+            'Na' => 22.9897693, 'Mg' => 24.305, 'Al' => 26.9815386, 'Si' => 28.0855, 'P' => 30.973762, 'S' => 32.065, 'Cl' => 35.453, 'Ar' => 39.948, 'K' => 39.0983, 'Ca' => 40.078,
+            'Sc' => 44.955912, 'Ti' => 47.867, 'V' => 50.9415, 'Cr' => 51.9961, 'Mn' => 54.938045, 'Fe' => 55.845, 'Co' => 58.933195, 'Ni' => 58.6934, 'Cu' => 63.546, 'Zn' => 65.38,
+            'Ga' => 69.723, 'Ge' => 72.63, 'As' => 74.9216, 'Se' => 78.96, 'Br' => 79.904, 'Kr' => 83.798, 'Rb' => 85.4678, 'Sr' => 87.62, 'Y' => 88.90585, 'Zr' => 91.224,
+            'Nb' => 92.90638, 'Mo' => 95.96, 'Tc' => 98, 'Ru' => 101.07, 'Rh' => 102.9055, 'Pd' => 106.42, 'Ag' => 107.8682, 'Cd' => 112.411, 'In' => 114.818, 'Sn' => 118.71,
+            'Sb' => 121.76, 'Te' => 127.6, 'I' => 126.90447, 'Xe' => 131.293, 'Cs' => 132.9054519, 'Ba' => 137.327, 'La' => 138.90547, 'Ce' => 140.116, 'Pr' => 140.90765, 'Nd' => 144.242,
+            'Pm' => 145, 'Sm' => 150.36, 'Eu' => 151.964, 'Gd' => 157.25, 'Tb' => 158.92535, 'Dy' => 162.5, 'Ho' => 164.93032, 'Er' => 167.259, 'Tm' => 168.93421, 'Yb' => 173.054,
+            'Lu' => 174.9668, 'Hf' => 178.49, 'Ta' => 180.94788, 'W' => 183.84, 'Re' => 186.207, 'Os' => 190.23, 'Ir' => 192.217, 'Pt' => 195.084, 'Au' => 196.966569, 'Hg' => 200.59,
+            'Tl' => 204.3833, 'Pb' => 207.2, 'Bi' => 208.9804, 'Po' => 209, 'At' => 210, 'Rn' => 222, 'Fr' => 223, 'Ra' => 226, 'Ac' => 227, 'Th' => 232.03806, 'Pa' => 231.03588,
+            'U' => 238.02891, 'Np' => 237, 'Pu' => 244, 'Am' => 243, 'Cm' => 247, 'Bk' => 247, 'Cf' => 251, 'Es' => 252, 'Fm' => 257, 'Md' => 258, 'No' => 259, 'Lr' => 262,
+            'Rf' => 267, 'Db' => 268, 'Sg' => 271, 'Bh' => 272, 'Hs' => 270, 'Mt' => 276, 'Ds' => 281, 'Rg' => 280, 'Cn' => 285, 'Nh' => 284, 'Fl' => 289, 'Mc' => 288, 'Lv' => 293,
+            'Ts' => 294, 'Og' => 294
+        ];
+
+        return $this->parseMolecule($formula, $atomic_weights);
+    }
+
+    private function parseMolecule($formula, $weights) {
+        $totalMass = 0;
+        $i = 0;
+        $n = strlen($formula);
+
+        while ($i < $n) {
+            $char = $formula[$i];
+
+            if ($char == '(') {
+                $bracketCount = 1;
+                $j = $i + 1;
+                while ($j < $n && $bracketCount > 0) {
+                    if ($formula[$j] == '(') $bracketCount++;
+                    elseif ($formula[$j] == ')') $bracketCount--;
+                    $j++;
+                }
+                $subFormula = substr($formula, $i + 1, $j - $i - 2);
+                $i = $j;
+                
+                $multiplier = "";
+                while ($i < $n && (is_numeric($formula[$i]) || $formula[$i] == '.')) {
+                    $multiplier .= $formula[$i];
+                    $i++;
+                }
+                $multiplier = ($multiplier === "") ? 1 : (float)$multiplier;
+                $totalMass += $this->parseMolecule($subFormula, $weights) * $multiplier;
+            } elseif (ctype_upper($char)) {
+                $element = $char;
+                $i++;
+                while ($i < $n && ctype_lower($formula[$i])) {
+                    $element .= $formula[$i];
+                    $i++;
+                }
+                
+                $count = "";
+                while ($i < $n && (is_numeric($formula[$i]) || $formula[$i] == '.')) {
+                    $count .= $formula[$i];
+                    $i++;
+                }
+                $count = ($count === "") ? 1 : (float)$count;
+                
+                $totalMass += ($weights[$element] ?? 0) * $count;
+            } else {
+                $i++;
+            }
+        }
+        return $totalMass;
     }
 }

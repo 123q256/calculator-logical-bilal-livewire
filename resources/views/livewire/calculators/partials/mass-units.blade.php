@@ -1,0 +1,17 @@
+<option value="grams (g)">g</option>
+<option value="picograms (pg)">pg</option>
+<option value="nanograms (ng)">ng</option>
+<option value="micrograms (μg)">μg</option>
+<option value="milligrams (mg)">mg</option>
+<option value="decagrams (dag)">dag</option>
+<option value="kilograms (kg)">kg</option>
+<option value="metric tons (t)">t</option>
+<option value="grains (gr)">gr</option>
+<option value="drachms (dr)">dr</option>
+<option value="ounces (oz)">oz</option>
+<option value="pounds (lb)">lb</option>
+<option value="stones (stone)">stone</option>
+<option value="US short tones (US ton)">US ton</option>
+<option value="imperial tons (Long ton)">Long ton</option>
+<option value="atomic mass unit (u)">u</option>
+<option value="troy ounce (oz t)">oz t</option>

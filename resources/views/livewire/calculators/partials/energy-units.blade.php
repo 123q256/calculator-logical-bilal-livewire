@@ -1,0 +1,13 @@
+<option value="joules (J)">J</option>
+<option value="nanojoules (nj)">nJ</option>
+<option value="microjoules (μJ)">μJ</option>
+<option value="millijoules (mJ)">mJ</option>
+<option value="kilojoules (kJ)">kJ</option>
+<option value="megajoules (MJ)">MJ</option>
+<option value="watt hours (Wh)">Wh</option>
+<option value="kilowatt hours (kWh)">kWh</option>
+<option value="foot-pounds (ft-lbs)">ft-lbs</option>
+<option value="calories (cal)">cal</option>
+<option value="kilocalories (Kcal)">Kcal</option>
+<option value="megacalories (Mcal)">Mcal</option>
+<option value="electronvolts (eV)">eV</option>
