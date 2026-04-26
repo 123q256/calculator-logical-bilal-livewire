@@ -31,6 +31,19 @@ class VaporPressureCalculator extends Component
     {
         $this->type = $type;
         $this->lang = $lang;
+
+        if (session()->has('calculator_result')) {
+            $this->detail = session('calculator_result');
+        }
+
+        if (session()->has('calculator_back_inputs')) {
+            $inputs = (array)session('calculator_back_inputs');
+            foreach ($inputs as $key => $val) {
+                if (property_exists($this, $key)) {
+                    $this->$key = $val;
+                }
+            }
+        }
     }
 
     public function toggleOverlay($id)
@@ -92,6 +105,13 @@ class VaporPressureCalculator extends Component
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
+
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session(['calculator_result' => $result, 'calculator_back_inputs' => (array)$request, 'scroll_to_result' => true]);
+                $this->redirect(url()->current(), navigate: true);
+                return;
+            }
+
             $this->dispatch('result-updated');
             
             $this->js(<<<'JS'
@@ -111,6 +131,18 @@ class VaporPressureCalculator extends Component
 
     public function render()
     {
+          if (session('scroll_to_result')) {
+            $this->js(<<<'JS'
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
+        }
         return view('livewire.calculators.vapor-pressure-calculator');
     }
 }

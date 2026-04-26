@@ -35,7 +35,6 @@
                                         wire:click.stop="toggleDropdown('dis_u')">
                                         {{ $dis_u }} ▾
                                     </label>
-                                    <input type="hidden" name="dis_u" value="{{ $dis_u }}">
                                     @if ($openDropdown === 'dis_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -63,7 +62,6 @@
                                         wire:click.stop="toggleDropdown('for_u')">
                                         {{ $for_u }} ▾
                                     </label>
-                                    <input type="hidden" name="for_u" value="{{ $for_u }}">
                                     @if ($openDropdown === 'for_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -91,7 +89,6 @@
                                         wire:click.stop="toggleDropdown('ang_u')">
                                         {{ $ang_u }} ▾
                                     </label>
-                                    <input type="hidden" name="ang_u" value="{{ $ang_u }}">
                                     @if ($openDropdown === 'ang_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -119,7 +116,6 @@
                                         wire:click.stop="toggleDropdown('tor_u')">
                                         {{ $tor_u }} ▾
                                     </label>
-                                    <input type="hidden" name="tor_u" value="{{ $tor_u }}">
                                     @if ($openDropdown === 'tor_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -191,7 +187,6 @@
                                         wire:click.stop="toggleDropdown('cur_u')">
                                         {{ $cur_u }} ▾
                                     </label>
-                                    <input type="hidden" name="cur_u" value="{{ $cur_u }}">
                                     @if ($openDropdown === 'cur_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -219,7 +214,6 @@
                                         wire:click.stop="toggleDropdown('area_u')">
                                         {{ $area_u }} ▾
                                     </label>
-                                    <input type="hidden" name="area_u" value="{{ $area_u }}">
                                     @if ($openDropdown === 'area_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -247,7 +241,6 @@
                                         wire:click.stop="toggleDropdown('mag_u')">
                                         {{ $mag_u }} ▾
                                     </label>
-                                    <input type="hidden" name="mag_u" value="{{ $mag_u }}">
                                     @if ($openDropdown === 'mag_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -275,7 +268,6 @@
                                         wire:click.stop="toggleDropdown('torc_u')">
                                         {{ $torc_u }} ▾
                                     </label>
-                                    <input type="hidden" name="torc_u" value="{{ $torc_u }}">
                                     @if ($openDropdown === 'torc_u')
                                         <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
                                         <div
@@ -352,8 +344,8 @@
             @endif
         </div>
 
+        <hr>
         @isset($detail)
-            <hr style="height: 1px; background-color: #e5e7eb;">
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
                 <div class="">

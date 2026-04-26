@@ -648,7 +648,7 @@ class Physics extends Model
 						$area_u = '0.83612735998838@yd²';
 					} else if ($request->area_u == 'ft²') {
 						$area_u = '0.0929030399987@ft²';
-					} else if ($request->area_u == 'n²') {
+					} else if ($request->area_u == 'in²') {
 						$area_u = '0.000645156@in²';
 					} else if ($request->area_u == 'cm²') {
 						$area_u = '0.0001@cm²';
@@ -671,7 +671,7 @@ class Physics extends Model
 					
 					$area_u = explode('@', $area_u);
 					$area = $request->area * floatval($area_u[0]);
-					$mag_u = explode('@', $request->mag_u);
+					$mag_u = explode('@', $mag_u);
 					$mag = $request->mag * floatval($mag_u[0]);
 
 					$tor=$loop*$current*$request->mag*$area*sin($angle);
@@ -687,7 +687,7 @@ class Physics extends Model
 					$this->param['loop'] = $loop;
 					$this->param['angle'] = $request->angle_c . ' ' . $request->angc_u;
 					$this->param['area'] = $request->area . ' ' . $area_u[1];
-					$this->param['mag'] = $request->mag . ' ' . $mag_u[0];
+					$this->param['mag'] = $request->mag . ' ' . $mag_u[1];
 					$this->param['current'] = $request->current . ' ' . $cur_u[1];
 					$this->param['RESULT'] = 1;
 					
@@ -745,7 +745,7 @@ class Physics extends Model
 						$area_u = '0.83612735998838@yd²';
 					} else if ($request->area_u == 'ft²') {
 						$area_u = '0.0929030399987@ft²';
-					} else if ($request->area_u == 'n²') {
+					} else if ($request->area_u == 'in²') {
 						$area_u = '0.000645156@in²';
 					} else if ($request->area_u == 'cm²') {
 						$area_u = '0.0001@cm²';
@@ -768,12 +768,12 @@ class Physics extends Model
 					$mag_u = explode('@', $mag_u);
 
 					$mag = $request->mag * $mag_u[0];
-					$loop = round($tor / ($current * $mag * $area * sin($angle)), 6);
+					$loop = round(abs($tor / ($current * $mag * $area * sin($angle))), 6);
 					$this->param['tor'] = $request->tor . ' ' . $request->torc_u;
 					$this->param['loop'] = $loop;
 					$this->param['angle'] = $request->angle_c . ' ' . $request->angc_u;
 					$this->param['area'] = $request->area . ' ' . $area_u[1];
-					$this->param['mag'] = $request->mag . ' ' . $mag_u[0];
+					$this->param['mag'] = $request->mag . ' ' . $mag_u[1];
 					$this->param['current'] = $request->current . ' ' . $cur_u[1];
 					$this->param['RESULT'] = 1;
 					return $this->param;
@@ -834,7 +834,7 @@ class Physics extends Model
 						$area_u = '0.83612735998838@yd²';
 					} else if ($request->area_u == 'ft²') {
 						$area_u = '0.0929030399987@ft²';
-					} else if ($request->area_u == 'n²') {
+					} else if ($request->area_u == 'in²') {
 						$area_u = '0.000645156@in²';
 					} else if ($request->area_u == 'cm²') {
 						$area_u = '0.0001@cm²';
@@ -863,7 +863,7 @@ class Physics extends Model
 					$this->param['loop'] = $loop;
 					$this->param['angle'] = $request->angle_c . ' ' . $request->angc_u;
 					$this->param['area'] = $request->area . ' ' . $area_u[1];
-					$this->param['mag'] = $request->mag . ' ' . $mag_u[0];
+					$this->param['mag'] = $request->mag . ' ' . $mag_u[1];
 					$this->param['current'] = $current . ' ' . $cur_u[1];
 					$this->param['RESULT'] = 1;
 					return $this->param;
@@ -914,7 +914,7 @@ class Physics extends Model
 						$area_u = '0.83612735998838@yd²';
 					} else if ($request->area_u == 'ft²') {
 						$area_u = '0.0929030399987@ft²';
-					} else if ($request->area_u == 'n²') {
+					} else if ($request->area_u == 'in²') {
 						$area_u = '0.000645156@in²';
 					} else if ($request->area_u == 'cm²') {
 						$area_u = '0.0001@cm²';
@@ -944,13 +944,13 @@ class Physics extends Model
 					$mag_u = explode('@', $mag_u);
 					$mag = $request->mag * $mag_u[0];
 					$area = $tor / ($loop * $current * $mag * sin($angle));
-					$area_u = explode('@', $request->area_u);
+					$area_u = explode('@', $area_u);
 					$area = round($area / $area_u[0], 7);
 					$this->param['tor'] = $request->tor . ' ' . $request->torc_u;
 					$this->param['loop'] = $loop;
 					$this->param['angle'] = $request->angle_c . ' ' . $request->angc_u;
 					$this->param['area'] = $area . ' ' . $area_u[1];
-					$this->param['mag'] = $request->mag . ' ' . $mag_u[0];
+					$this->param['mag'] = $request->mag . ' ' . $mag_u[1];
 					$this->param['current'] = $request->current . ' ' . $cur_u[1];
 					$this->param['RESULT'] = 1;
 					return $this->param;
@@ -1008,7 +1008,7 @@ class Physics extends Model
 						$area_u = '0.83612735998838@yd²';
 					} else if ($request->area_u == 'ft²') {
 						$area_u = '0.0929030399987@ft²';
-					} else if ($request->area_u == 'n²') {
+					} else if ($request->area_u == 'in²') {
 						$area_u = '0.000645156@in²';
 					} else if ($request->area_u == 'cm²') {
 						$area_u = '0.0001@cm²';
@@ -1054,12 +1054,59 @@ class Physics extends Model
 						$tor = $tor / 0.737562;
 					}
 					$loop = $request->loop;
-					$cur_u = explode('@', $request->cur_u);
-					$current = $request->current * $cur_u[0];
-					$area_u = explode('@', $request->area_u);
-					$area = $request->area * $area_u[0];
-					$mag_u = explode('@', $request->mag_u);
-					$mag = $request->mag * $mag_u[0];
+					
+					if ($request->cur_u == 'A') {
+						$cur_u = '1@A';
+					} else if ($request->cur_u == 'mA') {
+						$cur_u = '0.001@mA';
+					} else if ($request->cur_u == 'kA') {
+						$cur_u = '1000@kA';
+					} else if ($request->cur_u == 'μA') {
+						$cur_u = '0.000001@μA';
+					} else if ($request->cur_u == 'boit') {
+						$cur_u = '10@boi';
+					} else {
+						$cur_u = '1@A';
+					}
+
+					if ($request->area_u == 'm²') {
+						$area_u = '1@m²';
+					} else if ($request->area_u == 'km²') {
+						$area_u = '1000000@km²';
+					} else if ($request->area_u == 'Mile²') {
+						$area_u = '2589988.1103@Mile²';
+					} else if ($request->area_u == 'ac') {
+						$area_u = '4046.8564224@ac';
+					} else if ($request->area_u == 'yd²') {
+						$area_u = '0.83612735998838@yd²';
+					} else if ($request->area_u == 'ft²') {
+						$area_u = '0.0929030399987@ft²';
+					} else if ($request->area_u == 'in²') {
+						$area_u = '0.000645156@in²';
+					} else if ($request->area_u == 'cm²') {
+						$area_u = '0.0001@cm²';
+					} else if ($request->area_u == 'mm²') {
+						$area_u = '0.000001@mm²';
+					} else {
+						$area_u = '1@m²';
+					}
+
+					if ($request->mag_u == 'T') {
+						$mag_u = '1@T';
+					} else if ($request->mag_u == 'mT') {
+						$mag_u = '0.001@mT';
+					} else if ($request->mag_u == 'μT') {
+						$mag_u = '0.000001@μT';
+					} else {
+						$mag_u = '1@T';
+					}
+
+					$cur_u = explode('@', $cur_u);
+					$current = abs($request->current * floatval($cur_u[0]));
+					$area_u = explode('@', $area_u);
+					$area = abs($request->area * floatval($area_u[0]));
+					$mag_u = explode('@', $mag_u);
+					$mag = abs($request->mag * floatval($mag_u[0]));
 					$angle = asin($tor / ($loop * $current * $mag * $area));
 					if ($request->angc_u == 'deg') {
 						$angle = round(rad2deg($angle), 5);
@@ -9730,8 +9777,8 @@ class Physics extends Model
 				$vloReslt  = array();
 
 				for ($i = 0; $i < 10; $i++) {
-					$vloIn = $request->input('vloc_' . $i);
-					$vloSl = $request->input('slvloc_' . $i);
+					$vloIn = $request->{'vloc_' . $i};
+					$vloSl = $request->{'slvloc_' . $i};
 					// dd($vloSl);
 					if ($vloSl === "ft/s") {
 						$vloIn = $vloIn * 0.3048;
@@ -9751,8 +9798,8 @@ class Physics extends Model
 					$vlocInpAr[] = $vloIn;
 					$vlocSlcAr[] = $vloSl;
 
-					$timIn = $request->timi_ . $i;
-					$timSl = $request->sltimi_ . $i;
+					$timIn = $request->{'timi_' . $i};
+					$timSl = $request->{'sltimi_' . $i};
 					if ($timSl === "min") {
 						$timIn = $timIn * 60;
 					}
@@ -12858,7 +12905,7 @@ class Physics extends Model
 		$this->param['RESULT'] = 1;
 		return $this->param;
 	}
-
+     // Instantaneous Velocity Calculator
 	public function instantaneous($request)
 	{
 		$i_d = trim($request['i_d']);
