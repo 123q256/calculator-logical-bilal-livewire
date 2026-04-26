@@ -99,6 +99,17 @@ class MolarMassCalculator extends Component
                 return redirect()->to(url()->previous() ?? '/');
             }
 
+            $this->js(<<<'JS'
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = 30;
+                        const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                        window.scrollTo({ top: top, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
+
             $this->dispatch('math-updated');
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';

@@ -187,7 +187,6 @@ class Chemistry extends Model
 	}
     // Mole Fraction Calculator
     public function mole_frac($request){
-		//  dd($request->all());
 		if (is_numeric($request->x) && is_numeric($request->y) && empty($request->z) && empty($request->a)) {
 			if ($request->unit_x==='Gram' && !is_numeric($request->divide_x)) {
                 $this->param['error'] = 'Please enter gram value too.';
@@ -1178,7 +1177,6 @@ class Chemistry extends Model
 
     // Titration Calculator
     public function titration($request){
-		//  dd($request->all());
         $cal=trim($request->cal);
         $ma=trim($request->ma);
         $ma_unit=trim($request->ma_unit);
@@ -1358,7 +1356,6 @@ class Chemistry extends Model
 
     // Molarity Calculator
     public function molarity($request){
-		//  dd($request->all());
         $cal=trim($request->cal);
         $mass=trim($request->mass);
         $mass_unit=trim($request->mass_unit);
@@ -1508,7 +1505,6 @@ class Chemistry extends Model
 
     // Dilution Calculator
     public function dilution($request){
-		//  dd($request->all());
         $cal=trim($request->cal);
         $c1=trim($request->c1);
         $c1_unit=trim($request->c1_unit);
@@ -2920,7 +2916,6 @@ class Chemistry extends Model
                 }
             }
             $r=0.00008617332;
-			// dd($eo-$ecell);
 			if ($cal === 'ecell' && is_numeric($eo) && is_numeric($t) && is_numeric($n) && is_numeric($q)) {
 				$ecell = $eo - ($r * $t) * (log($q)) / $n;
 				$this->param['ans'] = $ecell . ' <span class="text-green font-s-25">V</span>';
@@ -4267,7 +4262,6 @@ class Chemistry extends Model
 
     // Grams To Atoms Calculator
   	public function gram_atm($request){
-		//  dd($request->all());
         $form=trim($request->form);
         $x=trim($request->x);
         $y=trim($request->y);
@@ -4465,7 +4459,6 @@ class Chemistry extends Model
 
     // Combined Gas Law Calculator
 	public function combined($request){
-		// dd($request->all());
         $calculation=$request->calculation;
         $pressure_one=$request->pressure_one;
         $pressure_one_unit=$request->pressure_one_unit;
@@ -4621,7 +4614,6 @@ class Chemistry extends Model
 
     // PPM Calculator
 	public function ppm($request){
-		//  dd($request->all());
         $type = $request->calculator_name;
         $operations = $request->operations;
         $first = $request->first;
@@ -4805,7 +4797,6 @@ class Chemistry extends Model
 
     // Gay Lussac's Law Calculator
 	public function gay($request){
-		// dd($request->all());
         $selection=$request->selection;
         $p1=$request->p1;
         $p1_unit=$request->p1_unit;
@@ -5169,7 +5160,6 @@ class Chemistry extends Model
 
     // Molality Calculator
     public function molality($request){
-		//  dd($request->all());
         $find=$request->find;
         $amount_solute=$request->amount_solute;
         $amount_solute_unit=$request->amount_solute_unit;
@@ -5290,7 +5280,6 @@ class Chemistry extends Model
 
     // Mole Ratio Calculator
     public function molar_ratio($request){
-		// dd($request->all());
         $find=$request->find;
         $first_coefficient=$request->first_coefficient;
         $first_product=$request->first_product;
@@ -18839,7 +18828,6 @@ class Chemistry extends Model
 
     // ML to Moles Calculator
     public function ml($request){
-		//  dd($request->all());
         $volume = $request->volume;
         $volume_unit = $request->volume_unit;
         $molarity = $request->molarity;
@@ -18993,7 +18981,6 @@ class Chemistry extends Model
 
     // Average Atomic Mass Calculator
     public function average($request){
-		// dd($request->all());
         $isotopes_no = $request->isotopes_no;
         $per = $request->per;
         $per_unit = $request->per_unit;
@@ -19054,7 +19041,6 @@ class Chemistry extends Model
 
     // Gibbs Free Energy Calculator
     public function gibbs($request){
-		//  dd($request->all());
         $entropy = $request->entropy;
         $enthalpy = $request->enthalpy;
         $temperature = $request->temperature;
@@ -19105,7 +19091,6 @@ class Chemistry extends Model
 
     // Vapor Pressure Calculator
     public function vapor($request){
-		//  dd($request->all());
         $t1 = $request->t1;
         $t1_units = $request->t1_units;
         $t2 = $request->t2;
@@ -19211,8 +19196,6 @@ class Chemistry extends Model
 
     // Rate Constant Calculator
     public function rate($request){
-
-	    // dd($request);
         $unit_x = trim($request->unit_x);
         $module_x = trim($request->module_x);
         $module_y = trim($request->module_y);
@@ -19252,7 +19235,7 @@ class Chemistry extends Model
 		}else if($time_a == 'min/sec'){
 			$time_a = '4';
 		}else if($time_a == 'hrs'){
-			$unit_a = '6';
+			$time_a = '6';
 		}
 
 	
@@ -19306,6 +19289,7 @@ class Chemistry extends Model
 		}
 
         function calculate($a, $b){
+            $convert = 0;
             if ($b == '0') {
                 $convert = $a * 1;
             } else if ($b == '1') {
@@ -19318,6 +19302,7 @@ class Chemistry extends Model
             return $convert;
         }
         function calculatet($a, $b){
+            $convert = 0;
             if ($b == '0') {
                 $convert = $a * 0.000001;
             } else if ($b == '1') {
@@ -19327,12 +19312,16 @@ class Chemistry extends Model
             } else if ($b == '3') {
                 $convert = $a * 60;
             } else if ($b == '4') {
+                $convert = $a * 1; // min/sec is ambiguous, usually just sec
+            } else if ($b == '6') {
                 $convert = $a * 3600;
             }
             return $convert;
         }
 
         $check = true;
+        $rate_res = null;
+        $k_res = null;
         if ($unit_x == 'uni') {
             if ($module_x == '0') {
                 if (is_numeric($con_a) && is_numeric($half_a)) {
