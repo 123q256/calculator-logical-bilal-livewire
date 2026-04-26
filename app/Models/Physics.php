@@ -9908,7 +9908,7 @@ class Physics extends Model
 	}
 
 	/*******************
-         vector  Calculator
+         Vector Magnitude Calculator
 	 *******************/
 	function vector($request)
 	{
@@ -12741,6 +12741,7 @@ class Physics extends Model
 			return $this->param;
 		}
 	}
+	// Specific Heat Calculator
 	public function specific($request)
 	{
 		$find = $request['find'];
@@ -15331,10 +15332,10 @@ class Physics extends Model
 	 *******************/
 	function dot($request)
 	{
-		$input1 = $request->input('input1');
-		$components = explode(',', $input1);
-		$input2 = $request->input('input2');
-		$components2 = explode(',', $input2);
+		$input1 = $request->input1 ?? '';
+		$components = is_array($input1) ? $input1 : explode(',', $input1);
+		$input2 = $request->input2 ?? '';
+		$components2 = is_array($input2) ? $input2 : explode(',', $input2);
 
 		if (array_filter($components, function($value) { return !is_numeric($value); }) || array_filter($components2, function($value) { return !is_numeric($value); })) {
 			$this->param['error'] = 'Sets may contain only integers and decimals';
@@ -15364,15 +15365,20 @@ class Physics extends Model
 			foreach ($components2 as $value2) {
 				$sum_of_squares2 += pow($value2, 2); // Square each value and add to the sum
 			}
-			$mgntd_a = round(sqrt($sum_of_squares), 2);
-			$mgntd_b = round(sqrt($sum_of_squares2), 2);
-			$angle = $prod / ($mgntd_a * $mgntd_b);
-			$theta = acos($angle);
+			$mgntd_a_raw = sqrt($sum_of_squares);
+			$mgntd_b_raw = sqrt($sum_of_squares2);
+			$mgntd_a = round($mgntd_a_raw, 2);
+			$mgntd_b = round($mgntd_b_raw, 2);
+			
+			$angle_raw = $prod / ($mgntd_a_raw * $mgntd_b_raw);
+			// Clamp value between -1 and 1 to prevent acos(NAN)
+			$angle_clamped = max(-1, min(1, $angle_raw));
+			$theta = acos($angle_clamped);
 			$deg = $theta * 180 / pi();
 			$this->param['mgntd_a'] = $mgntd_a;
 			$this->param['mgntd_b'] = $mgntd_b;
 			$this->param['prod'] = $prod;
-			$this->param['angle'] = round($angle, 7);
+			$this->param['angle'] = round($angle_clamped, 7);
 			$this->param['deg'] = round($deg, 5);
 			$this->param['RESULT'] = 1;
 			return $this->param;
@@ -17218,27 +17224,27 @@ class Physics extends Model
       Work Calculator Calculator
     *******************/
 	function work($request){
-		$method=$_POST['method'];
-		$method1=$_POST['method1'];
-		$find=$_POST['find'];
-		$find1=$_POST['find1'];
-		$find2=$_POST['find2'];
-		$f=$_POST['f'];
-		$f_unit=$_POST['f_unit'];
-		$d=$_POST['d'];
-		$d_unit=$_POST['d_unit'];
-		$w=$_POST['w'];
-		$w_unit=$_POST['w_unit'];
-		$p=$_POST['p'];
-		$p_unit=$_POST['p_unit'];
-		$t=$_POST['t'];
-		$t_unit=$_POST['t_unit'];
-		$m=$_POST['m'];
-		$m_unit=$_POST['m_unit'];
-		$v0=$_POST['v0'];
-		$v0_unit=$_POST['v0_unit'];
-		$v1=$_POST['v1'];
-		$v1_unit=$_POST['v1_unit'];
+		$method=$request->method;
+		$method1=$request->method1;
+		$find=$request->find;
+		$find1=$request->find1;
+		$find2=$request->find2;
+		$f=$request->f;
+		$f_unit=$request->f_unit;
+		$d=$request->d;
+		$d_unit=$request->d_unit;
+		$w=$request->w;
+		$w_unit=$request->w_unit;
+		$p=$request->p;
+		$p_unit=$request->p_unit;
+		$t=$request->t;
+		$t_unit=$request->t_unit;
+		$m=$request->m;
+		$m_unit=$request->m_unit;
+		$v0=$request->v0;
+		$v0_unit=$request->v0_unit;
+		$v1=$request->v1;
+		$v1_unit=$request->v1_unit;
 	
 		if(is_numeric($f)){
 		if($f_unit==='kn'){
