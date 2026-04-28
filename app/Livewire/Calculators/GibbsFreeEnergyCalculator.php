@@ -98,6 +98,17 @@ class GibbsFreeEnergyCalculator extends Component
 
     public function render()
     {
+             if (session('scroll_to_result')) {
+            $this->js(<<<'JS'
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                        window.scrollTo({ top: offset, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
+        }
         return view('livewire.calculators.gibbs-free-energy-calculator');
     }
 }

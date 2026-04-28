@@ -3267,30 +3267,30 @@ class Physics extends Model
 
 		function weight($unit, $value)
 		{
-			if ($unit = "(kg)") {
+			if ($unit == "(kg)") {
 				$value1 = $value * 2.2046;
-			} else if ($unit = "(t)") {
+			} else if ($unit == "(t)") {
 				$value1 = $value * 2204.6;
-			} else if ($unit = "(lb)") {
+			} else if ($unit == "(lb)") {
 				$value1 = $value * 1;
-			} else if ($unit = "4") {
+			} else if ($unit == "4") {
 				$value1 = $value * 2000;
-			} else if ($unit = "5") {
+			} else if ($unit == "5") {
 				$value1 = $value * 2240;
 			}
 			return $value1;
 		}
 		function power($unit2, $value2)
 		{
-			if ($unit2 = "watts (W)") {
+			if ($unit2 == "watts (W)") {
 				$value3 = $value2 * 0.001341;
-			} else if ($unit2 = "kilowatts (kW") {
+			} else if ($unit2 == "kilowatts (kW)") {
 				$value3 = $value2 * 1.341;
-			} else if ($unit2 = "megawatts (mW)") {
+			} else if ($unit2 == "megawatts (mW)") {
 				$value3 = $value2 * 0.0007457;
-			} else if ($unit2 = "mechanical horsepowers hp (l)") {
+			} else if ($unit2 == "mechanical horsepowers hp (l)") {
 				$value3 = $value2 * 1;
-			} else if ($unit2 = "metric horsepowers hp (M)") {
+			} else if ($unit2 == "metric horsepowers hp (M)") {
 				$value3 = $value2 * 0.9863;
 			}
 			return $value3;
@@ -3380,12 +3380,12 @@ class Physics extends Model
 		} else if ($equation == "3") {
 			if ($selection == "1") { //Calculate Elapsed Time and Power
 				if (is_numeric($weight) && is_numeric($power)) {
-					if ($sample_unit = "kilowatts (kW)") { //Wheel horsepower
+					if ($sample_unit == ($lang['18'] ?? "Wheel horsepower")) { //Wheel horsepower
 						$w_value = weight($weight_unit, $weight);
 						$p_value = power($power_unit, $power);
 						$elapsed_time = 5.825 * pow($w_value / $p_value, 1 / 3);
 						$trap_speed = 246 * pow($p_value / $w_value, 1 / 3);
-					} else if ($sample_unit = "megawatts (mW)") { //Flywheel horsepower
+					} else if ($sample_unit == ($lang['19'] ?? "Flywheel horsepower")) { //Flywheel horsepower
 						$w_value = weight($weight_unit, $weight);
 						$p_value = power($power_unit, $power);
 						$elapsed_time = 5.825 * pow($w_value / ($p_value * .89), 1 / 3);
@@ -3432,7 +3432,7 @@ class Physics extends Model
 		}
 	}
 	/*******************
-        Quarter Mile Calculator
+        Friction Calculator
 	 *******************/
 	function friction($request)
 	{
@@ -10389,7 +10389,7 @@ class Physics extends Model
 			return $this->param;
 		}
 	}
-	//Moment of inertia
+	//Moment of Inertia Calculator
 	function moment($request)
 	{
 
@@ -10808,6 +10808,7 @@ class Physics extends Model
 
 		function watt($a, $b)
 		{
+			$bijli = 0;
 			if ($a == "mW") {
 				$bijli = $b / 1000;
 			} elseif ($a == "W") {
@@ -10818,7 +10819,7 @@ class Physics extends Model
 				$bijli = $b * 1000000;
 			} elseif ($a == "GW") {
 				$bijli = $b * 1000000000;
-			} elseif ($a == "BTU") {
+			} elseif ($a == "BTU" || $a == "BTU/h") {
 				$bijli = $b * 0.293071;
 			} elseif ($a == "hp(l)") {
 				$bijli = $b * 745.7;
@@ -11092,7 +11093,6 @@ class Physics extends Model
 			}
 			$this->param['secondary_winding'] = $calculate_secondary_winding;
 		} else if ($calculation_unit == "8") { //Primary Winding
-			echo "Eight Condition";
 			if (is_numeric($secondary_current) && is_numeric($primary_current) && is_numeric($secondary_winding)) {
 				$calculate_primary_winding = ($secondary_current * $secondary_winding) / $primary_current;
 			} else {
@@ -11210,7 +11210,7 @@ class Physics extends Model
 			$wire_length=$request->wire_length;
 			$wire_length_unit=$request->wire_length_unit;
 			$load_current=$request->load_current;
-			$conductors=$request->conductors;
+			$conductors=$request->conductors ?: 1;
 			$voltage=$request->voltage;
 			$calculate_unit=$request->calculate_unit;
 			$power_voltage=$request->power_voltage;
@@ -11255,6 +11255,8 @@ class Physics extends Model
 		$ans90 = 0;
 		$sizevd = 0;
 		$sizevs = 0;
+		$vd = 0;
+		$vdp = 0;
 		function convert_voltage($c,$d){
 			if($c=="volts"){
 				$cc=$d*1;
@@ -11457,7 +11459,6 @@ class Physics extends Model
 					if ($load_current > 0 && $voltage > 0 && $cable_length > 0) {
 						 $Vd = $voltage * $max_voltage_drop;
 						 $Cm = $phase_unit*$wire_value*$cable_length*$load_current/$Vd;	
-						 echo"The value of cm is".$Cm*1000;
 						for ($i = 0; $i <count($kcmil); $i++) {
 							if ($kcmil[$i] >= $Cm) {
 								$sizevd = $i;
@@ -11515,7 +11516,7 @@ class Physics extends Model
 										if ($amps75al[$i] > $ans75) {
 											$sizevs = $i;
 											break;
-										} else if ($amps > 560) {
+										} else if ($load_current > 560) {
 											$sizevs = 30;
 										}
 									}
@@ -11525,7 +11526,7 @@ class Physics extends Model
 										if ($amps90al[$i] > $ans90) {
 											$sizevs = $i;
 											break;
-										} else if ($amps > 630) {
+										} else if ($load_current > 630) {
 											$sizevs = 30;
 										}
 									}
@@ -11537,7 +11538,7 @@ class Physics extends Model
 										if ($fa60[$i] > $ans60) {
 											$sizevs = $i;
 											break;
-										} else if ($amps > 1155) {
+										} else if ($load_current > 1155) {
 											$sizevs = 30;
 										}
 									}
@@ -11552,10 +11553,10 @@ class Physics extends Model
 										}
 									}
 								} else if ($insulation == 2) {
-									$ans90 = $amps;
+									$ans90 = $load_current;
 									for ($i = 0; $i < count($fa90); $i++) {
 										if ($fa90[$i] > $ans90) {
-											$sizevs = i;
+											$sizevs = $i;
 											break;
 										} else if ($load_current > 1560) {
 											$sizevs = 30;
@@ -11563,7 +11564,7 @@ class Physics extends Model
 									}
 								}
 							} else if ($wire_material_unit_two == 1 && $raceway == 1) {
-								if ($ins == 0) {
+								if ($insulation == 0) {
 									$ans60 = $load_current;
 									for ($i = 0; $i < count($fa60al); $i++) {
 										if ($fa60al[$i] > $ans60) {
@@ -11589,7 +11590,7 @@ class Physics extends Model
 										if ($fa90al[$i] > $ans90) {
 											$sizevs = $i;
 											break;
-										} else if ($amps > 1560) {
+										} else if ($load_current > 1560) {
 											$sizevs = 30;
 										}
 									}
@@ -11600,7 +11601,6 @@ class Physics extends Model
 							$calculate_voltage_drop=($max_voltage_drop/100)*$voltage;
 							$final=$voltage-$calculate_voltage_drop;
 
-							echo $final." V";
 							
 						} else if ($sizevd >= $sizevs) {
 							$wire_size=$wires[$sizevd];
@@ -11687,7 +11687,7 @@ class Physics extends Model
 
 	}
 
-
+	// Vector Projection Calculator
 	public function vector_projection($request)
 	{
 		//error_reporting (0);
@@ -13035,7 +13035,7 @@ class Physics extends Model
 
 	// }
 
-
+	// Electric Field Calculator
 	public function electric($request)
 	{
 	
@@ -13771,6 +13771,7 @@ class Physics extends Model
 		$this->param['RESULT'] = 1;
 		return $this->param;
 	}
+	// Terminal Velocity Calculator
 	public function terminal($request)
 	{
 		

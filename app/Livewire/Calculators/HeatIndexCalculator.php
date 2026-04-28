@@ -1,29 +1,27 @@
 <?php
 
 namespace App\Livewire\Calculators;
-use App\Models\Chemistry;
+
+use App\Models\Physics;
 use Livewire\Component;
 
-class GayLussacsLawCalculator extends Component
+class HeatIndexCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
 
-    public $selection = '1';
-    public $p1 = 3;
-    public $p1_unit = 'Pa';
-    public $t1 = 3;
-    public $t1_unit = '°C';
-    public $p2 = 3;
-    public $p2_unit = 'Pa';
-    public $t2 = 3;
-    public $t2_unit = '°C';
-    public $v1 = 3;
-    public $v1_unit = 'm³';
-    public $amount = 1;
-    public $R = 8.3144626;
+    // Form Fields
+    public $find = '1';
+    public $temp = '32';
+    public $temp_unit = '°C';
+    public $hum = '32';
+    public $hum_unit = '%';
+    public $dew_point = '32';
+    public $dew_point_unit = '°C';
+
+    public $openDropdown = null;
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -33,27 +31,35 @@ class GayLussacsLawCalculator extends Component
         $this->error = session('validation_error');
 
         if (session()->has('calculator_back_inputs')) {
-            $inputs = session('calculator_back_inputs');
-            $this->selection = $inputs->selection ?? '1';
-            $this->p1 = $inputs->p1 ?? 3;
-            $this->p1_unit = $inputs->p1_unit ?? 'Pa';
-            $this->t1 = $inputs->t1 ?? 3;
-            $this->t1_unit = $inputs->t1_unit ?? '°C';
-            $this->p2 = $inputs->p2 ?? 3;
-            $this->p2_unit = $inputs->p2_unit ?? 'Pa';
-            $this->t2 = $inputs->t2 ?? 3;
-            $this->t2_unit = $inputs->t2_unit ?? '°C';
-            $this->v1 = $inputs->v1 ?? 3;
-            $this->v1_unit = $inputs->v1_unit ?? 'm³';
-            $this->amount = $inputs->amount ?? 1;
-            $this->R = $inputs->R ?? 8.3144626;
+            $inputs = (array)session('calculator_back_inputs');
+            foreach ($inputs as $key => $value) {
+                if (property_exists($this, $key)) {
+                    $this->$key = $value;
+                }
+            }
         }
     }
 
-    public function updatedSelection()
+    public function toggleDropdown($dropdown)
     {
+        if ($this->openDropdown === $dropdown) {
+            $this->openDropdown = null;
+        } else {
+            $this->openDropdown = $dropdown;
+        }
+    }
+
+    public function setUnit($field, $value)
+    {
+        $this->$field = $value;
+        $this->openDropdown = null;
         $this->detail = null;
+    }
+
+    public function updated($propertyName)
+    {
         $this->error = null;
+        $this->detail = null;
     }
 
     public function resetForm()
@@ -63,14 +69,14 @@ class GayLussacsLawCalculator extends Component
 
         $this->error = null;
         $this->detail = null;
-        $this->selection = '1';
-        $this->p1 = 3;
-        $this->t1 = 3;
-        $this->p2 = 3;
-        $this->t2 = 3;
-        $this->v1 = 3;
-        $this->amount = 1;
-        $this->R = 8.3144626;
+
+        $this->find = '1';
+        $this->temp = '32';
+        $this->temp_unit = '°C';
+        $this->hum = '32';
+        $this->hum_unit = '%';
+        $this->dew_point = '32';
+        $this->dew_point_unit = '°C';
 
         session()->forget([
             'calculator_back_inputs',
@@ -86,24 +92,18 @@ class GayLussacsLawCalculator extends Component
 
     public function calculate()
     {
-        $request = (object)[
-            'selection' => $this->selection,
-            'p1'        => $this->p1,
-            'p1_unit'   => $this->p1_unit,
-            't1'        => $this->t1,
-            't1_unit'   => $this->t1_unit,
-            'p2'        => $this->p2,
-            'p2_unit'   => $this->p2_unit,
-            't2'        => $this->t2,
-            't2_unit'   => $this->t2_unit,
-            'v1'        => $this->v1,
-            'v1_unit'   => $this->v1_unit,
-            'amount'    => $this->amount,
-            'R'         => $this->R,
+        $requestData = [
+            'find' => $this->find,
+            'temp' => $this->temp,
+            'temp_unit' => $this->temp_unit,
+            'hum' => $this->hum,
+            'hum_unit' => $this->hum_unit,
+            'dew_point' => $this->dew_point,
+            'dew_point_unit' => $this->dew_point_unit,
         ];
 
-        $model = new Chemistry();
-        $result = $model->gay($request);
+        $model = new Physics();
+        $result = $model->heat((object)$requestData);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
@@ -112,14 +112,15 @@ class GayLussacsLawCalculator extends Component
             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
                 session()->flash('calculator_result', $result);
                 session()->flash('scroll_to_result', true);
-                session()->flash('calculator_back_inputs', $request);
+                session()->flash('calculator_back_inputs', $requestData);
+
                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         const el = document.getElementById('result-section');
                         if (el) {
-                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
                             window.scrollTo({ top: offset, behavior: 'smooth' });
                         }
                     }, 100);
@@ -130,7 +131,7 @@ class GayLussacsLawCalculator extends Component
             $this->detail = null;
             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
                 session()->flash('validation_error', $this->error);
-                session()->flash('calculator_back_inputs', $request);
+                session()->flash('calculator_back_inputs', $requestData);
                 return redirect()->to(url()->previous() ?? '/');
             }
         }
@@ -138,7 +139,7 @@ class GayLussacsLawCalculator extends Component
 
     public function render()
     {
-             if (session('scroll_to_result')) {
+        if (session('scroll_to_result')) {
             $this->js(<<<'JS'
                 setTimeout(() => {
                     const el = document.getElementById('result-section');
@@ -149,6 +150,7 @@ class GayLussacsLawCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.gay-lussacs-law-calculator');
+
+        return view('livewire.calculators.heat-index-calculator');
     }
 }
