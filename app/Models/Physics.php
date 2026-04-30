@@ -12037,7 +12037,7 @@ class Physics extends Model
 			}
 		}
 	}
-	// density-altitude-calculator
+	// Kinetic Energy Calculator
 	public function kinetic($request)
 	{
 		if ($request['submit'] === 'linear') {
@@ -16514,8 +16514,8 @@ class Physics extends Model
       Density Calculator Calculator
     *******************/
 	function density($request) {
-		$to_cals = $request->input('to_cals');
-		$calc = $request->input('calc');
+		$to_cals = $request->to_cals;
+		$calc = $request->calc;
 
 		$check = false;
 
@@ -16524,13 +16524,13 @@ class Physics extends Model
 			$check=true;
 
 			if ($to_cals === "density") {
-				$dens_unt = $request->input("dens_unt");
-				$volOrg = $request->input("vol");
-				$vol = $request->input("vol");
-				$slvol = $request->input("slvol");
-				$masOrg = $request->input("mas");
-				$mas = $request->input("mas");
-				$slmas = $request->input("slmas");
+				$dens_unt = $request->dens_unt;
+				$volOrg = $request->vol;
+				$vol = $request->vol;
+				$slvol = $request->slvol;
+				$masOrg = $request->mas;
+				$mas = $request->mas;
+				$slmas = $request->slmas;
 
 				if(!is_numeric($vol) || !is_numeric($mas)){
 					$this->param['error'] = "Please check your input";
@@ -16673,13 +16673,13 @@ class Physics extends Model
 				$this->param["ansval3"] = pow($volOrg,1/3) . " " . $slvol;
 				
 			} elseif ($to_cals === "volume") {
-				$volu_unt = $request->input("volu_unt");
-				$dnsOrg = $request->input("dns");
-				$dns = $request->input("dns");
-				$sldns = $request->input("sldns");
-				$masOrg = $request->input("mas");
-				$mas = $request->input("mas");
-				$slmas = $request->input("slmas");
+				$volu_unt = $request->volu_unt;
+				$dnsOrg = $request->dns;
+				$dns = $request->dns;
+				$sldns = $request->sldns;
+				$masOrg = $request->mas;
+				$mas = $request->mas;
+				$slmas = $request->slmas;
 
 				if(!is_numeric($dns) || !is_numeric($mas)){
 					$this->param['error'] = "Please check your input";
@@ -16819,13 +16819,13 @@ class Physics extends Model
 				$this->param["ansval3"] = pow($vol,1/3) . " " . $volu_unt;
 
 			} elseif ($to_cals === "mass") {
-				$mass_unt = $request->input("mass_unt");
-				$dnsOrg = $request->input("dns");
-				$dns = $request->input("dns");
-				$sldns = $request->input("sldns");
-				$volOrg = $request->input("vol");
-				$vol = $request->input("vol");
-				$slvol = $request->input("slvol");
+				$mass_unt = $request->mass_unt;
+				$dnsOrg = $request->dns;
+				$dns = $request->dns;
+				$sldns = $request->sldns;
+				$volOrg = $request->vol;
+				$vol = $request->vol;
+				$slvol = $request->slvol;
 
 				if(!is_numeric($dns) || !is_numeric($vol)){
 					$this->param['error'] = "Please check your input";
@@ -16968,20 +16968,20 @@ class Physics extends Model
 
 		} else {
 			$check = true;
-			$dens_unt = $request->input("dens_unt");
-			$sladvol = $request->input("sladvol");
-			$masOrg = $request->input("mas");
-			$mas = $request->input("mas");
-			$slmas = $request->input("slmas");
-			$lgnOrg = $request->input("lgn");
-			$lgn = $request->input("lgn");
-			$sllgn = $request->input("sllgn");
-			$wdtOrg = $request->input("wdt");
-			$wdt = $request->input("wdt");
-			$slwdt = $request->input("slwdt");
-			$hgtOrg = $request->input("hgt");
-			$hgt = $request->input("hgt");
-			$slhgt = $request->input("slhgt");
+			$dens_unt = $request->dens_unt;
+			$sladvol = $request->sladvol;
+			$masOrg = $request->mas;
+			$mas = $request->mas;
+			$slmas = $request->slmas;
+			$lgnOrg = $request->lgn;
+			$lgn = $request->lgn;
+			$sllgn = $request->sllgn;
+			$wdtOrg = $request->wdt;
+			$wdt = $request->wdt;
+			$slwdt = $request->slwdt;
+			$hgtOrg = $request->hgt;
+			$hgt = $request->hgt;
+			$slhgt = $request->slhgt;
 
 			if(!is_numeric($lgn) || !is_numeric($wdt) || !is_numeric($hgt) || !is_numeric($mas)){
 				$this->param['error'] = "Please check your input";
@@ -17608,7 +17608,7 @@ class Physics extends Model
 		/*******************
      Acceleration Calculator
     *******************/
-	function acceleration($request){
+	function oldaccelerationold($request){
 		
 		if ($request->with==='1') {
 			$check=false;
@@ -19987,5 +19987,180 @@ class Physics extends Model
 				}
 			
 		}
+
+
+		/*******************
+     Acceleration Calculator
+    *******************/
+	function acceleration($request){
+
+		$iv = $request->iv;
+		$ivU = $request->ivU;
+		$fv = $request->fv;
+		$fvU = $request->fvU;
+		$ct = $request->ct;
+		$ctU = $request->ctU;
+		$acc = $request->acc;
+		$accU = $request->accU;
+		$cdis = $request->cdis;
+		$cdis = (int) $cdis;
+		$cdisU = $request->cdisU;
+		$velo_value = $request->velo_value;
+		$mass = $request->mass;
+		$masU = $request->masU;
+		$force = $request->force;
+		$force = (int) $force;
+		$mass = (int) $mass;
+
+		$forceU = $request->forceU;
+		// dd($cdis);
+		// dd($mass);
+
+		function convertTovelocity($a, $b) {
+			if ($b == 'ft/s') {
+				$val = $a * 0.3048; 
+			} else if ($b == 'km/h') {
+				$val = $a * 0.27777777778; 
+			} else if ($b == 'km/s') {
+				$val = $a * 1000; 
+			} else if ($b == 'mi/s') {
+				$val = $a * 1609.344; 
+			} else if ($b == 'mph') {
+				$val = $a * 0.44704;
+			} else if ($b == 'm/s') {
+				$val = $a; 
+			} else {
+				return "Invalid unit"; // Handle unexpected unit
+			}
+			return $val;
+		}
+
+		function convertTotime($a, $b){
+			// dd($a,$b);
+
+			if ($b == 'sec') {
+				$val = $a * 1; 
+			} else if ($b == 'h') {
+				$val = $a * 3600; 
+			} else if ($b == 'min') {
+				$val = $a * 60;
+			}
+			// dd($val);
+			return $val;
+		}
+
+		function acc($a, $b){
+			if ($b == 'm/s²') {
+				$val = $a * 1; 
+			} else if ($b == 'ft/s²') {
+				$val = $a * 0.3048; 
+			} else if ($b == 'g'){
+				$val = $a * 9.80665; 
+			}
+			// dd($val);
+			return $val;
+		}
+
+		function convertToMeters($a, $b) {
+			if ($b == 'cm') {
+				$val = $a * 0.01;
+			} else if ($b == 'in') {
+				$val = $a * 0.0254;
+			} else if ($b == 'ft') {
+				$val = $a * 0.3048;
+			} else if ($b == 'km') {
+				$val = $a * 1000;
+			} else if ($b == 'mi') {
+				$val = $a * 1609.344;
+			} else if ($b == 'yd') {
+				$val = $a * 0.9144;
+			} else {
+				$val = $a; 
+			}
+			return $val;
+		}
+		
+		function forceToN($a, $b) {
+			if ($b == 'kN') {
+				$val = $a * 1000; 
+			} else if ($b == 'MN') {
+				$val = $a * 1000000;
+			} else if ($b == 'GN') {
+				$val = $a * 1000000000;
+			} else if ($b == 'TN') {
+				$val = $a * 1000000000000; 
+			} else if ($b == 'pdl') {
+				$val = $a * 0.138255; 
+			} else if ($b == 'lbf') {
+				$val = $a * 4.44822;
+			} else if ($b == 'dyn') {
+				$val = $a * 0.00001;
+			}else{
+				$val = $a ; 
+			}
+			return $val;
+		}
+
+		function massToKg($a, $b) {
+			if ($b == 'kg') {
+				$val = $a * 1; 
+			} else if ($b == 'g') {
+				$val = $a * 0.001; 
+			} else if ($b == 'mg') {
+				$val = $a * 0.000001; 
+			} else if ($b == 't') {
+				$val = $a * 1000;
+			} else if ($b == 'gr') {
+				$val = $a * 0.001;
+			} else if ($b == 'dr') {
+				$val = $a * 0.00177185; 
+			} else if ($b == 'oz') {
+				$val = $a * 0.0283495;
+			} else if ($b == 'lbs') {
+				$val = $a * 0.453592; 
+			} else if ($b == 'us ton') {
+				$val = $a * 907.18474; 
+			} else if ($b == 'long ton') {
+				$val = $a * 1016.0469088;
+			}
+			return $val;
+		}
+		
+
+		$mass  =  massToKg($mass,$masU);
+		$force  =  forceToN($force,$forceU);
+		$acc  =  acc($acc,$accU);
+		$iv  =  convertTovelocity($iv,$ivU);
+		$fv  =  convertTovelocity($fv,$fvU);
+		$cdis  =  convertToMeters($cdis,$cdisU);
+		$ct  =  convertTotime($ct,$ctU);
+		
+
+		if($velo_value == 1){
+			if(is_numeric($iv) && is_numeric($fv) && is_numeric($ct) && empty($acc)){
+				$ans = ($fv - $iv) / $ct;
+				$unit = "m/s²";
+				$this->param['unit'] = $unit;
+				$this->param['ans'] = $ans;
+			}
+		}elseif($velo_value == 2){
+			if(is_numeric($iv) && is_numeric($cdis) && is_numeric($ct) && empty($acc)){
+				$ans = (2 *( $cdis - ($iv * $ct))) / $ct ** 2;
+				$unit = "m/s²";
+				$this->param['unit'] = $unit;
+				$this->param['ans'] = $ans;
+			}
+		}else{
+			if(is_numeric($force) && is_numeric($mass) && empty($acc)){
+				$ans = $force / $mass;
+				$unit = "m/s²";
+				$this->param['unit'] = $unit;
+				$this->param['ans'] = $ans;
+			}
+		}
+
+		return $this->param;
+	}
+
 
 }

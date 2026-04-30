@@ -112,7 +112,37 @@
                                 </tr>
                             </table>
 
-                            <div id="chart-container" class="w-full min-h-[400px] mt-8 p-4" wire:ignore></div>
+                            <div class="w-full mt-8" 
+                                 x-data="{ 
+                                    chartData: {!! $detail['chartData'] !!},
+                                    render() {
+                                        if (typeof Highcharts === 'undefined') {
+                                            setTimeout(() => this.render(), 200);
+                                            return;
+                                        }
+                                        Highcharts.chart($refs.canvas, {
+                                            chart: { type: 'line', backgroundColor: 'transparent' },
+                                            title: { text: 'Density Altitude Graph', align: 'left', style: { color: '#2845F5', fontWeight: 'bold' } },
+                                            xAxis: { type: 'linear', title: { text: 'Temperature (°C)' }, gridLineWidth: 1 },
+                                            yAxis: { title: { text: 'Altitude (ft/m)' }, gridLineWidth: 1 },
+                                            series: [{ 
+                                                name: 'Density Altitude (ft)', 
+                                                data: this.chartData, 
+                                                color: '#2845F5',
+                                                lineWidth: 2,
+                                                marker: { enabled: true, radius: 3 }
+                                            }],
+                                            credits: { enabled: false },
+                                            tooltip: { headerFormat: '<b>Temp: {point.x}°C</b><br/>', pointFormat: 'Altitude: {point.y}' },
+                                            responsive: { rules: [{ condition: { maxWidth: 500 }, chartOptions: { legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' } } }] }
+                                        });
+                                    }
+                                 }" 
+                                 x-init="render()"
+                                 @chart-updated.window="chartData = $event.detail; render()"
+                                 wire:ignore>
+                                <div x-ref="canvas" class="w-full min-h-[400px]"></div>
+                            </div>
                         </div>
                 </div>
             </div>
@@ -120,42 +150,7 @@
     </div>
     @endif
 </form>
-
+</div>
 @push('calculatorJS')
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script>
-        document.addEventListener('livewire:initialized', () => {
-            const renderChart = (data) => {
-                if (!document.getElementById('chart-container')) return;
-                
-                Highcharts.chart('chart-container', {
-                    chart: { type: 'line', backgroundColor: 'transparent' },
-                    title: { text: 'Density Altitude Graph', align: 'left', style: { color: '#2845F5', fontWeight: 'bold' } },
-                    xAxis: { 
-                        categories: ['-18', '-16', '-11', '-6', '-2', '1', '4', '7', '10', '14', '18', '22', '26', '30', '34', '38', '43'], 
-                        title: { text: 'Temperature (°C)' } 
-                    },
-                    yAxis: { title: { text: 'Altitude (ft)' } },
-                    series: [{ 
-                        name: 'Density Altitude', 
-                        data: typeof data === 'string' ? JSON.parse(data) : data, 
-                        color: '#2845F5' 
-                    }],
-                    credits: { enabled: false },
-                    responsive: { rules: [{ condition: { maxWidth: 500 }, chartOptions: { legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' } } }] }
-                });
-            };
-
-            @if(isset($detail['chartData']))
-                renderChart(@json($detail['chartData']));
-            @endif
-
-            Livewire.on('chartUpdated', (event) => {
-                setTimeout(() => {
-                    renderChart(event.data);
-                }, 100);
-            });
-        });
-    </script>
 @endpush
-</div>
