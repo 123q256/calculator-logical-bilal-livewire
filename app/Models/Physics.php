@@ -5545,7 +5545,7 @@ class Physics extends Model
 				$force_val = $a * 1000;
 			} else if ($b == "MN") {
 				$force_val = $a * 1000000;
-			} else if ($b == "4GN") { // Assuming you meant "GN" instead of "4GN"
+			} else if ($b == "GN") { // Fixed typo: changed 4GN to GN
 				$force_val = $a * 1000000000;
 			} else if ($b == "TN") {
 				$force_val = $a * 1000000000000;
@@ -6262,55 +6262,50 @@ class Physics extends Model
 		$t_fluid = $request->t_fluid;
 		$density = $request->density;
 		$density_unit = $request->density_unit;
-		if (isset($_POST['submit']) || isset($_GET['res_link'])) {
 
-			function central_unit($density, $density_unit)
-			{
-				if ($density_unit == "kg/m³") {
-					$density = $density;
-				} elseif ($density_unit == "lb/ft³") {
-					$density = $density * 16.0185;
-				} elseif ($density_unit == "lb/yd³") {
-					$density = $density * 0.593276;
-				} elseif ($density_unit == "g/cm³") {
-					$density = $density * 1000;
-				} elseif ($density_unit == "kg/cm³") {
-					$density = $density / 1000000;
-				} elseif ($density_unit == "mg/cm³") {
-					$density = $density * 0.001;
-				} elseif ($density_unit == "g/m³") {
-					$density = $density * 1000;
-				} elseif ($density_unit == "g/dm³") {
-					$density = $density * 100;
-				}
-				return $density;
+		function central_unit($density, $density_unit)
+		{
+			if ($density_unit == "kg/m³") {
+				$density = $density;
+			} elseif ($density_unit == "lb/ft³") {
+				$density = $density * 16.0185;
+			} elseif ($density_unit == "lb/yd³") {
+				$density = $density * 0.593276;
+			} elseif ($density_unit == "g/cm³") {
+				$density = $density * 1000;
+			} elseif ($density_unit == "kg/cm³") {
+				$density = $density / 1000000;
+			} elseif ($density_unit == "mg/cm³") {
+				$density = $density * 0.001;
+			} elseif ($density_unit == "g/m³") {
+				$density = $density * 1000;
+			} elseif ($density_unit == "g/dm³") {
+				$density = $density * 100;
 			}
-
-			if ($t_fluid == 'ls') {
-				if (is_numeric($density)) {
-					$dens = central_unit($density, $density_unit);
-					$gravity = round($dens / 1000, 5);
-					$this->param['gravity'] = $gravity;
-				} else {
-					$this->param['error'] = 'Please! Check Your Input';
-					return $this->param;
-				}
-			} else {
-				if (is_numeric($density)) {
-					$dens = $density;
-					$gs_gravity = round($dens / 28.96469, 5);
-					$this->param['gs_gravity'] = $gs_gravity;
-				} else {
-					$this->param['error'] = 'Please! Check Your Input';
-					return $this->param;
-				}
-			}
-			$this->param['RESULT'] = 1;
-			return $this->param;
-		} else {
-			$this->param['error'] = 'Please! Check Your Input';
-			return $this->param;
+			return $density;
 		}
+
+		if ($t_fluid == 'ls') {
+			if (is_numeric($density)) {
+				$dens = central_unit($density, $density_unit);
+				$gravity = round($dens / 1000, 5);
+				$this->param['gravity'] = $gravity;
+			} else {
+				$this->param['error'] = 'Please! Check Your Input';
+				return $this->param;
+			}
+		} else {
+			if (is_numeric($density)) {
+				$dens = $density;
+				$gs_gravity = round($dens / 28.96469, 5);
+				$this->param['gs_gravity'] = $gs_gravity;
+			} else {
+				$this->param['error'] = 'Please! Check Your Input';
+				return $this->param;
+			}
+		}
+		$this->param['RESULT'] = 1;
+		return $this->param;
 	}
 	// Speed of Sound Calculator
 	public function speed_of($request)
@@ -7085,7 +7080,7 @@ class Physics extends Model
 				$this->param['energy_cost_per_day'] = $energy_cost_per_day;
 				$this->param['energy_cost_per_month'] = $energy_cost_per_month;
 				$this->param['energy_cost_per_year'] = $energy_cost_per_year;
-
+				$this->param['RESULT'] = 1;
 				return $this->param;
 			}
 		} else {
@@ -19951,7 +19946,7 @@ class Physics extends Model
         return $this->param;
 
 	}
-		// wave_period caluclator
+		// Wave Period Calculator
 		public function wave_period($request)
 		{
 			//dd($request->all());
