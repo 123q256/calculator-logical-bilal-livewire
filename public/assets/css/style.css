@@ -4,14 +4,16 @@ body {
 
 .input_form {
     background-color: #ffffff;
-    
+
 }
+
 .form-border,
 .set_resultbox {
-      /* border: 10px solid #e5e7eb; */
+    /* border: 10px solid #e5e7eb; */
     border-radius: 6px;
     border: 8px solid gainsboro;
 }
+
 .input_form input[type="text"],
 .input_form input[type="date"],
 .input_form input[type="number"],
@@ -19,12 +21,17 @@ body {
 .input_form input[type="time"],
 .input_form input[type="datetime-local"],
 .input_form select,
+.input_form textarea,
+/* ✅ textarea add kiya */
 .converter_input input[type="text"],
 .converter_input input[type="number"],
-.converter_input select {
+.converter_input select,
+.converter_input textarea {
+    /* ✅ yahan bhi add */
     width: 100%;
-    height: 46px;
-    padding: 0 14px;
+    min-height: 46px;
+    /* textarea ke liye better */
+    padding: 10px 14px;
     border-radius: 14px;
     border: 1px solid #d1d5db;
     background: #f9fafc;
@@ -32,6 +39,8 @@ body {
     color: #111827;
     outline: none;
     transition: 0.15s;
+    resize: vertical;
+    /* textarea resize control */
 }
 
 /* FOCUS STATE - border none + shadow none */
@@ -39,8 +48,10 @@ body {
 .input_form select:focus,
 .converter_input input:focus,
 .converter_input select:focus {
-    border: 1px solid gray !important;           /* border completely removed */
-    box-shadow: none !important;        /* shadow completely removed */
+    border: 1px solid gray !important;
+    /* border completely removed */
+    box-shadow: none !important;
+    /* shadow completely removed */
     outline: none !important;
 }
 
@@ -53,14 +64,12 @@ body {
 
 .header_b_border {
     border: 1px solid;
-    border-image-source: linear-gradient(
-        90deg,
-        #ffffff 0%,
-        #e3e3e3 15%,
-        #e4e4e4 50.4%,
-        #e3e3e3 85%,
-        #ffffff 100%
-    );
+    border-image-source: linear-gradient(90deg,
+            #ffffff 0%,
+            #e3e3e3 15%,
+            #e4e4e4 50.4%,
+            #e3e3e3 85%,
+            #ffffff 100%);
     border-image-slice: 1;
 }
 
@@ -84,6 +93,7 @@ body {
     padding: 7px;
     border-bottom: 1px solid rgb(210, 212, 216);
 }
+
 .border-sidebar {
     border-bottom: 1px solid rgb(210, 212, 216);
 }
@@ -93,15 +103,18 @@ body {
     border: none;
     /* border-bottom: 1px solid rgb(210, 212, 216); */
 }
+
 .unit-select-add option {
     width: 100% !important;
     padding: 7px !important;
     border-bottom: 1px solid rgb(210, 212, 216);
 }
+
 .hover_tags:hover {
     background: #000;
     color: #fff;
 }
+
 .tagsUnit {
     background: #2845f5 !important;
     color: #fff;
@@ -125,10 +138,12 @@ body {
     background: rgb(40 69 245) !important;
     color: #ffffff;
 }
+
 input {
     box-shadow: none !important;
     outline: none !important;
 }
+
 .input_border {
     box-shadow: none !important;
     outline: none !important;
@@ -139,14 +154,17 @@ input {
         opacity: 0;
         transform: scale(0.9);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
     }
 }
+
 .animate-fadeIn {
     animation: fadeIn 0.3s ease-out;
 }
+
 /* Overlay hidden by default, fades in on hover */
 #upload-button {
     position: relative;
@@ -175,12 +193,15 @@ input {
     width: 25px;
     height: 25px;
 }
+
 .hover_border {
     border-bottom: 1px solid #1a1a1a;
 }
+
 .hover_border:hover {
     border-bottom: 2px solid #1a1a1a;
 }
+
 .select_boom option {
     border-bottom: 1px solid #d7d7d7 !important;
     padding: 6px 4px !important;
@@ -192,14 +213,17 @@ input {
     border-radius: 5px;
     background-color: #c4c0bf21;
 }
+
 .custom-scrollbar::-webkit-scrollbar {
     width: 7px;
     border-radius: 5px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
     background-color: #c4c0bf;
     border-radius: 5px;
 }
+
 .style-11::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #f5f5f5;
@@ -215,21 +239,27 @@ input {
     background-color: #a39f9f;
     border-radius: 10px;
 }
+
 .set_margin li {
     margin-top: 0px !important;
 }
+
 .margin_two li {
     margin-top: 0px !important;
 }
+
 .text-green {
     color: #119154 !important;
 }
+
 .border-b-dark {
     border-bottom: 1px solid #d2d4d8 !important;
 }
+
 .border-s-dark {
     border-left: 1px solid #d2d4d8 !important;
 }
+
 /* .border-b {
     border-bottom: 2px solid #ffffff !important;
 } */
@@ -240,13 +270,16 @@ input {
 .abc_cal div:hover {
     background-color: #ffffff;
 }
+
 @keyframes shiny-btn1 {
     0% {
         transform: translateX(-100%);
     }
+
     50% {
         transform: translateX(50%);
     }
+
     100% {
         transform: translateX(100%);
     }
@@ -273,15 +306,17 @@ input {
 
 .premium-btn {
     position: relative;
-    z-index: 2; /* Ensure the button content appears above the animation */
+    z-index: 2;
+    /* Ensure the button content appears above the animation */
 }
+
 .active {
     background-color: #eef1ff !important;
     border-radius: 8px;
 }
 
-@media screen {
-}
+@media screen {}
+
 @media (min-width: 1025px) {
     #left_calulator {
         display: block !important;
@@ -485,16 +520,17 @@ input {
 .suggestion::-webkit-scrollbar {
     width: 6px;
 }
+
 .suggestion::-webkit-scrollbar-track {
     background: #f1f1f1;
     border-radius: 0 0 8px 8px;
 }
+
 .suggestion::-webkit-scrollbar-thumb {
     background: #c1c1c1;
     border-radius: 3px;
 }
+
 .suggestion::-webkit-scrollbar-thumb:hover {
     background: #a8a8a8;
 }
-
-     

@@ -10052,8 +10052,18 @@ class Physics extends Model
 				$check = false;
 			}
 		} else {
-			if (is_numeric($a_f) && is_numeric($g_f) && !empty($f_v) && !empty($question)) {
-				$check = true;
+			if ($question === 'yes') {
+				if (is_numeric($a_f) && is_numeric($g_f)) {
+					$check = true;
+				} else {
+					$check = false;
+				}
+			} elseif ($question === 'no') {
+				if (!empty($f_v)) {
+					$check = true;
+				} else {
+					$check = false;
+				}
 			} else {
 				$check = false;
 			}
