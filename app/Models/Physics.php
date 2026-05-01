@@ -10740,13 +10740,13 @@ class Physics extends Model
 
 		$y = 0;
 
-		if ($mis_unit = "nm") {
+		if ($mis_unit == "mΩ") {
 			$mis_unit = 0.001;
-		} else if ($mis_unit = "μm") {
+		} else if ($mis_unit == "Ω" || $mis_unit == "vΩ") {
 			$mis_unit = 1;
-		} else if ($mis_unit = "mm") {
+		} else if ($mis_unit == "kΩ") {
 			$mis_unit = 1000;
-		} else if ($mis_unit = "cm") {
+		} else if ($mis_unit == "MΩ") {
 			$mis_unit = 1000000;
 		}
 
@@ -10770,10 +10770,17 @@ class Physics extends Model
 		} elseif ($mode == "2") {
 			$missing = $missing * $mis_unit;
 			if (is_numeric($missing)) {
-				if ($missing >= "0") {
-					$main_ans = 1 / (1 / $missing - $lcm);
+				if ($missing > 0) {
+					$denominator = (1 / $missing) - $lcm;
+					if ($denominator == 0) {
+						$this->param['answer'] = 0;
+						$this->param['mode'] = $mode;
+						$this->param['RESULT'] = 1;
+						return $this->param;
+					}
+					$main_ans = 1 / $denominator;
 				} else {
-					$this->param['error'] = 'Desired Total Resistance cannot be negative..';
+					$this->param['error'] = 'Desired Total Resistance must be greater than zero.';
 					return $this->param;
 				}
 			} else {
@@ -13488,12 +13495,12 @@ class Physics extends Model
 					$transratio6_value = '';
 				}
 				$GearFactor = ($s_first * $s_third * 0.002975) / $s_second;
-				$mph1 = GetNumber(round_num($GearFactor / $transratio1_value, 2));
-				$mph2 = GetNumber(round_num($GearFactor / $transratio2_value, 2));
-				$mph3 = GetNumber(round_num($GearFactor / $transratio3_value, 2));
-				$mph4 = GetNumber(round_num($GearFactor / $transratio4_value, 2));
-				$mph5 = GetNumber(round_num($GearFactor / $transratio5_value, 2));
-				$mph6 = GetNumber(round_num($GearFactor / $transratio6_value, 2));
+				$mph1 = (is_numeric($transratio1_value) && $transratio1_value > 0) ? GetNumber(round_num($GearFactor / $transratio1_value, 2)) : 0;
+				$mph2 = (is_numeric($transratio2_value) && $transratio2_value > 0) ? GetNumber(round_num($GearFactor / $transratio2_value, 2)) : 0;
+				$mph3 = (is_numeric($transratio3_value) && $transratio3_value > 0) ? GetNumber(round_num($GearFactor / $transratio3_value, 2)) : 0;
+				$mph4 = (is_numeric($transratio4_value) && $transratio4_value > 0) ? GetNumber(round_num($GearFactor / $transratio4_value, 2)) : 0;
+				$mph5 = (is_numeric($transratio5_value) && $transratio5_value > 0) ? GetNumber(round_num($GearFactor / $transratio5_value, 2)) : 0;
+				$mph6 = (is_numeric($transratio6_value) && $transratio6_value > 0) ? GetNumber(round_num($GearFactor / $transratio6_value, 2)) : 0;
 				$mph1_value = $mph1;
 				if (GetNumber($mph2) > 0) {
 					$mph2_value = $mph2;
@@ -16199,19 +16206,19 @@ class Physics extends Model
 
 	// amp hour calculator
 	function amp($request){
-		$find=$request->input('find');
-		$vol=$request->input('vol');
-		$bc=$request->input('bc');
-		$bc_unit=$request->input('bc_unit');
-		$wt_hour=$request->input('wt_hour');
-		$wt_hour_unit=$request->input('wt_hour_unit');
-		$c_rate=$request->input('c_rate');
-		$type=$request->input('type');
-		$load_size=$request->input('load_size');
-		$load_duration=$request->input('load_duration');
-		$tempchk=$request->input('temp_chk');
-		$agechk=$request->input('age_chk');
-		$batteries=$request->input('batteries');
+		$find=$request->find;
+		$vol=$request->vol;
+		$bc=$request->bc;
+		$bc_unit=$request->bc_unit;
+		$wt_hour=$request->wt_hour;
+		$wt_hour_unit=$request->wt_hour_unit;
+		$c_rate=$request->c_rate;
+		$type=$request->type;
+		$load_size=$request->load_size;
+		$load_duration=$request->load_duration;
+		$tempchk=$request->temp_chk;
+		$agechk=$request->age_chk;
+		$batteries=$request->batteries;
 
 		if($bc_unit == 'Ah'){
 			$bc_unit = '1';
@@ -17487,20 +17494,20 @@ class Physics extends Model
 
 	// Resistance Calculator	
 	function resistance($request){
-		$operations = $request->input('operations');
-		$band = $request->input('band');
-		$first = $request->input('first');
-		$second = $request->input('second');
-		$third = $request->input('third');
-		$multi = $request->input('multi');
-		$tolerance = $request->input('tolerance');
-		$temp = $request->input('temp');
-		$x = $request->input('x');
-		$length = $request->input('length');
-		$l_unit = $request->input('l_unit');
-		$diameter = $request->input('diameter');
-		$d_unit = $request->input('d_unit');
-		$conductivity = $request->input('conductivity');
+		$operations = $request->operations;
+		$band = $request->band;
+		$first = $request->first;
+		$second = $request->second;
+		$third = $request->third;
+		$multi = $request->multi;
+		$tolerance = $request->tolerance;
+		$temp = $request->temp;
+		$x = $request->x;
+		$length = $request->length;
+		$l_unit = $request->l_unit;
+		$diameter = $request->diameter;
+		$d_unit = $request->d_unit;
+		$conductivity = $request->conductivity;
 
 		function con($a,$b){
 			if($a == "ft"){
@@ -20147,29 +20154,42 @@ class Physics extends Model
 		
 
 		if($velo_value == 1){
-			if(is_numeric($iv) && is_numeric($fv) && is_numeric($ct) && empty($acc)){
+			if(is_numeric($iv) && is_numeric($fv) && is_numeric($ct) && $iv != "" && $fv != "" && $ct != ""){
 				$ans = ($fv - $iv) / $ct;
 				$unit = "m/s²";
 				$this->param['unit'] = $unit;
 				$this->param['ans'] = $ans;
+				$this->param['RESULT'] = 1;
+				return $this->param;
+			} else {
+				$this->param['error'] = 'Please! Check Your Input.';
+				return $this->param;
 			}
 		}elseif($velo_value == 2){
-			if(is_numeric($iv) && is_numeric($cdis) && is_numeric($ct) && empty($acc)){
+			if(is_numeric($iv) && is_numeric($cdis) && is_numeric($ct) && $iv != "" && $cdis != "" && $ct != ""){
 				$ans = (2 *( $cdis - ($iv * $ct))) / $ct ** 2;
 				$unit = "m/s²";
 				$this->param['unit'] = $unit;
 				$this->param['ans'] = $ans;
+				$this->param['RESULT'] = 1;
+				return $this->param;
+			} else {
+				$this->param['error'] = 'Please! Check Your Input.';
+				return $this->param;
 			}
 		}else{
-			if(is_numeric($force) && is_numeric($mass) && empty($acc)){
+			if(is_numeric($force) && is_numeric($mass) && $force != "" && $mass != ""){
 				$ans = $force / $mass;
 				$unit = "m/s²";
 				$this->param['unit'] = $unit;
 				$this->param['ans'] = $ans;
+				$this->param['RESULT'] = 1;
+				return $this->param;
+			} else {
+				$this->param['error'] = 'Please! Check Your Input.';
+				return $this->param;
 			}
 		}
-
-		return $this->param;
 	}
 
 
