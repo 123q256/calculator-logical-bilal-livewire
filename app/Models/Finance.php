@@ -27,11 +27,10 @@ class Finance extends Model
 		}
 	}
 	/*************************
-		Income Tex Calculator
+		Income Tax Calculator
 	 *************************/
 	function tax($request)
 	{
-		// dd($request->all());
 		if (is_numeric($request->income) && !empty($request->f_state)) {
 			$income = $request->income;
 			if (is_numeric($request->k_con)) {
@@ -721,7 +720,6 @@ class Finance extends Model
 	 *************************/
 	function salary($request)
 	{
-	// dd($request->all());
 		if (is_numeric($request->salary) && is_numeric($request->hours)) {
 			$salary = $request->salary;
 			$week_hours = $request->hours;
@@ -888,7 +886,6 @@ class Finance extends Model
 			if (isset($tax)) {
 				$this->param['tax'] = $tax;
 			}
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill all fields.';
@@ -900,7 +897,6 @@ class Finance extends Model
 	 *************************/
 	function stamp($request)
 	{
-		// dd($request->all());
 		if ($request->unit_type === 'uk') {
 			if (is_numeric($request->value)) {
 				$value = $request->value;
@@ -1051,7 +1047,6 @@ class Finance extends Model
 				$this->param['stamp_duty'] = number_format(@$stamp_duty, 2);
 				$this->param['Add'] = 'active';
 				$this->param['RESULT'] = 1;
-				// dd($this->param);
 				return $this->param;
 			} else {
 				$this->param['error'] = "Please Fill the Field.";
@@ -1111,7 +1106,7 @@ class Finance extends Model
 					$this->param['aus_c'] = number_format(109.50, 2);
 					$this->param['aus_d'] = number_format($aus_d, 2);
 					$this->param['Sub'] = 'active';
-					// dd($this->param);
+					$this->param['RESULT'] = 1;
 					return $this->param;
 				}
 				if ($request->aus_method === 'vic') {
@@ -1630,7 +1625,6 @@ class Finance extends Model
 					$this->param['aus_d'] = number_format($aus_d, 2);
 					$this->param['RESULT'] = 1;
 					$this->param['Sub'] = 'active';
-					// dd($this->param);
 					return $this->param;
 				}
 
@@ -1750,11 +1744,10 @@ class Finance extends Model
 		}
 	}
 	/*************************
-		stamp duty Calculator
+		Sales Tax Calculator
 	 *************************/
 	function salestax($request)
 	{
-			// dd($request->all());
 		if (is_numeric($request->vat) && is_numeric($request->amount)) {
 			$vat = $request->vat;
 			$amount = $request->amount;
@@ -1772,7 +1765,6 @@ class Finance extends Model
 			$this->param['vatAmount'] = round($vatAmount, 2);
 			$this->param['netBill'] = round($netbill, 2);
 			$this->param['RESULT'] = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill any two fields.';
@@ -1780,11 +1772,10 @@ class Finance extends Model
 		}
 	}
 	/*************************
-		price elasticity demand Calculator
+		Price Elasticity of Demand Calculator
 	 *************************/
 	function price($request)
 	{
-   	// dd($request->all(),'ddddddd');
 		if ($request->unit_type === 'Revenue') {
 
 			if (is_numeric($request->i_r) && is_numeric($request->f_r)) {
@@ -1859,7 +1850,6 @@ class Finance extends Model
 				}
 
 				$PED = round($PED, 4);
-				// dd($PED);
 				if ($PED > 1) {
 					$type = 'Elastic Demand';
 				} elseif ($PED == 1) {
@@ -1945,7 +1935,6 @@ class Finance extends Model
 				$this->param['PED'] = $PED;
 				$this->param['method'] = $request->method;
 				$this->param['RESULT'] = 1;
-				// dd($this->param);
 				return $this->param;
 			} else {
 				$this->param['error'] = 'Please fill all fields.';
@@ -1976,7 +1965,6 @@ class Finance extends Model
 	 *******************/
 	function contribution($request)
 	{
-		// dd($request->all());
 		$selling_price = $request->selling_price;
 		$variable_cost = $request->variable_cost;
 		$number_units = $request->number_units;
@@ -1996,7 +1984,6 @@ class Finance extends Model
 		}
 
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/*******************
@@ -2004,7 +1991,6 @@ class Finance extends Model
 	 *******************/
 	function bond($request)
 	{
-		// dd($request->all());
 
 		$faceValue = trim($request->faceValue);
 		$couponRate = trim($request->couponRate);
@@ -2214,7 +2200,6 @@ class Finance extends Model
 	 *******************/
 	function gdp_cal($request)
 	{
-		// dd($request->all());
 		$consumption = trim($request->consumption);
 		$consumption_unit = trim($request->consumption_unit);
 		$investment = trim($request->investment);
@@ -2254,7 +2239,6 @@ class Finance extends Model
 		$this->param['net_export'] = $net_export;
 		$this->param['gdp'] = $gdp;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/*******************
@@ -2262,7 +2246,6 @@ class Finance extends Model
 	 *******************/
 	function gdp($request)
 	{
-		dd($request->all());
 		$real = trim($request->real);
 		$real_unit = trim($request->real_unit);
 		$population = trim($request->population);
@@ -2511,7 +2494,6 @@ class Finance extends Model
 	 *******************/
 	function net($request)
 	{
-		// dd($request->all());
 		$as_real = $request->as_real;
 		$as_check = $request->as_check;
 		$as_saving = $request->as_saving;
@@ -2578,7 +2560,6 @@ class Finance extends Model
 			$this->param['error'] = 'At least two stock purchases are required.';
 			$this->param['shares'] = $shares;
 			$this->param['prices'] = $prices;
-			// dd($this->param);
 			return $this->param;
 		}
 	}
@@ -2631,7 +2612,6 @@ class Finance extends Model
 	 **********************/
 	function monthly($request)
 	{
-	// dd($request->all());
 		$pay = $request->pay;
 		$first = $request->first;
 		$second = $request->second;
@@ -2744,7 +2724,6 @@ class Finance extends Model
 		$this->param['quarterly_income'] = $quarterly_income;
 		$this->param['annual_income'] = $annual_income;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/*******************
@@ -2919,7 +2898,6 @@ class Finance extends Model
 		$this->param['ss_xy'] = $ss_xy;
 		$this->param['beta_1'] = sigFig($beta_1, 4);
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -2952,7 +2930,6 @@ class Finance extends Model
 	 **********************/
 	function growth($request)
 	{
-		// dd($request->all());
 		$operation = trim($request->operation);
 		$present_val = trim($request->present_val);
 		$past_val = trim($request->past_val);
@@ -2990,7 +2967,6 @@ class Finance extends Model
 		$this->param['growth_percent'] = $growth_percent;
 		$this->param['operation'] = $operation;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/**********************
@@ -3054,7 +3030,6 @@ class Finance extends Model
 			$this->param['over_time']   	= $over_time;
 			$this->param['normal_time']   	= $normal_time;
 			$this->param['RESULT'] 	    = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
@@ -3266,7 +3241,6 @@ class Finance extends Model
 	 **********************/
 	function future($request)
 	{
-		// dd($request->all());
 		$payment = $request->payment;
 		$interest = $request->interest;
 		$term = $request->term;
@@ -3402,7 +3376,6 @@ class Finance extends Model
 	 **********************/
 	function cap($request)
 	{
-		// dd($request->all());
 
 		$prop_val = $request->prop_val;
 		$ann_grs_inc = $request->ann_grs_inc;
@@ -3491,7 +3464,7 @@ class Finance extends Model
 	}
 
 	/**********************
-		Paypal Calculator/
+		PayPal Fee Calculator
 	 **********************/
 
 	function paypal($request)
@@ -3555,12 +3528,11 @@ class Finance extends Model
 		}
 	}
 	/**********************
-	 Margin  Calculator/
+	Margin Calculator/
 	 **********************/
 
 	function margin($request)
 	{
-		// dd($request->all());
 		if ($request->per && $request->x && $request->y && $request->z) {
 			$z = explode('@', $request->per);
 			$z = $z[0];
@@ -3585,7 +3557,6 @@ class Finance extends Model
 			}
 			$this->param['ans'] = "±" . $ans . "%";
 			$this->param['RESULT'] = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill all fields.';
@@ -3598,7 +3569,6 @@ class Finance extends Model
 
 	function enterprise($request)
 	{
-		// dd($request->all());
 		if (is_numeric($request->cs) && is_numeric($request->ps) && is_numeric($request->mvd) && is_numeric($request->mi) && is_numeric($request->ce)) {
 			$EV = $request->cs + $request->ps + $request->mvd + $request->mi - $request->ce;
 			$EV = number_format($EV);
@@ -3644,7 +3614,6 @@ class Finance extends Model
 	 **********************/
 	function macrs($request)
 	{
-	// dd($request->all());
 		if (is_numeric($request->basic) && is_numeric($request->percent) && $request->date) {
 
 			$dates = DateTime::createFromFormat('Y-m-d', $request->date);
@@ -29557,7 +29526,6 @@ class Finance extends Model
 				$this->param['methodf'] = $request->methodf;
 				$this->param['methods'] = $request->methods;
 				$this->param['RESULT'] = 1;
-				// dd($this->param);
 				return $this->param;
 			} else {
 				$this->param['error'] = 'Please fill all fields.';
@@ -29610,7 +29578,6 @@ class Finance extends Model
 	 **********************/
 	function markup($request)
 	{
-		// dd($request->all());
 		if ($request->to_cal === '1') {
 			if (is_numeric($request->a) && is_numeric($request->b)) {
 				$cost = $request->a;
@@ -29729,7 +29696,6 @@ class Finance extends Model
 	 **********************/
 	function capm($request)
 	{
-		// dd($request->all());
 		$cal = $request->cal;
 		$rf = $request->rf;
 		$rm = $request->rm;
@@ -29798,7 +29764,6 @@ class Finance extends Model
 			$this->param['Rmr'] = round($r_mr, 3);
 			$this->param['Rmrp'] = round($r_mrp, 3);
 			$this->param['RESULT'] = 1;
-			//   dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill all fields.';
@@ -29810,7 +29775,6 @@ class Finance extends Model
 	 **********************/
 	function overtime($request)
 	{
-		// dd($request->all());
 		$pay = $request->pay;
 		$per = $request->per;
 		$time = $request->time;
@@ -29835,7 +29799,6 @@ class Finance extends Model
 				$monthTime = $monthTime;
 			} elseif ($timeper == 'd_m') {
 				$monthTime = ($monthTime * 8);
-				// dd($monthTime);
 			} elseif ($timeper == 'w_m') {
 				$monthTime = $monthTime * 5 * 8;
 			} elseif ($timeper == 'h_w') {
@@ -29869,7 +29832,6 @@ class Finance extends Model
 	 **********************/
 	function unemployment($request)
 	{
-		// dd($request->all());
 		$employed_people = $request->employed_people;
 		$unemployed_people = $request->unemployed_people;
 		$adult_population = $request->adult_population;
@@ -29913,7 +29875,6 @@ class Finance extends Model
 		}
 		$this->param['method'] = $method;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -29922,7 +29883,6 @@ class Finance extends Model
 	 **********************/
 	function cost($request)
 	{
-		// dd($request->all());
 		$pay = $request->pay;
 		$dividend_per_share = $request->dividend_per_share;
 		$current_market_value = $request->current_market_value;
@@ -29950,7 +29910,6 @@ class Finance extends Model
 		$this->param['ans'] = $final_answer;
 		$this->param['pay'] = $pay;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/************************
@@ -29958,7 +29917,6 @@ class Finance extends Model
 	 ************************/
 	function consumer($request)
 	{
-		// dd($request->all());
 		$operations1 = $request->operations1;
 		$operations2 = $request->operations2;
 		$first = $request->first;
@@ -30034,7 +29992,6 @@ class Finance extends Model
 		$this->param['operations1'] = $operations1;
 		$this->param['operations2'] = $operations2;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -30044,7 +30001,6 @@ class Finance extends Model
 	function stock($request)
 	{
 
-		// dd($request->all());
 		$first = $request->first;
 		$second = $request->second;
 		$third = $request->third;
@@ -30065,7 +30021,6 @@ class Finance extends Model
 		} else if ($f_unit == $mycurrency) {
 			$f_unit = '0.01';
 		}
-		// dd($t_unit);
 		$third = $third * $t_unit;
 		$five = $five * $f_unit;
 		if (is_numeric($first) && is_numeric($second) && is_numeric($third) && is_numeric($four) && is_numeric($five) && is_numeric($cgt)) {
@@ -30114,7 +30069,6 @@ class Finance extends Model
 		$this->param['roi_ans'] = $roi_answer;
 		$this->param['break_ans'] = $break_ans;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/**********************
@@ -30122,7 +30076,6 @@ class Finance extends Model
 	 **********************/
 	function roas($request)
 	{
-		// dd($request->all());
 		$first = $request->first;
 		$hidden_currency = $request->hidden_currency;
 		$operations1 = $request->operations1;
@@ -30171,7 +30124,6 @@ class Finance extends Model
 		$this->param['second'] = $second;
 		$this->param['operations1'] = $operations1;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/**********************
@@ -30179,7 +30131,6 @@ class Finance extends Model
 	 **********************/
 	function pay($request)
 	{
-		// dd($request->all());
 		$pay = $request->pay;
 		$period = $request->period;
 		$hour = $request->hour;
@@ -30240,7 +30191,6 @@ class Finance extends Model
 			$this->param['yearly'] = $yearly;
 			$this->param['type'] = $type;
 			$this->param['RESULT'] = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill all fields.';
@@ -30253,7 +30203,6 @@ class Finance extends Model
 	 **********************/
 	function gross($request)
 	{
-		// dd($request->all());
 		$pay_frequency = $request->pay_frequency;
 		$type          = $request->type;
 		$pay_method    = $request->pay_method;
@@ -30511,7 +30460,6 @@ class Finance extends Model
 			$this->param['filer_status']               = $filer_status;
 			$this->param['type']               = $type;
 			$this->param['RESULT']                    = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill all fields.';
@@ -30524,7 +30472,6 @@ class Finance extends Model
 	 **********************/
 	function turo($request)
 	{
-		// dd($request->all());
 		$type = $request->type;
 		$operations = $request->operations;
 		$first = $request->first;
@@ -30585,7 +30532,6 @@ class Finance extends Model
 		$this->param['type'] = $type;
 		$this->param['operations'] = $operations;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/**********************
@@ -30594,7 +30540,6 @@ class Finance extends Model
 
 	function commission($request)
 	{
-		// dd($request->all());
 		$find = $request->find;
 		$select1 = $request->select1;
 		$sale_price = $request->sale_price;
@@ -30639,7 +30584,6 @@ class Finance extends Model
 		$this->param['ans'] = $answer;
 		$this->param['select1'] = $select1;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -30648,7 +30592,6 @@ class Finance extends Model
 	 **********************/
 	function marginal($request)
 	{
-		// dd($request->all());
 		if ($request->unit_type === 'sr') {  
 			$dc = $request->dc;
 			$dq = $request->dq;
@@ -30663,7 +30606,6 @@ class Finance extends Model
 			$fq_unit = $request->fq_unit;
 			$gr = $request->unit_type;
 		}
-		// dd($request->all());
 		if (isset($sr)) {
 			if (is_numeric($dc) && is_numeric($dq) && !empty($dq_unit)) {
 				$check = true;
@@ -30724,7 +30666,6 @@ class Finance extends Model
 					$this->param['dq'] = $dq;
 					$this->param['dc'] = $dc;
 					$this->param['RESULT'] = 1;
-					// dd($this->param);
 					return $this->param;
 				}
 			} else {
@@ -30735,7 +30676,6 @@ class Finance extends Model
 			$this->param['dc'] = $dc;
 			$this->param['dq'] = $dq;
 			$this->param['RESULT'] = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill all fields.';
@@ -30780,7 +30720,6 @@ class Finance extends Model
 		}
 		$this->param['type'] = $type;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -30789,7 +30728,6 @@ class Finance extends Model
 	 *******************/
 	function labor($request)
 	{
-		// dd($request->all());
 		$h_p_w = $request->h_p_w;
 		$p_r = $request->p_r;
 		$a_d_p_y = $request->a_d_p_y;
@@ -30835,7 +30773,6 @@ class Finance extends Model
 		$this->param['annual_cost'] = $annual_cost;
 		$this->param['l_c_percentge'] = $l_c_percentge;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -30844,7 +30781,6 @@ class Finance extends Model
 	 *******************/
 	function nps($request)
 	{
-		// dd($request->all());
 		$score_ten = trim($request->score_ten);
 		$score_nine = trim($request->score_nine);
 		$score_eight = trim($request->score_eight);
@@ -30889,7 +30825,6 @@ class Finance extends Model
 		$this->param['score_one'] = $score_one;
 		$this->param['score_zero'] = $score_zero;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -30898,7 +30833,6 @@ class Finance extends Model
 	 *******************/
 	function va($request)
 	{
-	// dd($request->all());
 		$right_arm = trim($request->right_arm);
 		$left_arm = trim($request->left_arm);
 		$right_leg = trim($request->right_leg);
@@ -31060,7 +30994,6 @@ class Finance extends Model
 		$this->param['rate'] = $rate;
 		$this->param['status'] = $status;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -31069,7 +31002,6 @@ class Finance extends Model
 	 *******************/
 	function wedding($request)
 	{
-		// dd($request->all());
 		$spend = trim($request->spend);
 		$guest = trim($request->guest);
 		$dress = trim($request->dress) ?: 0;
@@ -31129,7 +31061,6 @@ class Finance extends Model
 			$this->param['clickvalue3'] = $clickvalue3;
 			$this->param['clickvalue4'] = $clickvalue4;
 			$this->param['clickvalue5'] = $clickvalue5;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please fill all fields.';
@@ -31143,7 +31074,6 @@ class Finance extends Model
 	 **********************/
 	function money($request)
 	{
-		// dd($request->all());
 		$currency = $request->currency;
 		if (isset($request->checkbox1)) {
 			$checkbox1 = $request->checkbox1;
@@ -31299,7 +31229,6 @@ class Finance extends Model
 
 			$ans_currency = "₱";
 		}
-		// dd($note_values);
 		foreach ($note_values as $key => $value) {
 
 			if (is_numeric($bank_notes[$key])) {
@@ -31370,7 +31299,6 @@ class Finance extends Model
 		$this->param['checkbox3'] = $checkbox3;
 		$this->param['currency'] = $currency;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 
@@ -31379,7 +31307,6 @@ class Finance extends Model
 	 **********************/
 	function npv($request)
 	{
-		// dd($request->all());
 		$initial = $request->initial;
 		$discount = $request->discount;
 		$year = $request->year;
@@ -31415,13 +31342,11 @@ class Finance extends Model
 		$this->param['year'] = $year;
 		$this->param['RESULT'] = 1;
 		$this->param['arrayLength'] = count($year);
-		// dd($this->param);
 		return $this->param;
 	}
-
+    //  EBITDA Calculator
 	function ebitda($request)
 	{
-		// dd($request->all());
 		if ($request->unit_type === 'simple') {
 			if (is_numeric($request->x) && is_numeric($request->y) && is_numeric($request->a) && is_numeric($request->d)) {
 				$ebitda = $request->x - $request->y + $request->a + $request->d;
@@ -31455,7 +31380,6 @@ class Finance extends Model
 	 *******************/
 	public function cagr($request)
 	{
-		// dd($request->all());
 		$units = trim($request->unit_type);
 		$starting_first = trim($request->starting_first);
 		$ending_first = trim($request->ending_first);
@@ -31640,7 +31564,6 @@ class Finance extends Model
 				$this->param['year'] = $year;
 				$this->param['months'] = $months;
 				$this->param['days'] = $days;
-				// dd($this->param);
 
 			} else {
 				$this->param['error'] = 'Please fill all fields.';
@@ -31659,7 +31582,6 @@ class Finance extends Model
 	 **********************/
 	public function roi($request)
 	{
-		// dd($request->all());
 
 		$invest = $request->invest;
 		$return = $request->return;
@@ -31879,7 +31801,6 @@ class Finance extends Model
 			$this->param['find_compare'] = $find_compare;
 			$this->param['from'] = $s_date_compare;
 			$this->param['to'] = $e_date_compare;
-			// dd($this->param);
 
 			return $this->param;
 		}
@@ -31895,7 +31816,6 @@ class Finance extends Model
 		$this->param['find'] = $find;
 		$this->param['date'] = $date;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);	 	
 		return $this->param;
 	}
 
@@ -31905,7 +31825,6 @@ class Finance extends Model
 	 *******************/
 	function discounted($request)
 	{
-	// dd($request->all());
 		$main_unit = trim($request->main_unit);
 		$input = $request->input;
 		$cash = trim($request->cash);
@@ -32075,7 +31994,7 @@ class Finance extends Model
 	 *******************/
 	function discount($request)
 	{
-	// dd($request->all());
+		$ans = $pay = $payt = null;
 		$myLang = app()->getLocale();
 		if($myLang == 'ar'){
 			if (isset($request->form_a)) {
@@ -32223,7 +32142,6 @@ class Finance extends Model
 							$pay = $tax + $saving;
 							$ans = ($saving / $pay ) * 100;
 							$ans = round($ans,3);
-							dd($ans,$pay);
 						}
 					} else {
 						if(empty($pay) && empty($saving)){
@@ -32252,7 +32170,6 @@ class Finance extends Model
 							$ans = ($saving / $pay ) * 100;
 							$ans = round($ans,3);
 							$payt = $saving - $ans;
-							// dd($ans,$pay);
 						}
 					}
 				} else {
@@ -32485,7 +32402,6 @@ class Finance extends Model
 							$pay = $tax + $saving;
 							$ans = ($saving / $pay ) * 100;
 							$ans = round($ans,3);
-							dd($ans,$pay);
 						}
 					} else {
 						if(empty($pay) && empty($saving)){
@@ -32514,7 +32430,6 @@ class Finance extends Model
 							$ans = ($saving / $pay ) * 100;
 							$ans = round($ans,3);
 							$payt = $saving - $ans;
-							// dd($ans,$pay);
 						}
 					}
 				} else {
@@ -32989,7 +32904,6 @@ class Finance extends Model
 	 *******************/
 	function employee($request)
 	{
-		// dd($request->all());
 		$submit = trim($request->unit_type);
 		$rate = trim($request->rate);
 		$hour_worked = trim($request->hour_worked);
@@ -33087,14 +33001,12 @@ class Finance extends Model
 		}
 		$this->param['RESULT'] = 1;
 		$this->param['submit'] = $submit;
-		// dd($this->param);
 		return $this->param;
 	}
 
 
 	function payback($request)
 	{
-		//  dd($request->all());
 		if ($request->unit_type == 'same') {
 			if (is_numeric($request->initial) && is_numeric($request->cash) && is_numeric($request->in_de) && is_numeric($request->year) && is_numeric($request->discount)) {
 				if ($request->year <= 100) {
@@ -33183,7 +33095,6 @@ class Finance extends Model
 					$this->param['dis_back'] = $dis_back;
 					$this->param['table'] = $table;
 					$this->param['RESULT'] = 1;
-					// dd($this->param);
 					return $this->param;
 				} else {
 					$this->param['error'] = 'Please provide a positive number of years that is 100 or less.';
@@ -33299,7 +33210,6 @@ class Finance extends Model
 				$this->param['dis_back'] = $dis_back;
 				$this->param['table'] = $table;
 				$this->param['RESULT'] = 1;
-				dd($this->param);
 				return $this->param;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
@@ -33307,10 +33217,9 @@ class Finance extends Model
 			}
 		}
 	}
-
+    //   WACC Calculator
 	function wacc($request)
 	{
-		// dd($request->all());
 		if ($request->unit_type == 'debt') {
 
 			if (is_numeric($request->risk) && is_numeric($request->beta) && is_numeric($request->eq)) {
@@ -33359,7 +33268,6 @@ class Finance extends Model
 				$this->param['pfd'] = $pfd;
 				$this->param['T'] = $T;
 				$this->param['RESULT'] = 1;
-				// dd($this->param);
 				return $this->param;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
@@ -33370,7 +33278,6 @@ class Finance extends Model
 
 	public function basis($request)
 	{
-		// dd($request->all());
 
 		$dec = $request->dec;
 		$percent = $request->percent;
@@ -33491,7 +33398,6 @@ class Finance extends Model
 	 **********************/
 	public function car_dep($request)
 	{
-		// dd($request->all());
 		$car_cost = $request->car_cost;
 		$c_age = $request->c_age;
 		$car_year = $request->car_year;
@@ -33536,7 +33442,6 @@ class Finance extends Model
 			$this->param['total_years'] = $total_years;
 			$this->param['total_book_value'] = $total_book_value;
 			$this->param['RESULT'] = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
@@ -33549,7 +33454,6 @@ class Finance extends Model
 	 **********************/
 	function property($request)
 	{
-		// dd($request->all());
 		$basis = $request->basis;
 		$recovery = $request->recovery;
 		$round = $request->round;
@@ -33566,7 +33470,6 @@ class Finance extends Model
 			$table = '';
 			$total_years = '';
 			$date = explode('-', $date1);
-			// dd($date);
 			$start_year = $date['0'];
 			$start_month = $date['1'];
 			for ($i = 0; $i <= $year; $i++) {
@@ -33603,7 +33506,6 @@ class Finance extends Model
 			$this->param['total_years'] = $total_years;
 			$this->param['total_book_value'] = $total_book_value;
 			$this->param['RESULT'] = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
@@ -33616,7 +33518,6 @@ class Finance extends Model
 	 **********************/
 	public function depreciation($request)
 	{
-	// dd($request->all());
 		$hiddent_currency = $request->hiddent_currency;
 		if (!isset($hiddent_currency)) {
 			$hiddent_currency = "$";
@@ -34181,7 +34082,6 @@ class Finance extends Model
 				$this->param['Depreciation_Per_Unit'] = $Depreciation_Per_Unit;
 				$this->param['Depreciation_for_Period'] = $Depreciation_for_Period;
 				$this->param['RESULT'] = 1;
-				// dd($this->param);
 				return $this->param;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input';
@@ -34195,7 +34095,6 @@ class Finance extends Model
 	 *******************/
 	function arv($request)
 	{
-		// dd($request->all());
 		$method_unit = trim($request->method_unit);
 		$property = trim($request->property);
 		$area = trim($request->area);
@@ -34288,7 +34187,6 @@ class Finance extends Model
 		$this->param['percentage'] = $percentage;
 		$this->param['roi'] = $roi;
 		$this->param['RESULT'] = 1;
-		// dd($this->param);
 		return $this->param;
 	}
 	/*******************
@@ -34314,7 +34212,6 @@ class Finance extends Model
 
 	function tip($request)
 	{
-		// dd($request->all());
 		$for = $request->input('for');
 		$bill = $request->input('x');
 		$xs = $request->input('xs');
@@ -34326,7 +34223,6 @@ class Finance extends Model
 			if (is_numeric($xs)) {
 				$this->param['RESULT'] = 1;
 				$this->param['single'] = 1;
-				// dd($this->param);
 				return true;
 			} else {
 				$this->param['error'] = 'Please! Fill all the Input Fields';
@@ -34350,7 +34246,6 @@ class Finance extends Model
 				$this->param['c'] = $c;
 				$this->param['d'] = $d;
 				$this->param['RESULT'] = 1;
-				// dd($this->param);
 				return $this->param;
 			} else {
 				$this->param['error'] = 'Please! Fill all the Input Fields';
@@ -34360,7 +34255,6 @@ class Finance extends Model
 	}
 		// Hourly to Salary Calculator
 	public function hourly($request){
-		// dd($request->all());
 		$first = $request->input('first');
 		$second = $request->input('second');
 		$third = $request->input('third');
@@ -34378,12 +34272,10 @@ class Finance extends Model
 	    $this->param['monthly'] = $monthly;
 	    $this->param['car'] 	= $car;
 	    $this->param['RESULT'] 	= 1;
-		// dd($this->param);
 	    return  $this->param;
 	}
 	// Salary to Hourly Calculator
 	function salarytohur($request){
-		// dd($request->all());
 		$salary          	= $request->input('salary');
 		$hweek           	= $request->input('hweek');
 		$hyear				= $request->input('hyear');
@@ -34434,7 +34326,6 @@ class Finance extends Model
 				$this->param['name'] = $name;
 				$this->param['currency'] = $currency;
 				$this->param['RESULT'] 	  = 1;
-				// dd($this->param);
 				return $this->param;
 			}else{
 				$this->param['error'] = 'Please! Check Your Input';
@@ -34446,7 +34337,6 @@ class Finance extends Model
 // rent spiit
 public function rent_split($request)
 {
-	// dd($request->all());
 	$total_rent = $request->input('total_rent');
 	// $currency   = $request->input('currency');
 	$total_area = $request->input('total_area');
@@ -34454,7 +34344,6 @@ public function rent_split($request)
 	$room_area  = $request->input('room_area');
 	$persons    = $request->input('persons');
 	$bath       = $request->input('bath');
-	// dd($request->input());
 	if (is_numeric($total_rent) && is_numeric($total_area) && !empty($bedrooms) && !empty($persons) && !empty($room_area) && !empty($bath)) {
 		if ($total_area >= array_sum($room_area)) {
 
@@ -34466,7 +34355,6 @@ public function rent_split($request)
 			}
 			$this->param['room_rent'] = $room_rent;
 			$this->param['RESULT'] 	  = 1;
-			// dd($this->param);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Combined square footage of rooms should not exceed total square footage of house';
