@@ -2131,7 +2131,7 @@ class Finance extends Model
 		return $this->param;
 	}
 	/*******************
-		Percent of Sales Calculator
+		Sales Percentage Calculator
 	 *******************/
 	function percent($request)
 	{
@@ -3038,7 +3038,7 @@ class Finance extends Model
 	}
 
 	/**********************
-		Option Profits Calculator
+		Options Profit Calculator
 	 **********************/
 	function options($reequest)
 	{
@@ -30535,7 +30535,7 @@ class Finance extends Model
 		return $this->param;
 	}
 	/**********************
-		Turo Caluclator
+		Commission Calculator
 	 **********************/
 
 	function commission($request)
@@ -32922,6 +32922,7 @@ class Finance extends Model
 			$length_perk = count($perk_name);
 			$length_annual = count($annual_contribution);
 			$name_array = array();
+			$perk_val = array();
 
 			for ($y = 0; $y < $length_perk && $y < $length_annual; $y++) {
 				$name_array[] = $perk_name[$y];
@@ -33004,7 +33005,7 @@ class Finance extends Model
 		return $this->param;
 	}
 
-
+    // Payback Period Calculator
 	function payback($request)
 	{
 		if ($request->unit_type == 'same') {
@@ -33139,7 +33140,7 @@ class Finance extends Model
 						$ave_i++;
 						$pv = $cash / pow((1 + ($discount / 100)), $i);
 						$ave_dis = $ave_dis + $pv;
-						$table .= "<tr><td class='py-2 border-b'>Year $i</td><td class='py-2 border-b'>" . $request->currency1 . number_format($cash, 2) . "</td><td class='py-2 border-b'>" . $request->currency1 . number_format($cdcf + $cash, 2) . "</td><td class='py-2 border-b'>" . $request->currency1 . number_format($pv, 2) . "</td><td class='py-2 border-b'>" . $request->currency1 . number_format($cdcf_ + $pv, 2) . "</td></tr>";
+						$table .= "<tr><td class='py-2 border-b'>Year $i</td><td class='py-2 border-b'>" . $request->currency . number_format($cash, 2) . "</td><td class='py-2 border-b'>" . $request->currency . number_format($cdcf + $cash, 2) . "</td><td class='py-2 border-b'>" . $request->currency . number_format($pv, 2) . "</td><td class='py-2 border-b'>" . $request->currency . number_format($cdcf_ + $pv, 2) . "</td></tr>";
 						$cdcf = $cdcf + $cash;
 						$total_back = $total_back + $cash;
 
@@ -33275,7 +33276,7 @@ class Finance extends Model
 			}
 		}
 	}
-
+    //  Basis Point Calculator
 	public function basis($request)
 	{
 

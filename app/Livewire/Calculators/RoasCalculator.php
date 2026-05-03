@@ -103,6 +103,16 @@ class RoasCalculator extends Component
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 return redirect()->to(url()->previous() ?? '/');
             }
+              $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+                
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
             session()->flash('validation_error', $this->error);
