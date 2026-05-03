@@ -22,13 +22,6 @@
                         </div>
                     </div>
 
-                    <!-- Quantity -->
-                    <div class="max-w-2xl mx-auto">
-                        <label for="quantity" class="label">{{ $lang['21'] ?? 'Quantity' }}</label>
-                        <div class="w-full py-2">
-                            <input type="number" step="any" wire:model.live="quantity" id="quantity" class="input" />
-                        </div>
-                    </div>
 
                     <!-- Rooms Loop -->
                     <div class="grid grid-cols-1 gap-2">
@@ -47,7 +40,7 @@
 
                                 <div class="grid grid-cols-12 gap-x-6 gap-y-2">
                                     <!-- Shape Selection -->
-                                    <div class="col-span-12 {{ $index == 0 ? 'md:col-span-6' : 'md:col-span-6' }}">
+                                    <div class="col-span-12 md:col-span-6">
                                         <label class="label !text-[11px] !mb-0">{{ $index == 0 ? ($lang['5'] ?? 'Project Shape') : 'Multiple rooms' }}</label>
                                         <div class="w-full py-1">
                                             <select wire:model.live="rooms.{{ $index }}.shape" class="input !py-1 !text-xs !h-9">
@@ -68,34 +61,24 @@
                                         </div>
                                     </div>
 
-                                    <!-- Shape Illustration (Only for first room) -->
+                                    <!-- Quantity (Only in first room block to act as global/header) -->
                                     @if($index == 0)
-                                    <div class="col-span-12 md:col-span-6 flex justify-center items-center">
-                                        @php
-                                            $img = match($room['shape']) {
-                                                'sq' => 'square.png',
-                                                'rec' => 'rectangle.png',
-                                                'recbor' => 'rectangle_border.png',
-                                                'para' => 'pp.png',
-                                                'tri' => 'triangle.png',
-                                                'cir' => 'circle.png',
-                                                'ell' => 'ellipse.png',
-                                                'sec' => 'ss.png',
-                                                'oct' => 'octagon.png',
-                                                'ann' => 'Annulus.png',
-                                                'cirborder' => 'circle_border.png',
-                                                'hex' => 'hexagon.png',
-                                                'tra' => 'Trapezoid.png',
-                                                default => 'k1.png'
-                                            };
-                                        @endphp
-                                        <div class="bg-white p-1 rounded border shadow-sm">
-                                            <img src="{{ asset('images/' . $img) }}" alt="Shape" class="max-h-20 object-contain">
+                                    <div class="col-span-12 md:col-span-6">
+                                        <label for="quantity" class="label !text-[11px] !mb-0">{{ $lang['21'] ?? 'Quantity' }}</label>
+                                        <div class="w-full py-1">
+                                            <input type="number" step="any" wire:model.live="quantity" id="quantity" class="input !py-1 !text-xs !h-9" />
                                         </div>
                                     </div>
                                     @endif
 
-                                    <!-- Conditional Inputs based on Shape -->
+
+
+
+                                    @if($index == 0)
+                                        <!-- Measurement Inputs Container for Room 1 (stacked next to image) -->
+                                        <div class="col-span-12 md:col-span-6 grid grid-cols-1 gap-y-2">
+                                    @endif
+
                                         {{-- Length / Width Group --}}
                                         @if(in_array($room['shape'], ['rec', 'recbor']))
                                             <div class="col-span-12 md:col-span-6">
@@ -166,11 +149,11 @@
 
                                         {{-- Side C --}}
                                         @if($room['shape'] == 'tri')
-                                            <div class="col-span-12 md:col-span-6">
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
                                                 <label class="label">{{ $lang['25'] ?? 'Side' }} (c)</label>
-                                                <div class="relative w-full py-2">
-                                                    <input type="number" wire:model="rooms.{{ $index }}.sideclength" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
-                                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_sc_{{ $index }}')">{{ $room['sideclength_unit'] }} ▾</label>
+                                                <div class="relative w-full py-1">
+                                                    <input type="number" wire:model="rooms.{{ $index }}.sideclength" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_sc_{{ $index }}')">{{ $room['sideclength_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_sc_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -184,11 +167,11 @@
 
                                         {{-- Height / Base --}}
                                         @if(in_array($room['shape'], ['para', 'tra']))
-                                            <div class="col-span-12 md:col-span-6">
-                                                <label class="label">{{ $room['shape'] == 'para' ? ($lang[29] ?? 'Base') : ($lang[27] ?? 'Height') }}</label>
-                                                <div class="relative w-full py-2">
-                                                    <input type="number" wire:model="rooms.{{ $index }}.{{ $room['shape'] == 'para' ? 'base' : 'height' }}" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
-                                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_bh_{{ $index }}')">{{ $room['shape'] == 'para' ? $room['base_unit'] : $room['height_unit'] }} ▾</label>
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
+                                                <label class="label !text-[11px] !mb-0">{{ $room['shape'] == 'para' ? ($lang[29] ?? 'Base') : ($lang[27] ?? 'Height') }}</label>
+                                                <div class="relative w-full py-1">
+                                                    <input type="number" wire:model="rooms.{{ $index }}.{{ $room['shape'] == 'para' ? 'base' : 'height' }}" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_bh_{{ $index }}')">{{ $room['shape'] == 'para' ? $room['base_unit'] : $room['height_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_bh_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -199,11 +182,11 @@
                                                 </div>
                                             </div>
                                             @if($room['shape'] == 'para')
-                                                <div class="col-span-12 md:col-span-6">
-                                                    <label class="label">{{ $lang[27] ?? 'Height' }}</label>
-                                                    <div class="relative w-full py-2">
-                                                        <input type="number" wire:model="rooms.{{ $index }}.height" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
-                                                        <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_h2_{{ $index }}')">{{ $room['height_unit'] }} ▾</label>
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
+                                                <label class="label !text-[11px] !mb-0">{{ $lang[27] ?? 'Height' }}</label>
+                                                <div class="relative w-full py-1">
+                                                    <input type="number" wire:model="rooms.{{ $index }}.height" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_h2_{{ $index }}')">{{ $room['height_unit'] }} ▾</label>
                                                         @if ($showDropdown === 'unit_h2_' . $index)
                                                             <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                                 @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -218,11 +201,11 @@
 
                                         {{-- Circle / Diameter --}}
                                         @if($room['shape'] == 'cir')
-                                            <div class="col-span-12 md:col-span-6">
-                                                <label class="label">{{ $lang[28] ?? 'Diameter' }}</label>
-                                                <div class="relative w-full py-2">
-                                                    <input type="number" wire:model="rooms.{{ $index }}.diameter" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
-                                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_dia_{{ $index }}')">{{ $room['diameter_unit'] }} ▾</label>
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
+                                                <label class="label !text-[11px] !mb-0">{{ $lang[28] ?? 'Diameter' }}</label>
+                                                <div class="relative w-full py-1">
+                                                    <input type="number" wire:model="rooms.{{ $index }}.diameter" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_dia_{{ $index }}')">{{ $room['diameter_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_dia_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -236,11 +219,11 @@
 
                                         {{-- Ellipse --}}
                                         @if($room['shape'] == 'ell')
-                                            <div class="col-span-12 md:col-span-6">
-                                                <label class="label">Axis (a)</label>
-                                                <div class="relative w-full py-2">
-                                                    <input type="number" wire:model="rooms.{{ $index }}.axisa" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
-                                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_aa_{{ $index }}')">{{ $room['axisa_unit'] }} ▾</label>
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
+                                                <label class="label !text-[11px] !mb-0">Axis (a)</label>
+                                                <div class="relative w-full py-1">
+                                                    <input type="number" wire:model="rooms.{{ $index }}.axisa" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_aa_{{ $index }}')">{{ $room['axisa_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_aa_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -250,11 +233,11 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="col-span-12 md:col-span-6">
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
                                                 <label class="label !text-[11px] !mb-0">Axis (b)</label>
                                                 <div class="relative w-full py-1">
                                                     <input type="number" wire:model="rooms.{{ $index }}.axisb" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
-                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_ab_{{ $index }}')">{{ $room['axisb_unit'] }} ▾</label>
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_ab_{{ $index }}')">{{ $room['axisb_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_ab_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -268,11 +251,11 @@
 
                                         {{-- Sector --}}
                                         @if($room['shape'] == 'sec')
-                                            <div class="col-span-12 md:col-span-6">
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
                                                 <label class="label !text-[11px] !mb-0">{{ $lang[31] ?? 'Radius' }} (r)</label>
                                                 <div class="relative w-full py-1">
                                                     <input type="number" wire:model="rooms.{{ $index }}.radius" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
-                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_rad_{{ $index }}')">{{ $room['radius_unit'] }} ▾</label>
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_rad_{{ $index }}')">{{ $room['radius_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_rad_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -282,7 +265,7 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="col-span-12 md:col-span-6">
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
                                                 <label class="label !text-[11px] !mb-0">{{ $lang[32] ?? 'Angle' }} °</label>
                                                 <div class="w-full py-1">
                                                     <input type="number" wire:model="rooms.{{ $index }}.angle" step="any" class="input !py-1 !text-xs !h-9" />
@@ -292,11 +275,11 @@
 
                                         {{-- Annulus / Circular Border --}}
                                         @if(in_array($room['shape'], ['ann', 'cirborder']))
-                                            <div class="col-span-12 md:col-span-6">
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
                                                 <label class="label !text-[11px] !mb-0">{{ $room['shape'] == 'ann' ? ($lang[34] ?? 'Outer Diameter') : ($lang[33] ?? 'Inner Diameter') }}</label>
                                                 <div class="relative w-full py-1">
                                                     <input type="number" wire:model="rooms.{{ $index }}.{{ $room['shape'] == 'ann' ? 'outer_diameter' : 'inner_diameter' }}" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
-                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_od_{{ $index }}')">{{ $room['shape'] == 'ann' ? $room['outer_diameter_unit'] : $room['inner_diameter_unit'] }} ▾</label>
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_od_{{ $index }}')">{{ $room['shape'] == 'ann' ? $room['outer_diameter_unit'] : $room['inner_diameter_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_od_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -306,11 +289,11 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="col-span-12 md:col-span-6">
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
                                                 <label class="label !text-[11px] !mb-0">{{ $room['shape'] == 'ann' ? ($lang[33] ?? 'Inner Diameter') : ($lang[24] ?? 'Border Width') }}</label>
                                                 <div class="relative w-full py-1">
                                                     <input type="number" wire:model="rooms.{{ $index }}.{{ $room['shape'] == 'ann' ? 'inner_diameter' : 'border_width' }}" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
-                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_id_{{ $index }}')">{{ $room['shape'] == 'ann' ? $room['inner_diameter_unit'] : $room['border_width_unit'] }} ▾</label>
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_id_{{ $index }}')">{{ $room['shape'] == 'ann' ? $room['inner_diameter_unit'] : $room['border_width_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_id_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -322,13 +305,13 @@
                                             </div>
                                         @endif
 
-                                        {{-- Rectangle Border --}}
+                                        {{-- Rectangle Border Extra --}}
                                         @if($room['shape'] == 'recbor')
-                                            <div class="col-span-12 md:col-span-6">
-                                                <label class="label">{{ $lang[24] ?? 'Border Width' }}</label>
-                                                <div class="relative w-full py-2">
-                                                    <input type="number" wire:model="rooms.{{ $index }}.border_width" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" />
-                                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('unit_bw_{{ $index }}')">{{ $room['border_width_unit'] }} ▾</label>
+                                            <div class="col-span-12 {{ $index == 0 ? '' : 'md:col-span-6' }}">
+                                                <label class="label !text-[11px] !mb-0">{{ $lang[24] ?? 'Border Width' }}</label>
+                                                <div class="relative w-full py-1">
+                                                    <input type="number" wire:model="rooms.{{ $index }}.border_width" step="any" class="border border-gray-300 p-1 rounded focus:ring-1 w-full text-xs h-9" />
+                                                    <label class="absolute cursor-pointer text-[10px] underline right-6 top-3 z-20" wire:click="toggleOverlay('unit_bw_{{ $index }}')">{{ $room['border_width_unit'] }} ▾</label>
                                                     @if ($showDropdown === 'unit_bw_' . $index)
                                                         <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
                                                             @foreach (["in", "ft", "yd", "mm", "cm", "m"] as $u)
@@ -338,6 +321,35 @@
                                                     @endif
                                                 </div>
                                             </div>
+                      </div>
+                                    @endif
+                                    @if($index == 0)
+                                        </div>
+                                    @endif
+                                    @if($index == 0)
+                                    <div class="col-span-12 md:col-span-6 flex justify-center items-center">
+                                        @php
+                                            $img = match($room['shape']) {
+                                                'sq' => 'k1.png',
+                                                'rec' => 'Rectangle.png',
+                                                'recbor' => 'Rectangle Border.png',
+                                                'tra' => 'Trapezoid.png',
+                                                'para' => 'Parallelogram.png',
+                                                'tri' => 'Triangle.png',
+                                                'cir' => 'Circle.png',
+                                                'ell' => 'Ellipse.png',
+                                                'sec' => 'Sector.png',
+                                                'hex' => 'Hexagon.png',
+                                                'oct' => 'Octagon.png',
+                                                'ann' => 'Annulus.png',
+                                                'cirborder' => 'Circle Border.png',
+                                                default => 'k1.png'
+                                            };
+                                        @endphp
+                                        <div class="bg-white p-2 rounded-xl border border-gray-200 shadow-sm">
+                                            <img src="{{ asset('images/' . $img) }}" alt="Shape" class="max-h-48 object-contain rounded-lg">
+                                        </div>
+                                    </div>
                                     @endif
                                 </div>
                             </div>
