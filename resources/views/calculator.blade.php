@@ -30,6 +30,8 @@
                     @livewire('calculators.' . $page, [
                         'lang' => $langArray,
                         'currancy' => $currancy,
+                        'calName' => $cal_name,
+                        'calLink' => $cal_data->tech_calculator_link,
                     ])
 
                     {{-- @if ($detail)

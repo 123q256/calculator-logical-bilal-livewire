@@ -42,48 +42,35 @@ class DensityAltitudeCalculator extends Component
         }
     }
 
-    public function updated($propertyName)
+    public function setUnit($field, $unit, $dropdown)
     {
-        if (strpos($propertyName, 'dropdowns') === false) {
-            $this->detail = null;
-            $this->error = null;
-        }
+        $this->$field = $unit;
+        $this->dropdowns[$dropdown] = false;
     }
 
-    public function toggleDropdown($id)
+    public function toggleDropdown($dropdown)
     {
-        $this->dropdowns[$id] = !($this->dropdowns[$id] ?? false);
-    }
-
-    public function setUnit($property, $unit, $dropdownId = null)
-    {
-        $this->{$property} = $unit;
-        if ($dropdownId) {
-            $this->dropdowns[$dropdownId] = false;
-        }
-        $this->detail = null;
+        $this->dropdowns[$dropdown] = !($this->dropdowns[$dropdown] ?? false);
     }
 
     public function resetForm()
     {
-        $this->resetErrorBag();
-        $this->resetValidation();
-
-        $this->air_temp = 30;
-        $this->air_temp_unit = '°C';
-        $this->dewpoint = 16;
-        $this->dewpoint_unit = '°C';
-        $this->altimeter_setting = 890;
-        $this->altimeter_setting_unit = 'mb';
-        $this->station_elevation = 1300;
-        $this->station_elevation_unit = 'm';
-
-        $this->error = null;
-        $this->detail = null;
-
+        $this->reset([
+            'air_temp',
+            'air_temp_unit',
+            'dewpoint',
+            'dewpoint_unit',
+            'altimeter_setting',
+            'altimeter_setting_unit',
+            'station_elevation',
+            'station_elevation_unit',
+            'detail',
+            'error',
+            'dropdowns'
+        ]);
         session()->forget([
-            'calculator_back_inputs',
             'calculator_result',
+            'calculator_back_inputs',
             'validation_error',
             'scroll_to_result'
         ]);
@@ -108,30 +95,45 @@ class DensityAltitudeCalculator extends Component
 
         $model = new Physics();
         $result = $model->density_altitude($request);
-
+        
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            $this->detail = $result;
-            $this->error = null;
-
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
-
-            $this->dispatch('chartUpdated', data: $result['chartData']);
-
-            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+            // Check for NAN or INF results (happens with extreme inputs like 16 K dewpoint)
+            $is_valid = true;
+            foreach ($result as $key => $val) {
+                if (is_numeric($val) && (is_nan($val) || is_infinite($val))) {
+                    $is_valid = false;
+                    break;
+                }
             }
 
-            $this->js(<<<'JS'
-                setTimeout(() => {
-                    const el = document.getElementById('result-section');
-                    if (el) {
-                        const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
-                        window.scrollTo({ top: offset, behavior: 'smooth' });
-                    }
-                }, 100);
-            JS);
+            if ($is_valid) {
+                $this->detail = $result;
+                $this->error = null;
+
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+
+                $this->dispatch('chartUpdated', data: $result['chartData']);
+
+                if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                    return redirect()->to(url()->previous() ?? '/');
+                }
+
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            } else {
+                $this->error = 'The provided inputs lead to a physically impossible calculation. Please check your units (e.g., Dewpoint in Kelvin).';
+                $this->detail = null;
+                session()->flash('validation_error', $this->error);
+            }
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
             $this->detail = null;
@@ -139,8 +141,7 @@ class DensityAltitudeCalculator extends Component
         }
     }
 
-
-   public function render()
+    public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'

@@ -6252,7 +6252,6 @@ class Physics extends Model
 		$this->param['absolute_pressure'] = $absolute_pressure;
 		$this->param['density_altitude'] = $density_altitude;
 		$this->param['chartData'] = json_encode($chartData);
-
 		$this->param['RESULT'] = 1;
 		return $this->param;
 	}

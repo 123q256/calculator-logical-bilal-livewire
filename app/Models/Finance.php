@@ -3192,7 +3192,7 @@ class Finance extends Model
 	/**********************
 		AGI Caluclator
 	 **********************/
-	// mpc Caluclator  
+	// MPC Calculator 
 	function mpc($request)
 	{
 		$this->param = []; // Initialize $this->param
@@ -3237,7 +3237,7 @@ class Finance extends Model
 	}
 
 	/**********************
-		Future Value of Annuity Caluclator
+		Future Value of Annuity Calculator
 	 **********************/
 	function future($request)
 	{
@@ -29828,7 +29828,7 @@ class Finance extends Model
 		}
 	}
 	/**********************
-		OverTime Calculator/
+		Unemployment Rate Calculator/
 	 **********************/
 	function unemployment($request)
 	{
@@ -29879,7 +29879,7 @@ class Finance extends Model
 	}
 
 	/**********************
-		OverTime Calculator/
+		Cost of Equity Calculator/
 	 **********************/
 	function cost($request)
 	{
@@ -29996,7 +29996,7 @@ class Finance extends Model
 	}
 
 	/**********************
-		Stock Caluclator
+		Stock Calculator
 	 **********************/
 	function stock($request)
 	{
@@ -30072,7 +30072,7 @@ class Finance extends Model
 		return $this->param;
 	}
 	/**********************
-		ROAS Caluclator
+		ROAS Calculator
 	 **********************/
 	function roas($request)
 	{
@@ -30127,7 +30127,7 @@ class Finance extends Model
 		return $this->param;
 	}
 	/**********************
-		ROAS Caluclator
+		Pay Raise Calculator
 	 **********************/
 	function pay($request)
 	{
@@ -31801,7 +31801,7 @@ class Finance extends Model
 			$this->param['find_compare'] = $find_compare;
 			$this->param['from'] = $s_date_compare;
 			$this->param['to'] = $e_date_compare;
-
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}
 
