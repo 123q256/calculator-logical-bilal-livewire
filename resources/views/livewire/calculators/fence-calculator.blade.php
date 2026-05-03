@@ -5,195 +5,181 @@
                 <p class="text-red-500 text-lg font-semibold w-full text-center">{{ $error }}</p>
             @endif
 
-            <div class="lg:w-[90%] md:w-[90%] w-full mx-auto">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="lg:w-[70%] md:w-[70%] w-full mx-auto">
+                <div class="grid grid-cols-12 gap-x-6 gap-y-4">
                     
-                    <!-- Left Column: Primary Dimensions -->
-                    <div class="space-y-6">
-                        
-                        <!-- Fence Length & Post Spacing -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label class="label">{{ $lang['6'] ?? 'Fence Length' }}:</label>
-                                <div class="relative w-full py-2">
-                                    <input type="number" step="any" wire:model="f_length" class="input" />
-                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('fl')">{{ $fl_units }} ▾</label>
-                                    @if ($showDropdown === 'fl')
-                                        <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                            @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
-                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('fl_units', '{{ $name }}')">{{ $name }}</p>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                    <!-- Fence Length & Post Spacing -->
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">{{ $lang['6'] ?? 'Fence Length' }} :</label>
+                        <div class="relative w-full py-1">
+                            <input type="number" step="any" wire:model="f_length" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                            <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20 font-medium" wire:click="toggleOverlay('fl')">{{ $fl_units }} ▾</label>
+                            @if ($showDropdown === 'fl')
+                                <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
+                                    @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
+                                        <p class="p-2 cursor-pointer text-sm" wire:click="setUnit('fl_units', '{{ $name }}')">{{ $name }}</p>
+                                    @endforeach
                                 </div>
-                            </div>
-                            <div>
-                                <label class="label">{{ $lang['7'] ?? 'Post Spacing' }}:</label>
-                                <div class="relative w-full py-2">
-                                    <input type="number" step="any" wire:model="post_space" class="input" />
-                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('po')">{{ $po_units }} ▾</label>
-                                    @if ($showDropdown === 'po')
-                                        <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                            @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
-                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('po_units', '{{ $name }}')">{{ $name }}</p>
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
+                            @endif
                         </div>
-
-                        <!-- Height Configuration -->
-                        <div class="border-t border-gray-200 pt-4">
-                            <div class="flex flex-wrap gap-4 mb-3">
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" wire:model.live="drop1" value="2" class="form-radio text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm font-semibold text-gray-700">{{ $lang['8'] ?? 'Fence Height' }}</span>
-                                </label>
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" wire:model.live="drop1" value="1" class="form-radio text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm font-semibold text-gray-700">{{ $lang['9'] ?? 'Post Height' }}</span>
-                                </label>
-                            </div>
-
-                            <div class="w-full sm:w-1/2">
-                                <label class="label">
-                                    @if ($drop1 == '2') {{ $lang['8'] ?? 'Fence Height' }}
-                                    @else {{ $lang['9'] ?? 'Post Height' }}
-                                    @endif:
-                                </label>
-                                <div class="relative w-full py-2">
-                                    <input type="number" step="any" wire:model="first" class="input" />
-                                    <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('u1')">{{ $units1 }} ▾</label>
-                                    @if ($showDropdown === 'u1')
-                                        <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                            @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
-                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('units1', '{{ $name }}')">{{ $name }}</p>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                    </div>
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">{{ $lang['7'] ?? 'Post Space' }} :</label>
+                        <div class="relative w-full py-1">
+                            <input type="number" step="any" wire:model="post_space" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                            <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20 font-medium" wire:click="toggleOverlay('po')">{{ $po_units }} ▾</label>
+                            @if ($showDropdown === 'po')
+                                <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
+                                    @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
+                                        <p class="p-2 cursor-pointer text-sm" wire:click="setUnit('po_units', '{{ $name }}')">{{ $name }}</p>
+                                    @endforeach
                                 </div>
-                            </div>
-                        </div>
-
-                        <!-- Rails Configuration -->
-                        <div class="border-t border-gray-200 pt-4">
-                            <h3 class="text-sm font-bold text-gray-700 mb-3">{{ $lang['13'] ?? 'Rails' }}</h3>
-                            <div class="flex flex-wrap gap-4 mb-3">
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" wire:model.live="drop2" value="2" class="form-radio text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm font-semibold text-gray-700">{{ $lang['14'] ?? 'Rails per Section' }}</span>
-                                </label>
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" wire:model.live="drop2" value="1" class="form-radio text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm font-semibold text-gray-700">{{ $lang['15'] ?? 'Total Rails' }}</span>
-                                </label>
-                            </div>
-
-                            <div class="w-full sm:w-1/2">
-                                <label class="label">
-                                    @if ($drop2 == '2') {{ $lang['14'] ?? 'Rails per Section' }}
-                                    @else {{ $lang['15'] ?? 'Total Rails' }}
-                                    @endif:
-                                </label>
-                                <div class="w-full py-2">
-                                    <input type="number" step="any" wire:model="second" class="input" />
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
 
-                    <!-- Right Column: Secondary Details -->
-                    <div class="space-y-6">
-                        
-                        <!-- Picket Configuration -->
-                        <div class="border border-gray-100 bg-gray-50/50 p-4 rounded-xl">
-                            <h3 class="text-sm font-bold text-gray-700 mb-3">{{ $lang['10'] ?? 'Pickets' }}</h3>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="label">{{ $lang['11'] ?? 'Picket Width' }}:</label>
-                                    <div class="relative w-full py-2">
-                                        <input type="number" step="any" wire:model="p_width" class="input bg-white" />
-                                        <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('pw')">{{ $pw_units }} ▾</label>
-                                        @if ($showDropdown === 'pw')
-                                            <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                                @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
-                                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('pw_units', '{{ $name }}')">{{ $name }}</p>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div>
-                                    <label class="label">{{ $lang['12'] ?? 'Picket Spacing' }}:</label>
-                                    <div class="relative w-full py-2">
-                                        <input type="number" step="any" wire:model="p_spacing" class="input bg-white" />
-                                        <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('ps')">{{ $ps_units }} ▾</label>
-                                        @if ($showDropdown === 'ps')
-                                            <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                                @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
-                                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('ps_units', '{{ $name }}')">{{ $name }}</p>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
+                    <!-- Height Configuration -->
+                    <div class="col-span-12 border-t border-gray-100 pt-2 mt-2">
+                        <div class="flex flex-wrap gap-x-6 gap-y-2 mb-1">
+                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                <input type="radio" wire:model.live="drop1" value="2" class="form-radio text-blue-600 focus:ring-blue-500 w-3 h-3">
+                                <span class="text-[11px] font-semibold">{{ $lang['8'] ?? 'Fence Height' }}</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                <input type="radio" wire:model.live="drop1" value="1" class="form-radio text-blue-600 focus:ring-blue-500 w-3 h-3">
+                                <span class="text-[11px] font-semibold">{{ $lang['9'] ?? 'Post height' }}</span>
+                            </label>
                         </div>
-
-                        <!-- Post Configuration -->
-                        <div class="border border-gray-100 bg-gray-50/50 p-4 rounded-xl">
-                            <h3 class="text-sm font-bold text-gray-700 mb-3">{{ $lang['17'] ?? 'Posts' }}</h3>
-                            <div class="flex flex-wrap gap-4 mb-3">
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" wire:model.live="drop3" value="1" class="form-radio text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm font-semibold text-gray-700">{{ $lang['18'] ?? 'Square Post' }}</span>
-                                </label>
-                                <label class="flex items-center space-x-2 cursor-pointer">
-                                    <input type="radio" wire:model.live="drop3" value="2" class="form-radio text-blue-600 focus:ring-blue-500">
-                                    <span class="text-sm font-semibold text-gray-700">{{ $lang['19'] ?? 'Round Post' }}</span>
-                                </label>
-                            </div>
-
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                    <label class="label">
-                                        @if ($drop3 == '1') {{ $lang['20'] ?? 'Post Width' }}
-                                        @else {{ $lang['31'] ?? 'Post Diameter' }}
-                                        @endif:
-                                    </label>
-                                    <div class="relative w-full py-2">
-                                        <input type="number" step="any" wire:model="third" class="input bg-white" />
-                                        <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('u3')">{{ $units3 }} ▾</label>
-                                        @if ($showDropdown === 'u3')
-                                            <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                                @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
-                                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('units3', '{{ $name }}')">{{ $name }}</p>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                @if ($drop3 == '1')
-                                <div>
-                                    <label class="label">{{ $lang['21'] ?? 'Post Depth' }}:</label>
-                                    <div class="relative w-full py-2">
-                                        <input type="number" step="any" wire:model="four" class="input bg-white" />
-                                        <label class="absolute cursor-pointer text-sm underline right-6 top-5 z-20" wire:click="toggleOverlay('u4')">{{ $units4 }} ▾</label>
-                                        @if ($showDropdown === 'u4')
-                                            <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                                @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
-                                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click="setUnit('units4', '{{ $name }}')">{{ $name }}</p>
-                                                @endforeach
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
-
                     </div>
+
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">
+                            @if ($drop1 == '2') {{ $lang['8'] ?? 'Fence Height' }}
+                            @else {{ $lang['9'] ?? 'Post height' }}
+                            @endif :
+                        </label>
+                        <div class="relative w-full py-1">
+                            <input type="number" step="any" wire:model="first" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                            <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20 font-medium" wire:click="toggleOverlay('u1')">{{ $units1 }} ▾</label>
+                            @if ($showDropdown === 'u1')
+                                <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
+                                    @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
+                                        <p class="p-2 cursor-pointer text-sm" wire:click="setUnit('units1', '{{ $name }}')">{{ $name }}</p>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Pickets Configuration -->
+                    <div class="col-span-12 border-t border-gray-100 pt-2 mt-2">
+                        <h3 class="text-[12px] font-bold text-blue-600 mb-2">{{ $lang['10'] ?? 'Number of pickets needed' }}</h3>
+                    </div>
+                    
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">{{ $lang['11'] ?? 'Picket Width' }} :</label>
+                        <div class="relative w-full py-1">
+                            <input type="number" step="any" wire:model="p_width" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                            <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20 font-medium" wire:click="toggleOverlay('pw')">{{ $pw_units }} ▾</label>
+                            @if ($showDropdown === 'pw')
+                                <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
+                                    @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
+                                        <p class="p-2 cursor-pointer text-sm" wire:click="setUnit('pw_units', '{{ $name }}')">{{ $name }}</p>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">{{ $lang['12'] ?? 'Picket Spacing' }} :</label>
+                        <div class="relative w-full py-1">
+                            <input type="number" step="any" wire:model="p_spacing" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                            <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20 font-medium" wire:click="toggleOverlay('ps')">{{ $ps_units }} ▾</label>
+                            @if ($showDropdown === 'ps')
+                                <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
+                                    @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
+                                        <p class="p-2 cursor-pointer text-sm" wire:click="setUnit('ps_units', '{{ $name }}')">{{ $name }}</p>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Rails Configuration -->
+                    <div class="col-span-12 border-t border-gray-100 pt-2 mt-2">
+                        <h3 class="text-[12px] font-bold text-blue-600 mb-2">{{ $lang['13'] ?? 'Number of rails needed' }}</h3>
+                        <div class="flex flex-wrap gap-x-6 gap-y-2 mb-1">
+                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                <input type="radio" wire:model.live="drop2" value="2" class="form-radio text-blue-600 focus:ring-blue-500 w-3 h-3">
+                                <span class="text-[11px] font-semibold">{{ $lang['14'] ?? 'Rails per Section' }}</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                <input type="radio" wire:model.live="drop2" value="1" class="form-radio text-blue-600 focus:ring-blue-500 w-3 h-3">
+                                <span class="text-[11px] font-semibold">{{ $lang['15'] ?? 'Total Rails' }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">
+                            @if ($drop2 == '2') {{ $lang['14'] ?? 'Rails per Section' }}
+                            @else {{ $lang['15'] ?? 'Total Rails' }}
+                            @endif :
+                        </label>
+                        <div class="w-full py-1">
+                            <input type="number" step="any" wire:model="second" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                        </div>
+                    </div>
+
+                    <!-- Post Configuration -->
+                    <div class="col-span-12 border-t border-gray-100 pt-2 mt-2">
+                        <h3 class="text-[12px] font-bold text-blue-600 mb-2">{{ $lang['17'] ?? 'Concrete for post footing' }}</h3>
+                        <div class="flex flex-wrap gap-x-6 gap-y-2 mb-1">
+                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                <input type="radio" wire:model.live="drop3" value="1" class="form-radio text-blue-600 focus:ring-blue-500 w-3 h-3">
+                                <span class="text-[11px] font-semibold">{{ $lang['18'] ?? 'Concrete for Cuboid Shape' }}</span>
+                            </label>
+                            <label class="flex items-center space-x-2 cursor-pointer group">
+                                <input type="radio" wire:model.live="drop3" value="2" class="form-radio text-blue-600 focus:ring-blue-500 w-3 h-3">
+                                <span class="text-[11px] font-semibold">{{ $lang['19'] ?? 'Concrete for Cylindrical Shape' }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">
+                            @if ($drop3 == '1') {{ $lang['20'] ?? 'Post Width' }}
+                            @else {{ $lang['31'] ?? 'Post Diameter' }}
+                            @endif :
+                        </label>
+                        <div class="relative w-full py-1">
+                            <input type="number" step="any" wire:model="third" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                            <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20 font-medium" wire:click="toggleOverlay('u3')">{{ $units3 }} ▾</label>
+                            @if ($showDropdown === 'u3')
+                                <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
+                                    @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
+                                        <p class="p-2 cursor-pointer text-sm" wire:click="setUnit('units3', '{{ $name }}')">{{ $name }}</p>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    @if ($drop3 == '1')
+                    <div class="col-span-12 md:col-span-6">
+                        <label class="label !text-[11px] !mb-0 font-bold">{{ $lang['21'] ?? 'Post Thickness' }} :</label>
+                        <div class="relative w-full py-1">
+                            <input type="number" step="any" wire:model="four" class="border border-blue-400 p-1 rounded-xl focus:ring-2 focus:ring-blue-200 w-full text-xs h-10 px-3" />
+                            <label class="absolute cursor-pointer text-[10px] underline right-6 top-5 z-20 font-medium" wire:click="toggleOverlay('u4')">{{ $units4 }} ▾</label>
+                            @if ($showDropdown === 'u4')
+                                <div class="absolute z-50 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
+                                    @foreach (["in","ft","cm","m","yd","mi","km"] as $name)
+                                        <p class="p-2 cursor-pointer text-sm" wire:click="setUnit('units4', '{{ $name }}')">{{ $name }}</p>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    @endif
                 </div>
             </div>
 
@@ -206,136 +192,108 @@
             </div>
         </div>
 
-        <hr class="border-gray-100">
+        <hr>
 
-        @isset($detail)
-            <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result mt-5">
-                <div class="max-w-4xl mx-auto">
+          @isset($detail)
+    <div  id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
+            <div class="">
                     @if ($type == 'calculator')
                         @include('inc.copy-pdf')
                     @endif
-
-                    <div class="w-full gap-8 mt-5">
-                        <!-- Primary Material Count -->
-                    <div class="grid grid-cols-12 gap-4 mb-3">
-    
-                        <!-- Left Column -->
-                        <div class="col-span-12 md:col-span-6">
-                            <div class="bg-blue-50/50 p-6 rounded-xl border border-blue-100 
-                                        text-center h-full flex flex-col justify-center items-center">
-                                    <h3 class="text-blue-800 text-md uppercase tracking-widest mb-1 font-bold">
-                                        {{ $lang['16'] ?? 'Number of Posts' }}
-                                    </h3>       
-                                    <div class="text-4xl font-black text-blue-900">
-                                        {{ number_format($detail['no_post'] ?? 0) }}
-                                    </div>
-                                </div>
-                            </div>
-    
-                        <!-- Right Column -->
-                        <div class="col-span-12 md:col-span-6">
-                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 overflow-auto">
-                                <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">
-                                    Material Breakdown
-                                </h3>
-
-                                <table class="w-full text-sm">
-                                    @isset($detail['no_sections'])
-                                    <tr>
-                                        <td class="py-2 text-gray-600 font-medium">
-                                            {{ $lang['22'] ?? 'Fence Sections' }}
-                                        </td>
-                                        <td class="py-2 text-right font-bold">
-                                                {{ number_format($detail['no_sections']) }}
-                                        </td>
+                <div class="rounded-lg  flex items-center justify-center">
+                    <div class="w-full mt-3">
+                        <div class="w-full my-2">
+                            <div class="col-lg-8 font-s-18">
+                                <div class="lg:w-[80%] w-full pverflow-auto">
+                                <table class="w-100">
+                                    @if ($detail['no_post'])
+                                        <tr>
+                                            <td width="70%" class="border-b py-2"><strong> {{$lang['16']}}</strong></td>
+                                            <td class="border-b py-2">{{ $detail['no_post']}} 
+                                            </td>
+                                        </tr>
+                                    @endif
+                                    @if ($detail['no_sections'])
+                                    <tr class="rounded-top bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['22']}}</td>
+                                        <td class="border-b py-2">{{ $detail['no_sections'] }}</td>
                                     </tr>
-                                    @endisset
-
-                                    @isset($detail['no_rails'])
-                                    <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600 font-medium">
-                                            {{ $lang['14'] ?? 'Total Rails' }}
-                                        </td>
-                                        <td class="py-2 text-right font-bold">
-                                            {{ number_format($detail['no_rails']) }}
-                                        </td>
+                                    @endif
+                                    @if (!empty($detail['post_heigth']))
+                                    <tr class="bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['8']}}</td>
+                                        <td class="border-b py-2">{{ $detail['post_heigth'] }}</td>
                                     </tr>
-                                    @endisset
-
-                                    @isset($detail['rails_section'])
-                                    <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600 font-medium">
-                                            {{ $lang['15'] ?? 'Rails per Section' }}
-                                        </td>
-                                        <td class="py-2 text-right font-bold">
-                                            {{ number_format($detail['rails_section']) }}
-                                        </td>
+                                    @endif
+                                    @if (!empty($detail['fence_heigth']))
+                                    <tr class="bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['9']}}</td>
+                                        <td class="border-b py-2">{{ $detail['fence_heigth'] }}</td>
                                     </tr>
-                                    @endisset
-
-                                    @isset($detail['no_pickets'])
-                                    <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600 font-medium">
-                                            {{ $lang['23'] ?? 'Number of Pickets' }}
-                                        </td>
-                                        <td class="py-2 text-right font-bold">
-                                            {{ number_format($detail['no_pickets']) }}
-                                        </td>
+                                    @endif
+                                    @if (!empty($detail['no_rails']))
+                                    <tr class="bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['14']}}</td>
+                                        <td class="border-b py-2">{{ $detail['no_rails'] }}</td>
                                     </tr>
-                                    @endisset
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                        <!-- Secondary Volume & Pricing -->
-                        <div class="space-y-4">
-                            <div class="bg-gray-50 p-6 rounded-xl border border-gray-200 overflow-auto">
-                                <h3 class="font-bold text-gray-700 mb-4 border-b pb-2">Concrete Required (Post Holes)</h3>
-                                <table class="w-full text-sm">
-                                    @isset($detail['c_volume'])
-                                    <tr>
-                                        <td class="py-2 text-gray-600">{{ $lang['24'] ?? 'Cubic Inches' }}</td>
-                                        <td class="py-2 text-right font-bold">{{ number_format($detail['c_volume'], 2) }} in³</td>
+                                    @endif
+                                    @if (!empty($detail['rails_section']))
+                                    <tr class="bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['15']}}</td>
+                                        <td class="border-b py-2">{{ $detail['rails_section'] }}</td>
                                     </tr>
-                                    @endisset
-                                    @isset($detail['ft_volume'])
-                                    <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600">{{ $lang['25'] ?? 'Cubic Feet' }}</td>
-                                        <td class="py-2 text-right font-bold">{{ number_format($detail['ft_volume'], 2) }} ft³</td>
+                                    @endif
+                                    @if (!empty($detail['no_pickets'])) 
+                                    <tr class="bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['23']}}</td>
+                                        <td class="border-b py-2">{{ $detail['no_pickets'] }}</td>
                                     </tr>
-                                    @endisset
-                                    @isset($detail['yd_volume'])
-                                    <tr class="border-t border-gray-100">
-                                        <td class="py-2 text-gray-600">{{ $lang['26'] ?? 'Cubic Yards' }}</td>
-                                        <td class="py-2 text-right font-bold">{{ number_format($detail['yd_volume'], 2) }} yd³</td>
+                                    @endif
+                                    @if (!empty($detail['c_volume']))
+                                    <tr class="rounded-bottom bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['24']}}</td>
+                                        <td class="border-b py-2">{{ $detail['c_volume'] }} in³</td>
                                     </tr>
-                                    @endisset
+                                    @endif
+                                    @if (!empty($detail['ft_volume']))
+                                    <tr class="rounded-bottom bg-body-secondary bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['25']}}</td>
+                                        <td class="border-b py-2">{{ $detail['ft_volume'] }} ft³</td>
+                                    </tr>
+                                    @endif
+                                    @if (!empty($detail['yd_volume']))
+                                    <tr class="rounded-bottom bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['26']}}</td>
+                                        <td class="border-b py-2">{{ $detail['yd_volume'] }} yd³</td>
+                                    </tr>
+                                    @endif
                                 </table>
                             </div>
 
-                            <div class="bg-green-50/50 p-6 rounded-xl border border-green-100">
-                                <h3 class="font-bold text-green-800 mb-2">{{ $lang['27'] ?? 'Average Fence Costs' }}</h3>
-                                <table class="w-full text-sm">
-                                    <tr class="border-b border-green-100/50">
-                                        <td class="py-1 text-gray-600">{{ $lang['28'] ?? 'Wire Fence' }}</td>
-                                        <td class="py-1 text-right text-green-700 font-semibold">3 {{ $currancy }} - 7 {{ $currancy }}</td>
+                                <p class="mt-3 mb-2">{{$lang['27']}}</p>
+                                <div class="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1">
+
+                                <table class="w-100">
+                                    <tr class="rounded-top bg-light bg-opacity-50">
+                                        <td width="70%" class="border-b py-2">{{$lang['28']}}</td>
+                                        <td class="border-b py-2"> 3 {{$currancy}} - 7 {{$currancy}} </td>
                                     </tr>
-                                    <tr class="border-b border-green-100/50">
-                                        <td class="py-1 text-gray-600">{{ $lang['29'] ?? 'Wood Fence' }}</td>
-                                        <td class="py-1 text-right text-green-700 font-semibold">18 {{ $currancy }} - 35 {{ $currancy }}</td>
+                                    <tr class="bg-body-secondary bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['29']}}</td>
+                                        <td class="border-b py-2">18 {{$currancy}} - 35 {{$currancy}}</td>
                                     </tr>
-                                    <tr>
-                                        <td class="py-1 text-gray-600">{{ $lang['30'] ?? 'Vinyl Fence' }}</td>
-                                        <td class="py-1 text-right text-green-700 font-semibold">25 {{ $currancy }} - 50 {{ $currancy }}</td>
+                                    <tr class="bg-light bg-opacity-50">
+                                        <td class="border-b py-2">{{$lang['30']}}</td>
+                                        <td class="border-b py-2">25 {{$currancy}} - 50 {{$currancy}}</td>
                                     </tr>
                                 </table>
                             </div>
                         </div>
-
+                        </div>
                     </div>
                 </div>
             </div>
-        @endisset
+        </div>
+    @endisset
     </form>
 </div>
