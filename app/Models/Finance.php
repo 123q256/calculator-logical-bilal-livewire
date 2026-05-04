@@ -31376,7 +31376,7 @@ class Finance extends Model
 	}
 
 	/*******************
-		cagr-calculator
+		CAGR Calculator
 	 *******************/
 	public function cagr($request)
 	{
@@ -31907,6 +31907,7 @@ class Finance extends Model
 				$this->param['terminal_unit'] = $terminal_unit;
 				$this->param['input'] = $input;
 				$this->param['length'] = count($this->param['input']) + 1;
+				$this->param['RESULT'] = 1;
 
 				return $this->param;
 			} else {
@@ -31978,6 +31979,7 @@ class Finance extends Model
 				$this->param['growth_unit'] = $growth_unit;
 				$this->param['terminal_unit'] = $terminal_unit;
 				$this->param['length'] = count($this->param['input']) + 1;
+				$this->param['RESULT'] = 1;
 				return $this->param;
 			} else {
 				$this->param['error'] = 'Please! Check Your Input.';
@@ -34213,18 +34215,18 @@ class Finance extends Model
 
 	function tip($request)
 	{
-		$for = $request->input('for');
-		$bill = $request->input('x');
-		$xs = $request->input('xs');
-		$tip = $request->input('y');
-		$person = $request->input('z');
-		$round = $request->input('round');
-		$rounds = $request->input('rounds');
+		$for = $request->for;
+		$bill = $request->x;
+		$xs = $request->xs;
+		$tip = $request->y;
+		$person = $request->z;
+		$round = $request->round;
+		$rounds = $request->rounds;
 		if ($for === 'single') {
 			if (is_numeric($xs)) {
 				$this->param['RESULT'] = 1;
 				$this->param['single'] = 1;
-				return true;
+				return $this->param;
 			} else {
 				$this->param['error'] = 'Please! Fill all the Input Fields';
 				return $this->param;
@@ -34256,10 +34258,10 @@ class Finance extends Model
 	}
 		// Hourly to Salary Calculator
 	public function hourly($request){
-		$first = $request->input('first');
-		$second = $request->input('second');
-		$third = $request->input('third');
-		$car = $request->input('car');
+		$first = $request->first;
+		$second = $request->second;
+		$third = $request->third;
+		$car = $request->car;
 	    if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
 	        $annuly  =	$first * $second * $third;
 	        $weekly  = $first * $second;
@@ -34277,11 +34279,11 @@ class Finance extends Model
 	}
 	// Salary to Hourly Calculator
 	function salarytohur($request){
-		$salary          	= $request->input('salary');
-		$hweek           	= $request->input('hweek');
-		$hyear				= $request->input('hyear');
-		$type            	= $request->input('type');
-		$currency           = $request->input('currency');
+		$salary          	= $request->salary;
+		$hweek           	= $request->hweek;
+		$hyear				= $request->hyear;
+		$type            	= $request->type;
+		$currency           = $request->currency;
 		if(is_numeric($salary) && is_numeric($hweek) && is_numeric($hyear) && !empty($type)){
 			if($currency == '$'){
 				$median_sal =53924;
@@ -34335,16 +34337,16 @@ class Finance extends Model
 	}
 
 	
-// rent spiit
+// Rent Split Calculator
 public function rent_split($request)
 {
-	$total_rent = $request->input('total_rent');
-	// $currency   = $request->input('currency');
-	$total_area = $request->input('total_area');
-	$bedrooms   = $request->input('bedrooms');
-	$room_area  = $request->input('room_area');
-	$persons    = $request->input('persons');
-	$bath       = $request->input('bath');
+	$total_rent = $request->total_rent;
+	// $currency   = $request->currency');
+	$total_area = $request->total_area;
+	$bedrooms   = $request->bedrooms;
+	$room_area  = $request->room_area;
+	$persons    = $request->persons;
+	$bath       = $request->bath;
 	if (is_numeric($total_rent) && is_numeric($total_area) && !empty($bedrooms) && !empty($persons) && !empty($room_area) && !empty($bath)) {
 		if ($total_area >= array_sum($room_area)) {
 
@@ -34367,12 +34369,12 @@ public function rent_split($request)
 	}
 }
 
-	// out-the-door-price-calculator
+	// Out The Door Price Calculator
 	public function out($request)
 	{
-		$car = trim($request->input('car'));
-		$dealership = trim($request->input('dealership'));
-		$taxes = trim($request->input('taxes'));
+		$car = trim($request->car);
+		$dealership = trim($request->dealership);
+		$taxes = trim($request->taxes);
 		if (is_numeric($car) && is_numeric($dealership) && is_numeric($taxes)) {
 			$answer = $car + $dealership + $taxes;
 		} else {
@@ -34389,11 +34391,11 @@ public function rent_split($request)
 
 
 
-	
+		// Water Bill Calculator
 		public function water_bill($request)
 	{
-		$water = trim($request->input('water'));
-		$gallon = trim($request->input('gallon'));
+		$water = trim($request->water);
+		$gallon = trim($request->gallon);
 		if (is_numeric($water) && is_numeric($gallon)) {
 			$bill = $water * $gallon;
 		} else {
