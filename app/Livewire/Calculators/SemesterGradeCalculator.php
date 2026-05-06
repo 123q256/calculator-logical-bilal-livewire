@@ -88,11 +88,11 @@ class SemesterGradeCalculator extends Component
                 ['name' => $this->lang['5'] ?? 'Final Exam', 'y' => (float)$this->l_weight],
             ];
 
-            $result['chartData'] = json_encode($chartData);
+            $result['chartData'] = $chartData;
             $this->detail = $result;
             $this->error = null;
 
-            $this->dispatch('chart-updated', chartData: $chartData);
+            $this->dispatch('chart-updated', $chartData);
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 session()->flash('calculator_result', $result);

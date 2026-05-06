@@ -95,7 +95,7 @@
                                 {{-- Alpine Chart Pattern (Based on Density Altitude reference) --}}
                                 <div class="w-full mt-8" 
                                      x-data="{ 
-                                        chartData: {!! $detail['chartData'] !!},
+                                        chartData: @js($detail['chartData'] ?? []),
                                         render() {
                                             if (typeof Highcharts === 'undefined') {
                                                 setTimeout(() => this.render(), 200);
@@ -127,7 +127,7 @@
                                         }
                                      }" 
                                      x-init="render()"
-                                   @chart-updated.window="chartData = $event.detail.chartData ?? $event.detail; render()"
+                                     @chart-updated.window="chartData = $event.detail; render()"
                                      wire:ignore>
                                     <div x-ref="canvas" class="w-full min-h-[400px]"></div>
                                 </div>
@@ -136,13 +136,13 @@
                     </div>
                 </div>
             </div>
-
-            @push('calculatorJS')
-                <script src="https://code.highcharts.com/highcharts.js"></script>
-                <script src="https://code.highcharts.com/modules/exporting.js"></script>
-                <script src="https://code.highcharts.com/modules/export-data.js"></script>
-                <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-            @endpush
         @endisset
     </form>
+
+    @push('calculatorJS')
+        <script src="https://code.highcharts.com/highcharts.js"></script>
+        <script src="https://code.highcharts.com/modules/exporting.js"></script>
+        <script src="https://code.highcharts.com/modules/export-data.js"></script>
+        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    @endpush
 </div>
