@@ -10,6 +10,7 @@ class SemesterGradeCalculator extends Component
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
+    public $result_key = 1;
 
     // Inputs
     public $f_grade = 100;
@@ -61,13 +62,17 @@ class SemesterGradeCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-            return redirect()->to(url()->current());
+       if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+            return redirect()->to(url()->previous() ?? '/');
         }
     }
 
     public function calculate()
     {
+        $this->result_key++;
+        $this->detail = null;
+        $this->error = null;
+
         $request = (object)[
             'f_grade'  => $this->f_grade,
             'f_weight' => $this->f_weight,
@@ -94,22 +99,22 @@ class SemesterGradeCalculator extends Component
 
             $this->dispatch('chart-updated', $chartData);
 
-            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                session()->flash('calculator_result', $result);
+                 session()->flash('calculator_result', $result);
                 session()->flash('scroll_to_result', true);
                 session()->flash('calculator_back_inputs', $request);
-                return redirect()->to(url()->current());
-            }
+              if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                    return redirect()->to(url()->previous() ?? '/');
+                }
 
-            $this->js(<<<'JS'
-                setTimeout(() => {
-                    const el = document.getElementById('result-section');
-                    if (el) {
-                        const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
-                        window.scrollTo({ top: offset, behavior: 'smooth' });
-                    }
-                }, 100);
-            JS);
+          $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
             $this->detail = null;
@@ -119,7 +124,7 @@ class SemesterGradeCalculator extends Component
 
    public function render()
     {
-        if (session('scroll_to_result')) {
+       if (session('scroll_to_result')) {
             $this->js(<<<'JS'
                 const el = document.getElementById('result-section');
                 if (el) {

@@ -90,7 +90,7 @@ class RoomSizeCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->current());
+            return redirect()->to(url()->previous() ?? '/');
         }
     }
 
@@ -129,7 +129,7 @@ class RoomSizeCalculator extends Component
                 session()->flash('scroll_to_result', true);
                 session()->flash('calculator_back_inputs', $request);
                 $this->error = null;
-                return redirect()->to(url()->current());
+              return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->error = null;
@@ -149,7 +149,7 @@ class RoomSizeCalculator extends Component
         $this->error = $result['error'] ?? 'Something went wrong.';
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             session()->flash('validation_error', $this->error);
-            return redirect()->to(url()->current());
+            return redirect()->to(url()->previous() ?? '/');
         } else {
             $this->detail = null;
         }

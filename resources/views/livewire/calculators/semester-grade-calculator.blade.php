@@ -8,59 +8,59 @@
             <div class="lg:w-[75%] md:w-[75%] w-full mx-auto">
                 <div class="grid grid-cols-12 mt-3 gap-4">
                     {{-- First Quarter --}}
-                    <p class="col-span-12 font-bold text-blue-800 border-b border-blue-50 pb-2">
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm uppercase tracking-wider">{{ $lang['1'] }}</span>
+                    <p class="col-span-12 font-bold  border-b border-blue-50 pb-2">
+                        <span >{{ $lang['1'] }}</span>
                     </p>
                     <div class="col-span-12 md:col-span-6 lg:col-span-6">
                         <label for="f_grade" class="label">{{ $lang['2'] }}</label>
                         <div class="w-full py-2 relative">
                             <input type="number" wire:model.live.debounce.500ms="f_grade" step="any" id="f_grade" class="input pr-12" placeholder="100" />
-                            <span class="absolute right-4 top-5 text-blue-600 font-bold">%</span>
+                            <span class="absolute right-4 top-5  font-bold">%</span>
                         </div>
                     </div>
                     <div class="col-span-12 md:col-span-6 lg:col-span-6">
                         <label for="f_weight" class="label">{{ $lang['3'] }}</label>
                         <div class="w-full py-2 relative">
                             <input type="number" wire:model.live.debounce.500ms="f_weight" step="any" id="f_weight" class="input pr-12" placeholder="43" />
-                            <span class="absolute right-4 top-5 text-blue-600 font-bold">%</span>
+                            <span class="absolute right-4 top-5  font-bold">%</span>
                         </div>
                     </div>
 
                     {{-- Second Quarter --}}
-                    <p class="col-span-12 font-bold text-blue-800 border-b border-blue-50 pb-2 mt-4">
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm uppercase tracking-wider">{{ $lang['4'] }}</span>
+                    <p class="col-span-12 font-bold  border-b border-blue-50 pb-2 mt-4">
+                        <span >{{ $lang['4'] }}</span>
                     </p>
                     <div class="col-span-12 md:col-span-6 lg:col-span-6">
                         <label for="s_grade" class="label">{{ $lang['2'] }}</label>
                         <div class="w-full py-2 relative">
                             <input type="number" wire:model.live.debounce.500ms="s_grade" step="any" id="s_grade" class="input pr-12" placeholder="25" />
-                            <span class="absolute right-4 top-5 text-blue-600 font-bold">%</span>
+                            <span class="absolute right-4 top-5  font-bold">%</span>
                         </div>
                     </div>
                     <div class="col-span-12 md:col-span-6 lg:col-span-6">
                         <label for="s_weight" class="label">{{ $lang['3'] }}</label>
                         <div class="w-full py-2 relative">
                             <input type="number" wire:model.live.debounce.500ms="s_weight" step="any" id="s_weight" class="input pr-12" placeholder="41" />
-                            <span class="absolute right-4 top-5 text-blue-600 font-bold">%</span>
+                            <span class="absolute right-4 top-5  font-bold">%</span>
                         </div>
                     </div>
 
                     {{-- Final Exam --}}
-                    <p class="col-span-12 font-bold text-blue-800 border-b border-blue-50 pb-2 mt-4">
-                        <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm uppercase tracking-wider">{{ $lang['5'] }}</span>
+                    <p class="col-span-12 font-bold  border-b border-blue-50 pb-2 mt-4">
+                        <span >{{ $lang['5'] }}</span>
                     </p>
                     <div class="col-span-12 md:col-span-6 lg:col-span-6">
                         <label for="l_grade" class="label">{{ $lang['2'] }}</label>
                         <div class="w-full py-2 relative">
                             <input type="number" wire:model.live.debounce.500ms="l_grade" step="any" id="l_grade" class="input pr-12" placeholder="10" />
-                            <span class="absolute right-4 top-5 text-blue-600 font-bold">%</span>
+                            <span class="absolute right-4 top-5  font-bold">%</span>
                         </div>
                     </div>
                     <div class="col-span-12 md:col-span-6 lg:col-span-6">
                         <label for="l_weight" class="label">{{ $lang['3'] }}</label>
                         <div class="w-full py-2 relative">
                             <input type="number" wire:model.live.debounce.500ms="l_weight" step="any" id="l_weight" class="input pr-12" placeholder="16" />
-                            <span class="absolute right-4 top-5 text-blue-600 font-bold">%</span>
+                            <span class="absolute right-4 top-5  font-bold">%</span>
                         </div>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
 
         @isset($detail)
             <hr>
-            <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
+            <div id="result-section" wire:key="result-{{ $result_key }}" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
                 <div class="">
                     @if ($type == 'calculator')
                         @include('inc.copy-pdf')
@@ -84,7 +84,7 @@
                         <div class="w-full mt-3">
                             <div class="w-full my-2">
                                 <div class="text-center">
-                                    <p class="text-[20px] font-black text-blue-800">{{ $lang['6'] }}</p>
+                                    <p class="text-[20px] font-black ">{{ $lang['6'] }}</p>
                                     <div class="flex justify-center">
                                         <p class="text-[25px] bg-[#2845F5] text-white rounded-lg px-6 py-2 my-4 shadow-lg">
                                             <strong class="text-blue">{{ $detail['semesterGrade'] }} %</strong>
@@ -139,10 +139,11 @@
         @endisset
     </form>
 
-    @push('calculatorJS')
+ 
+</div>
+ @push('calculatorJS')
         <script src="https://code.highcharts.com/highcharts.js"></script>
         <script src="https://code.highcharts.com/modules/exporting.js"></script>
         <script src="https://code.highcharts.com/modules/export-data.js"></script>
         <script src="https://code.highcharts.com/modules/accessibility.js"></script>
     @endpush
-</div>

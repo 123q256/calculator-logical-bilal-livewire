@@ -68,7 +68,7 @@ class RecessedLightingCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-            return redirect()->to(url()->current());
+            return redirect()->to(url()->previous() ?? '/');
         }
     }
 
@@ -90,12 +90,12 @@ class RecessedLightingCalculator extends Component
             $this->detail = $result;
             $this->error = null;
 
-            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                session()->flash('calculator_result', $result);
-                session()->flash('calculator_back_inputs', (array)$request->all());
-                return redirect()->to(url()->current());
-            }
-
+            session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+              if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                    return redirect()->to(url()->previous() ?? '/');
+                }
             $this->dispatch('scroll-to-result');
         } else {
             $this->error = $result['error'] ?? 'Please check your input.';

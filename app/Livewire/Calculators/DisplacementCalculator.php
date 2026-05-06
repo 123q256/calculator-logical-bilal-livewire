@@ -103,11 +103,12 @@ class DisplacementCalculator extends Component
             $this->detail = $result;
             $this->error = null;
 
-            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-                session()->flash('calculator_result', $result);
-                session()->flash('calculator_back_inputs', $requestData);
-                return redirect()->to(url()->current());
-            }
+            session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->flash('calculator_back_inputs', $request);
+              if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                    return redirect()->to(url()->previous() ?? '/');
+                }
 
             $this->js(<<<'JS'
                 setTimeout(() => {

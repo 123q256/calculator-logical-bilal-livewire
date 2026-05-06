@@ -58,7 +58,7 @@ class ScreenSizeCalculator extends Component
             'scroll_to_result'
         ]);
  if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-        return redirect()->to(url()->current());
+       return redirect()->to(url()->previous() ?? '/');
  }
     }
 

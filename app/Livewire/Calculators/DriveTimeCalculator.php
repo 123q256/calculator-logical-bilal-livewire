@@ -83,7 +83,7 @@ class DriveTimeCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-            return redirect()->to(url()->current());
+            return redirect()->to(url()->previous() ?? '/');
         }
     }
 
@@ -112,12 +112,12 @@ class DriveTimeCalculator extends Component
             $this->detail = $result;
             $this->error = null;
 
-            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                session()->flash('calculator_result', $result);
+          session()->flash('calculator_result', $result);
                 session()->flash('scroll_to_result', true);
                 session()->flash('calculator_back_inputs', $request);
-                return redirect()->to(url()->current());
-            }
+              if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                    return redirect()->to(url()->previous() ?? '/');
+                }
 
             $this->js(<<<'JS'
                 setTimeout(() => {
