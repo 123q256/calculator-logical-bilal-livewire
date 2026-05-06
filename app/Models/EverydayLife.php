@@ -4844,10 +4844,10 @@ class EverydayLife extends Model
 	 *******************/
 	public function recessed($request)
 	{
-		$a = $request->input("a");
-		$b = $request->input("b");
-		$columns_fixture = $request->input("columns_fixture");
-		$rows_fixture = $request->input("rows_fixture");
+		$a = $request->a;
+		$b = $request->b;
+		$columns_fixture = $request->columns_fixture;
+		$rows_fixture = $request->rows_fixture;
 		if (is_numeric($a) && is_numeric($b)) {
 			$a_not = $a / (2 * $rows_fixture);
 			$a_i = $a / $rows_fixture;
@@ -12884,19 +12884,19 @@ class EverydayLife extends Model
 	// Screen Size Calculator
 	public function screen($request)
 	{
-		$screen = $request->input("screen");
-		$ratio_1 = $request->input("ratio_1");
-		$ratio_2 = $request->input("ratio_2");
-		$type = $request->input("type");
-		$curvature = $request->input("curvature");
-		$radius = $request->input("radius");
-		$radius_units = $request->input("radius_units");
-		$select_one = $request->input("select_one");
-		$select_two = $request->input("select_two");
-		$curved_dimensions = $request->input("curved_dimensions");
-		$curved_dimensions_units = $request->input("curved_dimensions_units");
-		$flat_dimensions = $request->input("flat_dimensions");
-		$flat_dimensions_units = $request->input("flat_dimensions_units");
+		$screen = $request->screen;
+		$ratio_1 = $request->ratio_1;
+		$ratio_2 = $request->ratio_2;
+		$type = $request->type;
+		$curvature = $request->curvature;
+		$radius = $request->radius;
+		$radius_units = $request->radius_units;
+		$select_one = $request->select_one;
+		$select_two = $request->select_two;
+		$curved_dimensions = $request->curved_dimensions;
+		$curved_dimensions_units = $request->curved_dimensions_units;
+		$flat_dimensions = $request->flat_dimensions;
+		$flat_dimensions_units = $request->flat_dimensions_units;
 		function conversion_screen($unit, $value)
 		{
 			if (isset($unit)) {

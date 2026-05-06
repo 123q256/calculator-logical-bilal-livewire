@@ -92,20 +92,42 @@
                                     </div>
                                 </div>
                                 
-                                {{-- Safe Chart Container --}}
+                                {{-- Alpine Chart Pattern (Based on Density Altitude reference) --}}
                                 <div class="w-full mt-8" 
                                      x-data="{ 
                                         chartData: {!! $detail['chartData'] !!},
-                                        initChart() {
-                                            if (window.renderSemesterChart) {
-                                                window.renderSemesterChart(this.$refs.canvas, this.chartData);
-                                            } else {
-                                                setTimeout(() => this.initChart(), 200);
+                                        render() {
+                                            if (typeof Highcharts === 'undefined') {
+                                                setTimeout(() => this.render(), 200);
+                                                return;
                                             }
+                                            Highcharts.chart($refs.canvas, {
+                                                chart: { type: 'pie', backgroundColor: 'transparent' },
+                                                title: { text: 'Weights of semester grade elements [%]', align: 'left', style: { color: '#2845F5', fontWeight: 'bold' } },
+                                                plotOptions: {
+                                                    pie: {
+                                                        allowPointSelect: true,
+                                                        cursor: 'pointer',
+                                                        dataLabels: {
+                                                            enabled: true,
+                                                            format: '{point.name}: {point.y}%'
+                                                        },
+                                                        showInLegend: true
+                                                    }
+                                                },
+                                                series: [{ 
+                                                    name: 'Weight', 
+                                                    colorByPoint: true,
+                                                    data: this.chartData
+                                                }],
+                                                credits: { enabled: false },
+                                                tooltip: { pointFormat: '{series.name}: <b>{point.y}%</b>' },
+                                                responsive: { rules: [{ condition: { maxWidth: 500 }, chartOptions: { legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' } } }] }
+                                            });
                                         }
                                      }" 
-                                     x-init="initChart()"
-                                     @chart-updated.window="chartData = $event.detail; initChart()"
+                                     x-init="render()"
+                                   @chart-updated.window="chartData = $event.detail.chartData ?? $event.detail; render()"
                                      wire:ignore>
                                     <div x-ref="canvas" class="w-full min-h-[400px]"></div>
                                 </div>
@@ -114,51 +136,13 @@
                     </div>
                 </div>
             </div>
+
+            @push('calculatorJS')
+                <script src="https://code.highcharts.com/highcharts.js"></script>
+                <script src="https://code.highcharts.com/modules/exporting.js"></script>
+                <script src="https://code.highcharts.com/modules/export-data.js"></script>
+                <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+            @endpush
         @endisset
     </form>
 </div>
-
-@push('calculatorJS')
-    <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-    <script>
-        window.renderSemesterChart = function(container, data) {
-            if (typeof Highcharts === 'undefined') return;
-            
-            Highcharts.chart(container, {
-                chart: { type: 'pie', backgroundColor: 'transparent' },
-                title: { 
-                    text: 'Weights of semester grade elements [%]', 
-                    align: 'left', 
-                    style: { color: '#2845F5', fontWeight: 'bold' } 
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: true,
-                            format: '<b>{point.name}</b>: {point.y}%'
-                        },
-                        showInLegend: true
-                    }
-                },
-                series: [{ 
-                    name: 'Weight', 
-                    colorByPoint: true,
-                    data: data
-                }],
-                credits: { enabled: false },
-                tooltip: { pointFormat: '{series.name}: <b>{point.y}%</b>' },
-                responsive: { 
-                    rules: [{ 
-                        condition: { maxWidth: 500 }, 
-                        chartOptions: { legend: { layout: 'horizontal', align: 'center', verticalAlign: 'bottom' } } 
-                    }] 
-                }
-            });
-        };
-    </script>
-@endpush

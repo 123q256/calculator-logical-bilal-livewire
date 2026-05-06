@@ -92,7 +92,7 @@ class SemesterGradeCalculator extends Component
             $this->detail = $result;
             $this->error = null;
 
-            $this->dispatch('chart-updated', $chartData);
+            $this->dispatch('chart-updated', chartData: $chartData);
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 session()->flash('calculator_result', $result);
