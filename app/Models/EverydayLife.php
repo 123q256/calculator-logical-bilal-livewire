@@ -52,8 +52,8 @@ class EverydayLife extends Model
 	public $param;
 	public function love($request)
 	{
-		$you = $request->input('you');
-		$lover = $request->input('lover');
+		$you = $request->you;
+		$lover = $request->lover;
 		if (empty($you) || empty($lover)) {
 			if (empty($you) && empty($lover)) {
 				$this->param['error'] = 'Please provide your name and your Partner\'s name.';
@@ -72,10 +72,10 @@ class EverydayLife extends Model
 	// era calculator
 	function era($request)
 	{
-		$x = $request->input('x');
-		$y = $request->input('y');
-		$z = $request->input('z');
-		$g = $request->input('g');
+		$x = $request->x;
+		$y = $request->y;
+		$z = $request->z;
+		$g = $request->g;
 		if (is_numeric($x) || is_numeric($y) || is_numeric($z)) {
 			$earn_run = $x;
 			$inning = $y;
@@ -84,8 +84,14 @@ class EverydayLife extends Model
 				$game = $g;
 			}
 			if (!empty($z)) {
-				$inning = $y + ($z / 3);
+				$inning = (float)$y + ((float)$z / 3);
 			}
+
+			if ($inning == 0) {
+				$this->param['error'] = 'Innings pitched cannot be zero.';
+				return $this->param;
+			}
+
 			$era = round(($earn_run / $inning) * $game, 3);
 			$this->param['era'] = $era;
 			$this->param['RESULT'] = 1;
@@ -98,10 +104,10 @@ class EverydayLife extends Model
 
 	public function ppi($request)
 	{
-		$vertical = $request->input('v');
-		$diagonal = $request->input('d');
-		$horizontal = $request->input('h');
-		$unit = $request->input('unit');
+		$vertical = $request->v;
+		$diagonal = $request->d;
+		$horizontal = $request->h;
+		$unit = $request->unit;
 
 		if (!empty($diagonal) and !empty($horizontal) and !empty($vertical)) $fieldsDone = 1;
 		if (is_numeric($diagonal) and is_numeric($horizontal) and is_numeric($vertical)) $numeric = 1;
@@ -446,14 +452,14 @@ class EverydayLife extends Model
 
 	public function vorici($request)
 	{
-		$submit = $request->input('submit');
-		$s_f = trim($request->input('s_f'));
-		$str_f = trim($request->input('str_f'));
-		$dex_f = trim($request->input('dex_f'));
-		$int_f = trim($request->input('int_f'));
-		$r_f = trim($request->input('r_f'));
-		$g_f = trim($request->input('g_f'));
-		$b_f = trim($request->input('b_f'));
+		$submit = $request->submit ?? null;
+		$s_f = trim($request->s_f);
+		$str_f = trim($request->str_f);
+		$dex_f = trim($request->dex_f);
+		$int_f = trim($request->int_f);
+		$r_f = trim($request->r_f);
+		$g_f = trim($request->g_f);
+		$b_f = trim($request->b_f);
 
 		if (isset($submit)) {
 			$this->param['s_f'] = $s_f;
@@ -474,19 +480,19 @@ class EverydayLife extends Model
 
 	public function freight($request)
 	{
-		$submit = $request->input('submit');
-		$length = $request->input('length');
-		$length_unit = $request->input('length_unit');
-		$width = $request->input('width');
-		$width_unit = $request->input('width_unit');
-		$height = $request->input('height');
-		$height_unit = $request->input('height_unit');
-		$weight = $request->input('weight');
-		$weight_unit = $request->input('weight_unit');
-		$pq = $request->input('pq');
-		$fr = $request->input('fr');
-		$fr_unit = $request->input('fr_unit');
-		$currancy = $request->input('currancy');
+		$submit = $request->submit;
+		$length = $request->length;
+		$length_unit = $request->length_unit;
+		$width = $request->width;
+		$width_unit = $request->width_unit;
+		$height = $request->height;
+		$height_unit = $request->height_unit;
+		$weight = $request->weight;
+		$weight_unit = $request->weight_unit;
+		$pq = $request->pq;
+		$fr = $request->fr;
+		$fr_unit = $request->fr_unit;
+		$currancy = $request->currancy;
 		$fr_unit = str_replace($currancy . '/', '', $fr_unit);
 
 		if (empty($length) || empty($width) || empty($height) || empty($weight) || empty($pq)) {
@@ -698,10 +704,14 @@ class EverydayLife extends Model
 
 	public function population($request)
 	{
-		$area = trim($request->input('area'));
-		$no = trim($request->input('no'));
+		$area = trim($request->area );
+		$no = trim($request->no);
 
 		if (is_numeric($area) && is_numeric($no)) {
+			if ($area == 0) {
+				$this->param['error'] = 'Area cannot be zero';
+				return $this->param;
+			}
 			$ans = $no / $area;
 			$this->param['ans'] = round($ans);
 			$this->param['RESULT'] = 1;
@@ -714,15 +724,15 @@ class EverydayLife extends Model
 
 	public function board($request)
 	{
-		$submit = $request->input('submit');
-		$length = trim($request->input('length'));
-		$no = trim($request->input('no'));
-		$length_unit = trim($request->input('length_unit'));
-		$width = trim($request->input('width'));
-		$width_unit = trim($request->input('width_unit'));
-		$thickness = trim($request->input('thickness'));
-		$thickness_unit = trim($request->input('thickness_unit'));
-		$price = trim($request->input('price'));
+		$submit = $request->submit ?? null;
+		$length = trim($request->length);
+		$no = trim($request->no);
+		$length_unit = trim($request->length_unit);
+		$width = trim($request->width);
+		$width_unit = trim($request->width_unit);
+		$thickness = trim($request->thickness);
+		$thickness_unit = trim($request->thickness_unit);
+		$price = trim($request->price);
 
 		if (!empty($length) && !empty($no) && !empty($width) && !empty($thickness)) {
 			if ($thickness_unit === 'cm') {
@@ -765,11 +775,11 @@ class EverydayLife extends Model
 
 	public function visa($request)
 	{
-		$name = $request->input('name');
-		$resident = $request->input('resident');
-		$nationality = $request->input('nationality');
-		$travel = $request->input('travel');
-		$submit = $request->input('submit');
+		$name = $request->name;
+		$resident = $request->resident;
+		$nationality = $request->nationality;
+		$travel = $request->travel;
+		$submit = $request->submit;
 		if (empty($travel) || empty($nationality) || empty($resident)) {
 			$this->param['error'] = 'Please! Check Your Inputs';
 			return $this->param;
@@ -794,14 +804,14 @@ class EverydayLife extends Model
 			return $this->param;
 		}
 	}
-
+	// Korean Age Calculator
 	public function korean($request)
 	{
-		$current_year = $request->input('current_year');
-		$year = $request->input('year');
-		$birthday_unit = $request->input('birthday_unit');
-		$age = $request->input('age');
-		$room_unit = $request->input('room_unit');
+		$current_year = $request->current_year;
+		$year = $request->year;
+		$birthday_unit = $request->birthday_unit;
+		$age = $request->age;
+		$room_unit = $request->room_unit;
 		if ($room_unit == "1") {
 			if (is_numeric($year) && is_numeric($current_year)) {
 				if ($year < $current_year) {
@@ -847,7 +857,7 @@ class EverydayLife extends Model
 				}
 			}
 		}
-		$this->param['korean_age'] = $korean_age;
+		$this->param['korean_age'] = $korean_age ?? 0;
 		$this->param['RESULT'] = 1;
 
 		return $this->param;
@@ -936,12 +946,12 @@ class EverydayLife extends Model
 			}
 			return $n;
 		}
-		$dpi = trim($request->input('dpi'));
-		$row = trim($request->input('row'));
-		$sen = trim($request->input('sen'));
-		$game = trim($request->input('game'));
-		$win = trim($request->input('win'));
-		$submit = $request->input('submit');
+		$dpi = trim($request->dpi);
+		$row = trim($request->row);
+		$sen = trim($request->sen);
+		$game = trim($request->game);
+		$win = trim($request->win);
+		$submit = $request->submit ?? null;
 		if ($submit) {
 			if ($game == '1') {
 				$t = 1;
@@ -1378,20 +1388,24 @@ class EverydayLife extends Model
 
 	public function winning($request)
 	{
-		$win = $request->input('win');
-		$loss = $request->input('loss');
-		$tie = $request->input('tie');
-		$value = $request->input('value');
+		$win = $request->win;
+		$loss = $request->loss;
+		$tie = $request->tie;
+		$value = $request->value;
 
 		if (is_numeric($win) && is_numeric($loss)) {
-			$no_games = $win * $loss;
 			$total = $win + $loss;
 			if (is_numeric($tie)) {
 				$total = $total + $tie;
 			}
+			$no_games = $total;
 			if (is_numeric($value) && $value != 0) {
 				$ans = (($win + ($value * $tie)) / $total) * 100;
 			} else {
+				if ($total == 0) {
+					$this->param['error'] = 'Total games cannot be zero';
+					return $this->param;
+				}
 				$ans = ($win / $total) * 100;
 			}
 			$this->param['ans'] = $ans;
@@ -1407,8 +1421,8 @@ class EverydayLife extends Model
 
 	public function mcg($request)
 	{
-		$operations = $request->input('operations');
-		$first = $request->input('first');
+		$operations = $request->operations;
+		$first = $request->first;
 		if ($operations == "1") {
 			if (is_numeric($first)) {
 				$jawab = $first / 1000;
@@ -1424,7 +1438,7 @@ class EverydayLife extends Model
 				return $this->param;
 			}
 		}
-		$this->param['jawab'] = $jawab;
+		$this->param['jawab'] = $jawab ?? 0;
 		$this->param['operations'] = $operations;
 		$this->param['RESULT'] = 1;
 
@@ -1619,15 +1633,16 @@ class EverydayLife extends Model
 		return $this->param;
 	}
 
-	// curtian size calculator
+	// curtain size calculator
 	public function curtain($request)
 	{
-		$type_curtain = trim($request->input('type_curtain'));
-		$fullness = trim($request->input('fullness'));
-		$w_height = trim($request->input('w_height'));
-		$w_width = trim($request->input('w_width'));
-		$wh_units = trim($request->input('wh_units'));
-		$ww_units = trim($request->input('ww_units'));
+		$type_curtain = $request->type_curtain;
+		$fullness = $request->fullness;
+		$w_height = $request->w_height;
+		$w_width = $request->w_width;
+		$wh_units = $request->wh_units;
+		$ww_units = $request->ww_units;
+
 		if (!empty($type_curtain)) {
 			if (is_numeric($w_height) && is_numeric($w_width)) {
 				if (isset($wh_units)) {
@@ -1685,22 +1700,23 @@ class EverydayLife extends Model
 		$this->param['c_lenght'] = $c_lenght;
 		$this->param['c_width'] = $c_width;
 		$this->param['RESULT'] = 1;
-
 		return $this->param;
 	}
 		// Sleep Calculator
 	public function sleep($request)
 	{
-		$h = $request->input('h');
-		$stype = $request->input('stype');
+		$h = $request->h;
+		$stype = $request->stype;
+		date_default_timezone_set('Asia/Karachi');
+		
 		if ($stype == 'bedtime') {
-			date_default_timezone_set('Asia/Karachi');
 			$timestamp = strtotime($h) + (((14 * 60) + 45) * 60);
 			$timestamp2 = $timestamp  + 90 * 60;
 			$timestamp3 = $timestamp2 + 90 * 60;
 			$timestamp4 = $timestamp3 + 90 * 60;
 			$timestamp5 = $timestamp4 + 90 * 60;
 			$timestamp6 = $timestamp5 + 90 * 60;
+			
 			$time  = date('h:i:sa', $timestamp);
 			$time2 = date('h:i:sa', $timestamp2);
 			$time3 = date('h:i:sa', $timestamp3);
@@ -1708,7 +1724,6 @@ class EverydayLife extends Model
 			$time5 = date('h:i:sa', $timestamp5);
 			$time6 = date('h:i:sa', $timestamp6);
 		} elseif ($stype == 'wkup') {
-			date_default_timezone_set('Asia/Karachi');
 			$date = date('h:i:sa');
 			$timestamp = strtotime($date) + ((465 + 90) * 60);
 			$timestamp2 = $timestamp -  90 * 60;
@@ -1716,6 +1731,7 @@ class EverydayLife extends Model
 			$timestamp4 = $timestamp3 -  90 * 60;
 			$timestamp5 = $timestamp4 -  90 * 60;
 			$timestamp6 = $timestamp5 -  90 * 60;
+			
 			$time   = date('h:i:sa', $timestamp);
 			$time2  = date('h:i:sa', $timestamp2);
 			$time3  = date('h:i:sa', $timestamp3);
@@ -1726,6 +1742,7 @@ class EverydayLife extends Model
 			$this->param['error'] = 'Please! Check Your Inputs';
 			return $this->param;
 		}
+		
 		$this->param['time']	= $time;
 		$this->param['time2']	= $time2;
 		$this->param['time3']	= $time3;
@@ -1740,24 +1757,28 @@ class EverydayLife extends Model
 	// height compression
 	public function compression($request)
 	{
-		$height = trim($request->input('height'));
-		$height_unit = trim($request->input('height_unit'));
-		$stone = trim($request->input('stone'));
-		$stone_unit = trim($request->input('stone_unit'));
-		$length = trim($request->input('length'));
-		$length_unit = trim($request->input('length_unit'));
-		$deck = trim($request->input('deck'));
-		$deck_unit = trim($request->input('deck_unit'));
-		function unit_in($a, $b)
-		{
-			if ($b == "in") {
-				$unit_unit = $a * 1;
-			} else {
-				$unit_unit = $a * 39.37;
+		$height = trim($request->height);
+		$height_unit = trim($request->height_unit);
+		$stone = trim($request->stone);
+		$stone_unit = trim($request->stone_unit);
+		$length = trim($request->length);
+		$length_unit = trim($request->length_unit);
+		$deck = trim($request->deck);
+		$deck_unit = trim($request->deck_unit);
+
+		if (!function_exists('unit_in')) {
+			function unit_in($a, $b)
+			{
+				if ($b == "in") {
+					$unit_unit = $a * 1;
+				} else {
+					$unit_unit = $a * 39.37;
+				}
+				return $unit_unit;
 			}
-			return $unit_unit;
 		}
-		if (is_numeric($height) && is_numeric($height) && is_numeric($stone) && is_numeric($deck)) {
+
+		if (is_numeric($height) && is_numeric($stone) && is_numeric($length) && is_numeric($deck)) {
 			$height = unit_in($height, $height_unit);
 			$length = unit_in($length, $length_unit);
 			$stone = unit_in($stone, $stone_unit);
@@ -1918,13 +1939,14 @@ class EverydayLife extends Model
 
 	public function tesla($request)
 	{
-		$main_unit = trim($request->input('main_unit'));
-		$battery = trim($request->input('battery'));
-		$electricity = trim($request->input('electricity'));
-		$type = trim($request->input('type'));
-		$price = trim($request->input('price'));
-		$distance = trim($request->input('distance'));
-		$units = trim($request->input('units'));
+		$main_unit = $request->main_unit;
+		$battery = $request->battery;
+		$electricity = $request->electricity;
+		$type = $request->type;
+		$price = $request->price;
+		$distance = $request->distance;
+		$units = $request->units;
+
 		if ($main_unit === "Full Capacity Charging Cost") {
 			if (is_numeric($battery) && is_numeric($electricity)) {
 				$cost = $battery * $electricity;
@@ -2057,15 +2079,15 @@ class EverydayLife extends Model
 
 	public function fuel($request)
 	{
-
-		$distance = trim($request->input('distance'));
-		$d_units = trim($request->input('d_units'));
-		$f_efficiency = trim($request->input('f_efficiency'));
-		$f_eff_units = trim($request->input('f_eff_units'));
-		$f_price = trim($request->input('f_price'));
-		$f_p_units = trim($request->input('f_p_units'));
-		$currancy = $request->input('currancy');
+		$distance = trim($request->distance);
+		$d_units = trim($request->d_units);
+		$f_efficiency = trim($request->f_efficiency);
+		$f_eff_units = trim($request->f_eff_units);
+		$f_price = trim($request->f_price);
+		$f_p_units = trim($request->f_p_units);
+		$currancy = $request->currancy;
 		$f_p_units = str_replace($currancy, '', $f_p_units);
+
 		if (is_numeric($distance) && is_numeric($f_efficiency) && is_numeric($f_price)) {
 
 			if (isset($d_units)) {
@@ -2154,32 +2176,36 @@ class EverydayLife extends Model
 
 	public function river($request)
 	{
-		$rock_type = trim($request->input('rock_type'));
-		$density = trim($request->input('density'));
-		$density_unit = trim($request->input('density_unit'));
-		$length = trim($request->input('length'));
-		$length_unit = trim($request->input('length_unit'));
-		$width = trim($request->input('width'));
-		$width_unit = trim($request->input('width_unit'));
-		$depth = trim($request->input('depth'));
-		$depth_unit = trim($request->input('depth_unit'));
-		$wastage = trim($request->input('wastage'));
-		$price = trim($request->input('price'));
-		$price_unit = trim($request->input('price_unit'));
-		$currancy = $request->input('currancy');
+		$rock_type = trim($request->rock_type);
+		$density = trim($request->density);
+		$density_unit = trim($request->density_unit);
+		$length = trim($request->length);
+		$length_unit = trim($request->length_unit);
+		$width = trim($request->width);
+		$width_unit = trim($request->width_unit);
+		$depth = trim($request->depth);
+		$depth_unit = trim($request->depth_unit);
+		$wastage = trim($request->wastage);
+		$price = trim($request->price);
+		$price_unit = trim($request->price_unit);
+		$currancy = $request->currancy;
 		$price_unit = str_replace($currancy, '', $price_unit);
-		function sigFig($value, $digits)
-		{
-			if ($value !== '') {
-				if ($value === 0) {
-					$decimalPlaces = $digits - 1;
-				} elseif ($value < 0) {
-					$decimalPlaces = $digits - floor(log10($value * -1)) - 1;
-				} else {
-					$decimalPlaces = $digits - floor(log10($value)) - 1;
+
+		if (!function_exists('sigFigLocal')) {
+			function sigFigLocal($value, $digits)
+			{
+				if ($value !== '' && $value !== null) {
+					if ($value == 0) {
+						$decimalPlaces = $digits - 1;
+					} elseif ($value < 0) {
+						$decimalPlaces = $digits - floor(log10($value * -1)) - 1;
+					} else {
+						$decimalPlaces = $digits - floor(log10($value)) - 1;
+					}
+					$answer = round($value, $decimalPlaces);
+					return $answer;
 				}
-				$answer = round($value, $decimalPlaces);
-				return $answer;
+				return $value;
 			}
 		}
 
@@ -2218,13 +2244,13 @@ class EverydayLife extends Model
 			} elseif ($depth_unit === 'yd') {
 				$depth = $depth / 1.093613;
 			}
-			if ($density_unit === 't_m3' || $density_unit === 'g_cm3') {
+			if ($density_unit === 't/m³' || $density_unit === 'g/cm³' || $density_unit === 't_m3' || $density_unit === 'g_cm3') {
 				$density = $density / 0.001;
-			} elseif ($density_unit === 'lb_cu_in') {
+			} elseif ($density_unit === 'lb/cu in' || $density_unit === 'lb_cu_in') {
 				$density = $density / 0.0000361273;
-			} elseif ($density_unit === 'lb_cu_ft') {
+			} elseif ($density_unit === 'lb/cu ft' || $density_unit === 'lb_cu_ft') {
 				$density = $density / 0.062428;
-			} elseif ($density_unit === 'lb_cu_yd') {
+			} elseif ($density_unit === 'lb/cu yd' || $density_unit === 'lb_cu_yd') {
 				$density = $density / 1.685555;
 			}
 
@@ -2253,10 +2279,10 @@ class EverydayLife extends Model
 				$price_v = $price * $density / 1000;
 				$total_cost = $price * $weight;
 
-				$price_v_cm3 = sigFig(($price_v / 1000000), 3) . '@@@cm³';
-				$price_v_cu_in = sigFig(($price_v / 61023.74), 3) . '@@@cu in';
-				$price_v_cu_ft = sigFig(($price_v * 0.03), 3) . '@@@cu ft';
-				$price_v_cu_yd = sigFig(($price_v * 0.76), 3) . '@@@cu yd';
+				$price_v_cm3 = sigFigLocal(($price_v / 1000000), 3) . '@@@cm³';
+				$price_v_cu_in = sigFigLocal(($price_v / 61023.74), 3) . '@@@cu in';
+				$price_v_cu_ft = sigFigLocal(($price_v * 0.03), 3) . '@@@cu ft';
+				$price_v_cu_yd = sigFigLocal(($price_v * 0.76), 3) . '@@@cu yd';
 
 				$price_v_units = [$price_v_cm3, $price_v_cu_in, $price_v_cu_ft, $price_v_cu_yd];
 			}
@@ -2266,38 +2292,31 @@ class EverydayLife extends Model
 		}
 
 		// Other Units
+		$volume_cm3 = number_format(sigFigLocal(($volume * 1000000), 3)) . '@@@cm³';
+		$volume_cu_in = sigFigLocal(($volume * 61024), 3) . '@@@cu in';
+		$volume_cu_ft = sigFigLocal(($volume * 35.3), 3) . '@@@cu ft';
+		$volume_cu_yd = sigFigLocal(($volume * 1.308), 3) . '@@@cu yd';
 
-		$volume_cm3 = number_format(sigFig(($volume * 1000000), 3)) . '@@@cm³';
-		$volume_cu_in = sigFig(($volume * 61024), 3) . '@@@cu in';
-		$volume_cu_ft = sigFig(($volume * 35.3), 3) . '@@@cu ft';
-		$volume_cu_yd = sigFig(($volume * 1.308), 3) . '@@@cu yd';
+		$weight_kg = sigFigLocal(($weight * 1000), 3) . '@@@kg';
+		$weight_lb = sigFigLocal(($weight * 2205), 3) . '@@@lb';
+		$weight_stone = sigFigLocal(($weight * 157.5), 3) . '@@@stone';
+		$weight_us_ton = sigFigLocal(($weight * 1.102), 3) . '@@@US ton';
+		$weight_long_ton = sigFigLocal(($weight * 0.984), 3) . '@@@Long ton';
 
-		$weight_kg = sigFig(($weight * 1000), 3) . '@@@kg';
-		$weight_lb = sigFig(($weight * 2205), 3) . '@@@lb';
-		$weight_stone = sigFig(($weight * 157.5), 3) . '@@@stone';
-		$weight_us_ton = sigFig(($weight * 1.102), 3) . '@@@US ton';
-		$weight_long_ton = sigFig(($weight * 0.984), 3) . '@@@Long ton';
+		$area_cm2 = sigFigLocal(($area * 10000), 3) . '@@@cm²';
+		$area_in2 = sigFigLocal(($area * 1550), 3) . '@@@in²';
+		$area_ft2 = sigFigLocal(($area * 10.76), 3) . '@@@ft²';
+		$area_yd2 = sigFigLocal(($area * 1.196), 3) . '@@@yd²';
 
-		$area_cm2 = number_format(sigFig(($area * 10000), 3)) . '@@@cm²';
-		$area_km2 = sigFig(($area * 0.000001), 3) . '@@@km²';
-		$area_in2 = sigFig(($area * 1550), 3) . '@@@in²';
-		$area_ft2 = sigFig(($area * 10.76), 3) . '@@@ft²';
-		$area_yd2 = sigFig(($area * 1.196), 3) . '@@@yd²';
-		$area_mi2 = sigFig(($area * 0.000000386), 3) . '@@@mi²';
-
-		$volume_units = [$volume_cm3, $volume_cu_in, $volume_cu_ft, $volume_cu_yd];
-		$weight_units = [$weight_kg, $weight_lb, $weight_stone, $weight_us_ton, $weight_long_ton];
-		$area_units = [$area_cm2, $area_km2, $area_in2, $area_ft2, $area_yd2, $area_mi2];
-
-		$this->param['volume'] = sigFig($volume, 3);
-		$this->param['volume_units'] = $volume_units;
-		$this->param['weight'] = sigFig($weight, 3);
-		$this->param['weight_units'] = $weight_units;
-		$this->param['area'] = sigFig($area, 3);
-		$this->param['area_units'] = $area_units;
-		$this->param['price_v'] = sigFig($price_v, 3);
+		$this->param['volume'] = sigFigLocal($volume, 3);
+		$this->param['volume_units'] = [$volume_cm3, $volume_cu_in, $volume_cu_ft, $volume_cu_yd];
+		$this->param['weight'] = sigFigLocal($weight, 3);
+		$this->param['weight_units'] = [$weight_kg, $weight_lb, $weight_stone, $weight_us_ton, $weight_long_ton];
+		$this->param['area'] = sigFigLocal($area, 3);
+		$this->param['area_units'] = [$area_cm2, $area_in2, $area_ft2, $area_yd2];
+		$this->param['price_v'] = sigFigLocal($price_v, 3);
 		$this->param['price_v_units'] = $price_v_units;
-		$this->param['total_cost'] = sigFig($total_cost, 3);
+		$this->param['total_cost'] = sigFigLocal($total_cost, 2);
 		$this->param['RESULT'] = 1;
 
 		return $this->param;
@@ -2305,33 +2324,35 @@ class EverydayLife extends Model
 
 	public function circle($request)
 	{
-		$type           = $request->input('type');
-		$length          = $request->input('length');
-		$length_unit     = $request->input('length_unit');
-		$waist           = $request->input('waist');
-		$waist_unit      = $request->input('waist_unit');
-		function convertToCm($value, $unit)
-		{
-			switch ($unit) {
-				case 'mm':
-					return $value * 0.1; // Millimeters to centimeters
-				case 'cm':
-					return $value; // Centimeters to centimeters (no conversion needed)
-				case 'm':
-					return $value * 100; // Meters to centimeters
-				case 'in':
-					return $value * 2.54; // Inches to centimeters
-				case 'ft':
-					return $value * 30.48; // Feet to centimeters
-				default:
-					return null; // Invalid unit
+		$type           = $request->type;
+		$length          = $request->length;
+		$length_unit     = $request->length_unit;
+		$waist           = $request->waist;
+		$waist_unit      = $request->waist_unit;
+
+		if (!function_exists('convertToCmLocal')) {
+			function convertToCmLocal($value, $unit)
+			{
+				switch ($unit) {
+					case 'mm':
+						return $value * 0.1; // Millimeters to centimeters
+					case 'cm':
+						return $value; // Centimeters to centimeters (no conversion needed)
+					case 'm':
+						return $value * 100; // Meters to centimeters
+					case 'in':
+						return $value * 2.54; // Inches to centimeters
+					case 'ft':
+						return $value * 30.48; // Feet to centimeters
+					default:
+						return $value; // Return as is or handle invalid unit
+				}
 			}
 		}
 
-
 		if (is_numeric($length) && is_numeric($waist) && !empty($type)) {
-			$length_cm = convertToCm($length, $length_unit);
-			$waist_cm  = convertToCm($waist, $waist_unit);
+			$length_cm = convertToCmLocal($length, $length_unit);
+			$waist_cm  = convertToCmLocal($waist, $waist_unit);
 
 			//  value of π = 3.14
 			if ($type == 'full') {
@@ -2342,6 +2363,8 @@ class EverydayLife extends Model
 				$radius_cm = 2 * $waist_cm / (2 * 3.14) - 2;   //for a half circle skirt;
 			} else if ($type == 'quarter') {
 				$radius_cm = 4 * $waist_cm / (2 * 3.14) - 2;   //for a quarter circle skirt.
+			} else {
+				$radius_cm = 0;
 			}
 
 			$radius_mm = $radius_cm * 10;
@@ -2418,364 +2441,357 @@ class EverydayLife extends Model
 
 	public function gpm($request)
 	{
+		$volume = $request->volume;
+		$vol_unit = $request->vol_unit;
+		$time = $request->time;
+		$time_unit = $request->time_unit;
+		$ans_unit = $request->ans_unit;
 
-		$volume = trim($request->input('volume'));
-		$vol_unit = trim($request->input('vol_unit'));
-		$time = trim($request->input('time'));
-		$time_unit = trim($request->input('time_unit'));
-		$ans_unit = trim($request->input('ans_unit'));
+		if (!function_exists('volume_convert_local')) {
+			function volume_convert_local($a, $b)
+			{
+				if ($b === "mm³") {
+					$vol_ans = $a * 0.00000026417;
+				} elseif ($b === "cm³") {
+					$vol_ans = $a * 0.00026417;
+				} elseif ($b === "dm³") {
+					$vol_ans = $a * 0.26417;
+				} elseif ($b === "m³") {
+					$vol_ans = $a * 264.17;
+				} elseif ($b === "cu in") {
+					$vol_ans = $a * 0.004329;
+				} elseif ($b === "cu ft") {
+					$vol_ans = $a * 7.48;
+				} elseif ($b === "cu yd") {
+					$vol_ans = $a * 201.97;
+				} elseif ($b === "ml") {
+					$vol_ans = $a * 0.00026417;
+				} elseif ($b === "cl") {
+					$vol_ans = $a * 0.0026417;
+				} elseif ($b === "liters") {
+					$vol_ans = $a * 0.26417;
+				} elseif ($b === "US gal") {
+					$vol_ans = $a * 1;
+				} elseif ($b === "UK gal") {
+					$vol_ans = $a * 1.201;
+				} elseif ($b === "US fl oz") {
+					$vol_ans = $a * 0.007813;
+				} elseif ($b === "UK fl oz") {
+					$vol_ans = $a * 0.007506;
+				} elseif ($b === "cups") {
+					$vol_ans = $a * 0.0625;
+				} elseif ($b === "tbsp") {
+					$vol_ans = $a * 0.0039626;
+				} elseif ($b === "tsp") {
+					$vol_ans = $a * 0.0013209;
+				} elseif ($b === "US qt") {
+					$vol_ans = $a * 0.25;
+				} elseif ($b === "UK qt") {
+					$vol_ans = $a * 0.30024;
+				} elseif ($b === "US pt") {
+					$vol_ans = $a * 0.125;
+				} elseif ($b === "UK pt") {
+					$vol_ans = $a * 0.15012;
+				} else {
+					$vol_ans = 0;
+				}
+				return $vol_ans;
+			}
+		}
 
-		function volume_convert($a, $b)
-		{
-			if ($b === "mm³") {
-				$vol_ans = $a * 0.00000026417;
-			} elseif ($b === "cm³") {
-				$vol_ans = $a * 0.00026417;
-			} elseif ($b === "dm³") {
-				$vol_ans = $a * 0.26417;
-			} elseif ($b === "m³") {
-				$vol_ans = $a * 264.17;
-			} elseif ($b === "cu in") {
-				$vol_ans = $a * 0.004329;
-			} elseif ($b === "cu ft") {
-				$vol_ans = $a * 7.48;
-			} elseif ($b === "cu yd") {
-				$vol_ans = $a * 201.97;
-			} elseif ($b === "ml") {
-				$vol_ans = $a * 0.00026417;
-			} elseif ($b === "cl") {
-				$vol_ans = $a * 0.0026417;
-			} elseif ($b === "liters") {
-				$vol_ans = $a * 0.26417;
-			} elseif ($b === "US gal") {
-				$vol_ans = $a * 1;
-			} elseif ($b === "UK gal") {
-				$vol_ans = $a * 1.201;
-			} elseif ($b === "US fl oz") {
-				$vol_ans = $a * 0.007813;
-			} elseif ($b === "UK fl oz") {
-				$vol_ans = $a * 0.007506;
-			} elseif ($b === "cups") {
-				$vol_ans = $a * 0.0625;
-			} elseif ($b === "tbsp") {
-				$vol_ans = $a * 0.0039626;
-			} elseif ($b === "tsp") {
-				$vol_ans = $a * 0.0013209;
-			} elseif ($b === "US qt") {
-				$vol_ans = $a * 0.25;
-			} elseif ($b === "UK qt") {
-				$vol_ans = $a * 0.30024;
-			} elseif ($b === "US pt") {
-				$vol_ans = $a * 0.125;
-			} elseif ($b === "UK pt") {
-				$vol_ans = $a * 0.15012;
+		if (!function_exists('time_convert_local')) {
+			function time_convert_local($a, $b)
+			{
+				if ($b === "sec") {
+					$time_ans = $a * 1;
+				} elseif ($b === "min") {
+					$time_ans = $a * 60;
+				} elseif ($b === "hrs") {
+					$time_ans = $a * 3600;
+				} elseif ($b === "days") {
+					$time_ans = $a * 86400;
+				} elseif ($b === "wks") {
+					$time_ans = $a * 604800;
+				} elseif ($b === "mos") {
+					$time_ans = $a * 2629800;
+				} elseif ($b === "yrs") {
+					$time_ans = $a * 31557600;
+				} else {
+					$time_ans = 1;
+				}
+				return $time_ans;
 			}
-			return $vol_ans;
 		}
-		function time_convert($a, $b)
-		{
-			if ($b === "sec") {
-				$time_ans = $a * 1;
-			} elseif ($b === "min") {
-				$time_ans = $a * 60;
-			} elseif ($b === "hrs") {
-				$time_ans = $a * 3600;
-			} elseif ($b === "days") {
-				$time_ans = $a * 86400;
-			} elseif ($b === "wks") {
-				$time_ans = $a * 604800;
-			} elseif ($b === "mos") {
-				$time_ans = $a * 2629800;
-			} elseif ($b === "yrs") {
-				$time_ans = $a * 31557600;
+
+		if (!function_exists('ans_convert_local')) {
+			function ans_convert_local($a, $b)
+			{
+				$answer_unit = "";
+				if ($b === "1") {
+					$ans = $a * 1;
+					$answer_unit = "US gal/s";
+				} elseif ($b === "2") {
+					$ans = $a * 60;
+					$answer_unit = "US gal/min";
+				} elseif ($b === "3") {
+					$ans = $a * 3600;
+					$answer_unit = "US gal/h";
+				} elseif ($b === "4") {
+					$ans = $a * 86400;
+					$answer_unit = "US gal/day";
+				} elseif ($b === "5") {
+					$ans = $a * 0.8327;
+					$answer_unit = "UK gal/s";
+				} elseif ($b === "6") {
+					$ans = $a * 49.96;
+					$answer_unit = "UK gal/min";
+				} elseif ($b === "7") {
+					$ans = $a * 2997.6;
+					$answer_unit = "UK gal/h";
+				} elseif ($b === "8") {
+					$ans = $a * 71943;
+					$answer_unit = "UK gal/day";
+				} elseif ($b === "9") {
+					$ans = $a * 0.13368;
+					$answer_unit = "ft³/s";
+				} elseif ($b === "10") {
+					$ans = $a * 8.021;
+					$answer_unit = "ft³/min";
+				} elseif ($b === "11") {
+					$ans = $a * 481.25;
+					$answer_unit = "ft³/h";
+				} elseif ($b === "12") {
+					$ans = $a * 11550;
+					$answer_unit = "ft³/day";
+				} elseif ($b === "13") {
+					$ans = $a * 3785410;
+					$answer_unit = "mm³/s";
+				} elseif ($b === "14") {
+					$ans = $a * 0.0037854;
+					$answer_unit = "m³/s";
+				} elseif ($b === "15") {
+					$ans = $a * 0.22712;
+					$answer_unit = "m³/min";
+				} elseif ($b === "16") {
+					$ans = $a * 13.627;
+					$answer_unit = "m³/h";
+				} elseif ($b === "17") {
+					$ans = $a * 327.06;
+					$answer_unit = "m³/day";
+				} elseif ($b === "18") {
+					$ans = $a * 3.7854;
+					$answer_unit = "L/s";
+				} elseif ($b === "19") {
+					$ans = $a * 227.12;
+					$answer_unit = "L/min";
+				} elseif ($b === "20") {
+					$ans = $a * 13627;
+					$answer_unit = "L/h";
+				} elseif ($b === "21") {
+					$ans = $a * 327060;
+					$answer_unit = "L/day";
+				} elseif ($b === "22") {
+					$ans = $a * 227124;
+					$answer_unit = "ml/min";
+				} elseif ($b === "23") {
+					$ans = $a * 13627440;
+					$answer_unit = "ml/h";
+				} elseif ($b === "24") {
+					$ans = $a * 7680;
+					$answer_unit = "US fl oz / min";
+				} elseif ($b === "25") {
+					$ans = $a * 460800;
+					$answer_unit = "US fl oz / h";
+				} elseif ($b === "26") {
+					$ans = $a * 7993.4;
+					$answer_unit = "UK fl oz / min";
+				} elseif ($b === "27") {
+					$ans = $a * 479603;
+					$answer_unit = "UK fl oz / h";
+				} elseif ($b === "28") {
+					$ans = $a * 480;
+					$answer_unit = "US pt / min";
+				} elseif ($b === "29") {
+					$ans = $a * 28800;
+					$answer_unit = "US pt / h";
+				} elseif ($b === "30") {
+					$ans = $a * 499.58;
+					$answer_unit = "UK pt / min";
+				} elseif ($b === "31") {
+					$ans = $a * 29975;
+					$answer_unit = "UK pt / h";
+				}
+				return ['ans' => $ans, 'unit' => $answer_unit];
 			}
-			return $time_ans;
 		}
-		function ans_convert($a, $b)
-		{
-			if ($b === "1") {
-				$ans = $a * 1;
-				$answer_unit = "US gal/s";
-			} elseif ($b === "2") {
-				$ans = $a * 60;
-				$answer_unit = "US gal/min";
-			} elseif ($b === "3") {
-				$ans = $a * 3600;
-				$answer_unit = "US gal/h";
-			} elseif ($b === "4") {
-				$ans = $a * 86400;
-				$answer_unit = "US gal/day";
-			} elseif ($b === "5") {
-				$ans = $a * 0.8327;
-				$answer_unit = "UK gal/s";
-			} elseif ($b === "6") {
-				$ans = $a * 49.96;
-				$answer_unit = "UK gal/min";
-			} elseif ($b === "7") {
-				$ans = $a * 2997.6;
-				$answer_unit = "UK gal/h";
-			} elseif ($b === "8") {
-				$ans = $a * 71943;
-				$answer_unit = "UK gal/day";
-			} elseif ($b === "9") {
-				$ans = $a * 0.13368;
-				$answer_unit = "ft³/s";
-			} elseif ($b === "10") {
-				$ans = $a * 8.021;
-				$answer_unit = "ft³/min";
-			} elseif ($b === "11") {
-				$ans = $a * 481.25;
-				$answer_unit = "ft³/h";
-			} elseif ($b === "12") {
-				$ans = $a * 11550;
-				$answer_unit = "ft³/day";
-			} elseif ($b === "13") {
-				$ans = $a * 3785410;
-				$answer_unit = "mm³/s";
-			} elseif ($b === "14") {
-				$ans = $a * 0.0037854;
-				$answer_unit = "m³/s";
-			} elseif ($b === "15") {
-				$ans = $a * 0.22712;
-				$answer_unit = "m³/min";
-			} elseif ($b === "16") {
-				$ans = $a * 13.627;
-				$answer_unit = "m³/h";
-			} elseif ($b === "17") {
-				$ans = $a * 327.06;
-				$answer_unit = "m³/day";
-			} elseif ($b === "18") {
-				$ans = $a * 3.7854;
-				$answer_unit = "L/s";
-			} elseif ($b === "19") {
-				$ans = $a * 227.12;
-				$answer_unit = "L/min";
-			} elseif ($b === "20") {
-				$ans = $a * 13627;
-				$answer_unit = "L/h";
-			} elseif ($b === "21") {
-				$ans = $a * 327059;
-				$answer_unit = "L/day";
-			} elseif ($b === "22") {
-				$ans = $a * 227125;
-				$answer_unit = "ml/min";
-			} elseif ($b === "23") {
-				$ans = $a * 13627476;
-				$answer_unit = "ml/h";
-			} elseif ($b === "24") {
-				$ans = $a * 7680;
-				$answer_unit = "US fl oz / min";
-			} elseif ($b === "25") {
-				$ans = $a * 460800;
-				$answer_unit = "US fl oz / h";
-			} elseif ($b === "26") {
-				$ans = $a * 7994;
-				$answer_unit = "UK fl oz / min";
-			} elseif ($b === "27") {
-				$ans = $a * 479620;
-				$answer_unit = "UK fl oz / h";
-			} elseif ($b === "28") {
-				$ans = $a * 480;
-				$answer_unit = "US pt / min";
-			} elseif ($b === "29") {
-				$ans = $a * 28800;
-				$answer_unit = "US pt / h";
-			} elseif ($b === "30") {
-				$ans = $a * 399.7;
-				$answer_unit = "UK pt / min";
-			} elseif ($b === "31") {
-				$ans = $a * 23981;
-				$answer_unit = "UK pt / h";
-			}
-			$jawab = $ans . "@@" . $answer_unit;
-			return $jawab;
-		}
+
 		if (is_numeric($volume) && is_numeric($time)) {
-			$volume = volume_convert($volume, $vol_unit);
-			$time = time_convert($time, $time_unit);
-			$answer = $volume / $time;
-			$main_ans = ans_convert($answer, $ans_unit);
-			list($answers, $answer_unit) = explode("@@", $main_ans);
+			if ($time == 0) {
+				$this->param['error'] = 'Time cannot be zero.';
+				return $this->param;
+			}
+			$vol_std = volume_convert_local($volume, $vol_unit);
+			$time_std = time_convert_local($time, $time_unit);
+			$gpm = $vol_std / $time_std;
+			$result = ans_convert_local($gpm, $ans_unit);
+
+			$this->param['main_ans'] = $result['ans'];
+			$this->param['answer_unit'] = $result['unit'];
+			$this->param['RESULT'] = 1;
 		} else {
-			$this->param['error'] = 'Please! Check Your Inputs';
-			return $this->param;
+			$this->param['error'] = 'Please check your input.';
 		}
-		$this->param['main_ans'] = $answers;
-		$this->param['answer_unit'] = $answer_unit;
-		$this->param['RESULT'] = 1;
+
 		return $this->param;
 	}
 
+
 	public function dilution($request)
 	{
-		$final_volume = trim($request->input('final_volume'));
-		$final_unit = trim($request->input('final_unit'));
-		$dilution_ratio = trim($request->input('dilution_ratio'));
-		$concentrate_volume = trim($request->input('concentrate_volume'));
-		$concentrate_unit = trim($request->input('concentrate_unit'));
-		$water_volume = trim($request->input('water_volume'));
-		$water_unit = trim($request->input('water_unit'));
-		function dilutionUnit($input, $unit)
-		{
-			if ($unit == 'cm³') {
-				$input = $input * 0.001;
-			} else if ($unit == 'dm³') {
-				$input = $input * 1;
-			} else if ($unit == 'm³') {
-				$input = $input * 1000;
-			} else if ($unit == 'cuin') {
-				$input = $input * 0.016387;
-			} else if ($unit == 'cuft') {
-				$input = $input * 28.317;
-			} else if ($unit == 'cuyd') {
-				$input = $input * 764.6;
-			} else if ($unit == 'ml') {
-				$input = $input * 0.001;
-			} else if ($unit == 'cl') {
-				$input = $input * 0.01;
-			} else if ($unit == 'USgal') {
-				$input = $input * 3.7854;
-			} else if ($unit == 'UKgal') {
-				$input = $input * 4.546;
-			}
-			return $input;
-		}
-		if (is_numeric($final_volume) && is_numeric($dilution_ratio) && empty($concentrate_volume) && empty($water_volume)) {
-			if (isset($final_unit)) {
-				$final_volume = dilutionUnit($final_volume, $final_unit);
-			}
+		$final_volume = $request->final_volume;
+		$final_unit = $request->final_unit;
+		$dilution_ratio = $request->dilution_ratio;
+		$concentrate_volume = $request->concentrate_volume;
+		$concentrate_unit = $request->concentrate_unit;
+		$water_volume = $request->water_volume;
+		$water_unit = $request->water_unit;
 
-			$cv = $final_volume / ($dilution_ratio + 1);
+		if (!function_exists('dilutionUnitLocal')) {
+			function dilutionUnitLocal($input, $unit)
+			{
+				if ($unit == 'cm³') {
+					$input = $input * 0.001;
+				} else if ($unit == 'dm³') {
+					$input = $input * 1;
+				} else if ($unit == 'm³') {
+					$input = $input * 1000;
+				} else if ($unit == 'cu in') {
+					$input = $input * 0.016387;
+				} else if ($unit == 'cu ft') {
+					$input = $input * 28.317;
+				} else if ($unit == 'cu yd') {
+					$input = $input * 764.6;
+				} else if ($unit == 'ml') {
+					$input = $input * 0.001;
+				} else if ($unit == 'cl') {
+					$input = $input * 0.01;
+				} else if ($unit == 'US gal') {
+					$input = $input * 3.7854;
+				} else if ($unit == 'UK gal') {
+					$input = $input * 4.546;
+				}
+				return $input;
+			}
+		}
+
+		if (is_numeric($final_volume) && is_numeric($dilution_ratio) && empty($concentrate_volume) && empty($water_volume)) {
+			$fv = dilutionUnitLocal($final_volume, $final_unit);
+			$cv = $fv / ($dilution_ratio + 1);
 			$wv = $cv * $dilution_ratio;
 			$this->param['res1'] = round($cv, 2) . ' liters';
-			$this->param['res11'] = preg_replace('/\s*liters\s*/', '', $this->param['res1']);
+			$this->param['res11'] = $cv;
 			$this->param['res2'] = round($wv, 2) . ' liters';
-			$this->param['res22'] = preg_replace('/\s*liters\s*/', '', $this->param['res2']);
+			$this->param['res22'] = $wv;
 			$this->param['name1'] = 'Concentrate volume';
 			$this->param['name2'] = 'Water volume';
 		} else if (is_numeric($final_volume) && empty($dilution_ratio) && is_numeric($concentrate_volume) && empty($water_volume)) {
-			if (isset($final_unit)) {
-				$final_volume = dilutionUnit($final_volume, $final_unit);
-			}
-			if (isset($concentrate_unit)) {
-				$concentrate_volume = dilutionUnit($concentrate_volume, $concentrate_unit);
-			}
-
-			$dr = ($final_volume / $concentrate_volume) - 1;
-			$wv = $dr * $concentrate_volume;
+			$fv = dilutionUnitLocal($final_volume, $final_unit);
+			$cv = dilutionUnitLocal($concentrate_volume, $concentrate_unit);
+			$dr = ($fv / $cv) - 1;
+			$wv = $dr * $cv;
 			$this->param['res1'] = round($dr, 1) . ' :1';
-			$this->param['res11'] = preg_replace('/\s*:\d+/', '', $this->param['res1']);
+			$this->param['res11'] = $dr;
 			$this->param['res2'] = round($wv, 2) . ' liters';
-			$this->param['res22'] = preg_replace('/\s*liters\s*/', '', $this->param['res2']);
+			$this->param['res22'] = $wv;
 			$this->param['name1'] = 'Dilution ratio';
 			$this->param['name2'] = 'Water volume';
 		} else if (is_numeric($final_volume) && empty($dilution_ratio) && empty($concentrate_volume) && is_numeric($water_volume)) {
-			if (isset($final_unit)) {
-				$final_volume = dilutionUnit($final_volume, $final_unit);
-			}
-			if (isset($water_unit)) {
-				$water_volume = dilutionUnit($water_volume, $water_unit);
-			}
-
-			$cv = $final_volume - $water_volume;
-			if ($cv == 0) {
-				$this->param['error'] = 'Please! Division by zero chose other values';
-				return $this->param;
-			}
-			$dr = $water_volume / $cv;
+			$fv = dilutionUnitLocal($final_volume, $final_unit);
+			$wv = dilutionUnitLocal($water_volume, $water_unit);
+			$cv = $fv - $wv;
+			if ($cv <= 0) { $this->param['error'] = 'Check Input'; return $this->param; }
+			$dr = $wv / $cv;
 			$this->param['res1'] = round($dr, 2) . ' :1';
-			$this->param['res11'] = preg_replace('/\s*:\d+/', '', $this->param['res1']);
+			$this->param['res11'] = $dr;
 			$this->param['res2'] = round($cv, 2) . ' liters';
-			$this->param['res22'] = preg_replace('/\s*liters\s*/', '', $this->param['res2']);
+			$this->param['res22'] = $cv;
 			$this->param['name1'] = 'Dilution ratio';
 			$this->param['name2'] = 'Concentrate volume';
 		} else if (empty($final_volume) && is_numeric($dilution_ratio) && is_numeric($concentrate_volume) && empty($water_volume)) {
-
-			if (isset($concentrate_unit)) {
-				$concentrate_volume = dilutionUnit($concentrate_volume, $concentrate_unit);
-			}
-
-			$fv = $concentrate_volume * ($dilution_ratio + 1);
-			$wv = $concentrate_volume * $dilution_ratio;
+			$cv = dilutionUnitLocal($concentrate_volume, $concentrate_unit);
+			$fv = $cv * ($dilution_ratio + 1);
+			$wv = $cv * $dilution_ratio;
 			$this->param['res1'] = round($fv, 2) . ' liters';
-			$this->param['res11'] = preg_replace('/\s*liters\s*/', '', $this->param['res1']);
+			$this->param['res11'] = $fv;
 			$this->param['res2'] = round($wv, 2) . ' liters';
-			$this->param['res22'] = preg_replace('/\s*liters\s*/', '', $this->param['res2']);
+			$this->param['res22'] = $wv;
 			$this->param['name1'] = 'Final volume';
 			$this->param['name2'] = 'Water volume';
 		} else if (empty($final_volume) && is_numeric($dilution_ratio) && empty($concentrate_volume) && is_numeric($water_volume)) {
-			if (isset($water_unit)) {
-				$water_volume = dilutionUnit($water_volume, $water_unit);
-			}
-
-			if ($dilution_ratio == 0) {
-				$this->param['error'] = 'Please! Division by zero, chose other values';
-				return $this->param;
-			}
-			$cv = $water_volume / $dilution_ratio;
+			$wv = dilutionUnitLocal($water_volume, $water_unit);
+			if ($dilution_ratio == 0) { $this->param['error'] = 'Division by zero'; return $this->param; }
+			$cv = $wv / $dilution_ratio;
 			$fv = $cv * ($dilution_ratio + 1);
-
 			$this->param['res1'] = round($fv, 2) . ' liters';
-			$this->param['res11'] = preg_replace('/\s*liters\s*/', '', $this->param['res1']);
+			$this->param['res11'] = $fv;
 			$this->param['res2'] = round($cv, 2) . ' liters';
-			$this->param['res22'] = preg_replace('/\s*liters\s*/', '', $this->param['res2']);
+			$this->param['res22'] = $cv;
 			$this->param['name1'] = 'Final volume';
 			$this->param['name2'] = 'Concentrate volume';
 		} else if (empty($final_volume) && empty($dilution_ratio) && is_numeric($concentrate_volume) && is_numeric($water_volume)) {
-
-			if (isset($concentrate_unit)) {
-				$concentrate_volume = dilutionUnit($concentrate_volume, $concentrate_unit);
-			}
-			if (isset($water_unit)) {
-				$water_volume = dilutionUnit($water_volume, $water_unit);
-			}
-
-			$dr = $water_volume / $concentrate_volume;
-			$fv = $concentrate_volume * ($dr + 1);
-
+			$cv = dilutionUnitLocal($concentrate_volume, $concentrate_unit);
+			$wv = dilutionUnitLocal($water_volume, $water_unit);
+			$dr = $wv / $cv;
+			$fv = $cv * ($dr + 1);
 			$this->param['res1'] = round($dr, 2) . ' :1';
-			$this->param['res11'] = preg_replace('/\s*:\d+/', '', $this->param['res1']);
+			$this->param['res11'] = $dr;
 			$this->param['res2'] = round($fv, 2) . ' liters';
-			$this->param['res22'] = preg_replace('/\s*liters\s*/', '', $this->param['res2']);
+			$this->param['res22'] = $fv;
 			$this->param['name1'] = 'Dilution ratio';
 			$this->param['name2'] = 'Final volume';
 		} else {
 			$this->param['error'] = 'Please! Enter only two values to get your result';
 			return $this->param;
 		}
+
 		$this->param['RESULT'] = 1;
 		return $this->param;
 	}
 
 	public function yards_to_tons($request)
 	{
-		$density = trim($request['density']);
-		$density_unit = trim($request['density_unit']);
-		$cubic_yards = trim($request['cubic_yards']);
-		function cubic_yard($density, $density_unit)
-		{
-			if ($density_unit == "lb/ft³") {
-				$total_cubic_yard = $density / 74.074;
-			} elseif ($density_unit == "kg/m³") {
-				$total_cubic_yard = $density / 1187;
+		$density = $request->density;
+		$density_unit = $request->density_unit;
+		$cubic_yards = $request->cubic_yards;
+
+		if (!function_exists('cubicYardLocal')) {
+			function cubicYardLocal($density, $density_unit)
+			{
+				$total_cubic_yard = 0;
+				if ($density_unit == "lb/ft³") {
+					$total_cubic_yard = $density / 74.074;
+				} elseif ($density_unit == "kg/m³") {
+					$total_cubic_yard = $density / 1187;
+				}
+				return $total_cubic_yard;
 			}
-			return $total_cubic_yard;
 		}
+
 		if (is_numeric($density) && is_numeric($cubic_yards)) {
-			$density = cubic_yard($density, $density_unit);
-			$tons = $density * $cubic_yards;
+			$density_converted = cubicYardLocal($density, $density_unit);
+			$tons = $density_converted * $cubic_yards;
 			$metric_tonnes = $tons * 0.907185;
 			$pounds = $metric_tonnes * 2204.62;
+			
+			$this->param['tons'] = $tons;
+			$this->param['metric_tonnes'] = $metric_tonnes;
+			$this->param['pounds'] = $pounds;
+			$this->param['RESULT'] = 1;
+			return $this->param;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
 			return $this->param;
 		}
-		$this->param['tons'] = $tons;
-		$this->param['metric_tonnes'] = $metric_tonnes;
-		$this->param['pounds'] = $pounds;
-		$this->param['RESULT'] = 1;
-
-		return $this->param;
 	}
 
 	public function military_time($request)
@@ -7212,9 +7228,9 @@ class EverydayLife extends Model
 	//  prorated rent calculator
 	public function prorated($request)
 	{
-		$date = trim($request->input('date'));
-		$rent = trim($request->input('rent'));
-		$bill_on = trim($request->input('bill_on'));
+		$date = trim($request->date);
+		$rent = trim($request->rent);
+		$bill_on = trim($request->bill_on);
 		if (is_numeric($rent) && is_numeric($bill_on) && !empty($date)) {
 			$year = date('Y', strtotime($date));
 			$mon = date('m', strtotime($date));
@@ -8485,13 +8501,13 @@ class EverydayLife extends Model
 	public function download($request)
 	{
 
-		$operations = $request->input('operations');
-		$first = $request->input('first');
-		$f_unit = $request->input('f_unit');
-		$second = $request->input('second');
-		$s_unit = $request->input('s_unit');
-		$third = $request->input('third');
-		$t_unit = $request->input('t_unit');
+		$operations = $request->operations;
+		$first = $request->first;
+		$f_unit = $request->f_unit;
+		$second = $request->second;
+		$s_unit = $request->s_unit;
+		$third = $request->third;
+		$t_unit = $request->t_unit;
 
 		function calculate($a, $b)
 		{
@@ -8548,7 +8564,7 @@ class EverydayLife extends Model
 			} elseif ($a == "Tibit") {
 				$convert1 = $b * 137439;
 			}
-			return $convert1;
+			return $convert1 ?? 0;
 		}
 		function tim($a, $b)
 		{
@@ -8567,15 +8583,15 @@ class EverydayLife extends Model
 			} elseif ($a == "yrs") {
 				$times = $b * 31557600;
 			}
-			return $times;
+			return $times ?? 0;
 		}
 		if ($operations == "1") {
 			if (is_numeric($first) && is_numeric($second)) {
 				if ($first > 0) {
 					if ($second > 0) {
-						$first = calculate($f_unit, $first);
-						$second = calculate($s_unit, $second);
-						$jawab = $first / $second;
+						$first_calc = calculate($f_unit, $first);
+						$second_calc = calculate($s_unit, $second);
+						$jawab = $first_calc / $second_calc;
 						$bandwidth[0] = "28800";
 						$bandwidth[1] = "56000";
 						$bandwidth[2] = "256000";
@@ -8590,7 +8606,7 @@ class EverydayLife extends Model
 						$bandwidth[11] = "80000000";
 						$bandwidth[12] = "1000000000";
 						for ($x = 0; $x < count($bandwidth); $x++) {
-							$filetime = (($first * 1024) * 8) / $bandwidth[$x];
+							$filetime = (($first_calc * 1024) * 8) / $bandwidth[$x];
 							$hourmod = $filetime % 3600;
 							$hour = floor($filetime / 3600);
 							$minute = floor($hourmod / 60);
@@ -8634,10 +8650,10 @@ class EverydayLife extends Model
 		} else if ($operations == "2") {
 			if (is_numeric($first) && is_numeric($third)) {
 				if ($first > 0) {
-					if ($second > 0) {
-						$first = calculate($f_unit, $first);
-						$third = tim($t_unit, $third);
-						$jawab = $first / $third;
+					if ($third > 0) {
+						$first_calc = calculate($f_unit, $first);
+						$third_calc = tim($t_unit, $third);
+						$jawab = $first_calc / $third_calc;
 					} else {
 						$this->param['error'] = 'Please enter a download time greater than 0.';
 						return $this->param;
@@ -8654,9 +8670,9 @@ class EverydayLife extends Model
 			if (is_numeric($second) && is_numeric($third)) {
 				if ($second > 0) {
 					if ($third > 0) {
-						$second = calculate($s_unit, $second);
-						$third = tim($t_unit, $third);
-						$jawab = $second * $third;
+						$second_calc = calculate($s_unit, $second);
+						$third_calc = tim($t_unit, $third);
+						$jawab = $second_calc * $third_calc;
 					} else {
 						$this->param['error'] = 'Please enter a download time greater than 0.';
 						return $this->param;
@@ -8670,7 +8686,7 @@ class EverydayLife extends Model
 				return $this->param;
 			}
 		}
-		$jawab = round($jawab);
+		$jawab = round($jawab ?? 0);
 		$this->param['jawab'] = $jawab;
 		$this->param['RESULT'] = 1;
 		return $this->param;
@@ -9578,12 +9594,12 @@ class EverydayLife extends Model
 	// data transfer calculator
 	public function data($request)
 	{
-		$first = $request->input('first');
-		$f_unit = $request->input('f_unit');
-		$second = $request->input('second');
-		$s_unit = $request->input('s_unit');
-		$kilo = $request->input('kilo');
-		$overhead = $request->input('overhead');
+		$first = $request->first;
+		$f_unit = $request->f_unit;
+		$second = $request->second;
+		$s_unit = $request->s_unit;
+		$kilo = $request->kilo;
+		$overhead = $request->overhead;
 
 		function calculate_hazar($a, $b)
 		{
@@ -9640,7 +9656,7 @@ class EverydayLife extends Model
 			} elseif ($a == "26") {
 				$convert1 = $b * 137439;
 			}
-			return $convert1;
+			return $convert1 ?? 0;
 		}
 		function calculate_hazar24($a, $b)
 		{
@@ -9697,38 +9713,43 @@ class EverydayLife extends Model
 			} elseif ($a == "26") {
 				$convert1 = $b * 137439;
 			}
-			return $convert1;
+			return $convert1 ?? 0;
 		}
-		function format_time($t, $f = ':') // t = seconds, f = separator 
+		function format_time_data($t, $f = ':') // t = seconds, f = separator 
 		{
 			return sprintf("%02d%s%02d%s%02d", floor($t / 3600), $f, ($t / 60) % 60, $f, $t % 60);
 		}
 		if (is_numeric($first) && is_numeric($second)) {
 			if ($kilo == "1") {
-				$first = calculate_hazar24($f_unit, $first);
-				$second = calculate_hazar24($s_unit, $second);
+				$first_calc = calculate_hazar24($f_unit, $first);
+				$second_calc = calculate_hazar24($s_unit, $second);
 			} elseif ($kilo == "2") {
-				$first = calculate_hazar($f_unit, $first);
-				$second = calculate_hazar($s_unit, $second);
+				$first_calc = calculate_hazar($f_unit, $first);
+				$second_calc = calculate_hazar($s_unit, $second);
+			} else {
+				$first_calc = calculate_hazar24($f_unit, $first);
+				$second_calc = calculate_hazar24($s_unit, $second);
 			}
+
 			if ($overhead == "1") {
-				$first = $first;
+				$first_calc = $first_calc;
 			} elseif ($overhead == "2") {
-				$first = (0.05 * $first) + $first;
+				$first_calc = (0.05 * $first_calc) + $first_calc;
 			} elseif ($overhead == "3") {
-				$first = (0.1 * $first) + $first;
+				$first_calc = (0.1 * $first_calc) + $first_calc;
 			} elseif ($overhead == "4") {
-				$first = (0.2 * $first) + $first;
+				$first_calc = (0.2 * $first_calc) + $first_calc;
 			} elseif ($overhead == "5") {
-				$first = (0.3 * $first) + $first;
+				$first_calc = (0.3 * $first_calc) + $first_calc;
 			} elseif ($overhead == "6") {
-				$first = (0.4 * $first) + $first;
+				$first_calc = (0.4 * $first_calc) + $first_calc;
 			} elseif ($overhead == "7") {
-				$first = (0.5 * $first) + $first;
+				$first_calc = (0.5 * $first_calc) + $first_calc;
 			}
-			if ($first > 0) {
-				if ($second > 0) {
-					$jawab = $first / $second;
+
+			if ($first_calc > 0) {
+				if ($second_calc > 0) {
+					$jawab = $first_calc / $second_calc;
 					$bandwidth[0] = "1.544";
 					$bandwidth[1] = "10";
 					$bandwidth[2] = "100";
@@ -9739,7 +9760,7 @@ class EverydayLife extends Model
 					$bandwidth[7] = "10240";
 					$bandwidth[8] = "20480";
 					for ($x = 0; $x < count($bandwidth); $x++) {
-						$filetime = (($first * 1024) * 8) / ($bandwidth[$x] * 1024);
+						$filetime = (($first_calc * 1024) * 8) / ($bandwidth[$x] * 1024);
 						$hourmod = $filetime % 3600;
 						$hour = floor($filetime / 3600);
 						$minute = floor($hourmod / 60);
@@ -9765,19 +9786,19 @@ class EverydayLife extends Model
 					$this->param['f8'] = $table_ans[7];
 					$this->param['f9'] = $table_ans[8];
 				} else {
-					$this->session->set_flashdata('data', 'Please enter a positive download speed.');
+					$this->param['error'] = 'Please enter a positive download speed.';
 					return $this->param;
 				}
 			} else {
-				$this->session->set_flashdata('data', 'Please input a file size greater than 0.');
+				$this->param['error'] = 'Please input a file size greater than 0.';
 				return $this->param;
 			}
 		} else {
-			$this->session->set_flashdata('data', 'Please check your input');
+			$this->param['error'] = 'Please check your input';
 			return $this->param;
 		}
-		$jawab = round($jawab);
-		$main_ans = format_time($jawab);
+		$jawab = round($jawab ?? 0);
+		$main_ans = format_time_data($jawab);
 		$this->param['jawab'] = $jawab;
 		$this->param['main_ans'] = $main_ans;
 		$this->param['RESULT'] = 1;
@@ -9787,16 +9808,16 @@ class EverydayLife extends Model
 	// kd calculator
 	public function kd($request)
 	{
-		$kills = $request->input('kills');
-		$deaths = $request->input('deaths');
-		$assists = $request->input('assists');
+		$kills = $request->kills;
+		$deaths = $request->deaths;
+		$assists = $request->assists;
 
 		if (is_numeric($kills) && is_numeric($deaths)) {
-			if ($kills > 0 && $deaths > 0) {
+			if ($kills >= 0 && $deaths > 0) {
 				$kd_ratio = $kills / $deaths;
-				if ($assists != "") {
+				if ($assists !== "") {
 					if (is_numeric($assists)) {
-						if ($assists > 0) {
+						if ($assists >= 0) {
 							$kda_ratio = ($kills + $assists) / $deaths;
 							$this->param['kda_ratio'] = $kda_ratio;
 						} else {
@@ -9810,6 +9831,9 @@ class EverydayLife extends Model
 				}
 				$this->param['kd_ratio'] = $kd_ratio;
 				$this->param['RESULT'] = 1;
+				return $this->param;
+			} elseif ($deaths == 0) {
+				$this->param['error'] = 'Deaths cannot be zero';
 				return $this->param;
 			} else {
 				$this->param['error'] =  'Enter Positive Value';
@@ -10440,25 +10464,26 @@ class EverydayLife extends Model
 		}
 		$this->param['volume'] = $volume;
 		$this->param['RESULT'] = 1;
-		
+
 		return $this->param;
 	}
+
 	// Words per Minute Calculator
 	public function words($request)
 	{
+		$speak_speed = $request->speak_speed;
+		$ss = $request->ss;
+		$reading_speed = $request->reading_speed;
+		$rs = $request->rs;
+		$select = $request->select;
+		$words = $request->words;
+		$x = $request->x;
 
-		$speak_speed = $_POST['speak_speed'];
-		$ss = $_POST['ss'];
-		$reading_speed = $_POST['reading_speed'];
-		$rs = $_POST['rs'];
-		$select = $_POST['select'];
-		$words = $_POST['words'];
-		$x = $_POST['x'];
-
-		function format_time($t, $f = ':') // t = seconds, f = separator 
+		function format_time_words($t, $f = ':') // t = seconds, f = separator 
 		{
 			return sprintf("%02d%s%02d%s%02d", floor($t / 3600), $f, ($t / 60) % 60, $f, $t % 60);
 		}
+
 		if (is_numeric($ss) && is_numeric($rs)) {
 			if ($ss > 0) {
 				if ($rs > 0) {
@@ -10477,8 +10502,8 @@ class EverydayLife extends Model
 						}
 					} elseif ($select == "2") {
 						if (!empty($x)) {
-							if (str_word_count($x) > 0) {
-								$para_words = str_word_count($x);
+							$para_words = str_word_count($x);
+							if ($para_words > 0) {
 								$speak_ans = $para_words / $ss;
 								$read_ans = $para_words / $rs;
 								$this->param['para_words'] = $para_words;
@@ -10490,9 +10515,12 @@ class EverydayLife extends Model
 							$this->param['error'] =  'Please check your input';
 							return $this->param;
 						}
+					} else {
+						$this->param['error'] = 'Invalid selection';
+						return $this->param;
 					}
-					$speak_time = format_time($speak_ans * 60);
-					$read_time = format_time($read_ans * 60);
+					$speak_time = format_time_words($speak_ans * 60);
+					$read_time = format_time_words($read_ans * 60);
 				} else {
 					$this->param['error'] =  'The reading speed must be more than 0.';
 					return $this->param;
@@ -10921,38 +10949,41 @@ class EverydayLife extends Model
 	// House Age Calculator
 	public function house($request)
 	{
-		$build_date     = $request->input('build_date');
-		$structure_type = $request->input('structure_type');
+		$build_date     = $request->build_date;
+		$structure_type = $request->structure_type;
 
 		if (!empty($structure_type) && !empty($build_date)) {
-			$date1 = new Carbon($build_date);
-			$date2 = new Carbon();
-			if ($date1 < $date2) {
-				$calculated_age = $date1->diff($date2);
+			try {
+				$date1 = new Carbon($build_date);
+				$date2 = new Carbon();
+				if ($date1 < $date2) {
+					$calculated_age = $date1->diff($date2);
 
-				if ($structure_type == 'concrete') {
-					$predicted_age = '50-60';
-				} else if ($structure_type == 'cement-bricks') {
-					$predicted_age = '75-100';
-				} else if ($structure_type == 'wooden') {
-					$predicted_age = '100-150';
-				} else if ($structure_type == 'stone') {
-					$predicted_age = '150-200';
+					$predicted_age = match ($structure_type) {
+						'concrete' => '50-60',
+						'cement-bricks' => '75-100',
+						'wooden' => '100-150',
+						'stone' => '150-200',
+						default => 'N/A',
+					};
+
+					$this->param['predicted_age'] = $predicted_age;
+					$this->param['years']         = $calculated_age->y;
+					$this->param['months']        = $calculated_age->m;
+					$this->param['days']          = $calculated_age->d;
+					$this->param['RESULT'] 		  = 1;
+					
+					return $this->param;
+				} else {
+					$this->param['error'] = 'The build date must be in the past.';
+					return $this->param;
 				}
-
-				$this->param['predicted_age'] = $predicted_age;
-				$this->param['years']         = $calculated_age->y;
-				$this->param['months']        = $calculated_age->m;
-				$this->param['days']          = $calculated_age->d;
-				$this->param['RESULT'] 		  = 1;
-				
-				return $this->param;
-			} else {
-				$this->param['error'] = 'Please! Check Your Input';
+			} catch (\Exception $e) {
+				$this->param['error'] = 'Invalid date format.';
 				return $this->param;
 			}
 		} else {
-			$this->param['error'] = 'Please! Check Your Input';
+			$this->param['error'] = 'Please fill in all fields.';
 			return $this->param;
 		}
 	}
@@ -11051,72 +11082,68 @@ class EverydayLife extends Model
 	// Sobriety calculator
 	public function sobriety($request)
 	{
-		$input = $request->input('input');
-		$input2 = $request->input('input2');
-		$submit = $request->input('submit');
+		$input = $request->input;
+		$input2 = $request->input2;
 
-		if ($submit) {
-			$s_date = $input;
-			$s_date = explode("-", $s_date);
-			$e_date = $input2;
-			$e_date = explode("-", $e_date);
-			$s_hour = 0;
-			$s_min = 0;
-			$s_sec = 0;
-			$e_hour = 0;
-			$e_min = 0;
-			$e_sec = 0;
-			$from = new Carbon($s_date[2] . '.' . $s_date[1] . '.' . $s_date[0]);
-			$to = new Carbon($e_date[2] . '.' . $e_date[1] . '.' . $e_date[0]);
-			$diff = $to->diff($from);
-			$years = $diff->y;
-			$months = $diff->m;
-			$days = $diff->d;
-			$from = date('M d, Y', strtotime($input));
-			$to = date('M d, Y', strtotime($input2));
-			if ($input > $input2) {
-				$new = $from;
-				$from = $to;
-				$to = $new;
+		if (!empty($input) && !empty($input2)) {
+			try {
+				$startDate = new Carbon($input);
+				$endDate = new Carbon($input2);
+				
+				$from_str = $input;
+				$to_str = $input2;
+				
+				if ($startDate->gt($endDate)) {
+					$temp = $startDate;
+					$startDate = $endDate;
+					$endDate = $temp;
+					
+					$temp_str = $from_str;
+					$from_str = $to_str;
+					$to_str = $temp_str;
+				}
+
+				$diff = $endDate->diff($startDate);
+				$years = $diff->y;
+				$months = $diff->m;
+				$days = $diff->d;
+				
+				$from = $startDate->format('M d, Y');
+				$to = $endDate->format('M d, Y');
+				
+				$day1 = $months * 30.417;
+				$d1_ans = $day1 + $days;
+				$months1 = $years * 12;
+				$mon_ans = $months1 + $months;
+				
+				$days_ans = $endDate->diffInDays($startDate);
+				$hours_ans = $days_ans * 24;
+				$weeks = floor($days_ans / 7);
+				$w_days = $weeks * 7;
+				$wd_ans = $days_ans - $w_days;
+
+				$this->param['from'] = $from;
+				$this->param['to'] = $to;
+				$this->param['years'] = $years;
+				$this->param['months'] = $months;
+				$this->param['days'] = $days;
+				$this->param['d1_ans'] = $d1_ans;
+				$this->param['mon_ans'] = $mon_ans;
+				$this->param['days_ans'] = $days_ans;
+				$this->param['hours_ans'] = $hours_ans;
+				$this->param['weeks'] = $weeks;
+				$this->param['wd_ans'] = $wd_ans;
+				$this->param['RESULT'] = 1;
+
+				return $this->param;
+			} catch (\Exception $e) {
+				$this->param['error'] = 'Invalid date format provided';
+				return $this->param;
 			}
-			$d1 = mktime($s_hour, $s_min, $s_sec, $s_date[1], $s_date[2], $s_date[0]);
-			$d2 = mktime($e_hour, $e_min, $e_sec, $e_date[1], $e_date[2], $e_date[0]);
-			$diff = abs($d2 - $d1);
-			$hours = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24)  / (60 * 60));
-			$minutes = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24  - $hours * 60 * 60) / 60);
-			$seconds = floor(($diff - $years * 365 * 60 * 60 * 24 - $months * 30 * 60 * 60 * 24 - $days * 60 * 60 * 24 - $hours * 60 * 60 - $minutes * 60));
-			$day1 = $months * 30.417;
-			$d1_ans = $day1 + $days;
-			$months1 = $years * 12;
-			$mon_ans = $months1 + $months;
-			$startDate = new Carbon($input);
-			$endDate = new Carbon($input2);
-			$days_diff = $endDate->diff($startDate);
-			$days_ans = $days_diff->format("%a");
-			$hours_ans = $days_ans * 24;
-			$weeks = floor($days_ans / 7);
-			$w_days = $weeks * 7;
-			$wd_ans = $days_ans - $w_days;
 		} else {
 			$this->param['error'] = 'Please! Check Your Input';
 			return $this->param;
 		}
-		$this->param['from'] = $from;
-		$this->param['diff'] = $diff;
-		$this->param['to'] = $to;
-		$this->param['years'] = $years;
-		$this->param['months'] = $months;
-		$this->param['hours'] = $hours;
-		$this->param['days'] = $days;
-		$this->param['d1_ans'] = $d1_ans;
-		$this->param['mon_ans'] = $mon_ans;
-		$this->param['days_ans'] = $days_ans;
-		$this->param['hours_ans'] = $hours_ans;
-		$this->param['weeks'] = $weeks;
-		$this->param['wd_ans'] = $wd_ans;
-		$this->param['RESULT'] = 1;
-		
-		return $this->param;
 	}
 
 	// bike size calculator
@@ -11261,13 +11288,12 @@ class EverydayLife extends Model
 	// Pant Size Calculator
 	public function pant($request)
 	{
-		$submit = trim($request->input('submit'));
-		$weist = trim($request->input('weist'));
-		$length = trim($request->input('length'));
-		$gender = trim($request->input('gender'));
-		$measure = trim($request->input('measure'));
-		$measure_in_weiat = trim($request->input('measure_in_weiat'));
-		$measure_in_length = trim($request->input('measure_in_length'));
+		$weist = $request->weist;
+		$length = $request->length;
+		$gender = $request->gender;
+		$measure = $request->measure;
+		$measure_in_weiat = $request->measure_in_weiat;
+		$measure_in_length = $request->measure_in_length;
 
 
 		if ($measure_in_weiat == 'cm') {
@@ -11287,7 +11313,7 @@ class EverydayLife extends Model
 		}
 
 
-		if ($submit) {
+		if (true) {
 			// -----------------------------------Womens table values ------------------------------------
 			$waist_women = ['25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39'];
 			$length_women = ['32', '32', '32', '32', '32', '32', '32', '32', '32', '32', '32', '32', '32', '32', '32'];
@@ -11699,11 +11725,13 @@ class EverydayLife extends Model
 	// shoe size calculator
 	public function shoe($request)
 	{
-
-		$gen       = trim($request->input('gen'));
-		$country   = trim($request->input('country'));
-		$size      = trim($request->input('size'));
-		if (!empty($size)) {
+		$gen       = trim($request->gen);
+		$country   = trim($request->country);
+		$size      = trim($request->size);
+		
+		if (is_numeric($size)) {
+			$fcm = $fin = $us = $ko = $wo = $uk = $eu = $m = $mj = 0;
+			
 			if ($size >= 0) {
 				if ($country == 'fcm') {
 					$fcm = $size;
@@ -11716,6 +11744,7 @@ class EverydayLife extends Model
 				} elseif ($country == 'm') {
 					$fcm = $size / 10;
 				}
+				
 				if ($gen == 'ad') {
 					if ($country == 'us') {
 						$fcm = (($size + 24) * 0.847) - (2 * 0.847);
@@ -11724,7 +11753,7 @@ class EverydayLife extends Model
 					} elseif ($country == 'eu') {
 						$fcm = (($size * 0.667) - (2 * 0.667));
 					}
-					$fcm = $fcm;
+					
 					$fin = $fcm / 2.54;
 					$us =  (($fcm + (2 * 0.847)) / 0.847) - 24;
 					$ko = (($us + 22) / 3) * 25.5;
@@ -11743,14 +11772,13 @@ class EverydayLife extends Model
 					}
 
 					$ko = $fcm * 10;
-					$fcm = $fcm;
 					$fin = $fcm / 2.54;
 					$us =  (($fcm * 1.08) / 0.847) - 11.5 + 0.4;
 					$uk = (($fcm * 1.08) / 0.847) - 12 + 0.4;
 					$eu =  ($fcm + (2 * 0.667)) / 0.667;
 					$m = $fcm * 10;
 					$mj = $fcm;
-					$wo = 'not yest';
+					$wo = 0;
 				}
 			}
 			$this->param['us']      	= $us;
@@ -11762,8 +11790,7 @@ class EverydayLife extends Model
 			$this->param['wo']     		= $wo;
 			$this->param['m']   		= $m;
 			$this->param['mj']   		= $mj;
-			// $this->param['al']   		= $al;
-			$this->param['country']   		= $country;
+			$this->param['country']   	= $country;
 			$this->param['gen']   		= $gen;
 			$this->param['RESULT'] 	    = 1;
 			return $this->param;
@@ -11776,14 +11803,15 @@ class EverydayLife extends Model
 	// Ring size Calculator
 	public function ring($request)
 	{
-		$unit     = $request->input('unit');
-		$cd       = $request->input('to_measure');
-		$dia_mm		= $request->input('d_o_r_mm');
-		$dia_in		= $request->input('d_o_r_in');
-		$cir_mm		= $request->input('c_o_f_mm');
-		$cir_in		= $request->input('c_o_f_in');
+		$unit     = $request->unit;
+		$cd       = $request->to_measure;
+		$dia_mm		= $request->d_o_r_mm;
+		$dia_in		= $request->d_o_r_in;
+		$cir_mm		= $request->c_o_f_mm;
+		$cir_in		= $request->c_o_f_in;
 		if (is_numeric($cir_mm) && is_numeric($cir_in) && is_numeric($dia_mm) && is_numeric($dia_in) && !empty($cd) && !empty($unit)) {
 			$pie = 3.14159;
+			$us_ca = $uk_au = $f = $g = $j = $s = '-';
 
 			if ($cd == 'd_o_r') {
 				if ($unit == 'millimeters') {
@@ -12583,53 +12611,36 @@ class EverydayLife extends Model
 	// Travel Time Calculator
 	public function travel($request)
 	{
-		$distance       = $request->input('distance');
-		$distance_unit  = $request->input('distance_unit');
-		$speed          = $request->input('speed');
-		$speed_unit     = $request->input('speed_unit');
-		$break_hrs      = $request->input('break_hrs');
-		$break_min      = $request->input('break_min');
-		$dep_time       = $request->input('dep_time');
-		$fule_effi      = $request->input('fule_effi');
-		$fule_effi_unit = $request->input('fule_effi_unit');
-		$price          = $request->input('price');
-		$price_unit     = $request->input('price_unit');
-		$currancy = $request->input('currancy');
-		$price_unit = str_replace($currancy, '', $price_unit);
-		$passenger      = $request->input('passenger');
-		function convert_to_km($unit, $value)
-		{
-			if ($unit == 'mi') {
-				$ans = $value * 1.609;
-			} else {
-				$ans = $value;
-			}
-			return $ans;
-		}
-		function convert_to_kmpl($unit, $value)
-		{
-			if ($unit == 'mpg') {
-				$ans = $value / 2.352;
-			} else {
-				$ans = $value;
-			}
-			return $ans;
-		}
+		$distance       = $request->distance;
+		$distance_unit  = $request->distance_unit;
+		$speed          = $request->speed;
+		$speed_unit     = $request->speed_unit;
+		$break_hrs      = $request->break_hrs;
+		$break_min      = $request->break_min;
+		$dep_time       = $request->dep_time;
+		$fule_effi      = $request->fule_effi;
+		$fule_effi_unit = $request->fule_effi_unit;
+		$price          = $request->price;
+		$price_unit     = $request->price_unit;
+		$currancy       = $request->currancy;
+		$price_unit     = str_replace($currancy, '', $price_unit);
+		$passenger      = $request->passenger;
+
 		if (is_numeric($distance) && is_numeric($speed) && is_numeric($break_hrs) && is_numeric($break_min) && is_numeric($fule_effi) && is_numeric($price) && is_numeric($passenger) && !empty($dep_time)) {
 
-			$distance_f  = convert_to_km($distance_unit, $distance);
-			$fule_effi_f = convert_to_kmpl($fule_effi_unit, $fule_effi);
-			$speed_f     = convert_to_km($speed_unit, $speed);
-			$price_f     = ($price_unit == " liter") ? $price : $price / 3.785;
+			$distance_f  = ($distance_unit == 'mi') ? $distance * 1.609 : $distance;
+			$fule_effi_f = ($fule_effi_unit == 'mpg') ? $fule_effi / 2.352 : $fule_effi;
+			$speed_f     = ($speed_unit == 'mi') ? $speed * 1.609 : $speed;
+			$price_f     = (trim($price_unit) == "liter") ? $price : $price / 3.785;
 
 			$break_hr    = (($break_hrs * 60) + $break_min) / 60;
 			$travel_time = ($distance_f / $speed_f) + $break_hr;
-			$time_array  = explode('.', $travel_time);
-			$hours       = $time_array[0];
+			
+			$hours       = floor($travel_time);
 			$mins        = round(($travel_time - $hours) * 60);
 
-			$tym        = date('Y-m-d H:i:s', strtotime("+" . $hours . " hours", strtotime($dep_time)));
-			$arrival    = date('M d, Y h:i:s A', strtotime("+" . $mins . " minutes", strtotime($tym)));
+			$tym        = date('Y-m-d H:i:s', strtotime("+" . (int)$hours . " hours", strtotime($dep_time)));
+			$arrival    = date('M d, Y h:i:s A', strtotime("+" . (int)$mins . " minutes", strtotime($tym)));
 			$depature   = date('M d, Y h:i:s A', strtotime($dep_time));
 
 			$fule_req   = round($distance_f / $fule_effi_f, 2);
@@ -22977,7 +22988,6 @@ class EverydayLife extends Model
 					$this->param['size_40'] = $size_40;
 					$this->param['size_40_hq'] = $size_40_hq;
 					$this->param['size_45_hq'] = $size_45_hq;
-
 					return $this->param;
 				} else {
 					$this->param['error'] = 'Please! Check Your Input';
@@ -22993,18 +23003,21 @@ class EverydayLife extends Model
 	// Desk Height Calculator
 	public function desk($request)
 	{
+		$units = $request->units;
+		$height = $request->height;
+		$height2 = $request->height2;
+		$position = $request->position;
 
-		$units = $request->input('units');
-		$height = $request->input('height');
-		$height2 = $request->input('height2');
-		$position = $request->input('position');
 		if ($units == "Centimeters") {
 			$unit = 2.54;
 			$height = $height;
 		} else if ($units == "Feet and Inches") {
 			$unit = 1;
 			$height = $height2;
+		} else {
+			$unit = 2.54;
 		}
+
 		$seat_min = 0.3219306 * $height / 2.54 - 5.312559;
 		$seat_max = 0.2715447 * $height / 2.54 - 0.1796748;
 		$table_min = 0.4739837 * $height / 2.54 - 6.677846;
@@ -23015,6 +23028,7 @@ class EverydayLife extends Model
 		$table_max_standing = 0.6656805 * $height / 2.54 - 1.044379;
 		$monitor_min_standing = 0.9674556 * $height / 2.54 - 2.464497;
 		$monitor_max_standing = 0.9349112 * $height / 2.54 + 1.071006;
+
 		if ($position == "0") {
 			$ans1 = round($seat_min * $unit * 2) / 2 . ' - ' . round($seat_max * $unit * 2) / 2;
 			$ans2 = round($table_min * $unit * 2) / 2 . ' - ' . round($table_max * $unit * 2) / 2;
@@ -23024,11 +23038,12 @@ class EverydayLife extends Model
 			$ans2 = (round($table_min_standing * $unit * 2) / 2) . " - " . (round($table_max_standing * $unit * 2) / 2);
 			$ans3 = round($monitor_min_standing * $unit * 2) / 2 . ' - ' . round($monitor_max_standing * $unit * 2) / 2;
 		}
+
 		$this->param['units'] = $units;
 		$this->param['position'] = $position;
-		$this->param['ans1'] = $ans1;
-		$this->param['ans2'] = $ans2;
-		$this->param['ans3'] = $ans3;
+		$this->param['ans1'] = $ans1 ?? '';
+		$this->param['ans2'] = $ans2 ?? '';
+		$this->param['ans3'] = $ans3 ?? '';
 		$this->param['RESULT'] = 1;
 		return $this->param;
 	}
@@ -24045,138 +24060,122 @@ class EverydayLife extends Model
 	// Birthday calculator	
 	public function birthday($request)
 	{
-		$next_birth = $request->input('next_birth');
+		$next_birth = $request->next_birth;
 
 		if (!empty($next_birth)) {
-			$dob = $next_birth; // yyyy-mm-dd
-			$date = date('Y-m-d'); // yyyy-mm-dd
+			try {
+				$dob = $next_birth; // yyyy-mm-dd
+				$date = date('Y-m-d'); // yyyy-mm-dd
 
-			$date = explode("-", $date);
-			$dob2 = explode("-", $dob);
-			$birth_month = $dob2[1];
-			$bday = new Carbon($dob2[2] . '.' . $dob2[1] . '.' . $dob2[0]); // Your date of birth
-			$today = new Carbon($date[2] . '.' . $date[1] . '.' . $date[0]);
-			$diff = $today->diff($bday);
-			$age_years = $diff->y;
-			$age_months = $diff->m;
-			$age_days = $diff->d;
+				$date = explode("-", $date);
+				$dob2 = explode("-", $dob);
+				$birth_month = $dob2[1];
+				$bday = new Carbon($dob2[0] . '-' . $dob2[1] . '-' . $dob2[2]);
+				$today = new Carbon();
+				
+				if ($bday->gt($today)) {
+					$this->param['error'] = 'Date of birth cannot be in the future.';
+					return $this->param;
+				}
 
-			$d = getdate();		// Current date
+				$diff = $today->diff($bday);
+				$age_years = $diff->y;
+				$age_months = $diff->m;
+				$age_days = $diff->d;
 
-			$year = $d['year'];
-			$mon = $d['mon'];
-			$mday = $d['mday'];
-			$hour = $d['hours'];
-			$min = $d['minutes'];
-			$sec = $d['seconds'];
-			$dob_hour = $hour; // 24 hour format
-			$dob_min = $min;
-			$dob_sec = $sec;
+				$hour = date('H');
+				$min = date('i');
+				$sec = date('s');
 
-			$d1 = mktime($dob_hour, $dob_min, $dob_sec, $dob2[1], $dob2[2], $dob2[0]);
-			$d2 = mktime($hour, $min, $sec, $mon, $mday, $year);
+				$d1 = mktime($hour, $min, $sec, $dob2[1], $dob2[2], $dob2[0]);
+				$d2 = mktime($hour, $min, $sec, date('m'), date('d'), date('Y'));
 
-			$obj = new Age;
+				$obj = new Age;
+				@$obj->calculateAge(mktime($hour, $min, $sec, $dob2[1], $dob2[2], $dob2[0]));
+				
+				$age = $obj->getAge();
+				$Totalyears = floor(($d2 - $d1) / 31536000);
+				$Total_months = floor(($d2 - $d1) / 2628000);
+				$Total_weeks = floor(($d2 - $d1) / 604800);
+				$Total_days = floor(($d2 - $d1) / 86400);
+				$Total_hours = floor(($d2 - $d1) / 3600);
+				$Total_minuts = floor(($d2 - $d1) / 60);
+				$Total_seconds = ($d2 - $d1);
+				
+				$totalDays = [0, 0, 0, 0, 0, 0, 0];
+				for ($i = 0; $i < $age; $i++) {
+					$day = date('w', strtotime("+$i years " . $dob));
+					$totalDays[$day] = $totalDays[$day] + 1;
+				}
 
-			@$obj->calculateAge(mktime($dob_hour, $dob_min, $dob_sec, $dob2[1], $dob2[2], $dob2[0]));
-			// Alert
-			if (($d2 - $d1) <= 0) {
-				$this->param['error'] = 'Invalid Date of Birth.';
+				$year_now = date('Y');
+				$mon_now = date('m');
+				$mday_now = date('d');
+
+				$nbday = new Carbon($year_now . '-' . $mon_now . '-' . $mday_now);
+				$target_year = $year_now;
+				if ($mon_now > $dob2[1] || ($mon_now == $dob2[1] && $mday_now >= $dob2[2])) {
+					$target_year = $year_now + 1;
+				}
+				
+				$ntoday = new Carbon($target_year . '-' . $dob2[1] . '-' . $dob2[2]);
+				$ndiff = $ntoday->diff($nbday);
+				$remDays = $ndiff->days;
+				$nextBirth = $ntoday->format('l, F d, Y');
+				$n_brdy_days_per = ($remDays / 365) * 100;
+
+				$half = date('Y-m-d', strtotime("+6 months", strtotime($dob)));
+				$Q2 = explode("-", $half);
+				
+				if ($Q2[1] > $mon_now || ($Q2[1] == $mon_now && $Q2[2] > $mday_now)) {
+					$year_q2 = $year_now;
+				} else {
+					$year_q2 = $year_now + 1;
+				}
+				
+				$half_brdy_date = $year_q2 . '-' . $Q2[1] . '-' . $Q2[2];
+				$half_brdy = date('l, F d, Y', strtotime($half_brdy_date));
+				$next_half_carbon = new Carbon($half_brdy_date);
+				$next_half_diff = $next_half_carbon->diff($nbday);
+				$next_half_r_days = $next_half_diff->days;
+				$n_half_brdy_days = round(($next_half_r_days / 365) * 100);
+
+				$chartData = [];
+				$dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+				foreach ($totalDays as $index => $count) {
+					$chartData[] = [
+						'name' => $dayNames[$index],
+						'y' => $count,
+						'z' => $count
+					];
+				}
+
+				$this->param = array(
+					"Age" => $age_years,
+					"Age_months" => $age_months,
+					"Age_days" => $age_days,
+					"birth_month" => $birth_month,
+					"Years" => $Totalyears,
+					"Months" => $Total_months,
+					"Weeks" => $Total_weeks,
+					"Days" => $Total_days,
+					"Hours" => $Total_hours,
+					"Min" => $Total_minuts,
+					"nextBirth" => $nextBirth,
+					"remDays" => $remDays,
+					"totalDays" => $totalDays,
+					"n_brdy_days_per" => $n_brdy_days_per,
+					"half_brdy" => $half_brdy,
+					"next_half_r_days" => $next_half_r_days,
+					"n_half_brdy_days" => $n_half_brdy_days,
+					"chartData" => json_encode($chartData)
+				);
+				$this->param['RESULT'] = 1;
+				return $this->param;
+			} catch (\Exception $e) {
+				$this->param['error'] = 'Invalid date format.';
 				return $this->param;
 			}
-			$age = $obj->getAge();
-			$rank = $obj->get_rank($age + 1);
-			$Totalyears = floor(($d2 - $d1) / 31536000);
-			$Total_months = floor(($d2 - $d1) / 2628000);
-			$Total_weeks = floor(($d2 - $d1) / 604800);
-			$Total_days = floor(($d2 - $d1) / 86400);
-			$Total_hours = floor(($d2 - $d1) / 3600);
-			$Total_minuts = floor(($d2 - $d1) / 60);
-			$Total_seconds = ($d2 - $d1);
-			$totalDays = [0, 0, 0, 0, 0, 0, 0];
-			$daysName = [];
-			for ($i = 0; $i < $age; $i++) {
-				$day = date('w', strtotime("+$i years " . $dob));
-				$dayName = date('l', strtotime("+$i years " . $dob));
-				$totalDays[$day] = $totalDays[$day] + 1;
-				$daysName[] = $dayName;
-			}
-			$nbday = new Carbon($mday . '.' . $mon . '.' . $year);
-			if ($mon > $dob2[1] || $mon == $dob2[1]) {
-				$year = $year + 1;
-			}
-			if ($mon == $dob2[1] && $mday < $dob2[2]) {
-				$year = $year - 1;
-			}
-			$ntoday = new Carbon($dob2[2] . '.' . $dob2[1] . '.' . $year); // Your date of birth
-			$ndiff = $ntoday->diff($nbday);
-			$next_r_mon = $ndiff->m;
-			$next_r_day = $ndiff->d;
-			$remDays = $ndiff->days;
-			$nextBirth = date('l, F d, Y', strtotime("+$next_r_mon months +$next_r_day days " . date('Y-m-d')));
-			$n_brdy_days_per = ($remDays / 365) * 100;
-
-			$current  = getdate(); // Current date 	 	
-			$half     = date('Y-m-d', strtotime("+6 months", strtotime($dob)));
-			$birthday = date('Y-m-d', strtotime($dob));
-
-			$Q2   = explode("-", $half);
-			$bday = explode("-", $birthday);
-
-			if ($Q2[1] > $current['mon'] || ($Q2[1] == $current['mon'] && $Q2[2] > $current['mday'])) {
-				$year_q2 = $current['year'];
-				$mon_q2  = $Q2[1];
-				$day_q2  = $Q2[2];
-			} else {
-				$year_q2 = $current['year'] + 1;
-				$mon_q2  = $Q2[1];
-				$day_q2  = $Q2[2];
-			}
-			if ($bday[1] > $current['mon'] || ($bday[1] == $current['mon'] && $bday[2] > $current['mday'])) {
-				$bd_year = $current['year'];
-				$bd_mon  = $bday[1];
-				$bd_day  = $bday[2];
-			} else {
-				$bd_year = $current['year'] + 1;
-				$bd_mon  = $bday[1];
-				$bd_day  = $bday[2];
-			}
-
-			$next_bday = date('l, F d, Y', strtotime($bd_year . '-' . $bd_mon . '-' . $bd_day));
-			$half_brdy = date('l, F d, Y', strtotime($year_q2 . '-' . $mon_q2 . '-' . $day_q2));
-
-			$next   = new Carbon($day_q2 . '-' . $mon_q2 . '-' . $year_q2);
-			$today  = new Carbon(date('d-m-Y'));
-
-			$next_half_day = $today->diff($next);
-			$n_half_brdy_days = round(($next_half_day->days / 365) * 100);
-			// return values
-
-			$this->param = array(
-				"Age" => $age,
-				"Age_months" => $age_months,
-				"Age_days" => $age_days,
-				"birth_month" => $birth_month,
-				"N_r_months" => $next_r_mon,
-				"N_r_days" => $next_r_day,
-				"Years" => $Totalyears,
-				"Months" => $Total_months,
-				"Weeks" => $Total_weeks,
-				"Days" => $Total_days,
-				"Hours" => $Total_hours,
-				"Min" => $Total_minuts,
-				"nextBirth" => $nextBirth,
-				"remDays" => $remDays,
-				"totalDays" => $totalDays,
-				"daysName" => $daysName,
-				"n_brdy_days_per" => $n_brdy_days_per,
-				"half_brdy" => $half_brdy,
-				"next_half_r_days" => $next_half_day->days,
-				"n_half_brdy_days" => $n_half_brdy_days,
-			);
-			$this->param['RESULT'] = 1;
-			
-			return $this->param;
 		} else {
 			$this->param['error'] = 'Please Select Your Date of Birth.';
 			return $this->param;
@@ -24186,11 +24185,17 @@ class EverydayLife extends Model
 	// Half Birthday Calculator
 	public function half($request)
 	{
-		$day = $request->input('day');
-		$month = $request->input('month');
-		$year = $request->input('year');
+		$day = $request->day;
+		$month = $request->month;
+		$year = $request->year;
+		
+		if (!checkdate($month, $day, $year)) {
+			$this->param['error'] = 'Invalid date provided.';
+			return $this->param;
+		}
+
 		$dob = sprintf('%04d-%02d-%02d', $year, $month, $day);
-		if (!empty($dob) && $dob <= date("Y-m-d")) {
+		if (!empty($dob)) {
 			$current  = getdate(); // Current date 	 	
 			$first_q  = date('Y-m-d', strtotime("+3 months", strtotime($dob)));
 			$half     = date('Y-m-d', strtotime("+6 months", strtotime($dob)));
@@ -24277,54 +24282,53 @@ class EverydayLife extends Model
 	// Lawn Mowing Cost Calculator
 	public function lawn($request)
 	{
-
-		$type = trim($request->input('type'));
-		$charges = trim($request->input('charges'));
-		$mow_price = trim($request->input('mow_price'));
-		$m_p_units = trim($request->input('m_p_units'));
-		$currancy = $request->input('currancy');
+		$type = trim($request->type);
+		$charges = trim($request->charges);
+		$mow_price = trim($request->mow_price);
+		$m_p_units = trim($request->m_p_units);
+		$currancy = $request->currancy;
 		$m_p_units = str_replace($currancy . ' ', '', $m_p_units);
-		$area_mow = trim($request->input('area_mow'));
-		$a_m_units = trim($request->input('a_m_units'));
-		$hours_work = trim($request->input('hours_work'));
-		$mow_speed = trim($request->input('mow_speed'));
-		$mow_speed_units = trim($request->input('mow_speed_units'));
-		$mow_width = trim($request->input('mow_width'));
-		$mow_width_units = trim($request->input('mow_width_units'));
-		$mow_pro = trim($request->input('mow_pro'));
-		$to_mow = trim($request->input('to_mow'));
-		$to_mow_units = trim($request->input('to_mow_units'));
+		$area_mow = trim($request->area_mow);
+		$a_m_units = trim($request->a_m_units);
+		$hours_work = trim($request->hours_work);
+		$mow_speed = trim($request->mow_speed);
+		$mow_speed_units = trim($request->mow_speed_units);
+		$mow_width = trim($request->mow_width);
+		$mow_width_units = trim($request->mow_width_units);
+		$mow_pro = trim($request->mow_pro);
+		$to_mow = trim($request->to_mow);
+		$to_mow_units = trim($request->to_mow_units);
 
-
-
-		function perAreaUnit($input, $unit)
-		{
-			if ($unit == 'm²') {
-				$input = $input / 1000000;
-			} else if ($unit == 'ft²') {
-				$input = $input / 10760000;
-			} else if ($unit == 'yd²') {
-				$input = $input / 1196000;
-			} else if ($unit == 'a') {
-				$input = $input * 0.0001;
-			} else if ($unit == 'da') {
-				$input = $input * 0.001;
-			} else if ($unit == 'ha') {
-				$input = $input / 100;
-			} else if ($unit == 'ac') {
-				$input = $input / 247.1;
+		if (!function_exists('perAreaUnitLocal')) {
+			function perAreaUnitLocal($input, $unit)
+			{
+				if ($unit == 'm²') {
+					$input = $input / 1000000;
+				} else if ($unit == 'ft²') {
+					$input = $input / 10760000;
+				} else if ($unit == 'yd²') {
+					$input = $input / 1196000;
+				} else if ($unit == 'a') {
+					$input = $input * 0.0001;
+				} else if ($unit == 'da') {
+					$input = $input * 0.001;
+				} else if ($unit == 'ha') {
+					$input = $input / 100;
+				} else if ($unit == 'ac') {
+					$input = $input / 247.1;
+				}
+				return $input;
 			}
-			return $input;
 		}
 
 		if ($type == 'lawn_mowed') {
 			if ($charges == 'area') {
 				if (is_numeric($mow_price) && is_numeric($area_mow)) {
 					if (isset($m_p_units)) {
-						$mow_price = perAreaUnit($mow_price, $m_p_units);
+						$mow_price = perAreaUnitLocal($mow_price, $m_p_units);
 					}
 					if (isset($a_m_units)) {
-						$area_mow = perAreaUnit($area_mow, $a_m_units);
+						$area_mow = perAreaUnitLocal($area_mow, $a_m_units);
 					}
 					$total_cost = $mow_price * $area_mow;
 					$this->param['mow_price'] = $mow_price;
@@ -24375,7 +24379,7 @@ class EverydayLife extends Model
 				$this->param['m_cost'] = $m_cost;
 				if (!empty($to_mow)) {
 					if (isset($to_mow_units)) {
-						$to_mow = perAreaUnit($to_mow, $to_mow_units);
+						$to_mow = perAreaUnitLocal($to_mow, $to_mow_units);
 					}
 					$m_time = $to_mow / $m_cost;
 					$hours = floor($m_time);
@@ -24827,13 +24831,13 @@ class EverydayLife extends Model
 	// Age Difference calculator
 	public function age_diff($request)
 	{
-		$submit = $request->input('selection');
-		$dob_f = $request->input('dob_f');
-		$dob_s = $request->input('dob_s');
-		$year_1 = $request->input('year_1');
-		$year_2 = $request->input('year_2');
-		$age_1 = $request->input('age_1');
-		$age_2 = $request->input('age_2');
+		$submit = $request->selection;
+		$dob_f = $request->dob_f;
+		$dob_s = $request->dob_s;
+		$year_1 = $request->year_1;
+		$year_2 = $request->year_2;
+		$age_1 = $request->age_1;
+		$age_2 = $request->age_2;
 		if ($submit === "1") {
 			if (!empty($dob_f) && !empty($dob_s)) {
 				$dob_f = new Carbon($dob_f);
@@ -24924,11 +24928,11 @@ class EverydayLife extends Model
 	// Aspect Ratio Calculator
 	public function aspect($request)
 	{
-		$ratios = trim($request->input('ratios'));
-		$w1 = trim($request->input('w1'));
-		$h1 = trim($request->input('h1'));
-		$w2 = trim($request->input('w2'));
-		$h2 = trim($request->input('h2'));
+		$ratios = trim($request->ratios);
+		$w1 = trim($request->w1);
+		$h1 = trim($request->h1);
+		$w2 = trim($request->w2);
+		$h2 = trim($request->h2);
 
 		if (is_numeric($w1) && is_numeric($h1)) {
 			function reduceRatio($numerator, $denominator)
@@ -25650,28 +25654,30 @@ class EverydayLife extends Model
 	// Tv Size Calculator
 	public function tv($request)
 	{
-		$submit = trim($request->input('selection'));
-		$size = trim($request->input('size'));
-		$size_unit = trim($request->input('size_unit'));
-		$resolution = trim($request->input('resolution'));
-		$angle = trim($request->input('angle'));
-		$angle_unit = trim($request->input('angle_unit'));
-		$distance = trim($request->input('distance'));
-		$distance_unit = trim($request->input('distance_unit'));
+		$submit = trim($request->selection);
+		$size = trim($request->size);
+		$size_unit = trim($request->size_unit);
+		$resolution = trim($request->resolution);
+		$angle = trim($request->angle);
+		$angle_unit = trim($request->angle_unit);
+		$distance = trim($request->distance);
+		$distance_unit = trim($request->distance_unit);
 
-
-		function sigFig($value, $digits)
-		{
-			if ($value !== '') {
-				if ($value === 0) {
-					$decimalPlaces = $digits - 1;
-				} elseif ($value < 0) {
-					$decimalPlaces = $digits - floor(log10($value * -1)) - 1;
-				} else {
-					$decimalPlaces = $digits - floor(log10($value)) - 1;
+		if (!function_exists('sigFigLocal')) {
+			function sigFigLocal($value, $digits)
+			{
+				if ($value !== '' && $value !== null) {
+					if ($value == 0) {
+						$decimalPlaces = $digits - 1;
+					} elseif ($value < 0) {
+						$decimalPlaces = $digits - floor(log10($value * -1)) - 1;
+					} else {
+						$decimalPlaces = $digits - floor(log10($value)) - 1;
+					}
+					$answer = round($value, $decimalPlaces);
+					return $answer;
 				}
-				$answer = round($value, $decimalPlaces);
-				return $answer;
+				return $value;
 			}
 		}
 
@@ -25772,11 +25778,11 @@ class EverydayLife extends Model
 			$od_ft = '';
 		}
 
-		$units_cm = [sigFig($size_cm, 4), sigFig($width_cm, 4), sigFig($height_cm, 4), sigFig($od_cm, 3), sigFig($md_cm, 3)];
-		$units_m = [sigFig($size_m, 4), sigFig($width_m, 4), sigFig($height_m, 4), sigFig($od_m, 3), sigFig($md_m, 3)];
-		$units_in = [sigFig($size, 4), sigFig($width, 4), sigFig($height, 4), sigFig($od, 3), sigFig($md, 3)];
-		$units_ft = [sigFig($size_ft, 4), sigFig($width_ft, 4), sigFig($height_ft, 4), sigFig($od_ft, 3), sigFig($md_ft, 3)];
-		$ans = [sigFig($size, 4), sigFig($width, 4), sigFig($height, 4), sigFig($od_ft, 3), sigFig($md_ft, 3)];
+		$units_cm = [sigFigLocal($size_cm, 4), sigFigLocal($width_cm, 4), sigFigLocal($height_cm, 4), sigFigLocal($od_cm, 3), sigFigLocal($md_cm, 3)];
+		$units_m = [sigFigLocal($size_m, 4), sigFigLocal($width_m, 4), sigFigLocal($height_m, 4), sigFigLocal($od_m, 3), sigFigLocal($md_m, 3)];
+		$units_in = [sigFigLocal($size, 4), sigFigLocal($width, 4), sigFigLocal($height, 4), sigFigLocal($od, 3), sigFigLocal($md, 3)];
+		$units_ft = [sigFigLocal($size_ft, 4), sigFigLocal($width_ft, 4), sigFigLocal($height_ft, 4), sigFigLocal($od_ft, 3), sigFigLocal($md_ft, 3)];
+		$ans = [sigFigLocal($size, 4), sigFigLocal($width, 4), sigFigLocal($height, 4), sigFigLocal($od_ft, 3), sigFigLocal($md_ft, 3)];
 
 		$this->param['ans'] = $ans;
 		$this->param['unit'] = $unit;

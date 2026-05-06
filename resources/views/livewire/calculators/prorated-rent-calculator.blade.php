@@ -1,0 +1,149 @@
+<div>
+    <form wire:submit.prevent="calculate">
+        <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 my-3">
+            @if ($error)
+                <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
+            @endif
+            <div class="lg:w-[60%] md:w-[60%] w-full mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 mt-3 gap-4">
+                    <div class="col-span-12 lg:col-span-6 md:col-span-6 mt-0 mt-lg-2">
+                        <label for="date" class="label">{{ $lang['1'] }}:</label>
+                        <div class="w-100 py-2 position-relative">
+                            <input type="date" wire:model.live="date" id="date" class="input" aria-label="input" />
+                        </div>
+                    </div>
+                    <div class="col-span-12 lg:col-span-6 md:col-span-6 mt-0 mt-lg-2">
+                        <label for="rent" class="label">{{ $lang['2'] }}:</label>
+                        <div class="w-100 py-2 relative">
+                            <input type="number" step="any" wire:model.live="rent" id="rent" class="input" aria-label="input" placeholder="640" />
+                            <span class="input_unit text-blue">{{ $currancy }}</span>
+                        </div>
+                    </div>
+                    <div class="col-span-12 mt-0 mt-lg-2">
+                        <label for="bill_on" class="label">{{ $lang['3'] }}:</label>
+                        <div class="w-100 py-2">
+                            <select wire:model.live="bill_on" id="bill_on" class="input">
+                                @for ($i = 1; $i <= 31; $i++)
+                                    <option value="{{ $i }}">{{ $i }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @if ($type == 'calculator')
+                @include('inc.button')
+            @endif
+            @if ($type == 'widget')
+                @include('inc.widget-button')
+            @endif
+        </div>
+        <hr>
+        <div id="result-section">
+            @isset($detail)
+                <div wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
+                    <div class="">
+                        @if ($type == 'calculator')
+                            @include('inc.copy-pdf')
+                        @endif
+                        <div class="rounded-lg flex items-center justify-center">
+                            <div class="w-full mt-3">
+                                <div class="w-full py-2">
+                                    <div class="w-full md:w-[80%] lg:w-[80%] overflow-auto lg:text-[20px] md:text-[20px] text-[16px]">
+                                        @if ($detail['res'] == 1)
+                                            <table class="w-full">
+                                                <tr>
+                                                    <td width="50%" class="border-b py-2"><strong>{{ $lang[4] }} :</strong></td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['pror'], 2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2"><strong>{{ $lang[9] }} :</strong></td>
+                                                    <td class="border-b py-2">{{ date('M d, Y', strtotime($detail['date'])) }} - {{ date('M d, Y', strtotime($detail['end_date'])) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="pb-2 pt-3">
+                                                        <strong>{{ date('F', strtotime($detail['date'])) }}</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang['5'] }} :</td>
+                                                    <td class="border-b py-2">{{ $detail['d'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang['6'] }} :</td>
+                                                    <td class="border-b py-2">{{ $detail['days_in_mon'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang[7] }} / {{ $lang[8] }} :</td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['per_day'], 2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang[4] }} :</td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['pror'], 2) }}</td>
+                                                </tr>
+                                            </table>
+                                        @endif
+                                        @if ($detail['res'] == 2)
+                                            <table class="w-full">
+                                                <tr>
+                                                    <td width="50%" class="border-b py-2"><strong>{{ $lang[4] }} :</strong></td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['pror'] + $detail['pror1'], 2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2"><strong>{{ $lang[9] }} :</strong></td>
+                                                    <td class="border-b py-2">{{ date('M d, Y', strtotime($detail['date'])) }} - {{ date('M d, Y', strtotime($detail['end_date'])) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="pb-2 pt-3">
+                                                        <strong>{{ date('F', strtotime($detail['date'])) }}</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang['5'] }} :</td>
+                                                    <td class="border-b py-2">{{ $detail['d'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang['6'] }} :</td>
+                                                    <td class="border-b py-2">{{ $detail['days_in_mon'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang[7] }} / {{ $lang[8] }} :</td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['per_day'], 2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang[4] }} :</td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['pror'], 2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="pb-2 pt-3">
+                                                        <strong>{{ date('F', strtotime($detail['end_date'])) }}</strong>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang['5'] }} :</td>
+                                                    <td class="border-b py-2">{{ $detail['d1'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang['6'] }} :</td>
+                                                    <td class="border-b py-2">{{ $detail['days_in_mon1'] }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang[7] }} / {{ $lang[8] }} :</td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['per_day1'], 2) }}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="border-b py-2">{{ $lang[4] }} :</td>
+                                                    <td class="border-b py-2">{{ $currancy . ' ' . round($detail['pror1'], 2) }}</td>
+                                                </tr>
+                                            </table>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endisset
+        </div>
+    </form>
+</div>

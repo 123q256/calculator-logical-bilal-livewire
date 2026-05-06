@@ -9,7 +9,6 @@ body {
 
 .form-border,
 .set_resultbox {
-    /* border: 10px solid #e5e7eb; */
     border-radius: 6px;
     border: 8px solid gainsboro;
 }
@@ -22,15 +21,12 @@ body {
 .input_form input[type="datetime-local"],
 .input_form select,
 .input_form textarea,
-/* ✅ textarea add kiya */
 .converter_input input[type="text"],
 .converter_input input[type="number"],
 .converter_input select,
 .converter_input textarea {
-    /* ✅ yahan bhi add */
     width: 100%;
     min-height: 46px;
-    /* textarea ke liye better */
     padding: 10px 14px;
     border-radius: 14px;
     border: 1px solid #d1d5db;
@@ -40,7 +36,6 @@ body {
     outline: none;
     transition: 0.15s;
     resize: vertical;
-    /* textarea resize control */
 }
 
 /* FOCUS STATE - border none + shadow none */
@@ -54,11 +49,6 @@ body {
     /* shadow completely removed */
     outline: none !important;
 }
-
-/* .result_calculator {
-    background-color: #1670a712;
-    box-shadow: 0 3px 6px #00000029;
-} */
 
 
 

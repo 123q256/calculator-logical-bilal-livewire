@@ -21,13 +21,17 @@
     @endif
     @include('layouts/metas')
     <style>
+        [x-cloak] {
+            display: none !important;
+        }
+
         .active-tags {
             color: #2845F5 !important;
         }
-         .hero-bg {
-      background: linear-gradient(160deg, #f0f4ff 0%, #fafafa 60%, #fff 100%);
-    }
 
+        .hero-bg {
+            background: linear-gradient(160deg, #f0f4ff 0%, #fafafa 60%, #fff 100%);
+        }
     </style>
     @livewireStyles
 </head>
