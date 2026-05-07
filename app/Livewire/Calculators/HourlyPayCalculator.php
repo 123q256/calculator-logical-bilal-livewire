@@ -135,12 +135,13 @@ class HourlyPayCalculator extends Component
         $result = $model->hourly_pay($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            // Prepare Chart Data
-            $result['chartData'] = json_encode([
-                ['name' => 'Take Home', 'y' => (float)$result['take_home'], 'color' => '#2845F5'],
-                ['name' => 'Taxes', 'y' => (float)$result['total_tax'], 'color' => '#f97316'],
-            ]);
+            // Prepare Chart Data (Matching Semester Grade Pattern)
+            $chartData = [
+                ['name' => 'Take Home', 'y' => (float)$result['take_home']],
+                ['name' => 'Taxes', 'y' => (float)$result['total_tax']],
+            ];
 
+            $result['chartData'] = $chartData;
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', [
@@ -150,13 +151,14 @@ class HourlyPayCalculator extends Component
                 'overtimeRows' => $this->overtimeRows,
             ]);
 
+            $this->dispatch('chart-updated', $chartData);
+
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 return redirect()->to(url()->previous() ?? '/');
             }
 
             $this->detail = $result;
             $this->error = null;
-            $this->dispatch('chart-updated', $result['chartData']);
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
             session()->flash('validation_error', $this->error);

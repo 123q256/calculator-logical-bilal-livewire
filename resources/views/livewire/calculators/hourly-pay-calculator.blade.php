@@ -232,47 +232,43 @@
 
             </div>
             {{-- Highcharts Doughnut Chart --}}
-            <div class="w-full bg-white p-4 rounded-xl shadow-sm border" 
+            {{-- Highcharts Doughnut Chart (Matching Semester Grade Pattern) --}}
+            <div class="w-full mt-8" 
                  x-data="{ 
-                    chartData: {!! $detail['chartData'] !!},
-                    render: function() {
+                    chartData: @js($detail['chartData'] ?? []),
+                    render() {
                         if (typeof Highcharts === 'undefined') {
-                            var _this = this;
-                            setTimeout(function() { _this.render() }, 300);
+                            setTimeout(() => this.render(), 200);
                             return;
                         }
-                        try {
-                            Highcharts.chart($refs.canvas, {
-                                chart: { type: 'pie', backgroundColor: 'transparent' },
-                                title: { text: 'Take Home vs Taxes', align: 'center', style: { color: '#2845F5', fontWeight: 'bold' } },
-                                plotOptions: {
-                                    pie: {
-                                        innerSize: '60%',
-                                        dataLabels: {
-                                            enabled: true,
-                                            format: '{point.name}: {point.percentage:.1f} %',
-                                            distance: -30,
-                                            style: { color: 'white', textOutline: 'none' }
-                                        },
-                                        showInLegend: true
-                                    }
-                                },
-                                series: [{ 
-                                    name: 'Amount', 
-                                    data: this.chartData 
-                                }],
-                                credits: { enabled: false },
-                                tooltip: { pointFormat: '{series.name}: {point.y}' }
-                            });
-                        } catch (e) {
-                            console.log('Chart error');
-                        }
+                        Highcharts.chart($refs.canvas, {
+                            chart: { type: 'pie', backgroundColor: 'transparent' },
+                            title: { text: 'Take Home vs Taxes', align: 'left', style: { color: '#2845F5', fontWeight: 'bold' } },
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{point.name}: {point.y}'
+                                    },
+                                    showInLegend: true
+                                }
+                            },
+                            series: [{ 
+                                name: 'Amount', 
+                                data: this.chartData,
+                                innerSize: '60%'
+                            }],
+                            credits: { enabled: false },
+                            tooltip: { pointFormat: '{series.name}: <b>{point.y}</b>' }
+                        });
                     }
                  }" 
-                 x-init="var _this = this; setTimeout(function() { _this.render() }, 500)"
-                 @chart-updated.window="chartData = (typeof $event.detail === 'string') ? JSON.parse($event.detail) : $event.detail; render()"
+                 x-init="render()"
+                 @chart-updated.window="chartData = $event.detail; render()"
                  wire:ignore>
-                <div x-ref="canvas" id="canvas-{{ time() }}" class="w-full min-h-[350px]"></div>
+                <div x-ref="canvas" class="w-full min-h-[400px]"></div>
             </div>
         </div>
     @endisset
