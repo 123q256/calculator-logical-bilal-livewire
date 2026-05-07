@@ -80,7 +80,9 @@ class CalorimetryCalculator extends Component
         $this->reset();
         $this->mount($this->type, $this->lang);
         session()->forget(['calculator_result', 'validation_error', 'scroll_to_result']);
-        return redirect()->to(url()->previous() ?? '/');
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function calculate()
@@ -167,9 +169,18 @@ class CalorimetryCalculator extends Component
         $model = new Chemistry();
         $result = $model->calorimetry($request);
 
-        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+       if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
+
+            session()->flash('calculator_result', $result);
+            session()->flash('scroll_to_result', true);
+            session()->flash('calculator_back_inputs', $request);
+
+            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                return redirect()->to(url()->previous() ?? '/');
+            }
+
             $this->js(<<<'JS'
                 setTimeout(() => {
                     const el = document.getElementById('result-section');
@@ -182,6 +193,7 @@ class CalorimetryCalculator extends Component
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
             $this->detail = null;
+            session()->flash('validation_error', $this->error);
         }
     }
 

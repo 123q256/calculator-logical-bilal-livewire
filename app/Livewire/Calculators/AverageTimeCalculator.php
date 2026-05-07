@@ -1,0 +1,83 @@
+<?php
+
+namespace App\Livewire\Calculators;
+use App\Models\EverydayLife;
+use Livewire\Component;
+
+class AverageTimeCalculator extends Component
+{
+     public $error = null;
+    public $detail = null;
+    public $type = 'calculator';
+    public $lang = [];
+
+  public function mount($type = 'calculator', $lang = [])
+    {
+        $this->type = $type;
+        $this->lang = $lang;
+        $this->detail = session('calculator_result');
+        $this->error = session('validation_error');
+
+        if (session()->has('calculator_back_inputs')) {
+            $inputs = session('calculator_back_inputs');
+
+        }
+    }
+
+  public function resetForm()
+    {
+
+        $this->error = null;
+        $this->detail = null;
+
+        session()->forget([
+            'calculator_back_inputs',
+            'calculator_result',
+            'validation_error',
+            'scroll_to_result'
+        ]);
+
+        return redirect()->to(url()->previous() ?? '/');
+    }
+
+
+   public function calculate()
+    {
+        $request = (object)[
+            'reading_speed'         => $this->reading_speed,
+      
+        ];
+
+
+        $model = new EverydayLife();
+        $result = $model->average($request);
+        // dd($result);
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            session()->flash('calculator_result', $result);
+            session()->flash('scroll_to_result', true);
+            session()->flash('calculator_back_inputs', $request);
+            $this->error = null;
+
+            return redirect()->to(url()->previous() ?? '/');
+        }
+
+        $this->error = $result['error'] ?? 'Something went wrong.';
+        session()->flash('validation_error', $this->error);
+        $this->detail = null;
+    }
+
+
+   public function render()
+    {
+        if (session('scroll_to_result')) {
+            $this->js(<<<'JS'
+                const el = document.getElementById('result-section');
+                if (el) {
+                    const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
+            JS);
+        }
+        return view('livewire.calculators.average-time-calculator');
+    }
+}

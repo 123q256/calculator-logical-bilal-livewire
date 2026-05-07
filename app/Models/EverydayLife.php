@@ -1837,19 +1837,19 @@ class EverydayLife extends Model
 	// blind size calculator
 	public function blind($request)
 	{
-		$type = trim($request->input('type'));
-		$top = trim($request->input('top'));
-		$t_units = trim($request->input('t_units'));
-		$width = trim($request->input('width'));
-		$w_units = trim($request->input('w_units'));
-		$bottom = trim($request->input('bottom'));
-		$b_units = trim($request->input('b_units'));
-		$h_left = trim($request->input('h_left'));
-		$l_units = trim($request->input('l_units'));
-		$h_center = trim($request->input('h_center'));
-		$c_units = trim($request->input('c_units'));
-		$h_right = trim($request->input('h_right'));
-		$r_units = trim($request->input('r_units'));
+		$type     = trim($request->type);
+		$top      = trim($request->top);
+		$t_units  = trim($request->t_units);
+		$width    = trim($request->width);
+		$w_units  = trim($request->w_units);
+		$bottom   = trim($request->bottom);
+		$b_units  = trim($request->b_units);
+		$h_left   = trim($request->h_left);
+		$l_units  = trim($request->l_units);
+		$h_center = trim($request->h_center);
+		$c_units  = trim($request->c_units);
+		$h_right  = trim($request->h_right);
+		$r_units  = trim($request->r_units);
 		if (!empty($type)) {
 			if (
 				is_numeric($top) && is_numeric($width) && is_numeric($bottom)
@@ -4322,16 +4322,16 @@ class EverydayLife extends Model
 	 *******************/
 	public function dunk($request)
 	{
-		$height = $request->input("height");
-		$height_unit = $request->input("height_unit");
-		$mass = $request->input("mass");
-		$mass_unit = $request->input("mass_unit");
-		$acceleration = $request->input("acceleration");
-		$acceleration_unit = $request->input("acceleration_unit");
-		$palm_size = $request->input("palm_size");
-		$palm_size_unit = $request->input("palm_size_unit");
-		$standing = $request->input("standing");
-		$standing_unit = $request->input("standing_unit");
+		$height = $request->height;
+		$height_unit = $request->height_unit;
+		$mass = $request->mass;
+		$mass_unit = $request->mass_unit;
+		$acceleration = $request->acceleration;
+		$acceleration_unit = $request->acceleration_unit;
+		$palm_size = $request->palm_size;
+		$palm_size_unit = $request->palm_size_unit;
+		$standing = $request->standing;
+		$standing_unit = $request->standing_unit;
 
 		function UnitConvert($unit, $value)
 		{
@@ -4419,13 +4419,13 @@ class EverydayLife extends Model
 	 *******************/
 	public function cfm($request)
 	{
-		$length = $request->input("length");
-		$length_units = $request->input("length_units");
-		$width = $request->input("width");
-		$width_units = $request->input("width_units");
-		$celling = $request->input("celling");
-		$celling_units = $request->input("celling_units");
-		$airflow = $request->input("airflow");
+		$length = $request->length;
+		$length_units = $request->length_units;
+		$width = $request->width;
+		$width_units = $request->width_units;
+		$celling = $request->celling;
+		$celling_units = $request->celling_units;
+		$airflow = $request->airflow;
 		function convertToMeters($value, $unit)
 		{
 			if ($unit == 'm') {
@@ -4469,13 +4469,13 @@ class EverydayLife extends Model
 	 *******************/
 	public function box($request)
 	{
-		$conducting_wire_size = $request->input("conducting_wire_size");
-		$clamps = $request->input("clamps");
-		$conducting_wire = $request->input("conducting_wire");
-		$fittings = $request->input("fittings");
-		$devices = $request->input("devices");
-		$grounding_conductor = $request->input("grounding_conductor");
-		$largest_wire_size = $request->input("largest_wire_size");
+		$conducting_wire_size = $request->conducting_wire_size;
+		$clamps = $request->clamps;
+		$conducting_wire = $request->conducting_wire;
+		$fittings = $request->fittings;
+		$devices = $request->devices;
+		$grounding_conductor = $request->grounding_conductor;
+		$largest_wire_size = $request->largest_wire_size;
 		if (is_numeric($conducting_wire) && is_numeric($devices) && is_numeric($grounding_conductor)) {
 			$conductor_fill_volume = $conducting_wire * $conducting_wire_size;
 			if ($clamps == 'yes') {
@@ -4528,16 +4528,16 @@ class EverydayLife extends Model
 	 *******************/
 	public function tonnage($request)
 	{
-		$unit_weight = $request->input("unit_weight");
-		$length = $request->input("length");
-		$length_units = $request->input("length_units");
-		$width = $request->input("width");
-		$width_units = $request->input("width_units");
-		$depth = $request->input("depth");
-		$depth_units = $request->input("depth_units");
-		$price_per = $request->input("price_per");
-		$price_per_units = $request->input("price_per_units");
-		$wastage = $request->input("wastage");
+		$unit_weight = $request->unit_weight;
+		$length = $request->length;
+		$length_units = $request->length_units;
+		$width = $request->width;
+		$width_units = $request->width_units;
+		$depth = $request->depth;
+		$depth_units = $request->depth_units;
+		$price_per = $request->price_per;
+		$price_per_units = $request->price_per_units;
+		$wastage = $request->wastage;
 
 		if (isset($price_per_units)) {
 			if ($price_per_units === 'kg') {
@@ -4751,9 +4751,9 @@ class EverydayLife extends Model
 	 *******************/
 	public function anniversary($request)
 	{
-		$date = $request->input("date");
-		$current_date = $request->input("current_date");
-		$one = $request->input("one");
+		$date = $request->date;
+		$current_date = $request->current_date;
+		$one = $request->one;
 		if ($one === 'one') {
 			if (!empty($date)) {
 				$anniversaryDate = date("M d, Y", strtotime("+" . (date("Y") - date("Y", strtotime($date))) . " year", strtotime($date)));
@@ -8030,25 +8030,25 @@ class EverydayLife extends Model
 	// stair calculator
 	public function stair($request)
 	{
-		$type = $request->input('type');
-		$f_input = $request->input('f_input');
-		$f_units = $request->input('f_units');
-		$s_input = $request->input('s_input');
-		$s_units = $request->input('s_units');
-		$rise = $request->input('rise');
-		$t_input = $request->input('t_input');
-		$t_units = $request->input('t_units');
-		$tread = $request->input('tread');
-		$tread_input = $request->input('tread_input');
-		$tread_units = $request->input('tread_units');
-		$headroom = $request->input('headroom');
-		$f_opening = $request->input('f_opening');
-		$fo_units = $request->input('fo_units');
-		$f_thickness = $request->input('f_thickness');
-		$ft_units = $request->input('ft_units');
-		$h_req = $request->input('h_req');
-		$hr_units = $request->input('hr_units');
-		$mount = $request->input('mount');
+		$type = $request->type;
+		$f_input = $request->f_input;
+		$f_units = $request->f_units;
+		$s_input = $request->s_input;
+		$s_units = $request->s_units;
+		$rise = $request->rise;
+		$t_input = $request->t_input;
+		$t_units = $request->t_units;
+		$tread = $request->tread;
+		$tread_input = $request->tread_input;
+		$tread_units = $request->tread_units;
+		$headroom = $request->headroom;
+		$f_opening = $request->f_opening;
+		$fo_units = $request->fo_units;
+		$f_thickness = $request->f_thickness;
+		$ft_units = $request->ft_units;
+		$h_req = $request->h_req;
+		$hr_units = $request->hr_units;
+		$mount = $request->mount;
 		function stair_inches($a, $b)
 		{
 			if ($b == "ft") {
@@ -8073,20 +8073,20 @@ class EverydayLife extends Model
 				if ($rise == "1") {
 					if ($t_input > 0) {
 						$inch = $t_input;
-						$inch = number_format($inch, 2);
+						$inch = round($inch, 2);
 						$no_stair = $s_input / $t_input;
 						$stair_ans = round($no_stair);
 						$total_run_ans = $f_input * ($stair_ans - 1);
-						$total_run_ans = number_format($total_run_ans, 2);
+						$total_run_ans = round($total_run_ans, 2);
 						$run_ans = $f_input;
-						$run_ans = number_format($run_ans, 2);
+						$run_ans = round($run_ans, 2);
 						$first_step = $s_input - $t_input;
 						if ($first_step <= 0) {
 							$step_ans = $s_input;
-							$step_ans = number_format($step_ans, 2);
+							$step_ans = round($step_ans, 2);
 						} else if ($first_step > 0) {
 							$step_ans = $first_step;
-							$step_ans = number_format($step_ans, 2);
+							$step_ans = round($step_ans, 2);
 						}
 					} else {
 						$this->param['error'] = 'Please! Check Your Input';
@@ -8097,13 +8097,13 @@ class EverydayLife extends Model
 							$f_step = $s_input - $t_input;
 							if ($f_step <= 0) {
 								$s_ans = $s_input;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							} else if ($f_step > 0) {
 								$s_ans = $f_step;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							}
 							$placement = $t_input + $tread_input;
-							$placement = number_format($placement, 2);
+							$placement = round($placement, 2);
 						} else {
 							$this->param['error'] = 'Please! Check Your Input';
 							return $this->param;
@@ -8112,13 +8112,13 @@ class EverydayLife extends Model
 				} else if ($rise == "2") {
 					if ($t_input > 0) {
 						$inch = $s_input / $t_input;
-						$inch = number_format($inch, 2);
+						$inch = round($inch, 2);
 						$no_stair = $t_input;
 						$stair_ans = round($no_stair);
 						$total_run_ans = $f_input * $t_input;
-						$total_run_ans = number_format($total_run_ans, 2);
+						$total_run_ans = round($total_run_ans, 2);
 						$run_ans = $f_input;
-						$run_ans = number_format($run_ans, 2);
+						$run_ans = round($run_ans, 2);
 					} else {
 						$this->param['error'] = 'Please! Check Your Input';
 						return $this->param;
@@ -8128,13 +8128,13 @@ class EverydayLife extends Model
 							$f_step = $s_input - $t_input;
 							if ($f_step <= 0) {
 								$s_ans = $s_input;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							} else if ($f_step > 0) {
 								$s_ans = $f_step;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							}
 							$placement = $tread_input;
-							$placement = number_format($placement, 2);
+							$placement = round($placement, 2);
 						} else {
 							$this->param['error'] = 'Please! Check Your Input';
 							return $this->param;
@@ -8154,20 +8154,20 @@ class EverydayLife extends Model
 				if ($rise == "1") {
 					if ($t_input > 0) {
 						$inch = $t_input;
-						$inch = number_format($inch, 2);
+						$inch = round($inch, 2);
 						$no_stair = $s_input / $t_input;
 						$stair_ans = round($no_stair);
 						$total_run_ans = $f_input;
-						$total_run_ans = number_format($total_run_ans, 2);
+						$total_run_ans = round($total_run_ans, 2);
 						$run_ans = $f_input / $stair_ans;
-						$run_ans = number_format($run_ans, 2);
+						$run_ans = round($run_ans, 2);
 						$first_step = $s_input - $t_input;
 						if ($first_step <= 0) {
 							$step_ans = $s_input;
-							$step_ans = number_format($step_ans, 2);
+							$step_ans = round($step_ans, 2);
 						} else if ($first_step > 0) {
 							$step_ans = $first_step;
-							$step_ans = number_format($step_ans, 2);
+							$step_ans = round($step_ans, 2);
 						}
 					} else {
 						$this->param['error'] = 'Please! Check Your Input';
@@ -8178,13 +8178,13 @@ class EverydayLife extends Model
 							$f_step = $s_input - $t_input;
 							if ($f_step <= 0) {
 								$s_ans = $s_input;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							} else if ($f_step > 0) {
 								$s_ans = $f_step;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							}
 							$placement = $t_input + $tread_input;
-							$placement = number_format($placement, 2);
+							$placement = round($placement, 2);
 						} else {
 							$this->param['error'] = 'Please! Check Your Input';
 							return $this->param;
@@ -8193,14 +8193,14 @@ class EverydayLife extends Model
 				} else if ($rise == "2") {
 					if ($t_input > 0) {
 						$inch = $s_input / $t_input;
-						$inch = number_format($inch, 2);
+						$inch = round($inch, 2);
 						$no_stair = $t_input;
 						$stair_ans = round($no_stair);
 						$total_run_ans = $f_input;
-						$total_run_ans = number_format($total_run_ans, 2);
-						return $this->param['total_run_ans'] = $total_run_ans;
+						$total_run_ans = round($total_run_ans, 2);
+						$this->param['total_run_ans'] = $total_run_ans;
 						$run_ans = $f_input / $stair_ans;
-						$run_ans = number_format($run_ans, 2);
+						$run_ans = round($run_ans, 2);
 					} else {
 						$this->param['error'] = 'Please! Check Your Input';
 						return $this->param;
@@ -8210,13 +8210,13 @@ class EverydayLife extends Model
 							$f_step = $s_input - $t_input;
 							if ($f_step <= 0) {
 								$s_ans = $s_input;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							} else if ($f_step > 0) {
 								$s_ans = $f_step;
-								$s_ans = number_format($s_ans, 2);
+								$s_ans = round($s_ans, 2);
 							}
 							$placement = $tread_input;
-							$placement = number_format($placement, 2);
+							$placement = round($placement, 2);
 						} else {
 							$this->param['error'] = 'Please! Check Your Input';
 							return $this->param;
@@ -8230,7 +8230,7 @@ class EverydayLife extends Model
 		}
 		if ($mount == "1") {
 			$mount_ans = $s_input - $t_input;
-			$mount_ans = number_format($mount_ans, 2);
+			$mount_ans = round($mount_ans, 2);
 			if ($headroom == "2") {
 				if (!empty($f_opening) && !empty($f_thickness) && !empty($h_req)) {
 					$f_opening = stair_inches($f_opening, $fo_units);
@@ -8316,12 +8316,12 @@ class EverydayLife extends Model
 		}
 		$str = pow($total_run_ans, 2) + pow($mount_ans, 2);
 		$str = sqrt($str);
-		$str = number_format($str, 2);
+		$str = round($str, 2);
 		if (!empty($str) || !empty($mount_ans)) {
 			$angle = $mount_ans / $str;
 			$angle = asin($angle);
 			$angle_ans = rad2deg($angle);
-			$angle_ans = number_format($angle_ans, 2);
+			$angle_ans = round($angle_ans, 2);
 		}
 		if (!empty($inch)) {
 			$this->param['inch'] = $inch;
@@ -8356,7 +8356,7 @@ class EverydayLife extends Model
 		if (!empty($answ)) {
 			$this->param['answ'] = $answ;
 		}
-		
+		$this->param['RESULT'] = 1;
 		return $this->param;
 	}
 
@@ -9255,18 +9255,18 @@ class EverydayLife extends Model
 	// Batting Average calculator
 	public function batting($request)
 	{
-		$operations = $request->input('operations');
-		$first = $request->input('first');
-		$second = $request->input('second');
-		$third = $request->input('third');
-		$four = $request->input('four');
-		$five = $request->input('five');
-		$fiveb = $request->input('fiveb');
-		$seven = $request->input('seven');
-		$eight = $request->input('eight');
-		$nine = $request->input('nine');
-		$ten = $request->input('ten');
-		$quantity = $request->input('quantity');
+		$operations = $request->operations;
+		$first = $request->first;
+		$second = $request->second;
+		$third = $request->third;
+		$four = $request->four;
+		$five = $request->five;
+		$fiveb = $request->fiveb;
+		$seven = $request->seven;
+		$eight = $request->eight;
+		$nine = $request->nine;
+		$ten = $request->ten;
+		$quantity = $request->quantity;
 
 		if ($operations == "3") {
 			if (is_numeric($first) && is_numeric($second) && is_numeric($third)) {
@@ -9871,23 +9871,23 @@ class EverydayLife extends Model
 	// MPG calculator	
 	public function mpg($request)
 	{
-		$type = $request->input('type');
-		$operations = $request->input('operations');
-		$first = $request->input('first');
-		$units1 = $request->input('units1');
-		$second = $request->input('second');
-		$units2 = $request->input('units2');
-		$third = $request->input('third');
-		$units3 = $request->input('units3');
-		$four = $request->input('four');
-		$units4 = $request->input('units4');
-		$ad_first = $request->input('ad_first');
-		$ad_second = $request->input('ad_second');
-		$ad_third = $request->input('ad_third');
-		$ad_units3 = $request->input('ad_units3');
-		$ad_four = $request->input('ad_four');
-		$ad_units4 = $request->input('ad_units4');
-		$currancy = $request->input('currancy');
+		$type = $request->type;
+		$operations = $request->operations;
+		$first = $request->first;
+		$units1 = $request->units1;
+		$second = $request->second;
+		$units2 = $request->units2;
+		$third = $request->third;
+		$units3 = $request->units3;
+		$four = $request->four;
+		$units4 = $request->units4;
+		$ad_first = $request->ad_first;
+		$ad_second = $request->ad_second;
+		$ad_third = $request->ad_third;
+		$ad_units3 = $request->ad_units3;
+		$ad_four = $request->ad_four;
+		$ad_units4 = $request->ad_units4;
+		$currancy = $request->currancy;
 
 
 
@@ -10164,39 +10164,39 @@ class EverydayLife extends Model
 	// aquarium calculator
 	public function aquarium($request)
 	{
-		$shape = $request->input('shape');
-		$length = $request->input('length');
-		$length_unit = $request->input('length_unit');
-		$width = $request->input('width');
-		$width_unit = $request->input('width_unit');
-		$height = $request->input('height');
-		$height_unit = $request->input('height_unit');
-		$fill_depth = $request->input('fill_depth');
-		$fill_depth_unit = $request->input('fill_depth_unit');
-		$front_pane = $request->input('front_pane');
-		$front_pane_unit = $request->input('front_pane_unit');
-		$end_pane = $request->input('end_pane');
-		$end_pane_unit = $request->input('end_pane_unit');
-		$radius = $request->input('radius');
-		$radius_unit = $request->input('radius_unit');
-		$radius_one = $request->input('radius_one');
-		$radius_one_unit = $request->input('radius_one_unit');
-		$radius_two = $request->input('radius_two');
-		$radius_two_unit = $request->input('radius_two_unit');
-		$long_side = $request->input('long_side');
-		$long_side_unit = $request->input('long_side_unit');
-		$short_side = $request->input('short_side');
-		$short_side_unit = $request->input('short_side_unit');
-		$len_one = $request->input('len_one');
-		$len_one_unit = $request->input('len_one_unit');
-		$len_two = $request->input('len_two');
-		$len_two_unit = $request->input('len_two_unit');
-		$wid_one = $request->input('wid_one');
-		$wid_one_unit = $request->input('wid_one_unit');
-		$wid_two = $request->input('wid_two');
-		$wid_two_unit = $request->input('wid_two_unit');
-		$full_width = $request->input('full_width');
-		$full_width_unit = $request->input('full_width_unit');
+		$shape = $request->shape;
+		$length = $request->length;
+		$length_unit = $request->length_unit;
+		$width = $request->width;
+		$width_unit = $request->width_unit;
+		$height = $request->height;
+		$height_unit = $request->height_unit;
+		$fill_depth = $request->fill_depth;
+		$fill_depth_unit = $request->fill_depth_unit;
+		$front_pane = $request->front_pane;
+		$front_pane_unit = $request->front_pane_unit;
+		$end_pane = $request->end_pane;
+		$end_pane_unit = $request->end_pane_unit;
+		$radius = $request->radius;
+		$radius_unit = $request->radius_unit;
+		$radius_one = $request->radius_one;
+		$radius_one_unit = $request->radius_one_unit;
+		$radius_two = $request->radius_two;
+		$radius_two_unit = $request->radius_two_unit;
+		$long_side = $request->long_side;
+		$long_side_unit = $request->long_side_unit;
+		$short_side = $request->short_side;
+		$short_side_unit = $request->short_side_unit;
+		$len_one = $request->len_one;
+		$len_one_unit = $request->len_one_unit;
+		$len_two = $request->len_two;
+		$len_two_unit = $request->len_two_unit;
+		$wid_one = $request->wid_one;
+		$wid_one_unit = $request->wid_one_unit;
+		$wid_two = $request->wid_two;
+		$wid_two_unit = $request->wid_two_unit;
+		$full_width = $request->full_width;
+		$full_width_unit = $request->full_width_unit;
 		function convert_cm($value, $unit)
 		{
 			if ($unit == "cm") {
@@ -10269,8 +10269,6 @@ class EverydayLife extends Model
 				$volume = (($wv * $lv) - (($wv * ($lv - $fr_pane)) / 2)) * $hv;
 				if ($fill_depth != "") {
 					if (is_numeric($fill_depth)) {
-						echo "The value of fill depth is" . $fill_depth;
-						echo "The value of height is" . $height;
 						if ($fill_depth > $height) {
 							$this->param['error'] = 'The fill depth cannot be greater than the height of the aquarium.';
 							return $this->param;
@@ -11173,13 +11171,13 @@ class EverydayLife extends Model
 	public function bike($request)
 	{
 
-		$bike_for           = $request->input('bike_for');
-		$bike_type          = $request->input('bike_type');
-		$kids_age           = $request->input('kids_age');
-		$hight              = $request->input('hight');
-		$hight_unit         = $request->input('hight_unit');
-		$inseam_length      = $request->input('inseam_length');
-		$inseam_length_unit = $request->input('inseam_length_unit');
+		$bike_for           = $request->bike_for;
+		$bike_type          = $request->bike_type;
+		$kids_age           = $request->kids_age;
+		$hight              = $request->hight;
+		$hight_unit         = $request->hight_unit;
+		$inseam_length      = $request->inseam_length;
+		$inseam_length_unit = $request->inseam_length_unit;
 		function convert_to_cm($unit, $value)
 		{
 			if ($unit == 'cm') {
@@ -11270,10 +11268,10 @@ class EverydayLife extends Model
 					$crank_in   = number_format($crank_size_mm / 25.4, 2);
 					$crank_ft   = number_format($crank_size_mm / 304.8, 2);
 
-					$crank_dia_mm = number_format($crank_mm * 2, 2);
-					$crank_dia_cm = number_format($crank_cm * 2, 2);
-					$crank_dia_in = number_format($crank_in * 2, 2);
-					$crank_dia_ft = number_format($crank_ft * 2, 2);
+					$crank_dia_mm = number_format($crank_size_mm * 2, 2);
+					$crank_dia_cm = number_format(($crank_size_mm / 10) * 2, 2);
+					$crank_dia_in = number_format(($crank_size_mm / 25.4) * 2, 2);
+					$crank_dia_ft = number_format(($crank_size_mm / 304.8) * 2, 2);
 
 					$this->param['frame_mm']     = $frame_mm;
 					$this->param['frame_cm']     = $frame_cm;
@@ -12406,58 +12404,66 @@ class EverydayLife extends Model
 	// Gas Calculator
 	public function gas($request)
 	{
-		$type              = $request->input('type');
-		$week_day          = $request->input('week_day');
-		$distance          = $request->input('distance');
-		$distance_unit     = $request->input('distance_unit');
-		$price             = $request->input('price');
-		$price_unit        = $request->input('price_unit');
-		$trip_type         = $request->input('trip_type');
-		$peoples           = $request->input('peoples');
-		$name_v1           = $request->input('name_v1');
-		$fule_effi_v1      = $request->input('fule_effi_v1');
-		$fule_effi_v1_unit = $request->input('fule_effi_v1_unit');
-		$name_v2           = $request->input('name_v2');
-		$fule_effi_v2      = $request->input('fule_effi_v2');
-		$fule_effi_v2_unit = $request->input('fule_effi_v2_unit');
-		$currancy = $request->input('currancy');
-		$price_unit = str_replace($currancy, '', $price_unit);
+		$type              = $request->type;
+		$week_day          = $request->week_day;
+		$distance          = $request->distance;
+		$distance_unit     = $request->distance_unit;
+		$price             = $request->price;
+		$price_unit        = $request->price_unit;
+		$trip_type         = $request->trip_type;
+		$peoples           = $request->peoples;
+		$name_v1           = $request->name_v1;
+		$fule_effi_v1      = $request->fule_effi_v1;
+		$fule_effi_v1_unit = $request->fule_effi_v1_unit;
+		$name_v2           = $request->name_v2;
+		$fule_effi_v2      = $request->fule_effi_v2;
+		$fule_effi_v2_unit = $request->fule_effi_v2_unit;
+		$currancy          = $request->currancy;
+		$price_unit        = str_replace($currancy, '', $price_unit);
 
-		function convert_to_mile($unit, $value)
-		{
-			if ($unit == 'km') {
-				$ans = $value / 1.609;
-			} else {
-				$ans = $value;
+		if (!function_exists('convert_to_mile')) {
+			function convert_to_mile($unit, $value)
+			{
+				if ($unit == 'km') {
+					$ans = $value / 1.609;
+				} else {
+					$ans = $value;
+				}
+				return $ans;
 			}
-			return $ans;
 		}
-		function convert_to_km($unit, $value)
-		{
-			if ($unit == 'mi') {
-				$ans = $value * 1.609;
-			} else {
-				$ans = $value;
+		if (!function_exists('convert_to_km')) {
+			function convert_to_km($unit, $value)
+			{
+				if ($unit == 'mi') {
+					$ans = $value * 1.609;
+				} else {
+					$ans = $value;
+				}
+				return $ans;
 			}
-			return $ans;
 		}
-		function convert_to_mpg($unit, $value)
-		{
-			if ($unit == 'kmpl') {
-				$ans = $value * 2.352;
-			} else {
-				$ans = $value;
+		if (!function_exists('convert_to_mpg')) {
+			function convert_to_mpg($unit, $value)
+			{
+				if ($unit == 'kmpl') {
+					$ans = $value * 2.352;
+				} else {
+					$ans = $value;
+				}
+				return $ans;
 			}
-			return $ans;
 		}
-		function convert_to_kmpl($unit, $value)
-		{
-			if ($unit == 'mpg') {
-				$ans = $value / 2.352;
-			} else {
-				$ans = $value;
+		if (!function_exists('convert_to_kmpl')) {
+			function convert_to_kmpl($unit, $value)
+			{
+				if ($unit == 'mpg') {
+					$ans = $value / 2.352;
+				} else {
+					$ans = $value;
+				}
+				return $ans;
 			}
-			return $ans;
 		}
 
 		if (!empty($type) && !empty($trip_type) && !empty($name_v1) && is_numeric($fule_effi_v2) && !empty($name_v2) && is_numeric($distance) && is_numeric($week_day) && is_numeric($price) && is_numeric($fule_effi_v1)) {
@@ -17532,18 +17538,18 @@ class EverydayLife extends Model
 	// Nether Portal Calculator
 	public function nether($request)
 	{
-		$submit = trim($request->input('submit'));
-		$sim_adv = trim($request->input('sim_adv'));
-		$cal = trim($request->input('cal'));
-		$x = trim($request->input('x'));
-		$y = trim($request->input('y'));
-		$z = trim($request->input('z'));
-		$x1 = trim($request->input('x1'));
-		$y1 = trim($request->input('y1'));
-		$z1 = trim($request->input('z1'));
-		$x2 = trim($request->input('x2'));
-		$y2 = trim($request->input('y2'));
-		$z2 = trim($request->input('z2'));
+		$submit = true;
+		$sim_adv = $request->sim_adv;
+		$cal = $request->cal;
+		$x = $request->x;
+		$y = $request->y;
+		$z = $request->z;
+		$x1 = $request->x1;
+		$y1 = $request->y1;
+		$z1 = $request->z1;
+		$x2 = $request->x2;
+		$y2 = $request->y2;
+		$z2 = $request->z2;
 		if ($submit) {
 			if ($sim_adv === 'simple') {
 				if ($cal === '1') {
@@ -22333,39 +22339,39 @@ class EverydayLife extends Model
 	// D&D 5e Point Buy Calculator
 	public function point($request)
 	{
-		$racial_choice = $request->input('racial_choice');
-		$strength = $request->input('strength');
-		$dexerity = $request->input('dexerity');
-		$intelligence = $request->input('intelligence');
-		$wisdom = $request->input('wisdom');
-		$charisma = $request->input('charisma');
-		$constitution = $request->input('constitution');
-		$choice = $request->input('choice');
-		$strength1 = $request->input('strength1');
-		$dexerity1 = $request->input('dexerity1');
-		$intelligence1 = $request->input('intelligence1');
-		$wisdom1 = $request->input('wisdom1');
-		$charisma1 = $request->input('charisma1');
-		$points_budget = $request->input('points_budget');
-		$smallest_score = $request->input('smallest_score');
-		$largest_score = $request->input('largest_score');
-		$constitution1 = $request->input('constitution1');
-		$s1 = $request->input('s1');
-		$s2 = $request->input('s2');
-		$s3 = $request->input('s3');
-		$s4 = $request->input('s4');
-		$s5 = $request->input('s5');
-		$s6 = $request->input('s6');
-		$s7 = $request->input('s7');
-		$s8 = $request->input('s8');
-		$s9 = $request->input('s9');
-		$s10 = $request->input('s10');
-		$s11 = $request->input('s11');
-		$x1 = $request->input('s12');
-		$x2 = $request->input('s13');
-		$x3 = $request->input('s14');
-		$x4 = $request->input('s15');
-		$x5 = $request->input('s16');
+		$racial_choice = $request->racial_choice;
+		$strength = $request->strength;
+		$dexerity = $request->dexerity;
+		$intelligence = $request->intelligence;
+		$wisdom = $request->wisdom;
+		$charisma = $request->charisma;
+		$constitution = $request->constitution;
+		$choice = $request->choice;
+		$strength1 = $request->strength1;
+		$dexerity1 = $request->dexerity1;
+		$intelligence1 = $request->intelligence1;
+		$wisdom1 = $request->wisdom1;
+		$charisma1 = $request->charisma1;
+		$points_budget = $request->points_budget;
+		$smallest_score = $request->smallest_score;
+		$largest_score = $request->largest_score;
+		$constitution1 = $request->constitution1;
+		$s1 = $request->s1;
+		$s2 = $request->s2;
+		$s3 = $request->s3;
+		$s4 = $request->s4;
+		$s5 = $request->s5;
+		$s6 = $request->s6;
+		$s7 = $request->s7;
+		$s8 = $request->s8;
+		$s9 = $request->s9;
+		$s10 = $request->s10;
+		$s11 = $request->s11;
+		$x1 = $request->s12;
+		$x2 = $request->s13;
+		$x3 = $request->s14;
+		$x4 = $request->s15;
+		$x5 = $request->s16;
 
 		function calculate_sum($val1)
 		{
@@ -22875,16 +22881,16 @@ class EverydayLife extends Model
 	// CBM Caluclator
 	public function cbm($request)
 	{
-		$type       = $request->input('type');
-		$width      = $request->input('width');
-		$width_unit = $request->input('width_unit');
-		$length     = $request->input('length');
-		$length_unit = $request->input('length_unit');
-		$heigth     = $request->input('heigth');
-		$heigth_unit = $request->input('heigth_unit');
-		$quantity   = $request->input('quantity');
-		$weight     = $request->input('weight');
-		$weight_unit = $request->input('weight_unit');
+		$type       = $request->type;
+		$width      = $request->width;
+		$width_unit = $request->width_unit;
+		$length     = $request->length;
+		$length_unit = $request->length_unit;
+		$heigth     = $request->heigth;
+		$heigth_unit = $request->heigth_unit;
+		$quantity   = $request->quantity;
+		$weight     = $request->weight;
+		$weight_unit = $request->weight_unit;
 
 		function convert_to_cm($unit, $value)
 		{
@@ -22975,7 +22981,8 @@ class EverydayLife extends Model
 			if ($type == 'basic') {
 				$cbm = ($width_m * $length_m * $heigth_m) * $quantity;
 				$this->param['cbm'] = number_format($cbm, 2);
-
+				$this->param['RESULT'] = 1;
+	
 				return $this->param;
 			} elseif ($type == 'advance') {
 				if (is_numeric($weight)) {
@@ -23001,6 +23008,7 @@ class EverydayLife extends Model
 					$this->param['size_40'] = $size_40;
 					$this->param['size_40_hq'] = $size_40_hq;
 					$this->param['size_45_hq'] = $size_45_hq;
+					$this->param['RESULT'] = 1;
 					return $this->param;
 				} else {
 					$this->param['error'] = 'Please! Check Your Input';
@@ -23319,26 +23327,26 @@ class EverydayLife extends Model
 	// Plant Spacing Calculator
 	public function plant($request)
 	{
-		$bed                = $request->input('bed');
-		$grid               = $request->input('grid');
-		$hedgerows          = $request->input('hedgerows');
-		$length             = $request->input('length');
-		$length_unit        = $request->input('length_unit');
-		$width              = $request->input('width');
-		$width_unit         = $request->input('width_unit');
-		$want               = $request->input('want');
-		$border             = $request->input('border');
-		$border_unit        = $request->input('border_unit');
-		$plant_spacing      = $request->input('plant_spacing');
-		$plant_spacing_unit = $request->input('plant_spacing_unit');
-		$row_spacing        = $request->input('row_spacing');
-		$row_spacing_unit   = $request->input('row_spacing_unit');
-		$hedge              = $request->input('hedge');
-		$hedge_unit         = $request->input('hedge_unit');
-		$total_plants       = $request->input('total_plants');
-		$total_rows         = $request->input('total_rows');
-		$no_of_plant        = $request->input('no_of_plant');
-		$plant_price        = $request->input('plant_price');
+		$bed                = $request->bed;
+		$grid               = $request->grid;
+		$hedgerows          = $request->hedgerows;
+		$length             = $request->length;
+		$length_unit        = $request->length_unit;
+		$width              = $request->width;
+		$width_unit         = $request->width_unit;
+		$want               = $request->want;
+		$border             = $request->border;
+		$border_unit        = $request->border_unit;
+		$plant_spacing      = $request->plant_spacing;
+		$plant_spacing_unit = $request->plant_spacing_unit;
+		$row_spacing        = $request->row_spacing;
+		$row_spacing_unit   = $request->row_spacing_unit;
+		$hedge              = $request->hedge;
+		$hedge_unit         = $request->hedge_unit;
+		$total_plants       = $request->total_plants;
+		$total_rows         = $request->total_rows;
+		$no_of_plant        = $request->no_of_plant;
+		$plant_price        = $request->plant_price;
 
 		function convert_to_meter($unit, $value)
 		{
@@ -23402,6 +23410,7 @@ class EverydayLife extends Model
 							$this->param['plant_rows'] = $plant_rows;
 							$this->param['plant_cols'] = $plant_cols;
 							$this->param['plants']     = $plants;
+							$this->param['RESULT']     = 1;
 							
 							return $this->param;
 						} else {
@@ -23448,6 +23457,7 @@ class EverydayLife extends Model
 							$this->param['odd_rows']     	= $odd_rows;
 							$this->param['odd_num_plant']	= $odd_num_plant;
 							$this->param['evn_num_plant']	= $evn_num_plant;
+							$this->param['RESULT']     = 1;
 							
 							return $this->param;
 						} else {
@@ -23478,6 +23488,7 @@ class EverydayLife extends Model
 								$this->param['plant_rows'] = $plant_rows;
 								$this->param['plant_cols'] = $plant_cols;
 								$this->param['plants'] 	   = $plants;
+								$this->param['RESULT']     = 1;
 								
 								return $this->param;
 							} else {
@@ -23493,6 +23504,7 @@ class EverydayLife extends Model
 								$this->param['cols']          = $cols;
 								$this->param['row_space']     = round($row_space, 4);
 								$this->param['plant_spacing'] = round($plant_spacing, 4);
+								$this->param['RESULT']     = 1;
 								
 								return $this->param;
 							} else {
@@ -23521,6 +23533,7 @@ class EverydayLife extends Model
 					$total_plants    = round($plant_per_row * $hedgerows);
 
 					$this->param['total_plants'] = $total_plants;
+					$this->param['RESULT']     = 1;
 					
 					return $this->param;
 				} else {
@@ -23535,6 +23548,7 @@ class EverydayLife extends Model
 
 					$this->param['plant_space']   = $plant_space;
 					$this->param['plant_per_row'] = $plant_per_row;
+					$this->param['RESULT']     = 1;
 					
 					return $this->param;
 				} else {
@@ -23629,20 +23643,20 @@ class EverydayLife extends Model
 	// AC BTU Calculator
 	public function ac($request)
 	{
-		$calculate            = $request->input('calculate');
-		$height               = $request->input('height');
-		$height_unit          = $request->input('height_unit');
-		$width                = $request->input('width');
-		$width_unit           = $request->input('width_unit');
-		$length               = $request->input('length');
-		$length_unit          = $request->input('length_unit');
-		$temperature          = $request->input('temperature');
-		$temperature_unit     = $request->input('temperature_unit');
-		$peoples              = $request->input('peoples');
-		$type                 = $request->input('type');
-		$insulation_condition = $request->input('insulation_condition');
-		$sun_exposure         = $request->input('sun_exposure');
-		$climate              = $request->input('climate');
+		$calculate            = $request->calculate;
+		$height               = $request->height;
+		$height_unit          = $request->height_unit;
+		$width                = $request->width;
+		$width_unit           = $request->width_unit;
+		$length               = $request->length;
+		$length_unit          = $request->length_unit;
+		$temperature          = $request->temperature;
+		$temperature_unit     = $request->temperature_unit;
+		$peoples              = $request->peoples;
+		$type                 = $request->type;
+		$insulation_condition = $request->insulation_condition;
+		$sun_exposure         = $request->sun_exposure;
+		$climate              = $request->climate;
 		function convert_to_ft($unit, $value)
 		{
 			if ($unit == 'm') {

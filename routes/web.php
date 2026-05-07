@@ -158,7 +158,7 @@ Route::middleware([App\Http\Middleware\RedirectIfIndexPhp::class])->group(functi
 
    // Route::get('/our-team',[HomeController::class,'team']);
         // Tire Size Calculator API
-    // Route::post('peechy-to-dekho',[ToolController::class,'chukeyaTire']);
+    Route::post('peechy-to-dekho',[ToolController::class,'chukeyaTire']);
     // Route::post('/contact/submit', [MailController::class, 'feedback'])->name('feedback');
     // Route::post('/contact/submit', [MailController::class, 'feedback'])->name('feedback');
     // Weight Loss Meals
