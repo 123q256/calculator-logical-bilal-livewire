@@ -27026,20 +27026,20 @@ class EverydayLife extends Model
 
 	// word counter
 	function word_count($request){
-		$page = $request->input('page');
-		$size = $request->input('size');
-		$font = $request->input('font');
-		$space = $request->input('space');
-		$page2 = $request->input('page2');
-		$title = $request->input('title');
-		$sp_title = $request->input('sp_title');
-		$lang = $request->input('lang');
-		$main = $request->input('main');
+		$page = $request->page;
+		$size = $request->size;
+		$font = $request->font;
+		$space = $request->space;
+		$page2 = $request->page2;
+		$title = $request->title;
+		$sp_title = $request->sp_title;
+		$lang = $request->lang;
+		$main = $request->main;
 
 		if($main == 1){
-			$fontSize = $request->input('size');
-			$fontStyle = $request->input('font');
-			$spacing = $request->input('space');
+			$fontSize = $request->size;
+			$fontStyle = $request->font;
+			$spacing = $request->space;
 			$wordCount = 0;
 			$data = [
 				'Times' => [
@@ -27119,6 +27119,7 @@ class EverydayLife extends Model
 				$this->param['error'] = 'Please add Number of Pages';
 			}
 			$this->param['counter'] = $wordCount;
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}else if($main == 2){
 			if($title != 'Empty' && $page2 != ''){
@@ -27161,7 +27162,7 @@ class EverydayLife extends Model
 				}
 			}
 			$this->param['counter'] = number_format($counter);
-			
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}else if($main == 3){
 			$title == $sp_title;
@@ -27188,7 +27189,7 @@ class EverydayLife extends Model
 				}
 			}
 			$this->param['counter'] = number_format($counter);
-			
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}else if($main == 4){
 			if($lang == 'English'){
@@ -27225,26 +27226,26 @@ class EverydayLife extends Model
 				$counter =  370000 ;
 			}
 			$this->param['counter'] = number_format($counter);
-			
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}
 	}
 
 	// page counter
 	function page_count($request){
-		$page = $request->input('page');
-		$size = $request->input('size');
-		$font = $request->input('font');
-		$space = $request->input('space');
-		$page2 = $request->input('page2');
-		$title = $request->input('title');
-		$lang = $request->input('lang');
-		$main = $request->input('main');
+		$page = $request->page;
+		$size = $request->size;
+		$font = $request->font;
+		$space = $request->space;
+		$page2 = $request->page2;
+		$title = $request->title;
+		$lang = $request->lang;
+		$main = $request->main;
 		if($main == 1){
-			$fontSize = $request->input('size');
-			$fontStyle = $request->input('font');
-			$spacing = $request->input('space');
-			$totalWords  = $request->input('page');
+			$fontSize = $request->size;
+			$fontStyle = $request->font;
+			$spacing = $request->space;
+			$totalWords  = $request->page;
 			
 			$data = [
 				'Times' => [
@@ -27326,7 +27327,7 @@ class EverydayLife extends Model
 			} else {
 				$this->param['error'] = 'Please add Number of Words';
 			}
-			
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}else{
 			if($title != 'Empty' && $page2 != ''){
@@ -27369,7 +27370,7 @@ class EverydayLife extends Model
 				}
 			}
 			$this->param['counter'] = number_format($counter);
-			
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}
 	}
