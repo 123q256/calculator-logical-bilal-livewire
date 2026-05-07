@@ -3582,6 +3582,11 @@ class EverydayLife extends Model
 		$overtimeType = $request->overtimeType;
 		$h_over = $request->h_over;
 		$w_over = $request->w_over;
+
+		$weekly_salary = [];
+		$salaries = [];
+		$overtimes = [];
+
 		if (!empty($paytype) && !empty($status)) {
 			for ($i = 0; $i < count($paidtype); $i++) {
 				if ($paidtype[$i] === "hourly") {
@@ -25927,15 +25932,15 @@ class EverydayLife extends Model
 	// Average time Calculator
 	public function average($request)
 	{
-		$count_val = $request->input('count_val');
-		$inhour = $request->input('inhour');
-		$inminutes = $request->input('inminutes');
-		$inseconds = $request->input('inseconds');
-		$inmiliseconds = $request->input('inmiliseconds');
-		$checkbox1 = $request->input('checkbox1');
-		$checkbox2 = $request->input('checkbox2');
-		$checkbox3 = $request->input('checkbox3');
-		$checkbox4 = $request->input('checkbox4');
+		$count_val = $request->count_val;
+		$inhour = $request->inhour;
+		$inminutes = $request->inminutes;
+		$inseconds = $request->inseconds;
+		$inmiliseconds = $request->inmiliseconds;
+		$checkbox1 = $request->checkbox1;
+		$checkbox2 = $request->checkbox2;
+		$checkbox3 = $request->checkbox3;
+		$checkbox4 = $request->checkbox4;
 		function calc_time(array $times)
 		{
 			$i = 0;
