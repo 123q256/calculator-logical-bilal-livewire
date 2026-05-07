@@ -21,7 +21,7 @@
                     <div class="col-span-6">
                         <label for="paytype" class="label">{{ $lang['1'] ?? 'Pay Frequency' }}:</label>
                         <div class="w-full py-2">
-                            <select wire:model="paytype" id="paytype" class="input">
+                            <select wire:model.live="paytype" id="paytype" class="input">
                                 <option value="52">Weekly</option>
                                 <option value="26">Bi-Weekly</option>
                                 <option value="12">Monthly</option>
@@ -32,7 +32,7 @@
                     <div class="col-span-6">
                         <label for="status" class="label">Your Filing Status?</label>
                         <div class="w-full py-2">
-                            <select wire:model="status" id="status" class="input">
+                            <select wire:model.live="status" id="status" class="input">
                                 <option value="single">Single</option>
                                 <option value="married">Married</option>
                                 <option value="head_of_household">Head of the House</option>
@@ -59,7 +59,7 @@
                                 <div class="col-span-4">
                                     <p class="label">Gross Pay Method:</p>
                                     <div class="w-full py-2">
-                                        <select wire:model="paidRows.{{ $index }}.grosspay" class="input">
+                                        <select wire:model.live="paidRows.{{ $index }}.grosspay" class="input">
                                             <option value="per_year">Per Year</option>
                                             <option value="pay_period">Pay Per Period</option>
                                         </select>
@@ -69,7 +69,7 @@
                                 <div class="col-span-4">
                                     <p class="label">{{ $lang['3'] ?? 'Hours' }}:</p>
                                     <div class="w-full py-2 position-relative">
-                                        <input type="number" step="any" wire:model="paidRows.{{ $index }}.working" class="input" />
+                                        <input type="number" step="any" wire:model.live="paidRows.{{ $index }}.working" class="input" />
                                         <span class="text-blue input_unit">Hrs</span>
                                     </div>
                                 </div>
@@ -78,7 +78,7 @@
                             <div class="col-span-3">
                                 <p class="label">{{ $lang['2'] ?? 'Rate/Amount' }}:</p>
                                 <div class="w-full py-2 position-relative">
-                                    <input type="number" step="any" wire:model="paidRows.{{ $index }}.wage" class="input" />
+                                    <input type="number" step="any" wire:model.live="paidRows.{{ $index }}.wage" class="input" />
                                     <span class="text-blue input_unit">{{ $currancy }}</span>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                             <div class="col-span-4">
                                 <p class="label">Type:</p>
                                 <div class="w-full py-2">
-                                    <select wire:model="overtimeRows.{{ $index }}.type" class="input">
+                                    <select wire:model.live="overtimeRows.{{ $index }}.type" class="input">
                                         <option value="overtime">Overtime</option>
                                         <option value="doubletime">Double Time</option>
                                     </select>
@@ -117,14 +117,14 @@
                             <div class="col-span-4">
                                 <p class="label">{{ $lang['3'] ?? 'Hours' }}:</p>
                                 <div class="w-full py-2 position-relative">
-                                    <input type="number" step="any" wire:model="overtimeRows.{{ $index }}.hours" class="input" placeholder="0" />
+                                    <input type="number" step="any" wire:model.live="overtimeRows.{{ $index }}.hours" class="input" placeholder="0" />
                                     <span class="text-blue input_unit">Hrs</span>
                                 </div>
                             </div>
                             <div class="col-span-3">
                                 <p class="label">{{ $lang['2'] ?? 'Rate' }}:</p>
                                 <div class="w-full py-2 position-relative">
-                                    <input type="number" step="any" wire:model="overtimeRows.{{ $index }}.wage" class="input" placeholder="0" />
+                                    <input type="number" step="any" wire:model.live="overtimeRows.{{ $index }}.wage" class="input" placeholder="0" />
                                     <span class="text-blue input_unit">{{ $currancy }}</span>
                                 </div>
                             </div>
@@ -158,7 +158,7 @@
 
     @isset($detail)
         <hr>
-        <div id="result-section" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg mt-8 space-y-6">
+        <div id="result-section" wire:key="result-{{ $result_key }}" wire:loading.remove class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg mt-8 space-y-6">
             @if ($type == 'calculator')
                 @include('inc.copy-pdf')
             @endif
@@ -266,12 +266,13 @@
                     }
                  }" 
                  x-init="render()"
-                 @chart-updated.window="chartData = $event.detail; render()"
+                 @hourly-chart-updated.window="chartData = $event.detail; render()"
                  wire:ignore>
                 <div x-ref="canvas" class="w-full min-h-[400px]"></div>
             </div>
         </div>
     @endisset
 </div>
-
-<script src="https://code.highcharts.com/highcharts.js"></script>
+@push('calculatorJS')
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+@endpush

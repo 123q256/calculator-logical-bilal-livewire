@@ -981,9 +981,9 @@ class EverydayLife extends Model
 
 	public function water($request)
 	{
-		$from = $request->input('from');
-		$vol = $request->input('vol');
-		$temp = $request->input('temp');
+		$from = $request->from;
+		$vol = $request->vol;
+		$temp = $request->temp;
 
 		if (is_numeric($vol) && is_numeric($from) && is_numeric($temp)) {
 			$ans = (1.0E+16 / ($from / $vol)) * $temp;
@@ -1484,9 +1484,9 @@ class EverydayLife extends Model
 	// turky size calculator
 	public function turkey($request)
 	{
-		$adults = $request->input('adults');
-		$children = $request->input('children');
-		$leftovers = $request->input('leftovers');
+		$adults = $request->adults;
+		$children = $request->children;
+		$leftovers = $request->leftovers;
 		function convertToHoursMins($time, $format = '%02d hrs %02d mins')
 		{
 			if ($time < 1) {
@@ -4611,21 +4611,21 @@ class EverydayLife extends Model
 	 *******************/
 	public function log($request)
 	{
-		$category = $request->input('category');
-		$woodSelector = $request->input('woodSelector');
-		$small_end = $request->input('small_end');
-		$small_unit = $request->input('small_unit');
-		$large_end = $request->input('large_end');
-		$large_unit = $request->input('large_unit');
-		$length = $request->input('length');
-		$length_unit = $request->input('length_unit');
-		$stack_w = $request->input('stack_w');
-		$stackw_unit = $request->input('stackw_unit');
-		$stack_h = $request->input('stack_h');
-		$stackh_unit = $request->input('stackh_unit');
-		$custom = $request->input('custom');
-		$custom_unit = $request->input('custom_unit');
-		$submit = $request->input('submit');
+		$category = $request->category;
+		$woodSelector = $request->woodSelector;
+		$small_end = $request->small_end;
+		$small_unit = $request->small_unit;
+		$large_end = $request->large_end;
+		$large_unit = $request->large_unit;
+		$length = $request->length;
+		$length_unit = $request->length_unit;
+		$stack_w = $request->stack_w;
+		$stackw_unit = $request->stackw_unit;
+		$stack_h = $request->stack_h;
+		$stackh_unit = $request->stackh_unit;
+		$custom = $request->custom;
+		$custom_unit = $request->custom_unit;
+		$submit = $request->submit;
 		$woodSelector = str_replace('@', '', $woodSelector);
 
 		if (isset($submit)) {

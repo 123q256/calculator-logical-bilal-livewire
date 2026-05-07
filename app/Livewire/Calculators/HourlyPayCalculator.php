@@ -12,6 +12,7 @@ class HourlyPayCalculator extends Component
     public $type = 'calculator';
     public $lang = [];
     public $currancy = '$';
+    public $result_key = 1;
 
     // Form inputs
     public $paytype = '52';
@@ -39,6 +40,12 @@ class HourlyPayCalculator extends Component
             $this->paidRows = $inputs['paidRows'] ?? $this->paidRows;
             $this->overtimeRows = $inputs['overtimeRows'] ?? $this->overtimeRows;
         }
+    }
+
+    public function updated($propertyName)
+    {
+        $this->detail = null;
+        $this->error = null;
     }
 
     public function addPaidRow()
@@ -98,6 +105,9 @@ class HourlyPayCalculator extends Component
 
     public function calculate()
     {
+        $this->result_key++;
+        $this->detail = null;
+        $this->error = null;
         $paidtype = [];
         $working = [];
         $grosspay = [];
@@ -142,6 +152,9 @@ class HourlyPayCalculator extends Component
             ];
 
             $result['chartData'] = $chartData;
+            $this->detail = $result;
+            $this->error = null;
+
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', [
@@ -151,14 +164,11 @@ class HourlyPayCalculator extends Component
                 'overtimeRows' => $this->overtimeRows,
             ]);
 
-            $this->dispatch('chart-updated', $chartData);
+            $this->dispatch('hourly-chart-updated', $chartData);
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 return redirect()->to(url()->previous() ?? '/');
             }
-
-            $this->detail = $result;
-            $this->error = null;
         } else {
             $this->error = $result['error'] ?? 'Something went wrong.';
             session()->flash('validation_error', $this->error);
