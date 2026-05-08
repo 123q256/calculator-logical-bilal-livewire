@@ -42,10 +42,10 @@
         </div>
     </form>
 
-    @isset($detail)
-        <hr>
-        <div id="result-section" wire:loading.remove wire:target="calculate" wire:key="result-{{ $result_key }}" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result mt-8">
-            <div class="">
+     @isset($detail)
+            <hr>
+            <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
+                <div class="">
                 @if ($type == 'calculator')
                     @include('inc.copy-pdf')
                 @endif

@@ -1,22 +1,16 @@
 <?php
 
 namespace App\Livewire\Calculators;
-
-use App\Models\EverydayLife;
+use App\Models\Statistics;
 use Livewire\Component;
 
-class TurkeySizeCalculator extends Component
+class MeanMedianModeRangeCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $result_key = 1;
-
-    // Inputs
-    public $adults = 4;
-    public $children = 4;
-    public $leftovers = 'no';
+    public $x;
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -27,25 +21,15 @@ class TurkeySizeCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->adults = $inputs->adults ?? 4;
-            $this->children = $inputs->children ?? 4;
-            $this->leftovers = $inputs->leftovers ?? 'no';
+            $this->x = $inputs['x'] ?? null;
         }
-    }
-
-    public function updated($propertyName)
-    {
-        $this->detail = null;
-        $this->error = null;
     }
 
     public function resetForm()
     {
         $this->error = null;
         $this->detail = null;
-        $this->adults = 4;
-        $this->children = 4;
-        $this->leftovers = 'no';
+        $this->x = null;
 
         session()->forget([
             'calculator_back_inputs',
@@ -54,54 +38,62 @@ class TurkeySizeCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-            return redirect()->to(url()->previous() ?? '/');
-        }
+          if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                return redirect()->to(url()->previous() ?? '/');
+            }
     }
 
     public function calculate()
     {
-        $this->result_key++;
-        $this->detail = null;
-        $this->error = null;
-
         $request = (object)[
-            'adults' => $this->adults,
-            'children' => $this->children,
-            'leftovers' => $this->leftovers,
+            'x' => $this->x,
         ];
 
-        $model = new EverydayLife();
-        $result = $model->turkey($request);
-
+        $model = new Statistics();
+        $result = $model->mean($request);
+        
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
-
             session()->flash('calculator_result', $result);
-            session()->flash('calculator_back_inputs', $request);
             session()->flash('scroll_to_result', true);
+            session()->flash('calculator_back_inputs', (array)$request);
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 return redirect()->to(url()->previous() ?? '/');
             }
-        }
-    }
-    
-    public function render()
-    {
-        if (session('scroll_to_result')) {
-            $this->js(<<<'JS'
+
+            $this->js(sprintf(<<<'JS'
                 setTimeout(() => {
+                    window.dispatchEvent(new CustomEvent('render-graph', { detail: %s }));
                     const el = document.getElementById('result-section');
                     if (el) {
                         const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
                         window.scrollTo({ top: offset, behavior: 'smooth' });
                     }
-                }, 100);
-            JS);
+                }, 400);
+            JS, json_encode($this->detail)));
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            session()->flash('validation_error', $this->error);
+            $this->detail = null;
+            
+            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                return redirect()->to(url()->previous() ?? '/');
+            }
         }
-        return view('livewire.calculators.turkey-size-calculator');
+    }
 
+
+    public function render()
+    {
+        if (session('scroll_to_result') && env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            $this->js(sprintf(<<<'JS'
+                $nextTick(() => {
+                    window.dispatchEvent(new CustomEvent('render-graph', { detail: %s }));
+                });
+            JS, json_encode($this->detail)));
+        }
+        return view('livewire.calculators.mean-median-mode-range-calculator');
     }
 }

@@ -24,13 +24,13 @@
                 <div class="space-y-2">
                     <label for="nbr1" class="font-s-14 text-blue">{{ $lang['no_out'] }}:</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="1" name="nbr1" id="nbr1" wire:model="nbr1" class="input" aria-label="input" placeholder="00" />
+                        <input type="number" step="any" min="1" name="nbr1" id="nbr1" wire:model.live="nbr1" class="input" aria-label="input" placeholder="00" />
                     </div>
                 </div>
                 <div class="space-y-2">
                     <label for="event" class="font-s-14 text-blue">{{ $lang['no_events'] }}:</label>
                     <div class="w-100 py-2">
-                        <input type="number" name="event" id="event" wire:model="event" class="input" aria-label="input" placeholder="00" />
+                        <input type="number" name="event" id="event" wire:model.live="event" class="input" aria-label="input" placeholder="00" />
                     </div>
                 </div>
             </div>
@@ -38,19 +38,19 @@
                 <div class="space-y-2">
                     <label for="nbr2" class="font-s-14 text-blue">{{ $lang['no_out_n'] }}:</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="1" name="nbr2" id="nbr2" wire:model="nbr2" class="input" aria-label="input" placeholder="00" />
+                        <input type="number" step="any" min="1" name="nbr2" id="nbr2" wire:model.live="nbr2" class="input" aria-label="input" placeholder="00" />
                     </div>
                 </div>
                 <div class="space-y-2">
                     <label for="event_a" class="font-s-14 text-blue">{{ $lang['no_out_a'] }}:</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="1" name="event_a" id="event_a" wire:model="event_a" class="input" aria-label="input" placeholder="00" />
+                        <input type="number" step="any" min="1" name="event_a" id="event_a" wire:model.live="event_a" class="input" aria-label="input" placeholder="00" />
                     </div>
                 </div>
                 <div class="space-y-2">
                     <label for="event_b" class="font-s-14 text-blue">{{ $lang['no_out_b'] }}:</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="1" name="event_b" id="event_b" wire:model="event_b" class="input" aria-label="input" placeholder="00" />
+                        <input type="number" step="any" min="1" name="event_b" id="event_b" wire:model.live="event_b" class="input" aria-label="input" placeholder="00" />
                     </div>
                 </div>
             </div>
@@ -68,13 +68,13 @@
                 <div class="space-y-2">
                     <label for="pro_a" class="font-s-14 text-blue">{{ $lang['pro_of'] }} P(A)</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="0" max="1" name="pro_a" id="pro_a" wire:model="pro_a" class="input" aria-label="input" placeholder="values between 0 and 1" />
+                        <input type="number" step="any" min="0" max="1" name="pro_a" id="pro_a" wire:model.live="pro_a" class="input" aria-label="input" placeholder="values between 0 and 1" />
                     </div>
                 </div>
                 <div class="space-y-2">
                     <label for="pro_b" class="font-s-14 text-blue">{{ $lang['pro_of'] }} P(B)</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="0" max="1" name="pro_b" id="pro_b" wire:model="pro_b" class="input" aria-label="input" placeholder="values between 0 and 1" />
+                        <input type="number" step="any" min="0" max="1" name="pro_b" id="pro_b" wire:model.live="pro_b" class="input" aria-label="input" placeholder="values between 0 and 1" />
                     </div>
                 </div>
 
@@ -90,12 +90,12 @@
                         <td class="pe-1"><label for="rep_a" class="font-s-14 text-blue"><?=$lang['event']?>&nbsp;A</label></td>
                         <td class="pe-1">
                             <div class="w-100 py-1">
-                                <input type="number" step="any" min="0" max="1" name="eve_a" id="eve_a" wire:model="eve_a" class="input" aria-label="input" placeholder="e.g. 0.0632" />
+                                <input type="number" step="any" min="0" max="1" name="eve_a" id="eve_a" wire:model.live="eve_a" class="input" aria-label="input" placeholder="e.g. 0.0632" />
                             </div>
                         </td>
                         <td class="ps-1">
                             <div class="w-100 py-1">
-                                <input type="number" step="any" min="1" name="rep_a" id="rep_a" wire:model="rep_a" class="input" aria-label="input" placeholder="00" />
+                                <input type="number" step="any" min="1" name="rep_a" id="rep_a" wire:model.live="rep_a" class="input" aria-label="input" placeholder="00" />
                             </div>
                         </td>
                     </tr>
@@ -103,12 +103,12 @@
                         <td class="pe-1"><label for="rep_b" class="font-s-14 text-blue"><?=$lang['event']?>&nbsp;B</label></td>
                         <td class="pe-1">
                             <div class="w-100 py-1">
-                                <input type="number" step="any" min="0" max="1" name="eve_b" id="eve_b" wire:model="eve_b" class="input" aria-label="input" placeholder="e.g. 0.0341" />
+                                <input type="number" step="any" min="0" max="1" name="eve_b" id="eve_b" wire:model.live="eve_b" class="input" aria-label="input" placeholder="e.g. 0.0341" />
                             </div>
                         </td>
                         <td class="ps-1">
                             <div class="w-100 py-1">
-                                <input type="number" step="any" min="1" name="rep_b" id="rep_b" wire:model="rep_b" class="input" aria-label="input" placeholder="00" />
+                                <input type="number" step="any" min="1" name="rep_b" id="rep_b" wire:model.live="rep_b" class="input" aria-label="input" placeholder="00" />
                             </div>
                         </td>
                     </tr>
@@ -118,13 +118,13 @@
                 <div class="space-y-2">
                     <label for="andb" class="font-s-14 text-blue">P(A and B)</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="0" name="andb" id="andb" wire:model="andb" class="input" aria-label="input" placeholder="00" />
+                        <input type="number" step="any" min="0" name="andb" id="andb" wire:model.live="andb" class="input" aria-label="input" placeholder="00" />
                     </div>
                 </div>
                 <div class="space-y-2">
                     <label for="prob_b" class="font-s-14 text-blue">P(B)</label>
                     <div class="w-100 py-2">
-                        <input type="number" step="any" min="0" name="prob_b" id="prob_b" wire:model="prob_b" class="input" aria-label="input" placeholder="00" />
+                        <input type="number" step="any" min="0" name="prob_b" id="prob_b" wire:model.live="prob_b" class="input" aria-label="input" placeholder="00" />
                     </div>
                 </div>
             </div>

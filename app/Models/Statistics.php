@@ -11,7 +11,6 @@ class Statistics extends Model
 
 	function probability($request)
 	{
-		// dd($request->all());
 		if ($request->for == '1') {
 			if (is_numeric($request->nbr1) && is_numeric($request->event)) {
 				$nbr1 = $request->nbr1;
@@ -623,8 +622,12 @@ class Statistics extends Model
 			}
 			function interpolate($array, $position)
 			{
-				$floor_index = floor($position) - 1;
-				$ceil_index = ceil($position) - 1;
+				$count = count($array);
+				if ($position <= 1) return $array[0];
+				if ($position >= $count) return $array[$count - 1];
+
+				$floor_index = (int)floor($position) - 1;
+				$ceil_index = (int)ceil($position) - 1;
 
 				if ($floor_index == $ceil_index) {
 					return $array[$floor_index];
@@ -641,8 +644,6 @@ class Statistics extends Model
 			$Q3 = interpolate($numbers, $Q3_position);
 			// Calculate IQR (Interquartile Range)
 			$IQR = $Q3 - $Q1;
-
-			// dd($Q1,$Q3,$IQR);
 
 			$m_array = array_count_values($numbers);
 			$m_max = max($m_array);
@@ -809,12 +810,10 @@ class Statistics extends Model
 				$type = 'percentage';
 			}
 		}
-		// dd($type);
 		if ($check == true) {
 			sort($numbers);
 			$last_index = count($numbers) - 1;
 			$sol = "(";
-			// dd($type);
 			if ($type == 'number') {
 				foreach ($numbers as $key => $value) {
 					if ($key != $last_index) {
@@ -842,7 +841,6 @@ class Statistics extends Model
 					}
 				}
 				$geo = round((pow($pro, (1 / count($numbers))) - 1) * 100, 4);
-				// dd($geo);
 				$this->param['textline'] = "aa gai value";
 				$this->param['sol1'] = $sol1;
 				$this->param['pro'] = $pro;
@@ -1572,7 +1570,6 @@ class Statistics extends Model
 
 	public function expected($request)
 	{
-		// dd($request->all());
 		if ($request->check == 'txtar') {
 			$check = true;
 			if (empty($request->xx) || empty($request->px)) {
@@ -1596,7 +1593,6 @@ class Statistics extends Model
 			// $numbers1 = array_map('trim', array_filter(explode(',', $x1), function($value) {
 			// 	return $value !== '';
 			// }));
-			// dd($numbers,$numbers1);
 			foreach ($numbers as $value) {
 				if (!is_numeric($value)) {
 					$check = false;
@@ -1648,8 +1644,6 @@ class Statistics extends Model
 					$this->param['sum2'] = $sum2;
 					$this->param['ress'] = $ress;
 					$this->param['RESULT'] = 1;
-                     dd($this->param);
-
 					return $this->param;
 				} else {
 					$this->param['error'] = "X and P(X) must have same number of elements.";
@@ -1711,8 +1705,6 @@ class Statistics extends Model
 				$this->param['ress'] = $ress;
 
 				$this->param['RESULT'] = 1;
-                   dd($this->param);
-
 				return $this->param;
 			} else {
 				$this->param['error'] = "X and P(X) must have same number of elements.";
@@ -1852,7 +1844,6 @@ class Statistics extends Model
 			$this->param['error'] = "r needs to be less than or equal to n";
 			return $this->param;
 		}
-		// dd($this->param);
 	}
 
 	public function permutation($request)
@@ -4562,7 +4553,6 @@ class Statistics extends Model
 
 	public function degrees($request)
 	{
-		//  dd($request->all());
 		$sample_size = $request->sample_size;
 		$sample_size_one = $request->sample_size_one;
 		$sample_size_two = $request->sample_size_two;
@@ -5250,7 +5240,6 @@ class Statistics extends Model
 				return $this->param;
 			} else {
 				$words1 = preg_replace("/[^a-zA-Z0-9]+/", " ", $input);
-				// dd($words1);
 				$alphabets = preg_replace("/[^a-zA-Z]+/", "", $input);
 				$null_space = str_replace(' ', '', $input);
 				$count_wrd = explode(" ", $words1);
@@ -5265,7 +5254,6 @@ class Statistics extends Model
 				$answer_jg = $add_nums;
 				$answer_eg = $add_nums;
 				$answer_h = $add_nums;
-				// dd('else');
 				$small = strtolower($input);
 				$null_space = str_replace(' ', '', $small);
 				$alphabets = preg_replace("/[^a-zA-Z]+/", "", $null_space);
@@ -5278,7 +5266,6 @@ class Statistics extends Model
 				$sum_num = array_sum($num_agye);
 				$array_agai = str_split($alphabets);
 				$nawa = explode(' ', $small);
-				// dd('sdfs');
 				foreach ($nawa as  $value) {
 					$inner_alpha[] = str_split(trim($value));
 				}
@@ -5315,8 +5302,6 @@ class Statistics extends Model
 				$this->param['inner_sum_jg'] = $inner_sum_jg;
 				$this->param['inner_sum_eg'] = $inner_sum_eg;
 				$this->param['inner_sum_h'] = $inner_sum_h;
-				// dd($sum_num);
-
 				for ($i = 0; $i < count($array_agai); $i++) {
 					$value = $array_agai[$i];
 					$sum_eo[] = $English_Ordinal[$value];
@@ -5334,7 +5319,6 @@ class Statistics extends Model
 				// $answer_jg = array_sum($sum_jg) + $sum_num;
 				// $answer_eg = array_sum($sum_eg) + $sum_num;
 				// $answer_h = array_sum($sum_h) + $sum_num;
-				// dd('s');
 
 				// if(preg_match("/[^a-zA-Z]+/", $input) && preg_match('/\d/', $input)){
 				if (preg_match('/\d/', $input)) {
@@ -9989,7 +9973,6 @@ class Statistics extends Model
 	}
 	public function test($request)
 	{
-		//  dd($request->all());
 		// check condition
 		$test_radio = $request->test_radio;
 		// section 1
@@ -10792,7 +10775,6 @@ class Statistics extends Model
 	}
 	public function anova($request)
 	{
-		//  dd($request->all());
 		$submit = $request->type;
 		if ($submit === 'one_way') {
 			$k = $request->k;

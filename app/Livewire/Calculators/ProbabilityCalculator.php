@@ -49,6 +49,12 @@ class ProbabilityCalculator extends Component
         }
     }
 
+    public function updated($propertyName)
+    {
+        $this->detail = null;
+        $this->error = null;
+    }
+
     public function resetForm(): void
     {
         $this->reset([
@@ -58,9 +64,8 @@ class ProbabilityCalculator extends Component
         $this->resetErrorBag();
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error']);
+        }
     }
-
-
 
     public function calculate()
     {
@@ -84,14 +89,43 @@ class ProbabilityCalculator extends Component
 
         $model  = new \App\Models\Statistics();
         $result = $model->probability($request);
-         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
-            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
 
-            session()->flash('calculator_result', $result);
-            session()->flash('calculator_back_inputs', $request);
-                                      $this->js(<<<'JS'
+                  session()->flash('calculator_result', $result);
+            session()->flash('calculator_back_inputs', (array)$request);
+            session()->flash('scroll_to_result', true);
+
+            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                return redirect()->to(url()->previous() ?? '/');
+            }
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+     
+        } else {
+            $this->error = $result['error'] ?? 'Something went wrong.';
+            $this->detail = null;
+
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('validation_error', $this->error);
+                return redirect()->to(url()->previous() ?? '/');
+            }
+        }
+    }
+
+    public function render()
+    {
+        if (session()->has('calculator_result') && env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            $this->js(<<<'JS'
                 $nextTick(() => {
                     const el = document.getElementById('result-section');
                     if (el) {
@@ -100,31 +134,8 @@ class ProbabilityCalculator extends Component
                     }
                 });
             JS);
-                return;
-           //return redirect()->to(url()->previous() ?? '/');
-        } // fallback if referer not available
-                    } else {
-                $this->js(<<<'JS'
-                    setTimeout(() => {
-                        const el = document.getElementById('result-section');
-                        if (el) {
-                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
-                            window.scrollTo({ top: offset, behavior: 'smooth' });
-                        }
-                    }, 100);
-                JS);
-            }
         }
-        // dd($result);
-         $this->error = $result['error'] ?? 'Something went wrong.';
-        $this->detail = null;
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-        session()->flash('validation_error', $this->error);            return redirect()->to(url()->previous() ?? '/');
-        }
-    }
 
-    public function render()
-    {
         return view('livewire.calculators.probability-calculator');
     }
 }
