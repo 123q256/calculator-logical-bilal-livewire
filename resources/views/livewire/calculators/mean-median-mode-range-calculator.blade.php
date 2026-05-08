@@ -135,30 +135,57 @@
                                     
                                     if (!this.detail || !this.detail.numbers) return;
 
+                                    const N = this.detail.numbers.length;
+                                    const M = this.detail.mode.length;
+                                    const total = N + 2 + M;
+
+                                    const valueData = new Array(total).fill(null);
+                                    this.detail.numbers.forEach((n, i) => valueData[i] = parseFloat(n));
+
+                                    const meanData = new Array(total).fill(null);
+                                    meanData[N] = parseFloat(this.detail.average);
+
+                                    const medianData = new Array(total).fill(null);
+                                    medianData[N + 1] = parseFloat(this.detail.median);
+
+                                    const modeData = new Array(total).fill(null);
+                                    this.detail.mode.forEach((m, i) => modeData[N + 2 + i] = parseFloat(m));
+
+                                    const categories = [
+                                        ...this.detail.numbers.map(n => n.toString()),
+                                        "Mean",
+                                        "Median",
+                                        ...this.detail.mode.map(m => "Mode")
+                                    ];
+
                                     // Bar Chart
                                     Highcharts.chart(this.$refs.barChart, {
-                                        chart: { type: "column", backgroundColor: "transparent" },
-                                        title: { text: "Mean, Median, and Mode", style: { color: "#2845F5", fontWeight: "bold" } },
-                                        xAxis: { categories: [...this.detail.numbers.map(n => n.toString()), "Mean", "Median", ...this.detail.mode.map(m => "Mode ("+m+")")] },
-                                        yAxis: { title: { text: "Value" } },
-                                        series: [{
-                                            name: "Values",
-                                            data: [
-                                                ...this.detail.numbers.map(n => ({ y: parseFloat(n), color: "#2845F5" })),
-                                                { y: parseFloat(this.detail.average), color: "#FFA500" },
-                                                { y: parseFloat(this.detail.median), color: "#FF0000" },
-                                                ...this.detail.mode.map(m => ({ y: parseFloat(m), color: "#008000" }))
-                                            ]
-                                        }],
-                                        credits: { enabled: false }
+                                        chart: { type: "column", backgroundColor: "transparent", zoomType: "xy" },
+                                        title: { text: "Column Chart of Input Values", style: { color: "#2845F5", fontWeight: "bold" } },
+                                        xAxis: { categories: categories },
+                                        yAxis: { title: { text: "" } },
+                                        plotOptions: { 
+                                            column: { 
+                                                grouping: false,
+                                                dataLabels: { enabled: true }
+                                            } 
+                                        },
+                                        series: [
+                                            { name: "Value", color: "blue", data: valueData },
+                                            { name: "Mean", color: "orange", data: meanData },
+                                            { name: "Median", color: "red", data: medianData },
+                                            { name: "Mode", color: "green", data: modeData }
+                                        ],
+                                        credits: { enabled: false },
+                                        exporting: { enabled: true }
                                     });
 
                                     // Box Plot
                                     Highcharts.chart(this.$refs.boxPlot, {
-                                        chart: { type: "boxplot", backgroundColor: "transparent" },
-                                        title: { text: "Box and Whisker Plot", style: { color: "#2845F5", fontWeight: "bold" } },
-                                        xAxis: { categories: ["Data Set"], title: { text: null } },
-                                        yAxis: { title: { text: "Values" } },
+                                        chart: { type: "boxplot", backgroundColor: "transparent", zoomType: "xy" },
+                                        title: { text: "Box And Whisker Plot", style: { color: "#2845F5", fontWeight: "bold" } },
+                                        xAxis: { categories: ["boxAndWhisker"], title: { text: null } },
+                                        yAxis: { title: { text: "" } },
                                         series: [{
                                             name: "Distribution",
                                             data: [
@@ -170,9 +197,12 @@
                                                     Math.max(...this.detail.numbers.map(n => parseFloat(n)))
                                                 ]
                                             ],
-                                            tooltip: { headerFormat: "<em>{point.key}</em><br/>" }
+                                            tooltip: { headerFormat: "<em>{point.key}</em><br/>" },
+                                            color: "#20c997",
+                                            fillColor: "#20c997"
                                         }],
-                                        credits: { enabled: false }
+                                        credits: { enabled: false },
+                                        exporting: { enabled: true }
                                     });
                                 }
                              }' 
@@ -195,6 +225,9 @@
 @push('calculatorJS')
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 @endpush
 
 </div>
