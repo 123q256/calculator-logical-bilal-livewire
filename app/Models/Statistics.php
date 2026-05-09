@@ -8011,17 +8011,25 @@ class Statistics extends Model
 			if (is_numeric($decile_pos) && floor($decile_pos) != $decile_pos) {
 				$floor_val = floor($decile_pos);
 				$ceil_val = ceil($decile_pos);
-				$list_floor_val = $ans_list[($floor_val - 1)];
-				$list_ceil_val = $ans_list[($ceil_val - 1)];
+				
+				// Boundary checks
+				$idx_floor = max(0, min($total_values - 1, $floor_val - 1));
+				$idx_ceil = max(0, min($total_values - 1, $ceil_val - 1));
+				
+				$list_floor_val = $ans_list[$idx_floor];
+				$list_ceil_val = $ans_list[$idx_ceil];
+				
 				$floor_minus = $decile_pos - $floor_val;
 				$main_ans = $list_floor_val + $floor_minus * ($list_ceil_val - $list_floor_val);
+				
 				$this->param['floor_val'] = $floor_val;
 				$this->param['ceil_val'] = $ceil_val;
 				$this->param['list_floor_val'] = $list_floor_val;
 				$this->param['list_ceil_val'] = $list_ceil_val;
 				$this->param['floor_minus'] = $floor_minus;
 			} else {
-				$main_ans = $ans_list[($decile_pos - 1)];
+				$idx = max(0, min($total_values - 1, intval($decile_pos) - 1));
+				$main_ans = $ans_list[$idx];
 			}
 		} else {
 			$this->param['error'] = "Please! Check Your Input";
