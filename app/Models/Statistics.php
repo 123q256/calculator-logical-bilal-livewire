@@ -10007,458 +10007,137 @@ class Statistics extends Model
 
 		return $this->param;
 	}
+
 	public function test($request)
 	{
-		// check condition
+		if (!function_exists('log_gamma_test')) {
+			function log_gamma_test($x) {
+				$cof = [76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.001208650973866179, -0.000005395239384953];
+				$y = $x; $tmp = $x + 5.5; $tmp -= ($x + 0.5) * log($tmp); $ser = 1.000000000190015;
+				for ($j = 0; $j < 6; $j++) $ser += $cof[$j] / ++$y;
+				return -$tmp + log(2.5066282746310005 * $ser / $x);
+			}
+		}
+		if (!function_exists('beta_cf_test')) {
+			function beta_cf_test($x, $a, $b) {
+				$MAXIT = 100; $EPS = 3.0e-7; $FPMIN = 1.0e-30;
+				$qab = $a + $b; $qap = $a + 1; $qam = $a - 1; $c = 1; $d = 1 - $qab * $x / $qap;
+				if (abs($d) < $FPMIN) $d = $FPMIN; $d = 1 / $d; $h = $d;
+				for ($m = 1; $m <= $MAXIT; $m++) {
+					$m2 = 2 * $m;
+					$aa = $m * ($b - $m) * $x / (($qam + $m2) * ($a + $m2));
+					$d = 1 + $aa * $d; if (abs($d) < $FPMIN) $d = $FPMIN;
+					$c = 1 + $aa / $c; if (abs($c) < $FPMIN) $c = $FPMIN;
+					$d = 1 / $d; $h *= $d * $c;
+					$aa = -($a + $m) * ($qab + $m) * $x / (($a + $m2) * ($qap + $m2));
+					$d = 1 + $aa * $d; if (abs($d) < $FPMIN) $d = $FPMIN;
+					$c = 1 + $aa / $c; if (abs($c) < $FPMIN) $c = $FPMIN;
+					$d = 1 / $d; $h *= $d * $c;
+					if (abs($d * $c - 1) < $EPS) break;
+				}
+				return $h;
+			}
+		}
+		if (!function_exists('beta_inc_test')) {
+			function beta_inc_test($x, $a, $b) {
+				if ($x == 0 || $x == 1) return $x;
+				$bt = exp(log_gamma_test($a + $b) - log_gamma_test($a) - log_gamma_test($b) + $a * log($x) + $b * log(1 - $x));
+				if ($x < ($a + 1) / ($a + $b + 2)) return $bt * beta_cf_test($x, $a, $b) / $a;
+				return 1 - $bt * beta_cf_test(1 - $x, $b, $a) / $b;
+			}
+		}
+		if (!function_exists('t_dist_test')) {
+			function t_dist_test($t, $df) {
+				if ($df <= 0) return 1;
+				$x = $df / ($t * $t + $df);
+				return beta_inc_test($x, 0.5 * $df, 0.5);
+			}
+		}
+		$this->param = [];
 		$test_radio = $request->test_radio;
-		// section 1
-		$row_data = $$request->row_data;
-		$row_data1 = $$request->row_data1;
-		// section 2
-		// Group One Data
-		$mean1 = $request->mean;
-		$sem1 = $request->sem;
-		$n1 = $request->n;
-		// Group Two Data
-		$mean2 = $request->mean1;
-		$sem2 = $request->sem1;
-		$n2 = $request->n1;
-		// section 2
-		$mean_sec = $request->mean_sec;
-		$sd_sec = $request->sd_sec;
-		$n_sec = $request->n_sec;
-		$mean_sec1 = $request->mean_sec1;
-		$sd_sec1 = $request->sd_sec1;
-		$n_sec2 = $request->n_sec2;
 
-		function standardDeviation($array)
-		{
-			$n = count($array);
-			if ($n === 0) {
-				return 0;
-			}
-			$mean = array_sum($array) / $n;
-			$variance = 0.0;
-			foreach ($array as $i) {
-				$variance += pow($i - $mean, 2);
-			}
-			$variance /= $n;
-			return sqrt($variance);
-		}
-		function convertToArray($string)
-		{
-			$values = preg_split('/\s+/', trim($string));
-			return array_map('intval', $values);
-		}
-
-		if ($request->test_radio == "data") {
+		if ($test_radio == "data") {
 			if (!empty($request->row_data) && !empty($request->row_data1)) {
+				$group1 = array_filter(array_map('trim', explode("\n", $request->row_data)));
+				$group1 = array_map('floatval', $group1);
+				$group2 = array_filter(array_map('trim', explode("\n", $request->row_data1)));
+				$group2 = array_map('floatval', $group2);
 
-				// Given data
-				// Clean up the string and convert it into an array
-				$data_array = array_filter(array_map('trim', explode("\n", $request->row_data)));
-				$data_array = array_map('intval', $data_array);
+				if (count($group1) < 2 || count($group2) < 2) {
+					$this->param['error'] = "Each group must have at least 2 values.";
+					return $this->param;
+				}
 
-				$data_array1 = array_filter(array_map('trim', explode("\n", $request->row_data1)));
-				$data_array1 = array_map('intval', $data_array1);
-
-				$group1 = $data_array;
-				$group2 = $data_array1;
-				// Calculations for Group One
-				$mean1 = array_sum($group1) / count($group1);
-				$sd1 = sqrt(array_sum(array_map(function ($x) use ($mean1) {
-					return pow($x - $mean1, 2);
-				}, $group1)) / (count($group1) - 1));
-				$sem1 = $sd1 / sqrt(count($group1));
 				$n1 = count($group1);
-
-				// Calculations for Group Two
-				$mean2 = array_sum($group2) / count($group2);
-				$sd2 = sqrt(array_sum(array_map(function ($x) use ($mean2) {
-					return pow($x - $mean2, 2);
-				}, $group2)) / (count($group2) - 1));
-				$sem2 = $sd2 / sqrt(count($group2));
 				$n2 = count($group2);
-
-				// Degrees of Freedom (df)
+				$mean1 = array_sum($group1) / $n1;
+				$mean2 = array_sum($group2) / $n2;
+				$sd1 = sqrt(array_sum(array_map(function ($x) use ($mean1) { return pow($x - $mean1, 2); }, $group1)) / ($n1 - 1));
+				$sd2 = sqrt(array_sum(array_map(function ($x) use ($mean2) { return pow($x - $mean2, 2); }, $group2)) / ($n2 - 1));
+				$sem1 = $sd1 / sqrt($n1);
+				$sem2 = $sd2 / sqrt($n2);
 				$df = $n1 + $n2 - 2;
-
-				// Pooled Variance
-				$variance1 = $sd1 * $sd1;
-				$variance2 = $sd2 * $sd2;
-				$pooledVariance = ((($n1 - 1) * $variance1) + (($n2 - 1) * $variance2)) / $df;
-
-				// Standard Error of the Difference
+				$pooledVariance = (($n1 - 1) * $sd1 * $sd1 + ($n2 - 1) * $sd2 * $sd2) / $df;
 				$standardError = sqrt($pooledVariance * (1 / $n1 + 1 / $n2));
-				// t-Value
-				$tValue = ($mean1 - $mean2) / $standardError;
-				$tValue = abs($tValue);
+				$tValue = $standardError != 0 ? abs($mean1 - $mean2) / $standardError : 0;
+				$pValue = t_dist_test($tValue, $df);
 
-				// Function to calculate the p-value
-				function t_dist($t, $df)
-				{
-					$x = $df / ($t * $t + $df);
-					$a = 0.5 * beta_inc($x, 0.5 * $df, 0.5);
-					return 2 * $a;
-				}
-
-				// Beta incomplete function approximation
-				function beta_inc($x, $a, $b)
-				{
-					$bt = ($x == 0 || $x == 1) ? 0 : exp(log_gamma($a + $b) - log_gamma($a) - log_gamma($b) + $a * log($x) + $b * log(1 - $x));
-					if ($x < 0.5) {
-						return $bt * beta_cf($x, $a, $b) / $a;
-					} else {
-						return 1 - $bt * beta_cf(1 - $x, $b, $a) / $b;
-					}
-				}
-
-				// Beta continued fraction approximation
-				function beta_cf($x, $a, $b)
-				{
-					$MAXIT = 100;
-					$EPS = 3.0e-7;
-					$FPMIN = 1.0e-30;
-					$m2;
-					$aa;
-					$c;
-					$d;
-					$del;
-					$h;
-					$qab = $a + $b;
-					$qap = $a + 1;
-					$qam = $a - 1;
-					$c = 1;
-					$d = 1 - $qab * $x / $qap;
-					if (abs($d) < $FPMIN) $d = $FPMIN;
-					$d = 1 / $d;
-					$h = $d;
-					for ($m = 1; $m <= $MAXIT; $m++) {
-						$m2 = 2 * $m;
-						$aa = $m * ($b - $m) * $x / (($qam + $m2) * ($a + $m2));
-						$d = 1 + $aa * $d;
-						if (abs($d) < $FPMIN) $d = $FPMIN;
-						$c = 1 + $aa / $c;
-						if (abs($c) < $FPMIN) $c = $FPMIN;
-						$d = 1 / $d;
-						$h *= $d * $c;
-						$aa = - ($a + $m) * ($qab + $m) * $x / (($a + $m2) * ($qap + $m2));
-						$d = 1 + $aa * $d;
-						if (abs($d) < $FPMIN) $d = $FPMIN;
-						$c = 1 + $aa / $c;
-						if (abs($c) < $FPMIN) $c = $FPMIN;
-						$d = 1 / $d;
-						$del = $d * $c;
-						$h *= $del;
-						if (abs($del - 1) < $EPS) break;
-					}
-					return $h;
-				}
-
-				// Log gamma function approximation
-				function log_gamma($x)
-				{
-					$cof = [
-						76.18009172947146,
-						-86.50532032941677,
-						24.01409824083091,
-						-1.231739572450155,
-						0.001208650973866179,
-						-0.000005395239384953
-					];
-					$y = $x;
-					$tmp = $x + 5.5;
-					$tmp -= ($x + 0.5) * log($tmp);
-					$ser = 1.000000000190015;
-					for ($j = 0; $j < 6; $j++) {
-						$ser += $cof[$j] / ++$y;
-					}
-					return -$tmp + log(2.5066282746310005 * $ser / $x);
-				}
-
-				$pValue = t_dist($tValue, $df);
-
-				// Store the results
-				$this->param['mean1'] = $mean1;
-				$this->param['mean2'] = $mean2;
-				$this->param['sd1'] = $sd1;
-				$this->param['sd2'] = $sd2;
-				$this->param['sem1'] = $sem1;
-				$this->param['sem2'] = $sem2;
-				$this->param['n1'] = $n1;
-				$this->param['n2'] = $n2;
-				$this->param['df'] = $df;
-				$this->param['tValue'] = $tValue;
-				$this->param['standardError'] = $standardError;
-				$this->param['variance1'] = $variance1;
-				$this->param['variance2'] = $variance2;
-				$this->param['pooledVariance'] = $pooledVariance;
-				$this->param['pValue'] = $pValue;
-			} else {
-				$this->param['error'] = "Please! Check Your Input";
+				$this->param = array_merge($this->param, [
+					'mean1' => $mean1, 'mean2' => $mean2, 'sd1' => $sd1, 'sd2' => $sd2,
+					'sem1' => $sem1, 'sem2' => $sem2, 'n1' => $n1, 'n2' => $n2,
+					'df' => $df, 'tValue' => $tValue, 'standardError' => $standardError,
+					'pValue' => $pValue, 'RESULT' => 1, 'test_radio' => $test_radio
+				]);
 				return $this->param;
 			}
-		} else if ($request->test_radio == "sem") {
-			if (is_numeric($mean1) && is_numeric($sem1) && is_numeric($n1) && is_numeric($mean2) && is_numeric($sem2) && is_numeric($n2)) {
-				// Calculate Variances from SEM
-				$variance1 = ($sem1 ** 2) * $n1;
-				$variance2 = ($sem2 ** 2) * $n2;
-				// Calculate Standard Deviations from Variances
-				$sd1 = sqrt($variance1);
-				$sd2 = sqrt($variance2);
-				// Calculate SEM from SD
-				$sem1_calculated = $sd1 / sqrt($n1);
-				$sem2_calculated = $sd2 / sqrt($n2);
-				// Pooled Variance
-				$pooledVariance = (($n1 - 1) * $variance1 + ($n2 - 1) * $variance2) / ($n1 + $n2 - 2);
-				// Standard Error of the Difference
-				$standardError = sqrt($pooledVariance * (1 / $n1 + 1 / $n2));
-				// T-Value
-				$tValue = ($mean1 - $mean2) / $standardError;
-				// Make tValue positive
-				$tValue = abs($tValue);
-				// Calculate Degrees of Freedom
-				$numerator = ($variance1 / $n1 + $variance2 / $n2) ** 2;
-				$denominator = (($variance1 / $n1) ** 2 / ($n1 - 1)) + (($variance2 / $n2) ** 2 / ($n2 - 1));
-				// $df = $denominator != 0 ? $numerator / $denominator : 0;
+		} elseif ($test_radio == "sem") {
+			$mean1 = $request->mean; $sem1 = $request->sem; $n1 = $request->n;
+			$mean2 = $request->mean1; $sem2 = $request->sem1; $n2 = $request->n1;
+
+			if (is_numeric($mean1) && is_numeric($sem1) && is_numeric($n1) && is_numeric($mean2) && is_numeric($sem2) && is_numeric($n2) && $n1 > 1 && $n2 > 1) {
+				$sd1 = $sem1 * sqrt($n1);
+				$sd2 = $sem2 * sqrt($n2);
 				$df = $n1 + $n2 - 2;
+				$pooledVariance = (($n1 - 1) * $sd1 * $sd1 + ($n2 - 1) * $sd2 * $sd2) / $df;
+				$standardError = sqrt($pooledVariance * (1 / $n1 + 1 / $n2));
+				$tValue = $standardError != 0 ? abs($mean1 - $mean2) / $standardError : 0;
+				$pValue = t_dist_test($tValue, $df);
 
-				// Function to calculate the p-value
-				function t_dist($t, $df)
-				{
-					$x = $df / ($t * $t + $df);
-					$a = 0.5 * beta_inc($x, 0.5 * $df, 0.5);
-					return 2 * $a;
-				}
-				// Beta incomplete function approximation
-				function beta_inc($x, $a, $b)
-				{
-					$bt = ($x == 0 || $x == 1) ? 0 : exp(log_gamma($a + $b) - log_gamma($a) - log_gamma($b) + $a * log($x) + $b * log(1 - $x));
-					if ($x < 0.5) {
-						return $bt * beta_cf($x, $a, $b) / $a;
-					} else {
-						return 1 - $bt * beta_cf(1 - $x, $b, $a) / $b;
-					}
-				}
-				// Beta continued fraction approximation
-				function beta_cf($x, $a, $b)
-				{
-					$MAXIT = 100;
-					$EPS = 3.0e-7;
-					$FPMIN = 1.0e-30;
-					$m2;
-					$aa;
-					$c;
-					$d;
-					$del;
-					$h;
-					$qab = $a + $b;
-					$qap = $a + 1;
-					$qam = $a - 1;
-					$c = 1;
-					$d = 1 - $qab * $x / $qap;
-					if (abs($d) < $FPMIN) $d = $FPMIN;
-					$d = 1 / $d;
-					$h = $d;
-					for ($m = 1; $m <= $MAXIT; $m++) {
-						$m2 = 2 * $m;
-						$aa = $m * ($b - $m) * $x / (($qam + $m2) * ($a + $m2));
-						$d = 1 + $aa * $d;
-						if (abs($d) < $FPMIN) $d = $FPMIN;
-						$c = 1 + $aa / $c;
-						if (abs($c) < $FPMIN) $c = $FPMIN;
-						$d = 1 / $d;
-						$h *= $d * $c;
-						$aa = - ($a + $m) * ($qab + $m) * $x / (($a + $m2) * ($qap + $m2));
-						$d = 1 + $aa * $d;
-						if (abs($d) < $FPMIN) $d = $FPMIN;
-						$c = 1 + $aa / $c;
-						if (abs($c) < $FPMIN) $c = $FPMIN;
-						$d = 1 / $d;
-						$del = $d * $c;
-						$h *= $del;
-						if (abs($del - 1) < $EPS) break;
-					}
-					return $h;
-				}
-				// Log gamma function approximation
-				function log_gamma($x)
-				{
-					$cof = [
-						76.18009172947146,
-						-86.50532032941677,
-						24.01409824083091,
-						-1.231739572450155,
-						0.001208650973866179,
-						-0.000005395239384953
-					];
-					$y = $x;
-					$tmp = $x + 5.5;
-					$tmp -= ($x + 0.5) * log($tmp);
-					$ser = 1.000000000190015;
-					for ($j = 0; $j < 6; $j++) {
-						$ser += $cof[$j] / ++$y;
-					}
-					return -$tmp + log(2.5066282746310005 * $ser / $x);
-				}
-				$pValue = t_dist($tValue, $df);
-
-				// Round to two decimal places
-				$mean1 = number_format($mean1, 2);
-				$mean2 = number_format($mean2, 2);
-				$variance1 = number_format($variance1, 2);
-				$variance2 = number_format($variance2, 2);
-				$sd1 = number_format($sd1, 2);
-				$sd2 = number_format($sd2, 2);
-				$sem1_calculated = number_format($sem1_calculated, 2);
-				$sem2_calculated = number_format($sem2_calculated, 2);
-				$pooledVariance = number_format($pooledVariance, 2);
-				$standardError = number_format($standardError, 2);
-				$tValue = number_format($tValue, 2);
-				$df = number_format($df, 2);
-				$n1 = number_format($n1, 2);
-				$n2 = number_format($n2, 2);
-
-				$this->param['mean1'] = $mean1;
-				$this->param['mean2'] = $mean2;
-				$this->param['sd1'] = $sd1;
-				$this->param['sd2'] = $sd2;
-				$this->param['sem1'] = $sem1_calculated;
-				$this->param['sem2'] = $sem2_calculated;
-				$this->param['n1'] = $n1;
-				$this->param['n2'] = $n2;
-				$this->param['df'] = $df;
-				$this->param['tValue'] = $tValue;
-				$this->param['standardError'] = $standardError;
-				$this->param['variance1'] = $variance1;
-				$this->param['variance2'] = $variance2;
-				$this->param['pooledVariance'] = $pooledVariance;
-				$this->param['pValue'] = $pValue;
-			} else {
-				$this->param['error'] = "Please! Check Your Input";
+				$this->param = array_merge($this->param, [
+					'mean1' => $mean1, 'mean2' => $mean2, 'sd1' => $sd1, 'sd2' => $sd2,
+					'sem1' => $sem1, 'sem2' => $sem2, 'n1' => $n1, 'n2' => $n2,
+					'df' => $df, 'tValue' => $tValue, 'standardError' => $standardError,
+					'pValue' => $pValue, 'RESULT' => 1, 'test_radio' => $test_radio
+				]);
 				return $this->param;
 			}
-		} else if ($request->test_radio == "sd") {
+		} elseif ($test_radio == "sd") {
+			$mean1 = $request->mean_sec; $sd1 = $request->sd_sec; $n1 = $request->n_sec;
+			$mean2 = $request->mean_sec1; $sd2 = $request->sd_sec1; $n2 = $request->n_sec2;
 
-			if (is_numeric($mean_sec) && is_numeric($sd_sec) && is_numeric($n_sec) && is_numeric($mean_sec1) && is_numeric($sd_sec1) && is_numeric($n_sec2)) {
+			if (is_numeric($mean1) && is_numeric($sd1) && is_numeric($n1) && is_numeric($mean2) && is_numeric($sd2) && is_numeric($n2) && $n1 > 1 && $n2 > 1) {
+				$sem1 = $sd1 / sqrt($n1);
+				$sem2 = $sd2 / sqrt($n2);
+				$df = $n1 + $n2 - 2;
+				$pooledVariance = (($n1 - 1) * $sd1 * $sd1 + ($n2 - 1) * $sd2 * $sd2) / $df;
+				$standardError = sqrt($pooledVariance * (1 / $n1 + 1 / $n2));
+				$tValue = $standardError != 0 ? abs($mean1 - $mean2) / $standardError : 0;
+				$pValue = t_dist_test($tValue, $df);
 
-				// Calculations
-				$variance1 = $sd_sec * $sd_sec;
-				$variance2 = $sd_sec1 * $sd_sec1;
-				$sem1_calculated = $sd_sec / sqrt($n_sec);
-				$sem2_calculated = $sd_sec1 / sqrt($n_sec2);
-				$df = $n_sec + $n_sec2 - 2;
-				$pooledVariance = (((($n_sec - 1) * $variance1) + (($n_sec2 - 1) * $variance2)) / $df);
-				$standardError = sqrt($pooledVariance * (1 / $n_sec + 1 / $n_sec2));
-				$tValue = ($mean_sec - $mean_sec1) / $standardError;
-				$tValue = abs($tValue);
-
-				// Function to calculate the p-value
-				function t_dist($t, $df)
-				{
-					$x = $df / ($t * $t + $df);
-					$a = 0.5 * beta_inc($x, 0.5 * $df, 0.5);
-					return 2 * $a;
-				}
-				// Beta incomplete function approximation
-				function beta_inc($x, $a, $b)
-				{
-					$bt = ($x == 0 || $x == 1) ? 0 : exp(log_gamma($a + $b) - log_gamma($a) - log_gamma($b) + $a * log($x) + $b * log(1 - $x));
-					if ($x < 0.5) {
-						return $bt * beta_cf($x, $a, $b) / $a;
-					} else {
-						return 1 - $bt * beta_cf(1 - $x, $b, $a) / $b;
-					}
-				}
-				// Beta continued fraction approximation
-				function beta_cf($x, $a, $b)
-				{
-					$MAXIT = 100;
-					$EPS = 3.0e-7;
-					$FPMIN = 1.0e-30;
-					$m2;
-					$aa;
-					$c;
-					$d;
-					$del;
-					$h;
-					$qab = $a + $b;
-					$qap = $a + 1;
-					$qam = $a - 1;
-					$c = 1;
-					$d = 1 - $qab * $x / $qap;
-					if (abs($d) < $FPMIN) $d = $FPMIN;
-					$d = 1 / $d;
-					$h = $d;
-					for ($m = 1; $m <= $MAXIT; $m++) {
-						$m2 = 2 * $m;
-						$aa = $m * ($b - $m) * $x / (($qam + $m2) * ($a + $m2));
-						$d = 1 + $aa * $d;
-						if (abs($d) < $FPMIN) $d = $FPMIN;
-						$c = 1 + $aa / $c;
-						if (abs($c) < $FPMIN) $c = $FPMIN;
-						$d = 1 / $d;
-						$h *= $d * $c;
-						$aa = - ($a + $m) * ($qab + $m) * $x / (($a + $m2) * ($qap + $m2));
-						$d = 1 + $aa * $d;
-						if (abs($d) < $FPMIN) $d = $FPMIN;
-						$c = 1 + $aa / $c;
-						if (abs($c) < $FPMIN) $c = $FPMIN;
-						$d = 1 / $d;
-						$del = $d * $c;
-						$h *= $del;
-						if (abs($del - 1) < $EPS) break;
-					}
-					return $h;
-				}
-				// Log gamma function approximation
-				function log_gamma($x)
-				{
-					$cof = [
-						76.18009172947146,
-						-86.50532032941677,
-						24.01409824083091,
-						-1.231739572450155,
-						0.001208650973866179,
-						-0.000005395239384953
-					];
-					$y = $x;
-					$tmp = $x + 5.5;
-					$tmp -= ($x + 0.5) * log($tmp);
-					$ser = 1.000000000190015;
-					for ($j = 0; $j < 6; $j++) {
-						$ser += $cof[$j] / ++$y;
-					}
-					return -$tmp + log(2.5066282746310005 * $ser / $x);
-				}
-				$pValue = t_dist($tValue, $df);
-
-				// Store the results
-				$this->param['mean1'] = $mean_sec;
-				$this->param['mean2'] = $mean_sec1;
-				$this->param['sd1'] = $sd_sec;
-				$this->param['sd2'] = $sd_sec1;
-				$this->param['sem1'] = $sem1_calculated;
-				$this->param['sem2'] = $sem2_calculated;
-				$this->param['n1'] = $n_sec;
-				$this->param['n2'] = $n_sec2;
-				$this->param['df'] = $df;
-				$this->param['tValue'] = $tValue;
-				$this->param['standardError'] = $standardError;
-				$this->param['variance1'] = $variance1;
-				$this->param['variance2'] = $variance2;
-				$this->param['pooledVariance'] = $pooledVariance;
-				$this->param['pValue'] = $pValue;
-			} else {
-				$this->param['error'] = "Please! Check Your Input";
+				$this->param = array_merge($this->param, [
+					'mean1' => $mean1, 'mean2' => $mean2, 'sd1' => $sd1, 'sd2' => $sd2,
+					'sem1' => $sem1, 'sem2' => $sem2, 'n1' => $n1, 'n2' => $n2,
+					'df' => $df, 'tValue' => $tValue, 'standardError' => $standardError,
+					'pValue' => $pValue, 'RESULT' => 1, 'test_radio' => $test_radio
+				]);
 				return $this->param;
 			}
 		}
 
-		$this->param['test_radio'] = $test_radio;
-
+		$this->param['error'] = "Please! Check Your Input";
 		return $this->param;
 	}
+
 		// Sample Size Calculator
 	public function sample_size($request)
 	{
