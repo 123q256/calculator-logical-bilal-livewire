@@ -207,8 +207,54 @@
                         <p class="mt-2 text-lg"><strong>Q3  =  {{ round($q3 ,0)}}</strong></p>
                     </div>
                     @endif
-                        <div class="col-lg-12 mt-4 rounded-lg border shadow-sm p-4" wire:ignore>
-                            <div id="mychart" style="width: 100%; height: 400px;"></div>
+                        <div class="w-full mt-3" 
+                             x-data="{ 
+                                chartData: {
+                                    min: {{ $min }},
+                                    q1: {{ $q1 }},
+                                    median: {{ $q2 }},
+                                    q3: {{ $q3 }},
+                                    max: {{ $max }}
+                                },
+                                render() {
+                                    if (typeof Highcharts === 'undefined') {
+                                        setTimeout(() => this.render(), 200);
+                                        return;
+                                    }
+                                    
+                                    Highcharts.chart($refs.canvas, {
+                                        chart: { type: 'boxplot', backgroundColor: 'transparent' },
+                                        title: { text: '5 Number Summary', style: { color: '#2845F5', fontWeight: 'bold' } },
+                                        legend: { enabled: false },
+                                        xAxis: {
+                                            categories: ['Data Set'],
+                                            title: { text: 'Distribution' }
+                                        },
+                                        yAxis: {
+                                            title: { text: 'Values' }
+                                        },
+                                        series: [{
+                                            name: 'Observations',
+                                            data: [
+                                                [
+                                                    parseFloat(this.chartData.min),
+                                                    parseFloat(this.chartData.q1),
+                                                    parseFloat(this.chartData.median),
+                                                    parseFloat(this.chartData.q3),
+                                                    parseFloat(this.chartData.max)
+                                                ]
+                                            ],
+                                            color: '#2845F5',
+                                            fillColor: '#EBF4FA'
+                                        }],
+                                        credits: { enabled: false }
+                                    });
+                                }
+                             }" 
+                             x-init="render()"
+                             @render-five-number-chart.window="chartData = $event.detail[0]; render()"
+                             wire:ignore>
+                            <div x-ref="canvas" style="height:400px;" class="w-full rounded-lg border shadow-sm"></div>
                         </div>
                     </div>
                 </div>
@@ -222,7 +268,8 @@
     <link rel="stylesheet" href="{{ url('katex/katex.min.css') }}">
     <script src="{{ url('katex/katex.min.js') }}"></script>
     <script src="{{ url('katex/auto-render.min.js') }}"></script>
-    <script src="{{ url('assets/js/anychart-base.min.js') }}"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
     
     <script>
         // Render KaTeX on load if detail is present
@@ -230,58 +277,6 @@
             if (document.getElementById('result-section')) {
                 renderMathInElement(document.body);
             }
-        });
-
-        let currentBoxChart = null;
-
-        function renderFiveNumberChart(chartData) {
-            if (typeof anychart === 'undefined') {
-                setTimeout(() => renderFiveNumberChart(chartData), 200);
-                return;
-            }
-
-            const container = document.getElementById('mychart');
-            if (!container) return;
-            
-            container.innerHTML = '';
-
-            if (currentBoxChart) {
-                currentBoxChart.dispose();
-                currentBoxChart = null;
-            }
-
-            const data = [{
-                x: "5 Number Summary",
-                low: parseFloat(chartData.min),
-                q1: parseFloat(chartData.q1),
-                median: parseFloat(chartData.median),
-                q3: parseFloat(chartData.q3),
-                high: parseFloat(chartData.max)
-            }];
-
-            currentBoxChart = anychart.box();
-            currentBoxChart.box(data);
-            currentBoxChart.container("mychart");
-            currentBoxChart.draw();
-        }
-
-        @if(isset($detail))
-            document.addEventListener("DOMContentLoaded", function() {
-                renderFiveNumberChart({
-                    min: {{ $min }},
-                    q1: {{ $q1 }},
-                    median: {{ $q2 }},
-                    q3: {{ $q3 }},
-                    max: {{ $max }}
-                });
-            });
-        @endif
-
-        document.addEventListener('livewire:initialized', () => {
-            Livewire.on('render-five-number-chart', (event) => {
-                const data = event[0] || event;
-                setTimeout(() => renderFiveNumberChart(data), 100);
-            });
         });
     </script>
 @endpush

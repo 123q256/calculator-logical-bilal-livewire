@@ -2909,8 +2909,8 @@ class Statistics extends Model
 				$this->param["table"] = $table;
 				$this->param["set"] = $set;
 				$this->param["ds"] = $ds;
-				$this->param["rf_values"] = $rf_values;
-				$this->param["rf1_values"] = $rf1_values;
+				$this->param["rf_values"] = isset($rf_values) ? $rf_values : [];
+				$this->param["rf1_values"] = isset($rf1_values) ? $rf1_values : [];
 				$this->param["sds"] = $sds;
 				$this->param["n"] = $n;
 				$this->param["count"] = $count;
@@ -3326,79 +3326,83 @@ class Statistics extends Model
 			return $this->param;
 		}
 		if (is_numeric($sd) && is_numeric($mean) && is_numeric($p)) {
-			function zinv($p)
-			{
-				$a1 = -39.6968302866538;
-				$a2 = 220.946098424521;
-				$a3 = -275.928510446969;
-				$a4 = 138.357751867269;
-				$a5 = -30.6647980661472;
-				$a6 = 2.50662827745924;
-				$b1 = -54.4760987982241;
-				$b2 = 161.585836858041;
-				$b3 = -155.698979859887;
-				$b4 = 66.8013118877197;
-				$b5 = -13.2806815528857;
-				$c1 = -7.78489400243029E-03;
-				$c2 = -0.322396458041136;
-				$c3 = -2.40075827716184;
-				$c4 = -2.54973253934373;
-				$c5 = 4.37466414146497;
-				$c6 = 2.93816398269878;
-				$d1 = 7.78469570904146E-03;
-				$d2 = 0.32246712907004;
-				$d3 = 2.445134137143;
-				$d4 = 3.75440866190742;
-				$p_low = 0.02425;
-				$p_high = 1 - $p_low;
+			if (!function_exists('zinv')) {
+				function zinv($p)
+				{
+					$a1 = -39.6968302866538;
+					$a2 = 220.946098424521;
+					$a3 = -275.928510446969;
+					$a4 = 138.357751867269;
+					$a5 = -30.6647980661472;
+					$a6 = 2.50662827745924;
+					$b1 = -54.4760987982241;
+					$b2 = 161.585836858041;
+					$b3 = -155.698979859887;
+					$b4 = 66.8013118877197;
+					$b5 = -13.2806815528857;
+					$c1 = -7.78489400243029E-03;
+					$c2 = -0.322396458041136;
+					$c3 = -2.40075827716184;
+					$c4 = -2.54973253934373;
+					$c5 = 4.37466414146497;
+					$c6 = 2.93816398269878;
+					$d1 = 7.78469570904146E-03;
+					$d2 = 0.32246712907004;
+					$d3 = 2.445134137143;
+					$d4 = 3.75440866190742;
+					$p_low = 0.02425;
+					$p_high = 1 - $p_low;
 
-				if (($p < 0) || ($p > 1)) {
-					$err = "p out of range.";
-					$retVal = 0;
-				} elseif ($p < $p_low) {
-					$q = sqrt(-2 * log($p));
-					$retVal = ((((($c1 * $q + $c2) * $q + $c3) * $q + $c4) * $q + $c5) * $q + $c6) / (((($d1 * $q + $d2) * $q + $d3) * $q + $d4) * $q + 1);
-				} elseif ($p <= $p_high) {
-					$q = $p - 0.5;
-					$r = $q * $q;
-					$retVal = ((((($a1 * $r + $a2) * $r + $a3) * $r + $a4) * $r + $a5) * $r + $a6) * $q / ((((($b1 * $r + $b2) * $r + $b3) * $r + $b4) * $r + $b5) * $r + 1);
-				} else {
-					$q = sqrt(-2 * log(1 - $p));
-					$retVal = - ((((($c1 * $q + $c2) * $q + $c3) * $q + $c4) * $q + $c5) * $q + $c6) / (((($d1 * $q + $d2) * $q + $d3) * $q + $d4) * $q + 1);
+					if (($p < 0) || ($p > 1)) {
+						$err = "p out of range.";
+						$retVal = 0;
+					} elseif ($p < $p_low) {
+						$q = sqrt(-2 * log($p));
+						$retVal = ((((($c1 * $q + $c2) * $q + $c3) * $q + $c4) * $q + $c5) * $q + $c6) / (((($d1 * $q + $d2) * $q + $d3) * $q + $d4) * $q + 1);
+					} elseif ($p <= $p_high) {
+						$q = $p - 0.5;
+						$r = $q * $q;
+						$retVal = ((((($a1 * $r + $a2) * $r + $a3) * $r + $a4) * $r + $a5) * $r + $a6) * $q / ((((($b1 * $r + $b2) * $r + $b3) * $r + $b4) * $r + $b5) * $r + 1);
+					} else {
+						$q = sqrt(-2 * log(1 - $p));
+						$retVal = - ((((($c1 * $q + $c2) * $q + $c3) * $q + $c4) * $q + $c5) * $q + $c6) / (((($d1 * $q + $d2) * $q + $d3) * $q + $d4) * $q + 1);
+					}
+
+					return $retVal;
 				}
-
-				return $retVal;
 			}
-			function zProb($z)
-			{
-				if ($z < -7) {
-					return 0.0;
-				}
-				if ($z > 7) {
-					return 1.0;
-				}
+			if (!function_exists('zProb')) {
+				function zProb($z)
+				{
+					if ($z < -7) {
+						return 0.0;
+					}
+					if ($z > 7) {
+						return 1.0;
+					}
 
 
-				if ($z < 0.0) {
-					$flag = true;
-				} else {
-					$flag = false;
-				}
+					if ($z < 0.0) {
+						$flag = true;
+					} else {
+						$flag = false;
+					}
 
-				$z = abs($z);
-				$b = 0.0;
-				$s = sqrt(2) / 3 * $z;
-				$HH = .5;
-				for ($i = 0; $i < 12; $i++) {
-					$a = exp(((-1) * $HH) * $HH / 9) * sin($HH * $s) / $HH;
-					$b = $b + $a;
-					$HH = $HH + 1.0;
+					$z = abs($z);
+					$b = 0.0;
+					$s = sqrt(2) / 3 * $z;
+					$HH = .5;
+					for ($i = 0; $i < 12; $i++) {
+						$a = exp(((-1) * $HH) * $HH / 9) * sin($HH * $s) / $HH;
+						$b = $b + $a;
+						$HH = $HH + 1.0;
+					}
+					$p = .5 - $b / pi();
+					if (!$flag) {
+						$p = 1.0 - $p;
+					}
+					return $p;
 				}
-				$p = .5 - $b / pi();
-				if (!$flag) {
-					$p = 1.0 - $p;
-				}
-				return $p;
 			}
 			$x1 = zinv($p);
 			$x1 = (-1 * $mean) + $sd * $x1;
@@ -3449,61 +3453,66 @@ class Statistics extends Model
 		$deg2 = $request->deg2;
 		$level = $request->level;
 		$degree_freedom = $request->degree_freedom;
+		$p = 0;
 		// z-scope
-		function zpval($score, $tail)
-		{
-			if ($tail === '0') {
-				$pval = 2 * zcdf(abs($score) * (-1));
-			} else if ($tail === '-1') {
-				$pval = zcdf($score);
-			} else if ($tail === '2') {
-				$pval = 1 - zcdf($score);
-			}
-			return $pval;
-		}
-		function zcdf($z)
-		{
-			$y = '';
-			$x = '';
-			$w = '';
-
-			if ($z === 0.0) {
-				$x = 0.0;
-			} else {
-				$y = 0.5 * abs($z);
-				if ($y > (6 * 0.5)) {
-					$x = 1.0;
-				} else if ($y < 1.0) {
-					$w = $y * $y;
-					$x = ((((((((0.000124818987 * $w
-						- 0.001075204047) * $w + 0.005198775019) * $w
-						- 0.019198292004) * $w + 0.059054035642) * $w
-						- 0.151968751364) * $w + 0.319152932694) * $w
-						- 0.531923007300) * $w + 0.797884560593) * $y * 2.0;
-				} else {
-					$y -= 2.0;
-					$x = (((((((((((((-0.000045255659 * $y
-						+ 0.000152529290) * $y - 0.000019538132) * $y
-						- 0.000676904986) * $y + 0.001390604284) * $y
-						- 0.000794620820) * $y - 0.002034254874) * $y
-						+ 0.006549791214) * $y - 0.010557625006) * $y
-						+ 0.011630447319) * $y - 0.009279453341) * $y
-						+ 0.005353579108) * $y - 0.002141268741) * $y
-						+ 0.000535310849) * $y + 0.999936657524;
+		if (!function_exists('zpval')) {
+			function zpval($score, $tail)
+			{
+				$pval = 0;
+				if ($tail == '0' || $tail == '2') {
+					$pval = 2 * zcdf(abs($score) * (-1));
+				} else if ($tail == '-1' || $tail == '1') {
+					$pval = zcdf($score);
 				}
+				return $pval;
 			}
-			return $z > 0.0 ? ((($x + 1.0) * 0.5)) : (((1.0 - $x) * 0.5));
 		}
-		function tpval($t, $df, $alt)
-		{
-			if ($alt === '0') {
-				$pval = 2 * tcdf(abs($t) * (-1), $df);
-			} else if ($alt === '-1') {
-				$pval = tcdf($t, $df);
-			} else if ($alt === '2') {
-				$pval = 1 - tcdf($t, $df);
+		if (!function_exists('zcdf')) {
+			function zcdf($z)
+			{
+				$y = '';
+				$x = '';
+				$w = '';
+
+				if ($z === 0.0) {
+					$x = 0.0;
+				} else {
+					$y = 0.5 * abs($z);
+					if ($y > (6 * 0.5)) {
+						$x = 1.0;
+					} else if ($y < 1.0) {
+						$w = $y * $y;
+						$x = ((((((((0.000124818987 * $w
+							- 0.001075204047) * $w + 0.005198775019) * $w
+							- 0.019198292004) * $w + 0.059054035642) * $w
+							- 0.151968751364) * $w + 0.319152932694) * $w
+							- 0.531923007300) * $w + 0.797884560593) * $y * 2.0;
+					} else {
+						$y -= 2.0;
+						$x = (((((((((((((-0.000045255659 * $y
+							+ 0.000152529290) * $y - 0.000019538132) * $y
+							- 0.000676904986) * $y + 0.001390604284) * $y
+							- 0.000794620820) * $y - 0.002034254874) * $y
+							+ 0.006549791214) * $y - 0.010557625006) * $y
+							+ 0.011630447319) * $y - 0.009279453341) * $y
+							+ 0.005353579108) * $y - 0.002141268741) * $y
+							+ 0.000535310849) * $y + 0.999936657524;
+					}
+				}
+				return $z > 0.0 ? ((($x + 1.0) * 0.5)) : (((1.0 - $x) * 0.5));
 			}
-			return $pval;
+		}
+		if (!function_exists('tpval')) {
+			function tpval($t, $df, $alt)
+			{
+				$pval = 0;
+				if ($alt == '0' || $alt == '2') {
+					$pval = 2 * tcdf(abs($t) * (-1), $df);
+				} else if ($alt == '-1' || $alt == '1') {
+					$pval = tcdf($t, $df);
+				}
+				return $pval;
+			}
 		}
 		function tcdf($x, $dof)
 		{
@@ -3592,85 +3601,95 @@ class Statistics extends Model
 
 			return $h;
 		}
-		function chipval($chi, $df, $alt)
-		{
-			if ($alt == '0') {
-				$x = chicdf($chi, $df);
-				if ($x <= 0.5) {
-					$pval = 2 * $x;
-				} else {
-					$pval = 2 * (1 - $x);
+		if (!function_exists('chipval')) {
+			function chipval($chi, $df, $alt)
+			{
+				$pval = 0;
+				if ($alt == '0' || $alt == '2') {
+					$x = chicdf($chi, $df);
+					if ($x <= 0.5) {
+						$pval = 2 * $x;
+					} else {
+						$pval = 2 * (1 - $x);
+					}
+				} else if ($alt <= '-1') {
+					$pval = chicdf($chi, $df);
+				} else if ($alt >= '1') {
+					$pval = 1 - chicdf($chi, $df);
 				}
-			} else if ($alt <= '-1') {
-				$pval = chicdf($chi, $df);
-			} else if ($alt >= '1') {
-				$pval = 1 - chicdf($chi, $df);
+				return $pval;
 			}
-			return $pval;
 		}
-		function chicdf($x, $dof)
-		{
-			if ($x < 0)
-				return 0;
-			return lowRegGamma($dof / 2, $x / 2);
+		if (!function_exists('chicdf')) {
+			function chicdf($x, $dof)
+			{
+				if ($x < 0)
+					return 0;
+				return lowRegGamma($dof / 2, $x / 2);
+			}
 		}
-		function lowRegGamma($a, $x)
-		{
-			$aln = gammaln($a);
-			$ap = $a;
-			$sum = 1 / $a;
-			$del = $sum;
-			$b = $x + 1 - $a;
-			$c = 1 / 1.0e-30;
-			$d = 1 / $b;
-			$h = $d;
-			$i = 1;
-			// calculate maximum number of itterations required for a
-			$ITMAX = -~(log(($a >= 1) ? $a : 1 / $a) * 8.5 + $a * 0.4 + 17);
-			$an = '';
+		if (!function_exists('lowRegGamma')) {
+			function lowRegGamma($a, $x)
+			{
+				$aln = gammaln($a);
+				$ap = $a;
+				$sum = 1 / $a;
+				$del = $sum;
+				$b = $x + 1 - $a;
+				$c = 1 / 1.0e-30;
+				$d = 1 / $b;
+				$h = $d;
+				$i = 1;
+				// calculate maximum number of itterations required for a
+				$ITMAX = -~(log(($a >= 1) ? $a : 1 / $a) * 8.5 + $a * 0.4 + 17);
+				$an = '';
 
-			if ($x < 0 || $a <= 0) {
-				return 0;
-			} else if ($x < $a + 1) {
-				for ($i = 1; $i <= $ITMAX; $i++) {
-					$sum += $del *= $x / ++$ap;
+				if ($x < 0 || $a <= 0) {
+					return 0;
+				} else if ($x < $a + 1) {
+					for ($i = 1; $i <= $ITMAX; $i++) {
+						$sum += $del *= $x / ++$ap;
+					}
+					return ($sum * exp($x * (-1) + $a * log($x) - ($aln)));
 				}
-				return ($sum * exp($x * (-1) + $a * log($x) - ($aln)));
-			}
-			for (; $i <= $ITMAX; $i++) {
-				$an = $i * (-1) * ($i - $a);
-				$b += 2;
-				$d = $an * $d + $b;
-				$c = $b + $an / $c;
-				$d = 1 / $d;
-				$h *= $d * $c;
-			}
-
-			return (1 - $h * exp($x * (-1) + $a * log($x) - ($aln)));
-		}
-
-		function Fpval($F, $df1, $df2, $alt)
-		{
-
-			if ($alt == '0') {
-				$x = Fcdf($F, $df1, $df2);
-				if ($x <= 0.5) {
-					$pval = 2 * $x;
-				} else {
-					$pval = 2 * (1 - $x);
+				for (; $i <= $ITMAX; $i++) {
+					$an = $i * (-1) * ($i - $a);
+					$b += 2;
+					$d = $an * $d + $b;
+					$c = $b + $an / $c;
+					$d = 1 / $d;
+					$h *= $d * $c;
 				}
-			} else if ($alt <= '-1') {
-				$pval = Fcdf($F, $df1, $df2);
-			} else if ($alt <= '1') {
-				$pval = 1 - Fcdf($F, $df1, $df2);
+
+				return (1 - $h * exp($x * (-1) + $a * log($x) - ($aln)));
 			}
-			return $pval;
 		}
-		function Fcdf($x, $df1, $df2)
-		{
-			if ($x < 0)
-				return 0;
-			return ibeta(($df1 * $x) / ($df1 * $x + $df2), $df1 / 2, $df2 / 2);
+		if (!function_exists('Fpval')) {
+			function Fpval($F, $df1, $df2, $alt)
+			{
+				$pval = 0;
+				if ($alt == '0' || $alt == '2') {
+					$x = Fcdf($F, $df1, $df2);
+					if ($x <= 0.5) {
+						$pval = 2 * $x;
+					} else {
+						$pval = 2 * (1 - $x);
+					}
+				} else if ($alt <= '-1') {
+					$pval = Fcdf($F, $df1, $df2);
+				} else if ($alt <= '1') {
+					$pval = 1 - Fcdf($F, $df1, $df2);
+				}
+				return $pval;
+			}
+		}
+		if (!function_exists('Fcdf')) {
+			function Fcdf($x, $df1, $df2)
+			{
+				if ($x < 0)
+					return 0;
+				return ibeta(($df1 * $x) / ($df1 * $x + $df2), $df1 / 2, $df2 / 2);
+			}
 		}
 
 		if ($level < 0 || $level > 1) {
@@ -3716,86 +3735,100 @@ class Statistics extends Model
 				$this->param['error'] = "score must be between -1 and 1 and deg must be greater than 2";
 				return $this->param;
 			}
-			function calculateTStatistic($r, $n)
-			{
-				return ($r * sqrt($n - 2)) / sqrt(1 - $r * $r);
-			}
-			function betaIncomplete($x, $a, $b)
-			{
-				$bt = ($x == 0 || $x == 1) ? 0 :
-					exp(gammalns($a + $b) - gammalns($a) - gammalns($b) + $a * log($x) + $b * log(1 - $x));
-				if ($x < 0.0 || $x > 1.0) return 0.0;
-				if ($x < ($a + 1.0) / ($a + $b + 2.0))
-					return $bt * betacfs($x, $a, $b) / $a;
-				else
-					return 1.0 - $bt * betacfs(1.0 - $x, $b, $a) / $b;
-			}
-			function gammalns($x)
-			{
-				$cof = [
-					76.18009172947146,
-					-86.50532032941677,
-					24.01409824083091,
-					-1.231739572450155,
-					0.1208650973866179e-2,
-					-0.5395239384953e-5
-				];
-				$y = $x;
-				$tmp = $x + 5.5;
-				$tmp -= ($x + 0.5) * log($tmp);
-				$ser = 1.000000000190015;
-				for ($j = 0; $j < 6; $j++) $ser += $cof[$j] / ++$y;
-				return -$tmp + log(2.5066282746310005 * $ser / $x);
-			}
-			function betacfs($x, $a, $b)
-			{
-				$MAXIT = 100;
-				$EPS = 3.0e-7;
-				$FPMIN = 1.0e-30;
-				$qab = $a + $b;
-				$qap = $a + 1.0;
-				$qam = $a - 1.0;
-				$c = 1.0;
-				$d = 1.0 - $qab * $x / $qap;
-				if (abs($d) < $FPMIN) $d = $FPMIN;
-				$d = 1.0 / $d;
-				$h = $d;
-				for ($m = 1, $m2 = 2; $m <= $MAXIT; $m++, $m2 += 2) {
-					$aa = $m * ($b - $m) * $x / (($qam + $m2) * ($a + $m2));
-					$d = 1.0 + $aa * $d;
-					if (abs($d) < $FPMIN) $d = $FPMIN;
-					$c = 1.0 + $aa / $c;
-					if (abs($c) < $FPMIN) $c = $FPMIN;
-					$d = 1.0 / $d;
-					$h *= $d * $c;
-					$aa = - ($a + $m) * ($qab + $m) * $x / (($a + $m2) * ($qap + $m2));
-					$d = 1.0 + $aa * $d;
-					if (abs($d) < $FPMIN) $d = $FPMIN;
-					$c = 1.0 + $aa / $c;
-					if (abs($c) < $FPMIN) $c = $FPMIN;
-					$d = 1.0 / $d;
-					$h *= $d * $c;
+			if (!function_exists('calculateTStatistic')) {
+				function calculateTStatistic($r, $n)
+				{
+					return ($r * sqrt($n - 2)) / sqrt(1 - $r * $r);
 				}
-				return $h;
 			}
-			function tDistCDFs($t, $df)
-			{
-				$x = $df / ($df + $t * $t);
-				$a = $df / 2.0;
-				$b = 0.5;
-				$betaIncompleteResult = betaIncomplete($x, $a, $b);
-				return 1.0 - 0.5 * $betaIncompleteResult;
+			if (!function_exists('betaIncomplete')) {
+				function betaIncomplete($x, $a, $b)
+				{
+					if (!function_exists('betacfs')) {
+						function betacfs($x, $a, $b)
+						{
+							$MAXIT = 100;
+							$EPS = 3.0e-7;
+							$FPMIN = 1.0e-30;
+							$qab = $a + $b;
+							$qap = $a + 1.0;
+							$qam = $a - 1.0;
+							$c = 1.0;
+							$d = 1.0 - $qab * $x / $qap;
+							if (abs($d) < $FPMIN) $d = $FPMIN;
+							$d = 1.0 / $d;
+							$h = $d;
+							for ($m = 1, $m2 = 2; $m <= $MAXIT; $m++, $m2 += 2) {
+								$aa = $m * ($b - $m) * $x / (($qam + $m2) * ($a + $m2));
+								$d = 1.0 + $aa * $d;
+								if (abs($d) < $FPMIN) $d = $FPMIN;
+								$c = 1.0 + $aa / $c;
+								if (abs($c) < $FPMIN) $c = $FPMIN;
+								$d = 1.0 / $d;
+								$h *= $d * $c;
+								$aa = - ($a + $m) * ($qab + $m) * $x / (($a + $m2) * ($qap + $m2));
+								$d = 1.0 + $aa * $d;
+								if (abs($d) < $FPMIN) $d = $FPMIN;
+								$c = 1.0 + $aa / $c;
+								if (abs($c) < $FPMIN) $c = $FPMIN;
+								$d = 1.0 / $d;
+								$h *= $d * $c;
+							}
+							return $h;
+						}
+					}
+					if (!function_exists('gammalns')) {
+						function gammalns($x)
+						{
+							$cof = [
+								76.18009172947146,
+								-86.50532032941677,
+								24.01409824083091,
+								-1.231739572450155,
+								0.1208650973866179e-2,
+								-0.5395239384953e-5
+							];
+							$y = $x;
+							$tmp = $x + 5.5;
+							$tmp -= ($x + 0.5) * log($tmp);
+							$ser = 1.000000000190015;
+							for ($j = 0; $j < 6; $j++) $ser += $cof[$j] / ++$y;
+							return -$tmp + log(2.5066282746310005 * $ser / $x);
+						}
+					}
+					$bt = ($x == 0 || $x == 1) ? 0 :
+						exp(gammalns($a + $b) - gammalns($a) - gammalns($b) + $a * log($x) + $b * log(1 - $x));
+					if ($x < 0.0 || $x > 1.0) return 0.0;
+					if ($x < ($a + 1.0) / ($a + $b + 2.0))
+						return $bt * betacfs($x, $a, $b) / $a;
+					else
+						return 1.0 - $bt * betacfs(1.0 - $x, $b, $a) / $b;
+				}
 			}
-			function calculatePValue($t, $df)
-			{
-				$pValue = 2 * (1 - tDistCDFs($t, $df));
-				return $pValue;
+			if (!function_exists('tDistCDFs')) {
+				function tDistCDFs($t, $df)
+				{
+					$x = $df / ($df + $t * $t);
+					$a = $df / 2.0;
+					$b = 0.5;
+					$betaIncompleteResult = betaIncomplete($x, $a, $b);
+					return 1.0 - 0.5 * $betaIncompleteResult;
+				}
 			}
-			function pValueFromPearson($r, $n)
-			{
-				$t = calculateTStatistic($r, $n);
-				$df = $n - 2;
-				return calculatePValue($t, $df);
+			if (!function_exists('calculatePValue')) {
+				function calculatePValue($t, $df)
+				{
+					$pValue = 2 * (1 - tDistCDFs($t, $df));
+					return $pValue;
+				}
+			}
+			if (!function_exists('pValueFromPearson')) {
+				function pValueFromPearson($r, $n)
+				{
+					$t = calculateTStatistic($r, $n);
+					$df = $n - 2;
+					return calculatePValue($t, $df);
+				}
 			}
 			$p = pValueFromPearson($score, $deg);
 		} elseif ($with === 'q') {
@@ -4600,6 +4633,7 @@ class Statistics extends Model
 			if (is_numeric($r1) && is_numeric($c1) && $r1 > 0 && $c1 > 0) {
 				$degrees_of_freedom = ($r1 - 1) * ($c1 - 1);
 				$this->param['degrees_of_freedom'] = $degrees_of_freedom;
+				$this->param['RESULT'] = 1;
 				return $this->param;
 			} else {
 				$this->param['error'] = "Please! Check Your Input";
@@ -7970,16 +8004,9 @@ class Statistics extends Model
 			}
 		}
 		if ($check == true) {
-			// sort($numbers);
-			$sort_array = array_chunk($numbers, "2");
-			foreach ($sort_array as $value) {
-				if (count($value) === 2) {
-					$ans_list[] = $value[0] . "." . $value[1];
-				} else {
-					$ans_list[] = $value[0];
-				}
-			}
-			$total_values = count($sort_array);
+			sort($numbers);
+			$ans_list = $numbers;
+			$total_values = count($ans_list);
 			$decile_pos = (($total_values + 1) * ($decile / 10));
 			if (is_numeric($decile_pos) && floor($decile_pos) != $decile_pos) {
 				$floor_val = floor($decile_pos);
