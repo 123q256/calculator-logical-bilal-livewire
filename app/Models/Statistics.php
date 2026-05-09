@@ -926,10 +926,10 @@ class Statistics extends Model
 			$ans = round($count / $ans, 5);
 			$average = round($sum / $count, 4);
 			if (($count % 2) != 0) {
-				$center = round($count / 2);
-				$median = $numbers[$center--];
+				$center = floor($count / 2);
+				$median = $numbers[$center];
 			} else {
-				$center = round($count / 2);
+				$center = $count / 2;
 				$next = $center - 1;
 				$median = ($numbers[$center] + $numbers[$next]) / 2;
 			}
@@ -1839,6 +1839,7 @@ class Statistics extends Model
 			$this->param['step3-res'] = $step3;
 			$this->param['n-ans'] = $n;
 			$this->param['r-ans'] = $r;
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		} else {
 			$this->param['error'] = "r needs to be less than or equal to n";
