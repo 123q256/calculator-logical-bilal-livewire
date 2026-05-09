@@ -1994,7 +1994,7 @@ class Statistics extends Model
 			$c = round($s_d / $m, 4);
 			$s_e = $s_d / sqrt($i);
 			$tablef = "";
-			$table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>xᵢ - $mSym</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
+			$table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>xᵢ - $mSym</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
 			$ar_2 = "";
 			$arf_1 = "";
 			for ($f = 0; $f < $i; $f++) {
@@ -2357,7 +2357,7 @@ class Statistics extends Model
 				$var = round(pow($s_d, 2), 2);
 				$c_v = round($s_d / $mean, 4);
 				$tablef = "";
-				$table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>xᵢ - $mSym</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
+				$table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>xᵢ - $mSym</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
 				$ar_2 = "";
 				$arf_1 = "";
 				for ($f = 0; $f < $i; $f++) {
@@ -2438,7 +2438,7 @@ class Statistics extends Model
 			if ($check === true) {
 				$sumx = array_sum($set1);
 				$sumy = array_sum($set2);
-				$table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>Obs.</th><th class='border p-2 text-center text-blue'>X</th><th class='border p-2 text-center text-blue'>Y</th><th class='border p-2 text-center text-blue'>Xᵢ²</th><th class='border p-2 text-center text-blue'>Yᵢ²</th><th class='border p-2 text-center text-blue'>Xᵢ⋅Yᵢ</th></tr></thead><tbody>";
+				$table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>Obs.</th><th class='border p-2 text-center text-blue'>X</th><th class='border p-2 text-center text-blue'>Y</th><th class='border p-2 text-center text-blue'>Xᵢ²</th><th class='border p-2 text-center text-blue'>Yᵢ²</th><th class='border p-2 text-center text-blue'>Xᵢ⋅Yᵢ</th></tr></thead><tbody>";
 				$xii = array();
 				$yii = array();
 				$xy = array();
@@ -2513,7 +2513,7 @@ class Statistics extends Model
 				$a = ($nx * $sumxy - $sumx * $sumy) / $delta;
 				$b = ($sumxi * $sumy - $sumx * $sumxy) / $delta;
 				$sst_arr = array();
-				$sst_table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>i</th><th class='border p-2 text-center text-blue'>yᵢ</th><th class='border p-2 text-center text-blue'>ȳ</th><th class='border p-2 text-center text-blue'>(yᵢ - ȳ)²</th></tr></thead><tbody>";
+				$sst_table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>i</th><th class='border p-2 text-center text-blue'>yᵢ</th><th class='border p-2 text-center text-blue'>ȳ</th><th class='border p-2 text-center text-blue'>(yᵢ - ȳ)²</th></tr></thead><tbody>";
 				foreach ($set2 as $key => $value) {
 					$sst_ = pow($value - $meany, 2);
 					$sst_table .= "<tr class='bg-white'><td class='border p-2 text-center'>$key</td><td class='border p-2 text-center'>$value</td><td class='border p-2 text-center'>" . round($meany, 4) . "</td><td class='border p-2 text-center'>" . round($sst_, 4) . "</td></tr>";
@@ -2522,7 +2522,7 @@ class Statistics extends Model
 				$sst_table .= "</tbody></table>";
 				$sst = array_sum($sst_arr);
 				$ssr_arr = array();
-				$ssr_table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>i</th><th class='border p-2 text-center text-blue'>x̂ᵢ</th><th class='border p-2 text-center text-blue'>ȳ</th><th class='border p-2 text-center text-blue'>(x̂ᵢ - ȳ)²</th></tr></thead><tbody>";
+				$ssr_table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>i</th><th class='border p-2 text-center text-blue'>x̂ᵢ</th><th class='border p-2 text-center text-blue'>ȳ</th><th class='border p-2 text-center text-blue'>(x̂ᵢ - ȳ)²</th></tr></thead><tbody>";
 				foreach ($set1 as $key => $value) {
 					$yhat = $a * $value + $b;
 					$ssr_ = pow($yhat - $meany, 2);
@@ -2532,7 +2532,7 @@ class Statistics extends Model
 				$ssr_table .= "</tbody></table>";
 				$ssr = array_sum($ssr_arr);
 				$sse_arr = array();
-				$sse_table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>i</th><th class='border p-2 text-center text-blue'>yᵢ</th><th class='border p-2 text-center text-blue'>x̂ᵢ</th><th class='border p-2 text-center text-blue'>(yᵢ - x̂ᵢ)²</th></tr></thead><tbody>";
+				$sse_table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>i</th><th class='border p-2 text-center text-blue'>yᵢ</th><th class='border p-2 text-center text-blue'>x̂ᵢ</th><th class='border p-2 text-center text-blue'>(yᵢ - x̂ᵢ)²</th></tr></thead><tbody>";
 				foreach ($set2 as $key => $value) {
 					$yhat = $a * $set1[$key] + $b;
 					$sse_ = pow($value - $yhat, 2);
@@ -2756,7 +2756,7 @@ class Statistics extends Model
 				$count = array_count_values($set);
 				$n = count($set);
 				if ($freq === 'ind') {
-					$table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>Element</th><th class='border p-2 text-center text-blue'>Frequency</th><th class='border p-2 text-center text-blue'>Relative Frequency</th><th class='border p-2 text-center text-blue'>Cumulative Relative Frequency</th></tr></thead><tbody>";
+					$table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>Element</th><th class='border p-2 text-center text-blue'>Frequency</th><th class='border p-2 text-center text-blue'>Relative Frequency</th><th class='border p-2 text-center text-blue'>Cumulative Relative Frequency</th></tr></thead><tbody>";
 					// <th class='border p-2 text-center text-blue'>Cumulative Frequency</th>
 					$cf = 0;
 					$crf = 0;
@@ -2889,7 +2889,7 @@ class Statistics extends Model
 						}
 						$group_count[] = $j;
 					}
-					$table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>Group</th><th class='border p-2 text-center text-blue'>Frequency</th><th class='border p-2 text-center text-blue'>Relative Frequency</th><th class='border p-2 text-center text-blue'>Cumulative Relative Frequency</th></tr></thead><tbody>";
+					$table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>Group</th><th class='border p-2 text-center text-blue'>Frequency</th><th class='border p-2 text-center text-blue'>Relative Frequency</th><th class='border p-2 text-center text-blue'>Cumulative Relative Frequency</th></tr></thead><tbody>";
 					$cf1 = 0;
 					$crf1 = 0;
 					$rf1_values = [];
@@ -7173,7 +7173,7 @@ class Statistics extends Model
 							}
 							$s_d = round(sqrt($s_d), 4);
 							$tablef = '';
-							$table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
+							$table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
 							$ar_2 = '';
 							$arf_1 = '';
 							for ($f = 0; $f < $i; $f++) {
@@ -7233,7 +7233,7 @@ class Statistics extends Model
 							}
 							$s_d1 = round(sqrt($s_d1), 4);
 							$tablef1 = '';
-							$table1 = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)²</th></tr></thead><tbody>";
+							$table1 = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)²</th></tr></thead><tbody>";
 							$ar_21 = '';
 							$arf_11 = '';
 							for ($f = 0; $f < $i1; $f++) {
@@ -7338,7 +7338,7 @@ class Statistics extends Model
 							}
 							$s_d = round(sqrt($s_d), 4);
 							$tablef = '';
-							$table = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
+							$table = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym)²</th></tr></thead><tbody>";
 							$ar_2 = '';
 							$arf_1 = '';
 							for ($f = 0; $f < $i; $f++) {
@@ -7403,7 +7403,7 @@ class Statistics extends Model
 							}
 							$s_d1 = round(sqrt($s_d1), 4);
 							$tablef1 = '';
-							$table1 = "<table class='w-100 font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)²</th></tr></thead><tbody>";
+							$table1 = "<table class='w-full font-s-18' style='border-collapse: collapse'><thead><tr class='bg-gray'><th class='border p-2 text-center text-blue'>xᵢ</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)</th><th class='border p-2 text-center text-blue'>(xᵢ - $mSym1)²</th></tr></thead><tbody>";
 							$ar_21 = '';
 							$arf_11 = '';
 							for ($f = 0; $f < $i1; $f++) {
@@ -8466,9 +8466,9 @@ class Statistics extends Model
 			$dat2Cus = "";
 			// One Tailed Table
 			$a1tbl =
-				'<p class="col-12 mt-2 font-s-18 text-blue"> One Tailed Probability of ' .
+				'<p class="mt-2 font-s-18 text-blue"> One Tailed Probability of ' .
 				$first .
-				'</p> <div class="col-12 overflow-auto"><table class="w-100" style="border-collapse: collapse">';
+				'</p> <div class="overflow-auto"><table class="w-full" style="border-collapse: collapse">';
 			for ($i = 1; $i <= $rloop; $i++) {
 				// Headings
 				if ($i == 1) {
@@ -8503,9 +8503,9 @@ class Statistics extends Model
 			// Two Tailed Table
 			$dat2 = "";
 			$a2tbl =
-				'<p class="col-12 mt-2 font-s-18 text-blue"> Two Tailed Probability of ' .
+				'<p class="mt-2 font-s-18 text-blue"> Two Tailed Probability of ' .
 				$first .
-				'</p> <div class="col-12 overflow-auto"><table class="w-100" style="border-collapse: collapse">';
+				'</p> <div class="overflow-auto"><table class="w-full" style="border-collapse: collapse">';
 			for ($i = 1; $i <= $rloop; $i++) {
 				// Headings
 				if ($i == 1) {
@@ -10816,7 +10816,7 @@ class Statistics extends Model
 			$k = $request->k;
 			$check = true;
 			for ($x = 1; $x <= $k; $x++) {
-				$group = $_POST["group$x"];
+				$group = $request->groups[$x] ?? '';
 				$groups = array_map("trim", explode(",", $group));
 				foreach ($groups as $value) {
 					if (!is_numeric($value)) {
@@ -10845,7 +10845,7 @@ class Statistics extends Model
 				$trs[0] = '';
 				$trs1[0] = '';
 				for ($i = 1; $i <= $k; $i++) {
-					$group = $_POST["group$i"];
+					$group = $request->groups[$i] ?? '';
 					$groups = array_map("trim", explode(",", $group));
 					$n = count($groups);
 					$sum = array_sum($groups);
@@ -10894,7 +10894,7 @@ class Statistics extends Model
 				$ssb = 0;
 				$ssw = 0;
 				for ($i = 1; $i <= $k; $i++) {
-					$group = $_POST["group$i"];
+					$group = $request->groups[$i] ?? '';
 					$groups = array_map("trim", explode(",", $group));
 					$n = count($groups);
 					$sum = array_sum($groups);
@@ -10930,13 +10930,13 @@ class Statistics extends Model
 				return $this->param;
 			}
 		} elseif ($submit === 'two_way') {
-			$rows = $_POST['rows'];
-			$columns = $_POST['columns'];
+			$rows = $request->rows;
+			$columns = $request->columns;
 
 			$check = true;
 			for ($i = 0; $i < $rows; $i++) {
 				for ($j = 0; $j < $columns; $j++) {
-					$input = $_POST['td_' . $i . '_' . $j];
+					$input = $request->table_data[$i][$j] ?? '';
 					$inputs = array_map("trim", explode(",", $input));
 					foreach ($inputs as $key => $values) {
 						if (!is_numeric($values)) {
@@ -10979,7 +10979,7 @@ class Statistics extends Model
 					$nc = 0;
 					for ($j = 0; $j <= $columns; $j++) {
 						if ($j != $columns) {
-							$input = $_POST['td_' . $i . '_' . $j];
+							$input = $request->table_data[$i][$j] ?? '';
 							$table .= "<td class='p-2 border text-center'>$input</td>";
 							$inputs = array_map("trim", explode(",", $input));
 							$sum = array_sum($inputs);
@@ -11050,7 +11050,7 @@ class Statistics extends Model
 				for ($i = 0; $i < $columns; $i++) {
 					$nc = 0;
 					for ($j = 0; $j < $rows; $j++) {
-						$input = $_POST['td_' . $j . '_' . $i];
+						$input = $request->table_data[$j][$i] ?? '';
 						$inputs = array_map("trim", explode(",", $input));
 						$nc += count($inputs);
 					}
@@ -11067,7 +11067,7 @@ class Statistics extends Model
 				}
 				for ($i = 0; $i < $rows; $i++) {
 					for ($j = 0; $j < $columns; $j++) {
-						$input = $_POST['td_' . $i . '_' . $j];
+						$input = $request->table_data[$i][$j] ?? '';
 						$inputs = array_map("trim", explode(",", $input));
 						foreach ($inputs as $key => $value) {
 							$A += pow($value, 2);

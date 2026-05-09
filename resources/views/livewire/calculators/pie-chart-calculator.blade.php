@@ -82,60 +82,56 @@
                                         @endfor
                                     </table>
                                 </div>
-                                <div class="w-full mt-6 mb-5" wire:ignore>
-                                    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                                
+                                <div class="w-full mt-6 mb-5" 
+                                     x-data='{ 
+                                        detail: @json($detail),
+                                        render(newDetail) {
+                                            if (newDetail) this.detail = newDetail;
+                                            
+                                            if (typeof CanvasJS === "undefined") {
+                                                setTimeout(() => this.render(), 200);
+                                                return;
+                                            }
+                                            
+                                            if (!this.detail || !this.detail.new_combine) return;
+
+                                            const dataPoints = typeof this.detail.new_combine === "string" 
+                                                ? JSON.parse(this.detail.new_combine) 
+                                                : this.detail.new_combine;
+
+                                            var chart = new CanvasJS.Chart(this.$refs.pieChart, {
+                                                theme: "light2",
+                                                exportEnabled: true,
+                                                animationEnabled: true,
+                                                title: {
+                                                    text: "Pie Chart"
+                                                },
+                                                data: [{
+                                                    type: "pie",
+                                                    startAngle: 25,
+                                                    toolTipContent: "<b>{label}</b>: {y}%",
+                                                    showInLegend: "true",
+                                                    legendText: "{label}",
+                                                    indexLabelFontSize: 16,
+                                                    indexLabel: "{label} - {y}",
+                                                    dataPoints: dataPoints
+                                                }]
+                                            });
+                                            chart.render();
+                                        }
+                                     }' 
+                                     x-init="render()"
+                                     @chart-updated.window="render($event.detail[0])"
+                                     wire:ignore>
+                                    <div x-ref="pieChart" style="height: 370px; width: 100%;"></div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const renderChart = (data) => {
-                        if (typeof CanvasJS !== 'undefined') {
-                            var chart = new CanvasJS.Chart("chartContainer", {
-                                theme: "light2",
-                                exportEnabled: true,
-                                animationEnabled: true,
-                                title: {
-                                    text: "Pie Chart"
-                                },
-                                data: [{
-                                    type: "pie",
-                                    startAngle: 25,
-                                    toolTipContent: "<b>{label}</b>: {y}%",
-                                    showInLegend: "true",
-                                    legendText: "{label}",
-                                    indexLabelFontSize: 16,
-                                    indexLabel: "{label} - {y}",
-                                    dataPoints: data
-                                }]
-                            });
-                            chart.render();
-                        }
-                    };
-
-                    // Initial render if data is present
-                    let initialData = {!! $chal_v !!};
-                    if (initialData) {
-                        setTimeout(() => renderChart(initialData), 100);
-                    }
-
-                    // Re-render when Livewire fires the event
-                    document.addEventListener('livewire:initialized', () => {
-                        Livewire.on('chart-updated', (event) => {
-                            try {
-                                const parsedData = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-                                setTimeout(() => renderChart(parsedData), 100);
-                            } catch (e) {
-                                console.error("Could not parse chart data", e);
-                            }
-                        });
-                    });
-                });
-            </script>
         @endisset
     </form>
 </div>
