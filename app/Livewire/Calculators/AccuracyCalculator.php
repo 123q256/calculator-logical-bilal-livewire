@@ -5,7 +5,7 @@ namespace App\Livewire\Calculators;
 use App\Models\Statistics;
 use Livewire\Component;
 
-class SampleDistributionCalculator extends Component
+class AccuracyCalculator extends Component
 {
     public $error = null;
     public $detail = null;
@@ -13,12 +13,16 @@ class SampleDistributionCalculator extends Component
     public $lang = [];
 
     // Form properties
-    public $mean = 0.5;
-    public $deviation = 1.5;
-    public $size = 65;
-    public $probability = 'two_tailed';
-    public $x1 = 0.2;
-    public $x2 = 0.8;
+    public $method_unit = 'Standard method';
+    public $true_postive = 100;
+    public $false_negative = 20;
+    public $false_positive = 10;
+    public $true_negative = 40;
+    public $prevalence = 10;
+    public $sensitivity = 20;
+    public $specificity = 10;
+    public $observed_value = 40;
+    public $accepted_value = 50;
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -29,12 +33,16 @@ class SampleDistributionCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->mean = $inputs->mean ?? 0.5;
-            $this->deviation = $inputs->deviation ?? 1.5;
-            $this->size = $inputs->size ?? 65;
-            $this->probability = $inputs->probability ?? 'two_tailed';
-            $this->x1 = $inputs->x1 ?? 0.2;
-            $this->x2 = $inputs->x2 ?? 0.8;
+            $this->method_unit = $inputs->method_unit ?? 'Standard method';
+            $this->true_postive = $inputs->true_postive ?? 100;
+            $this->false_negative = $inputs->false_negative ?? 20;
+            $this->false_positive = $inputs->false_positive ?? 10;
+            $this->true_negative = $inputs->true_negative ?? 40;
+            $this->prevalence = $inputs->prevalence ?? 10;
+            $this->sensitivity = $inputs->sensitivity ?? 20;
+            $this->specificity = $inputs->specificity ?? 10;
+            $this->observed_value = $inputs->observed_value ?? 40;
+            $this->accepted_value = $inputs->accepted_value ?? 50;
         }
     }
 
@@ -48,12 +56,16 @@ class SampleDistributionCalculator extends Component
     {
         $this->error = null;
         $this->detail = null;
-        $this->mean = 0.5;
-        $this->deviation = 1.5;
-        $this->size = 65;
-        $this->probability = 'two_tailed';
-        $this->x1 = 0.2;
-        $this->x2 = 0.8;
+        $this->method_unit = 'Standard method';
+        $this->true_postive = 100;
+        $this->false_negative = 20;
+        $this->false_positive = 10;
+        $this->true_negative = 40;
+        $this->prevalence = 10;
+        $this->sensitivity = 20;
+        $this->specificity = 10;
+        $this->observed_value = 40;
+        $this->accepted_value = 50;
 
         session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
 
@@ -65,16 +77,20 @@ class SampleDistributionCalculator extends Component
     public function calculate()
     {
         $request = (object)[
-            'mean'        => $this->mean,
-            'deviation'   => $this->deviation,
-            'size'        => $this->size,
-            'probability' => $this->probability,
-            'x1'          => $this->x1,
-            'x2'          => $this->x2,
+            'method_unit'    => $this->method_unit,
+            'true_postive'   => $this->true_postive,
+            'false_negative' => $this->false_negative,
+            'false_positive' => $this->false_positive,
+            'true_negative'  => $this->true_negative,
+            'prevalence'     => $this->prevalence,
+            'sensitivity'    => $this->sensitivity,
+            'specificity'    => $this->specificity,
+            'observed_value' => $this->observed_value,
+            'accepted_value' => $this->accepted_value,
         ];
 
         $model = new Statistics();
-        $result = $model->sample($request);
+        $result = $model->accuracy($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -88,7 +104,6 @@ class SampleDistributionCalculator extends Component
 
             $this->detail = $result;
             $this->dispatch('math-updated');
-            $this->dispatch('render-graph', $result);
             return;
         }
 
@@ -110,6 +125,6 @@ class SampleDistributionCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.sample-distribution-calculator');
+        return view('livewire.calculators.accuracy-calculator');
     }
 }

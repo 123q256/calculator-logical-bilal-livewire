@@ -5,7 +5,7 @@ namespace App\Livewire\Calculators;
 use App\Models\Statistics;
 use Livewire\Component;
 
-class SampleDistributionCalculator extends Component
+class SampleSizeCalculator extends Component
 {
     public $error = null;
     public $detail = null;
@@ -13,12 +13,13 @@ class SampleDistributionCalculator extends Component
     public $lang = [];
 
     // Form properties
-    public $mean = 0.5;
-    public $deviation = 1.5;
-    public $size = 65;
-    public $probability = 'two_tailed';
-    public $x1 = 0.2;
-    public $x2 = 0.8;
+    public $population = 'sample'; // Infinite (sample) or Finite (margin)
+    public $given_unit = 'standard';
+    public $confidence_unit = '95%';
+    public $margin = 5;
+    public $standard = 2;
+    public $proportion = 50;
+    public $n_finite = 10;
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -29,12 +30,13 @@ class SampleDistributionCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->mean = $inputs->mean ?? 0.5;
-            $this->deviation = $inputs->deviation ?? 1.5;
-            $this->size = $inputs->size ?? 65;
-            $this->probability = $inputs->probability ?? 'two_tailed';
-            $this->x1 = $inputs->x1 ?? 0.2;
-            $this->x2 = $inputs->x2 ?? 0.8;
+            $this->population = $inputs->population ?? 'sample';
+            $this->given_unit = $inputs->given_unit ?? 'standard';
+            $this->confidence_unit = $inputs->confidence_unit ?? '95%';
+            $this->margin = $inputs->margin ?? 5;
+            $this->standard = $inputs->standard ?? 2;
+            $this->proportion = $inputs->proportion ?? 50;
+            $this->n_finite = $inputs->n_finite ?? 10;
         }
     }
 
@@ -44,16 +46,24 @@ class SampleDistributionCalculator extends Component
         $this->error = null;
     }
 
+    public function setPopulation($value)
+    {
+        $this->population = $value;
+        $this->detail = null;
+        $this->error = null;
+    }
+
     public function resetForm()
     {
         $this->error = null;
         $this->detail = null;
-        $this->mean = 0.5;
-        $this->deviation = 1.5;
-        $this->size = 65;
-        $this->probability = 'two_tailed';
-        $this->x1 = 0.2;
-        $this->x2 = 0.8;
+        $this->population = 'sample';
+        $this->given_unit = 'standard';
+        $this->confidence_unit = '95%';
+        $this->margin = 5;
+        $this->standard = 2;
+        $this->proportion = 50;
+        $this->n_finite = 10;
 
         session()->forget(['calculator_back_inputs', 'calculator_result', 'validation_error', 'scroll_to_result']);
 
@@ -65,16 +75,17 @@ class SampleDistributionCalculator extends Component
     public function calculate()
     {
         $request = (object)[
-            'mean'        => $this->mean,
-            'deviation'   => $this->deviation,
-            'size'        => $this->size,
-            'probability' => $this->probability,
-            'x1'          => $this->x1,
-            'x2'          => $this->x2,
+            'population'      => $this->population,
+            'given_unit'      => $this->given_unit,
+            'confidence_unit' => $this->confidence_unit,
+            'margin'          => $this->margin,
+            'standard'        => $this->standard,
+            'proportion'      => $this->proportion,
+            'n_finite'        => $this->n_finite,
         ];
 
         $model = new Statistics();
-        $result = $model->sample($request);
+        $result = $model->sample_size($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -88,7 +99,6 @@ class SampleDistributionCalculator extends Component
 
             $this->detail = $result;
             $this->dispatch('math-updated');
-            $this->dispatch('render-graph', $result);
             return;
         }
 
@@ -110,6 +120,6 @@ class SampleDistributionCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.sample-distribution-calculator');
+        return view('livewire.calculators.sample-size-calculator');
     }
 }

@@ -121,7 +121,58 @@
                                 </div>
 
                                 <p class="w-full mt-6">{{ $lang['statement5'] ?? 'Probability Density Function (PDF)' }}:</p>
-                                <div id="sampleChart" class="mt-3 w-full h-[400px]"></div>
+                                
+                                <div class="w-full mt-3" 
+                                     x-data='{ 
+                                        detail: @json($detail),
+                                        render(newDetail) {
+                                            if (newDetail) this.detail = newDetail;
+                                            
+                                            if (typeof Highcharts === "undefined" || typeof Highcharts.chart !== "function") {
+                                                setTimeout(() => this.render(), 200);
+                                                return;
+                                            }
+                                            
+                                            if (!this.detail || !this.detail.chartData) return;
+
+                                            let labels = [];
+                                            const prob = this.detail.probability;
+                                            if(prob === "two_tailed"){
+                                                labels = ["x", "P(X̄ ≥ X₁ & X̄ > X₂), PDF", , , , , , , , , "P(X₁ < X̄ < X₂), PDF"];
+                                            } else if(prob === "left_tailed"){
+                                                labels = ["x", "P(X̄ ≥ X), PDF", , , , , , , , , "P(X̄ < X), PDF"];
+                                            } else {
+                                                labels = ["x", "P(X̄ ≤ X), PDF", , , , , , , , , "P(X̄ > X), PDF"];
+                                            }
+
+                                            Highcharts.chart(this.$refs.sampleChart, {
+                                                chart: { type: "area", backgroundColor: "transparent" },
+                                                title: { text: "Probability density function (PDF)" },
+                                                tooltip: { pointFormat: "{series.name}, PDF {point.y}" },
+                                                plotOptions: {
+                                                    area: {
+                                                        marker: { enabled: false }
+                                                    }
+                                                },
+                                                series: [
+                                                    {
+                                                        name: prob === "two_tailed" ? "P(X̄ ≥ X₁ & X̄ > X₂)" : (prob === "left_tailed" ? "P(X̄ ≥ X), PDF" : "P(X̄ > X), PDF"),
+                                                        data: this.detail.chartData
+                                                    },
+                                                    {
+                                                        name: prob === "two_tailed" ? "P(X₁ < X̄ < X₂)" : (prob === "left_tailed" ? "P(X̄ < X), PDF" : "P(X̄ ≤ X), PDF"),
+                                                        data: this.detail.chartData2
+                                                    }
+                                                ],
+                                                credits: { enabled: false }
+                                            });
+                                        }
+                                     }' 
+                                     x-init="render()"
+                                     @render-graph.window="render($event.detail)"
+                                     wire:ignore>
+                                    <div x-ref="sampleChart" class="w-full min-h-[400px]" style="display: block; width: 100%;"></div>
+                                </div>
 
                                 <div class="w-full text-center mt-8">
                                     <button type="button" wire:click="resetForm" class="calculate bg-[#2845F5] shadow-2xl text-[#fff] hover:bg-[#1A1A1A] hover:text-white duration-200 font-[600] text-[16px] rounded-[44px] px-8 py-3">
@@ -144,40 +195,6 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     
     <script>
-        window.renderSampleChart = function(data) {
-            if (!document.getElementById('sampleChart')) return;
-
-            let labels = [];
-            if(data.probability === 'two_tailed'){
-                labels = ['x', 'P(X̄ ≥ X₁ & X̄ > X₂), PDF', , , , , , , , , 'P(X₁ < X̄ < X₂), PDF'];
-            } else if(data.probability === 'left_tailed'){
-                labels = ['x', 'P(X̄ ≥ X), PDF', , , , , , , , , 'P(X̄ < X), PDF'];
-            } else {
-                labels = ['x', 'P(X̄ ≤ X), PDF', , , , , , , , , 'P(X̄ > X), PDF'];
-            }
-
-            Highcharts.chart('sampleChart', {
-                chart: { type: 'area' },
-                title: { text: 'Probability density function (PDF)' },
-                tooltip: { pointFormat: '{series.name}, PDF {point.y}' },
-                plotOptions: {
-                    area: {
-                        marker: { enabled: false }
-                    }
-                },
-                series: [
-                    {
-                        name: data.probability === 'two_tailed' ? 'P(X̄ ≥ X₁ & X̄ > X₂)' : (data.probability === 'left_tailed' ? 'P(X̄ ≥ X), PDF' : 'P(X̄ > X), PDF'),
-                        data: data.chartData
-                    },
-                    {
-                        name: data.probability === 'two_tailed' ? 'P(X₁ < X̄ < X₂)' : (data.probability === 'left_tailed' ? 'P(X̄ < X), PDF' : 'P(X̄ ≤ X), PDF'),
-                        data: data.chartData2
-                    }
-                ]
-            });
-        };
-
         window.MJrerender = function() {
             if (typeof renderMathInElement === 'function') {
                 renderMathInElement(document.getElementById('result-section') || document.body, {
@@ -195,21 +212,6 @@
             Livewire.on('math-updated', () => {
                 setTimeout(() => { window.MJrerender(); }, 100);
             });
-
-            Livewire.on('chart-updated', (event) => {
-                setTimeout(() => { window.renderSampleChart(event[0]); }, 100);
-            });
-
-            // Initial load from session
-            @isset($detail)
-                setTimeout(() => {
-                    window.renderSampleChart({
-                        chartData: @json($detail['chartData']),
-                        chartData2: @json($detail['chartData2']),
-                        probability: '{{ $detail['probability'] }}'
-                    });
-                }, 500);
-            @endisset
         });
     </script>
 @endpush
