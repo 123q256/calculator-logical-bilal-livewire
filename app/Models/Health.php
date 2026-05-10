@@ -13,7 +13,6 @@ class Health extends Model
 
    // BMI Calculator
 	public function bmi($request){
-        // dd($request);
         $age = $request->age;
         $height_cm = $request->height_cm;
         $ft_in = $request->ft_in;
@@ -865,7 +864,6 @@ class Health extends Model
 					$this->param['left']=$left;
 					$this->param['stage']=$stage;
 					$this->param['RESULT']=1;
-                    // dd($this->param);
                     return $this->param;
 				}else{
                     $this->param['error'] = 'Please Fill all Fields.';
@@ -948,7 +946,6 @@ class Health extends Model
 				$this->param['left'] =$left;
 				$this->param['stage'] =$stage;
 				$this->param['RESULT'] = 1;
-                // dd($this->param);
 				return $this->param;
 			}
 		}else{
@@ -959,7 +956,6 @@ class Health extends Model
 
     // BMR Calculator
     public function bmr($request){
-        // dd($request->all());
         if (is_numeric($request->age) && is_numeric($request->weight ) || is_numeric($request->{'height-ft'}) || is_numeric($request->{'height-in'}) || is_numeric($request->{'height-cm'})) {
             $age=$request->age;
             $weight=$request->weight;
@@ -1277,7 +1273,6 @@ class Health extends Model
 
 	// 6 Minute Walk Test Calculator
 	public function walk($request){
-        // dd($request->all());
 		if (is_numeric($request->age) && is_numeric($request->weight ) && is_numeric($request->distance) || is_numeric($request->{'height-ft'}) || is_numeric($request->{'height-in'}) || is_numeric($request->{'height-cm'})) {
 			$age=$request->age;
 			$weight=$request->weight;
@@ -1321,7 +1316,6 @@ class Health extends Model
 
     // ACFT Calculator
 	public function acft($request){
-        // dd($request->all());
         $unit_type = $request->unit_type;
         $test_units = $request->test_units;
         $deadlift = $request->deadlift;
@@ -1682,7 +1676,6 @@ class Health extends Model
 
     // Allele Frequency Calculator
 	public function allele($request){
-        // dd($request->all());
         $type = $request->type;
         $operations = $request->operations;
         $first = $request->first;
@@ -10827,7 +10820,6 @@ class Health extends Model
 
     // Blood Type Calculator
     public function blood($request){
-        // dd($request->all());
         $op=$request->selection;
         $op1=$request->c_unit;
         $op2=$request->selection3;
@@ -11007,7 +10999,6 @@ class Health extends Model
 
 	// Body Surface Area Calculator
 	public function bsa($request){
-        // dd($request->all());
 		if (is_numeric($request->weight) && is_numeric($request->{'height-ft'}) || is_numeric($request->{'height-in'}) || is_numeric($request->{'height-cm'})) {
 			$height_ft=$request->{'height-ft'};
 			$height_in=$request->{'height-in'};
@@ -11053,7 +11044,6 @@ class Health extends Model
 
     // Carboplatin Calculator
     public function carboplatin($request){
-        //  dd($request->all());
         $type = $request->type;
         $operations = $request->operations;
         $first = $request->first;
@@ -11377,7 +11367,6 @@ class Health extends Model
 
     // Dosage Calculator
 	public function dosage($request){
-        // dd($request->all());
 		$w=$request->w;
 		$w1=$request->w1;
 		$d=$request->d;
@@ -11468,7 +11457,6 @@ class Health extends Model
 
     // HCG Calculator
     public function hcg($request){
-        // dd($request->all());
         $first = $request->first;
         $second = $request->second;
         $third = $request->third;
@@ -11516,7 +11504,6 @@ class Health extends Model
 
     // Ideal Body Weight Calculator
 	public function ideal($request){
-        // dd($request->all());
         $hidden_nameunit =$request->hidden_nameunit ?? 'cm';
 		if (is_numeric($request->age) && is_numeric($request->weight) && is_numeric($request->{'height-ft'}) || is_numeric($request->{'height-in'}) || is_numeric($request->{'height-cm'})) {
 			$age=$request->age;
@@ -11610,14 +11597,12 @@ class Health extends Model
 				$Percent=round((($request->weight - ($ans*2.205)) / ($ans*2.205)) * 100,2).' %';
                
 				$bmi= round(($request->weight / 2.205) / pow($height_meters, 2),2);
-                // dd($bmi);
 			}
 			if ($request->gender==='Female') {
 				$lbw=round((9270 * $weight_kg) / (8780 + (244*$bmi)),2);
 			}else{
 				$lbw=round((9270 * $weight_kg) / (6680 + (216*$bmi)),2);
 			}
-			// return 
 			if ($request->unit==='kg') {
 				$this->param['ans'] = "$ans <span class='text-blue font-s-20'>kg</span>";
 				$this->param['lbw'] = "$lbw kg";
@@ -11643,7 +11628,6 @@ class Health extends Model
 
     // Implantation Calculator
     public function implantation($request){
-        // dd($request->all());
         $know=trim($request->know);
         $ovd=trim($request->ovd);
         $lp=trim($request->lp);
@@ -11714,7 +11698,6 @@ class Health extends Model
 
     // IPPT Calculator
 	public function ippt($request){
-        // dd($request->all());
 		if (is_numeric($request->age) && is_numeric($request->push) && is_numeric($request->sit)) {
 			$age=$request->age;
 			$push=$request->push-1;
@@ -11915,7 +11898,6 @@ class Health extends Model
 
     // Lean Body Mass Calculator
 	public function lean($request){
-        // dd($request->all());
 		if (is_numeric($request->weight) && (is_numeric($request->{'height-ft'}) || is_numeric($request->{'height-in'}) || is_numeric($request->{'height-cm'}))) {
 			$height_ft=$request->{'height-ft'};
 			$height_in=$request->{'height-in'};
@@ -12042,8 +12024,6 @@ class Health extends Model
 
     // Amoxicillin Pediatric Dosage Calculator
 	public function amoxicillin($request){
-        // dd($request->all());
-        
         $age=$request->age;
         $age_unit=$request->age_unit;
         $weight=$request->weight;
@@ -12157,15 +12137,12 @@ class Health extends Model
 
     // Baby Weight Percentile Calculator
     public function weight_per($request){
-        // dd($request->all());
         $weight = $request->weight;
         $w_unit = $request->w_unit;
         $age = $request->age;
         $age_unit = $request->age_unit;
         $gender = $request->gender;
 
-        // dd($request->all());
-                  
 		function wazan($a,$b){
 			if($a=="g"){
 				$kitna = $b / 1000;
@@ -12794,7 +12771,6 @@ class Health extends Model
 
     // Calories Burned Biking Calculator
     public function cal_bike($request){
-        // dd($request->all());
         $operations = $request->operations;
         $activity = $request->activity;
         $first = $request->first;
@@ -12957,7 +12933,6 @@ class Health extends Model
 
     // Cholesterol Ratio Calculator
 	public function cholesterol($request){
-        // dd($request->all());
         $tc=$request->tc;
         $tc_unit=$request->tc_unit;
         $hc=$request->hc;
@@ -13090,7 +13065,6 @@ class Health extends Model
 
     // Dihybrid Cross Calculator
     public function dihybrid($request){
-        // dd($request->all());
         $mother1=trim($request->mtype1);
         $mother2=trim($request->mtype2);
         $father1=trim($request->ftype1);
@@ -13251,7 +13225,6 @@ class Health extends Model
 
     // Dress Size Calculator
     function dress($request){
-        // dd($request->all());
         $bust=$request->bust;
         $waist=$request->waist;
         $hips=$request->hips;
@@ -13473,7 +13446,6 @@ class Health extends Model
 
     // EER Calculator - Estimated Energy Requirement
 	public function eer($request){
-        // dd($request->all());
 		if ($request->gender==='Male' || $request->gender==='Female' || $request->gender==='pergnant' || $request->gender==='lac') {
 			if (is_numeric($request->age) && is_numeric($request->weight) && is_numeric($request->{'height-ft'}) || is_numeric($request->{'height-in'}) || is_numeric($request->{'height-cm'})) {
 				$age=$request->age;
@@ -13850,7 +13822,6 @@ class Health extends Model
 			$this->param['cf']=$cf;
 			$this->param['tc']=$tc;
 			$this->param['RESULT'] = 1;
-            // dd($this->param);
             return $this->param;
 		}else{
             $this->param['error'] = 'Please! Check your input.';
@@ -13860,7 +13831,6 @@ class Health extends Model
 
     // Harris Benedict Equation Calculator
     public function harris($request){
-        // dd($request->all());
         $age = $request->age;
         $weight = $request->weight;
         $height_ft = $request->height_ft;
@@ -13932,7 +13902,6 @@ class Health extends Model
 
     // FFMI Calculator
 	public function ffmi($request){
-        // dd($request->all());
 		if (is_numeric($request->weight) && is_numeric($request->percent) && (is_numeric($request->height_ft) || is_numeric($request->height_in) || is_numeric($request->height_cm))) {
 			$height_ft=$request->height_ft;
 			$height_in=$request->height_in;
@@ -13957,7 +13926,6 @@ class Health extends Model
 			$ffmi=round($lean/ pow($height_m, 2),2);
 			$nffmi=round($ffmi + 6.1 * (1.8 - $height_m),2);
 			$bmi=round($weight/pow($height_m, 2),2);
-            // dd($ffmi);
 			if ($ffmi<18) {
 				$this->param['skinny']="purple text-white";
 				$cat="Below Average";
@@ -13996,7 +13964,6 @@ class Health extends Model
 
     // Height Percentile Calculator
     public function height($request){
-        // dd($request->all());
         $height_ft = $request->height_ft;
         $height_inch = $request->height_in;
         $height_cm = $request->height_cm;
@@ -15350,8 +15317,6 @@ class Health extends Model
 							$height_ft = ($height_cm / 30.48);
 							$height_in = $height_ft * 12 + $height_in;							
 						}
-                        // dd($height_in);
-
 						$height_in = $height_ft * 12 + $height_in;
 						$cbr_ans = ($operations * $first * 7) / 400;
 						$cb_ans = $cbr_ans * $second;
@@ -15409,7 +15374,6 @@ class Health extends Model
 				$this->param['map']=$map;
 				$this->param['pr']=$pr;
 				$this->param['RESULT'] = 1;
-                // dd($this->param);
                 return $this->param;
 			}
 		}else{
@@ -15420,7 +15384,6 @@ class Health extends Model
 
     // Melatonin Dosage Calculator
 	public function melatonin($request){
-        // dd($request->all());
         $selection=$request->selection;
         $selection1=$request->selection3;
         $units=$request->d_unit;
@@ -16654,7 +16617,6 @@ class Health extends Model
 
 	// Macro Calculator
 	public function macro($request){
-        // dd($request->all());
 		$check=true;
 		foreach ($request->toArray() as $key => $value) {
 			if ($key!='height-ft' && $key!='height-in' && $key!='height-cm' && $key!='submit' && $key!='percent' && $key!="/macro-calculator/") {
@@ -16748,7 +16710,6 @@ class Health extends Model
 
     // Ovulation Calculator
 	public function ovulation($request){
-        // dd($request->all());
         if(is_numeric($request->days) && !empty($request->date)){
 			$datepicker=$request->date;
 			$exp=explode('-', $datepicker);
@@ -16919,7 +16880,6 @@ class Health extends Model
 			$this->param['lasttime'] = $lasttime;
 			$this->param['request'] = $request;
 			$this->param['RESULT'] = 1;
-            // dd($this->param);
             return $this->param;
 		}else{
             $this->param['error'] = 'Invalid Input.';
@@ -16929,7 +16889,6 @@ class Health extends Model
 
     // Calorie Deficit Calculator
     public function cal_deficit($request){
-        // dd($request->all());
         $submit = $request->unit_type;
         $gender = $request->gender;
         $age = $request->age;
@@ -17070,7 +17029,6 @@ class Health extends Model
                 "calorie_def_cal" => $calorie_def_cal,
                 "RESULT" => 1
             );
-            // dd($this->param);
             return $this->param;
         }else{
             $this->param['error'] = 'Please! Check your input.';
@@ -17080,7 +17038,6 @@ class Health extends Model
 
     // Biological Age Calculator
 	public function biological($request){
-    // dd($request->all());
         $m1=$request->m1;
         $m2=$request->m2;
         $m3=$request->m3;
@@ -18991,7 +18948,6 @@ class Health extends Model
 	}
     // Paracetamol Dosage Calculator
     public function paracetamol($request){
-        // dd($request->all());
         $age = $request->age;
         $age_unit = $request->age_unit;
         $weight = $request->weight;
@@ -19384,7 +19340,6 @@ class Health extends Model
 
     // Pregnancy Calculator
 	public function pregnancy($request){
-        // dd($request->all());
 
 		if(!empty($request->date)) $fieldsDone = 1;
 			$dop = $request->date; // mmm,dd,yyyy
@@ -19491,10 +19446,6 @@ class Health extends Model
                 }else if($days =='Ultrasound'){
                     $days = 250;
                 }
-
-
-
-                // dd($request->ivf);
 				$days=266 - $days;
 				$due_date=date('Y-m-d', strtotime($year."-".$month."-".$day. '+ '.$days.' days'));
 				$modi_ageEsimated=strtotime($year."-".$month."-".$day. '+ '.$days.' days');
@@ -19598,7 +19549,6 @@ class Health extends Model
 
     // Pregnancy Weight Gain Calculator
     public function pre_weight($request){
-        // dd($request->all());
         $height_ft = $request->height_ft;
         $height_in = $request->height_in;
         $height_cm = $request->height_cm;
@@ -19772,7 +19722,6 @@ class Health extends Model
 
     // Prostate Volume Calculator
     public function prostate($request){
-        // dd($request->all());
         $length = $request->length;
         $length_unit = $request->length_unit;
         $width = $request->width;
@@ -19876,7 +19825,6 @@ class Health extends Model
 
     // Protein Caluclator
     public function protein($request){
-        //  dd($request->all());
         $age = $request->age;
         $gender = $request->gender;
         $weight = $request->weight;
@@ -19963,7 +19911,6 @@ class Health extends Model
 
 	// RMR Calculator
 	public function rmr($request){
-        // dd($request->all(),$request->weight);
 		if (is_numeric($request->age) && is_numeric($request->weight ) || is_numeric($request->height_ft) || is_numeric($request->height_in) || is_numeric($request->height_cm)) {
 			$age=$request->age;
 			$weight=$request->weight;
@@ -19990,7 +19937,6 @@ class Health extends Model
 			// return 
 			$this->param['RMR'] = $rmr;
 			$this->param['RESULT'] = 1;
-            // dd($this->param);
             return $this->param;
 		} else {
             $this->param['error'] = 'Please fill All fields.';
@@ -20000,7 +19946,6 @@ class Health extends Model
 
     // Steps to Calories Calculator
     public function steps($request){
-        // dd($request->all());
         $weight = $request->weight;
         $w_unit = $request->w_unit;
         $height_ft = $request->height_ft;
@@ -20109,7 +20054,6 @@ class Health extends Model
 
     // Steps to Miles Calculator
     public function steps_mi($request){
-        // dd($request->all());
         $methods = $request->methods;
         $sex = $request->sex;
         $first = $request->first;
@@ -20296,7 +20240,6 @@ class Health extends Model
 
     // Target Heart Rate Calculator
 	public function target($request){
-        // dd($request->all());
 		if ($request->method!='3' && is_numeric($request->age)) {
 			$age=$request->age;
 			if ($request->formula==1) {
@@ -20377,7 +20320,6 @@ class Health extends Model
     // IV Drip Rate Calculator
 	public function drip($request){
 
-        // dd($request->all());
         $v=$request->v;
         $v_unit=str_replace('@','',$request->v_unit);
         $t=$request->t;
@@ -20393,8 +20335,6 @@ class Health extends Model
         $bv_unit=$request->bv_unit;
         $drug=$request->drug;
         $drug_unit=$request->drug_unit;
-
-        // dd($v_unit);
         if($v_unit == 'mm³'){
             $v_unit =  0.001;
         }else if($v_unit == 'cm³'){
@@ -20516,7 +20456,6 @@ class Health extends Model
 
     // VO2 Max calculator
 	public function vo2($request){
-        //  dd($request->all());
         $methods = $request->methods;
         $operations1 = $request->operations1;
         $operations2 = $request->operations2;
@@ -20685,7 +20624,6 @@ class Health extends Model
 
 	// Wilks Calculator
 	public function wilks($request){
-        // dd($request->all());
         $sex=$request->sex;
         $method=$request->method;
         $bw=$request->bw;
@@ -20768,7 +20706,6 @@ class Health extends Model
 
     // Weight Watchers Points Calculator
     public function weight_watchers($request){
-        //  dd($request->all());
         $fe=trim($request->fe);
         $fe_unit=trim($request->fe_unit);
         $sf=trim($request->sf);
@@ -20989,7 +20926,6 @@ class Health extends Model
 
     // Tinetti Calculator
 	public function tinetti($request){
-        // dd($request->all());
         $a1=$request->a1;
         $a2=$request->a2;
         $a3=$request->a3;
@@ -21178,7 +21114,6 @@ class Health extends Model
     // A1C Calculator
     public function a1c($request){
 
-        // dd($request->all());
         $solve = $request->solve;
         $input = $request->input;
         $unit1 = $request->unit1;
@@ -21227,13 +21162,11 @@ class Health extends Model
         $this->param['percent'] = $percent;
         $this->param['jawab'] = round($jawab, 2);
         $this->param['RESULT'] = 1;
-        // dd($this->param);
         return $this->param;
     }
 
     // Adjusted Body Weight Calculator
     public function adjusted($request){
-        // dd($request->all());
         $weight  = $request->weight;
         $weight_unit = $request->weight_unit;
         $gender = $request->gender;
@@ -21293,7 +21226,6 @@ class Health extends Model
 
     // Army Body Fat Calculator
 	public function army($request){
-        // dd($request->all());
         $activeDuty  = $request->activeDuty;
         $age  = $request->age;
         $gender = $request->gender;
@@ -21434,7 +21366,6 @@ class Health extends Model
 
 	// Ast Alt Ratio Calculator
 	public function ast($request){
-        // dd($request->all());
         $ast = trim($request->ast);
         $ast_unit = str_replace('U / ', '', trim($request->ast_unit));
         $alt = trim($request->alt);
@@ -21536,7 +21467,6 @@ class Health extends Model
 
     // Bishop Score Calculator
 	public function bishop($request){
-        // dd($request->all());
         $effacement  = $request->effacement;
         $consistency  = $request->consistency;
         $fetal_station = $request->fetal_station;
@@ -21612,7 +21542,6 @@ class Health extends Model
 
     // Bulking Calculator
     public function bulking($request){
-        // dd($request->all());
         $age		=	$request->age;
         $height_ft	= 	$request->height_ft;
         $height_cm	=	$request->height_cm;
@@ -21851,7 +21780,6 @@ class Health extends Model
 
     // Incidence Rate Calculator
 	public function incidence($request){
-        // dd($request->all());
         $cases = trim($request->cases);
         $risk = trim($request->risk);
         $different_unit = trim($request->different_unit);
@@ -21926,7 +21854,6 @@ class Health extends Model
 
     // Navy Body Fat Calculator
 	public function navy($request){
-        // dd($request->all());
         $weight = $request->weight;
         $weight_unit = $request->weight_unit;
         $age = $request->age;
@@ -22090,7 +22017,6 @@ class Health extends Model
 
     // Net Carbs Calculator
 	public function net($request){
-        // DD($request->all());
         $serving = $request->serving;
         $location = $request->location;
         $carbohydrates = $request->carbohydrates;
@@ -22133,7 +22059,6 @@ class Health extends Model
 
     // NNT Calculator
 	public function nnt($request){
-        // dd($request->all());
         $outcome = $request->outcome;
         $first = $request->first;
         $second = $request->second;
@@ -22202,7 +22127,6 @@ class Health extends Model
 
     // Rucking Calorie Calculator
  	public function rucking($request){
-        // dd($request->all());
         $activities = $request->activities;
         $weight = $request->weight;
         $time = $request->time;
@@ -22221,7 +22145,6 @@ class Health extends Model
 
     // Stroke Volume Calculator
 	public function stroke($request){
-        // dd($request->all());
         $Cardiac = trim($request->Cardiac);
         $Cardiac_unit = str_replace('/min ', '', trim($request->Cardiac_unit));
         $heart = trim($request->heart);
@@ -22411,7 +22334,6 @@ class Health extends Model
 
     // Urine Output Calculator
 	public function urine($request){
-        // dd($request->all());
         $weight = trim($request->weight);
         $weight_unit = trim($request->weight_unit);
         $time = trim($request->time);
@@ -22525,7 +22447,6 @@ class Health extends Model
 
     // Walking Calories Calculator
 	public function walking($request){
-        // dd($request->all());
         $units = trim($request->unit_type);
         $age = trim($request->age);
         $gender = trim($request->gender);
@@ -22725,7 +22646,6 @@ class Health extends Model
 
     // Weight Gain Calculator
 	public function weightgain($request){
-        //  dd($request->all());
         $age = $request->age;
         $height_ft = $request->height_ft;
         $height_cm = $request->height_cm;
@@ -23000,7 +22920,6 @@ class Health extends Model
 
     // Bench Press Calculator
 	public function bench($request){
-        // dd($request->all());
         $weight =  trim($request->weight);
         $unit =  trim($request->unit);
         $reps =  trim($request->reps);
@@ -23026,7 +22945,6 @@ class Health extends Model
 
     // Body Shape Calculator
 	public function body_shape($request){
-        // dd($request->all());
         $high = $request->high;
         $chest = $request->chest;
         $waist = $request->waist;
@@ -23170,7 +23088,6 @@ class Health extends Model
 
 	// TDEE Calculator
 	public function tdee($request){
-        // dd($request->all());
         $age = $request->age;
         $gender = $request->gender;
         if (isset($request->ft_in)) {
@@ -23399,7 +23316,6 @@ class Health extends Model
             $this->param['bulk_high_carb_per_ans'] = $bulk_high_carb_per_ans;
             $this->param['disable'] = "disable";
             $this->param['RESULT'] = 1;
-            // dd($this->param);
             return $this->param;
         }else{
             $this->param['error'] = 'Please fill All fields.';
@@ -23409,7 +23325,6 @@ class Health extends Model
 
     // Weight Loss Calculator
     public function weightloss($request){
-        // dd($request->all());
         $submit = $request->unit;
         $gender=$request->gender;
         $age = $request->age;
@@ -24022,7 +23937,6 @@ class Health extends Model
                 "activity_five" => $activity_five,
                 "RESULT" => "1",
             );
-            // dd($this->param);
             return $this->param;
         }else{
             $this->param['error'] = 'Please! Check Your Input.';
@@ -24032,7 +23946,6 @@ class Health extends Model
 
     // Food Cost Calculator
 	public function food($request){
-        // dd($request->all());
         $food_type = $request->food_type;
         $menu = $request->menu;
         $measure_unit = $request->measure_unit;
@@ -24095,7 +24008,6 @@ class Health extends Model
 
     // Drug Half Life Calculator
 	public function drug($request){
-    //   dd($request->all());
         $half = trim($request->time);
         $half_one = trim($request->time_min);
         $half_sec = trim($request->time_sec);
@@ -24248,7 +24160,6 @@ class Health extends Model
 
     // Treadmill Calorie Calculator
 	public function treadmill($request){
-        // dd($request->all());
         $gradient = $request->gradient;
         $weight = $request->weight;
         $weight_unit = $request->weight_unit;
@@ -24432,7 +24343,6 @@ class Health extends Model
 
     // Waist to Height Ratio (WHtR) Calculator
 	function waist_height($request){
-        // dd($request->all());
 		if (is_numeric($request->height_ft) || is_numeric($request->height_in) || is_numeric($request->height_cm) && is_numeric($request->waist)) {
 			if ($request->unit_ft_in=='ft/in') {
 				if (is_numeric($request->height_ft)) {
@@ -24540,7 +24450,6 @@ class Health extends Model
 
     public function swimming($request)
 	{
-        // dd($request->all());
 		$weight      = trim($request->input('weight'));
 		$weight_unit = trim($request->input('weight_unit'));
 		$time        = trim($request->input('time'));
