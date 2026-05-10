@@ -9,7 +9,7 @@ class PregnancyCalculator extends Component
     public $method = 'Last';
     public $date;
     public $cycle = 28;
-    public $ivf = '3-day embryo';
+    public $ivf = 'Last';
     public $week = 21;
     public $days = 5;
 
@@ -32,9 +32,17 @@ class PregnancyCalculator extends Component
             $this->method = $inputs->method ?? 'Last';
             $this->date = $inputs->date ?? date('Y-m-d');
             $this->cycle = $inputs->cycle ?? 28;
-            $this->ivf = $inputs->ivf ?? '3-day embryo';
+            $this->ivf = $inputs->ivf ?? 'Last';
             $this->week = $inputs->week ?? 21;
             $this->days = $inputs->days ?? 5;
+        }
+    }
+
+    public function updated($propertyName)
+    {
+        if (in_array($propertyName, ['method', 'date', 'cycle', 'ivf', 'week', 'days'])) {
+            $this->detail = null;
+            $this->error = null;
         }
     }
 
@@ -61,6 +69,11 @@ class PregnancyCalculator extends Component
 
     public function calculate()
     {
+        // Sanitize IVF if it's the old invalid value from session
+        if ($this->ivf === '3-day embryo') {
+            $this->ivf = 'Last';
+        }
+
         // Handle the typo in the model if necessary
         $calcMethod = $this->method;
         if ($calcMethod === 'Ultrasound') {
@@ -70,10 +83,10 @@ class PregnancyCalculator extends Component
         $request = (object)[
             'method' => $calcMethod,
             'date'   => $this->date,
-            'cycle'  => $this->cycle,
+            'cycle'  => (int)$this->cycle,
             'ivf'    => $this->ivf,
-            'week'   => $this->week,
-            'days'   => $this->days,
+            'week'   => (int)$this->week,
+            'days'   => (int)$this->days,
         ];
 
         $model = new Health();

@@ -177,7 +177,7 @@
                             @endif:
                         </label>
                         <div class="w-full py-2 relative">
-                            <input type="date" wire:model="date" id="date" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
+                            <input type="date" wire:model.live="date" id="date" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" />
                         </div>
                     </div>
 
@@ -186,7 +186,7 @@
                         <div class="w-full lg:w-1/2 px-2 mb-4">
                             <label for="cycle" class="text-base  font-semibold">{!! $lang['cycle_len'] ?? 'Cycle Length' !!}:</label>
                             <div class="w-full py-2 relative">
-                                <input type="number" wire:model="cycle" id="cycle" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" min="22" max="44" />
+                                <input type="number" wire:model.live="cycle" id="cycle" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" min="22" max="44" />
                             </div>
                         </div>
                     @endif
@@ -196,7 +196,7 @@
                         <div class="w-full lg:w-1/2 px-2 mb-4">
                             <label for="ivf" class="text-base  font-semibold">{!! $lang['e_age'] ?? 'Embryo Age' !!}:</label>
                             <div class="w-full py-2 relative">
-                                <select wire:model="ivf" id="ivf" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                                <select wire:model.live="ivf" id="ivf" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                                     <option value="Last">3-day embryo</option>
                                     <option value="Conception">5-day embryo</option>
                                     <option value="Due">7-day embryo</option>
@@ -210,13 +210,13 @@
                         <div class="w-full lg:w-1/2 px-2 mb-4">
                             <label for="week" class="text-base  font-semibold">{!! $lang['week'] ?? 'Weeks' !!}:</label>
                             <div class="w-full py-2">
-                                <input type="number" wire:model="week" id="week" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" min="1" max="24" />
+                                <input type="number" wire:model.live="week" id="week" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" min="1" max="24" />
                             </div>
                         </div>
                         <div class="w-full lg:w-1/2 px-2 mb-4">
                             <label for="days" class="text-base  font-semibold">{!! $lang['days'] ?? 'Days' !!}:</label>
                             <div class="w-full py-2">
-                                <input type="number" wire:model="days" id="days" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" min="0" max="6" />
+                                <input type="number" wire:model.live="days" id="days" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all" min="0" max="6" />
                             </div>
                         </div>
                     @endif
@@ -233,212 +233,719 @@
     </div>
 
     @isset($detail)
-    <hr>
-        <div id="result-section" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result mt-10 scroll-mt-20">
+        <hr>
+        <div id="result-section" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
             <div class="">
                 @if ($type == 'calculator')
-                    @include('inc.copy-pdf')
+                @include('inc.copy-pdf')
                 @endif
-                <div class="w-full p-6">
-                    <div class="flex flex-col lg:flex-row gap-6">
-                        <!-- Left Column: Result Cards -->
-                        <div class="w-full lg:w-1/2 space-y-6">
-                            <!-- Due Date Card -->
-                            <div class="bg-gradient-to-br from-[#F6FAFC] to-white border border-blue-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow">
-                                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-                                    <div class="text-center md:text-left">
-                                        <p class="text-lg font-bold  mb-1">{{ $lang['your_due'] ?? 'Your Due Date' }}</p>
-                                        <p class="text-2xl font-black text-blue-900">{{ date('M d, Y', strtotime($detail['EstimatedAge'])) }}</p>
-                                    </div>
-                                    <div class="flex items-center gap-4 bg-white p-3 rounded-xl shadow-inner border border-gray-50">
-                                        <strong class="text-xl text-gray-700">{{ date('M', strtotime($detail['EstimatedAge'])) }}</strong>
-                                        <div class="relative group">
-                                            <img src="{{ asset('images/empty_calender.png') }}" width="70" alt="Calendar" class="transition-transform group-hover:scale-110">
-                                            <strong class="text-green-600 absolute inset-0 flex items-center justify-center text-2xl font-black pt-2">{{ date('d', strtotime($detail['EstimatedAge'])) }}</strong>
+                <div class="rounded-lg  flex items-center justify-center">
+                    <div class="w-full  py-3 rounded-lg mt-3">
+                        <div class="row ">
+                            <div class="flex flex-wrap px-1 lg:px-3">
+                            </div>
+                            <div class="flex flex-col lg:flex-row">
+                                <!-- First Card -->
+                                <div class="w-full ">
+                                    <div class="lg:flex gap-4 md:flex flex-row">
+                                    <div class="w-full  mt-6 flex justify-center">
+                                        <div class="w-full bg-[#F6FAFC] to-blue-50 border border-blue-200  rounded-xl p-4">
+                                            <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                                                <div class="text-center md:text-left">
+                                                    <p class="text-sm font-semibold text-blue-600 max-w-[170px]">
+                                                        {{ $lang['your_due'] }} 
+                                                        <span class="text-blue-800">{{ date('M d, Y', strtotime($detail['EstimatedAge'])) }}</span>
+                                                    </p>
+                                                </div>
+                
+                                                <div class="hidden md:block md:border-r border-blue-300 pr-4 mr-4"></div>
+                
+                                                <div class="flex items-center space-x-2 text-2xl text-gray-700">
+                                                    <strong>{{ date('M', strtotime($detail['EstimatedAge'])) }}</strong>
+                                                    <div class="relative">
+                                                        <img src="{{ asset('images/empty_calender.png') }}" width="60px" alt="Calendar" class=" transform transition-transform hover:scale-105">
+                                                        <strong class="text-green-500 absolute inset-0 flex items-center justify-center text-xl">{{ date('d', strtotime($detail['EstimatedAge'])) }}</strong>
+                                                    </div>
+                                                    <strong>{{ date('Y', strtotime($detail['EstimatedAge'])) }}</strong>
+                                                </div>
+                                            </div>
+                
+                                            <p class="text-sm mt-4 text-gray-600">
+                                                <strong class="text-red-500">{{ $lang['cong'] }}!</strong>
+                                            </p>
+                
+                                            <p class="text-sm text-gray-700">
+                                                <strong>{{ $lang['1'] }} {{ $detail['RemainingWeeks'] }} {{ $lang['week'] }}, {{ $detail['RemainingDays'] }} {{ $lang['days'] }} {{ $lang['2'] }}</strong>
+                                            </p>
+                
+                                            @if($method == 'Due')
+                                                <p class="text-sm text-gray-700">
+                                                    {{ $lang['con'] }}: 
+                                                    <strong class="text-black">{{ date('M d, Y', strtotime($detail['ovu_date'])) }}</strong>
+                                                </p>
+                                            @endif
                                         </div>
-                                        <strong class="text-xl text-gray-700">{{ date('Y', strtotime($detail['EstimatedAge'])) }}</strong>
+                                    </div>
+                
+                                    <!-- Second Card -->
+                                    <div class="w-full flex justify-center mt-6">
+                                        <div class="w-full bg-[#F6FAFC] border border-blue-200  rounded-xl px-6 py-5">
+                                            <p class="text-lg font-bold text-blue-600">
+                                                {{ $lang['5'] }} 
+                                                <span class="text-blue-800">{{ ($lang['week'] ?? 'Week').' '.$detail['RemainingWeeks'] }} {{ $lang['6'] ?? '' }}</span>
+                                            </p>
+                
+                                            @if ($detail['RemainingWeeks'] == 1 || $detail['RemainingWeeks'] == 2 || $detail['RemainingWeeks'] == 0)
+                                                @php $week = explode('@', $lang['w1&2']) @endphp
+                                                <p class="text-lg font-semibold text-gray-800">{{ $week[0] }}</p>
+                                                <p class="text-sm text-gray-600">{{ $week[1] }}</p>
+                                            @endif
+                
+                                            @if ($detail['RemainingWeeks'] == 3)
+                                                @php $week = explode('@', $lang['w3']) @endphp
+                                                <p class="text-lg font-semibold text-gray-800">{{ $week[0] }}</p>
+                                                <p class="text-sm text-gray-600">{{ $week[1] }}</p>
+                                            @endif
+                
+                                            @if ($detail['RemainingWeeks'] == 40)
+                                                @php $week = explode('@', $lang['w40']) @endphp
+                                                <p class="text-lg font-semibold text-gray-800">{{ $week[0] }}</p>
+                                                <p class="text-sm text-gray-600">{{ $week[1] }}</p>
+                                            @endif
+                                        </div>
                                     </div>
                                 </div>
-
-                                <div class="mt-6 pt-6 border-t border-blue-50">
-                                    <p class="text-xl mb-2"><strong class="text-red-500">{{ $lang['cong'] ?? 'Congratulations' }}!</strong></p>
-                                    <p class="text-lg text-gray-800 leading-relaxed font-medium">
-                                        {!! $lang['1'] ?? 'You are currently' !!} <span class=" font-bold">{{ $detail['RemainingWeeks'] }} {{ $lang['week'] ?? 'weeks' }}</span>, <span class=" font-bold">{{ $detail['RemainingDays'] }} {{ $lang['days'] ?? 'days' }}</span> {!! $lang['2'] ?? 'pregnant' !!}.
+                
+                                    <!-- Section Separator -->
+                                    <p class="text-lg mt-6 text-center font-bold text-blue-600 border-b-2 border-blue-500 inline-block pb-1">
+                                        {{ $lang['24'] }}
                                     </p>
-                                    @if($method == 'Due')
-                                        <p class="text-sm mt-4 text-gray-600 bg-gray-50 p-2 rounded-lg inline-block">
-                                            {{ $lang['con'] ?? 'Conception Date' }}: <strong class="text-black">{{ date('M d, Y', strtotime($detail['ovu_date'])) }}</strong>
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-
-                            <!-- Weekly Info Card -->
-                            <div class="bg-white border border-blue-100 rounded-2xl p-6 shadow-sm">
-                                <p class="text-xl font-black text-blue-800 mb-4 flex items-center gap-2">
-                                    <span class="w-2 h-8 bg-blue-500 rounded-full"></span>
-                                    {{ $lang['5'] ?? 'How your baby is growing' }} 
-                                    <span class="text-blue-600">({{ $lang['week'] ?? 'Week' }} {{ $detail['RemainingWeeks'] }})</span>
-                                </p>
-
-                                <div class="prose prose-blue max-w-none text-gray-700 leading-relaxed">
-                                    @if ($detail['RemainingWeeks'] <= 2)
-                                        @php $week = explode('@', $lang['w1&2'] ?? 'Growing Fast@Your baby is just starting its journey.') @endphp
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ $week[0] }}</h3>
-                                        <p>{{ $week[1] }}</p>
-                                    @elseif ($detail['RemainingWeeks'] == 3)
-                                        @php $week = explode('@', $lang['w3'] ?? 'Cell Division@The amazing process of life continues.') @endphp
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ $week[0] }}</h3>
-                                        <p>{{ $week[1] }}</p>
-                                    @elseif ($detail['RemainingWeeks'] >= 40)
-                                        @php $week = explode('@', $lang['w40'] ?? 'Ready for Birth@Your baby is fully developed.') @endphp
-                                        <h3 class="text-lg font-bold text-gray-900 mb-2">{{ $week[0] }}</h3>
-                                        <p>{{ $week[1] }}</p>
-                                    @else
-                                        <p class="italic text-gray-500">Weekly development information is being updated...</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column: Timeline & Trimesters -->
-                        <div class="w-full lg:w-1/2 space-y-4">
-                            <h2 class="text-2xl font-black text-gray-800 mb-6 border-b-4 border-blue-500 pb-2 inline-block">Pregnancy Timeline</h2>
-                            
-                            @php
-                                $trimesters = [
-                                    ['name' => $lang['1st'] ?? '1st Trimester', 'range' => date('M d', strtotime($detail['ovu_date'].' - 2 weeks')).' to '.date('M d', strtotime($detail['ovu_date'].' + 11 weeks - 1 day'))],
-                                    ['name' => $lang['2nd'] ?? '2nd Trimester', 'range' => date('M d', strtotime($detail['ovu_date'].' + 11 weeks')).' to '.date('M d', strtotime($detail['ovu_date'].' + 25 weeks - 1 day'))],
-                                    ['name' => $lang['3rd'] ?? '3rd Trimester', 'range' => date('M d', strtotime($detail['ovu_date'].' + 25 weeks')).' to '.date('M d', strtotime($detail['ovu_date'].' + 38 weeks'))]
-                                ];
-                            @endphp
-
-                            @foreach($trimesters as $index => $trim)
-                                <div class="group flex items-center bg-[#F6FAFC] rounded-2xl border border-blue-100 p-4 hover:bg-blue-600 transition-all duration-300 transform hover:-translate-x-2">
-                                    <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-black text-lg group-hover:bg-white transition-colors">
-                                        {{ $index + 1 }}
+                
+                                    <!-- Timeline Sections -->
+                                    <div class="w-full mt-4">
+                                        <div class=" flex items-center  rounded-lg border border-blue-200 ">
+                                            <div class="w-full lg:w-12/12 bg-[#F6FAFC] rounded-lg px-4 py-2 flex flex-col justify-center">
+                                                <p class="text-blue-600 font-bold">{{ $lang['1st'] }}</p>
+                                                <p class="text-gray-500 text-sm">{{ date('M d', strtotime($detail['ovu_date'].' - 2 weeks')) }} to {{ date('M d', strtotime($detail['ovu_date'].' + 11 weeks - 1 day')) }}</p>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="ml-4">
-                                        <p class="text-blue-900 font-bold group-hover:text-white transition-colors">{{ $trim['name'] }}</p>
-                                        <p class="text-gray-500 text-sm group-hover:text-blue-100 transition-colors">{{ $trim['range'] }}</p>
+                
+                                    <div class="w-full mt-4">
+                                        <div class=" flex items-center  rounded-lg border border-blue-200 ">
+                                            <div class="w-full lg:w-12/12 bg-[#F6FAFC] rounded-lg px-4 py-2 flex flex-col justify-center">
+                                                <p class="text-blue-600 font-bold">{{ $lang['2nd'] }}</p>
+                                                <p class="text-gray-500 text-sm">{{ date('M d', strtotime($detail['ovu_date'].' + 11 weeks')) }} to {{ date('M d', strtotime($detail['ovu_date'].' + 25 weeks - 1 day')) }}</p>
+                                            </div>
+                                        </div>
                                     </div>
+                
+                                    <div class="w-full mt-4">
+                                        <div class=" flex items-center rounded-lg border border-blue-200  ">
+                                            <div class="w-full lg:w-12/12 bg-[#F6FAFC] rounded-lg px-4 py-2 flex flex-col justify-center">
+                                                <p class="text-blue-600 font-bold">{{ $lang['3rd'] }}</p>
+                                                <p class="text-gray-500 text-sm">{{ date('M d', strtotime($detail['ovu_date'].' + 25 weeks')) }} to {{ date('M d', strtotime($detail['ovu_date'].' + 38 weeks')) }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <!-- Final Message -->
+                                    <p class="mt-6 text-lg font-bold">{{ $lang['3'] }}</p>
+                                    <p class="text-gray-700">{{ $lang['4'] }}</p>
                                 </div>
-                            @endforeach
-
-                            <div class="mt-8 bg-blue-50 p-6 rounded-2xl border border-blue-100">
-                                <p class="text-xl font-black text-blue-900 mb-2">{{ $lang['3'] ?? 'Important Note' }}</p>
-                                <p class="text-gray-700 leading-relaxed">{{ $lang['4'] ?? 'This timeline is based on averages. Every pregnancy is unique.' }}</p>
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Milestone Table -->
-                    <div class="mt-12">
-                        <div class="bg-[#F6FAFC] rounded-3xl border border-blue-100 overflow-hidden shadow-inner">
-                            <div class="p-6 bg-gradient-to-r from-blue-600 to-blue-800 text-white flex justify-between items-center">
-                                <h3 class="text-xl font-bold">{{ $lang['7'] ?? 'Important Milestones' }}</h3>
-                                <div class="bg-blue-500 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Timeline</div>
-                            </div>
-                            <div class="overflow-x-auto">
-                                <table class="w-full">
-                                    <thead>
-                                        <tr class="bg-blue-50 text-blue-900 text-left border-b border-blue-100">
-                                            <th class="p-4 font-bold uppercase text-xs tracking-widest">Date</th>
-                                            <th class="p-4 font-bold uppercase text-xs tracking-widest">Milestone</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-blue-50">
+                            <div class="w-full lg:w-[100%] mt-3">
+                                <div class="bg-[#F6FAFC]  border rounded-2xl px-3 py-2">
+                                    <p class="text-center"> <strong class="text-blue-500">{{ $lang['7'] }}</strong></p>
+                                    <div class="w-full overflow-auto">
+                                        <table class="w-full" cellspacing="0">
                                         @php
-                                            $milestones = [
-                                                ['date' => $detail['ovu_date'], 'text' => $lang['8'] ?? 'Ovulation Day'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 9 days')), 'text' => $lang['10'] ?? 'Possible positive pregnancy test'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 21 days')), 'text' => $lang['11'] ?? 'First heartbeat'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 7 weeks')), 'text' => $lang['12'] ?? 'First morning sickness?'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 8 weeks')), 'text' => $lang['13'] ?? 'First midwife appointment'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 11 weeks')), 'text' => 'Start of 2nd Trimester', 'bold' => true],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 13 weeks')), 'text' => $lang['14'] ?? 'Baby can hear you'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 15 weeks')), 'text' => $lang['15'] ?? 'Feeling first movements'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 16 weeks')), 'text' => $lang['16'] ?? '20-week scan appointment'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 22 weeks')), 'text' => $lang['17'] ?? 'Viability milestone'],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 25 weeks')), 'text' => 'Start of 3rd Trimester', 'bold' => true],
-                                                ['date' => date('Y-m-d', strtotime($detail['ovu_date'].' + 38 weeks')), 'text' => $lang['20'] ?? 'Full term / Due Date', 'last' => true]
-                                            ];
-                                            $today = date('Y-m-d');
+                                            $today = date('M d, Y');
+                                            $today_time = strtotime($today);
+                                            $ovu_date_time = strtotime($detail['ovu_date']);
+                                            $preg_text_time = strtotime($detail['ovu_date'].' + 9 days');
+                                            $heart_beat_time = strtotime($detail['ovu_date'].' + 21 days');
+                                            $morning_time = strtotime($detail['ovu_date'].' + 7 weeks');
+                                            $midwife_time = strtotime($detail['ovu_date'].' + 8 weeks');
+                                            $second_time = strtotime($detail['ovu_date'].' + 11 weeks');
+                                            $ears_time = strtotime($detail['ovu_date'].' + 13 weeks');
+                                            $feeling_time = strtotime($detail['ovu_date'].' + 15 weeks');
+                                            $scan_time = strtotime($detail['ovu_date'].' + 16 weeks');
+                                            $organs_time = strtotime($detail['ovu_date'].' + 22 weeks');
+                                            $third_time = strtotime($detail['ovu_date'].' + 25 weeks');
+                                            $deliver_time = strtotime($detail['ovu_date'].' + 34 weeks');
+                                            $full_time = strtotime($detail['ovu_date'].' + 35 weeks');
+                                            $due_time = strtotime($detail['ovu_date'].' + 38 weeks');
                                         @endphp
-
-                                        @foreach($milestones as $m)
-                                            <tr class="{{ $today == $m['date'] ? 'bg-blue-100' : 'hover:bg-blue-50/50' }} transition-colors">
-                                                <td class="p-4 text-blue-700 font-bold whitespace-nowrap">{{ date('M d', strtotime($m['date'])) }}</td>
-                                                <td class="p-4 text-gray-800 {{ $m['bold'] ?? false ? 'font-black' : '' }}">
-                                                    {{ $m['text'] }}
-                                                    @if($today == $m['date'])
-                                                        <span class="ml-2 bg-blue-600 text-white px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest">Today</span>
-                                                    @endif
-                                                </td>
+                                        @if($today_time < $ovu_date_time)
+                                            <tr>
+                                                <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $ovu_date_time) }}</td>
+                                                <td class="border-b p-2">{{ $lang['8'] }}</td>
                                             </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                        @endif
+                                        @if($today_time == $ovu_date_time)
+                                            <tr class="bg-blue-500 text-white">
+                                                <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $ovu_date_time) }}</td>
+                                                <td class="border-b p-2">{{ $lang['8'] }}</td>
+                                            </tr>
+                                        @endif
+                                            @if($today_time > $ovu_date_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $ovu_date_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['8'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $ovu_date_time && $today_time < $preg_text_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $preg_text_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $preg_text_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['10'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $preg_text_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $preg_text_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['10'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $preg_text_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $preg_text_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['10'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $preg_text_time && $today_time < $heart_beat_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $heart_beat_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $heart_beat_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['11'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $heart_beat_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $heart_beat_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['11'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $heart_beat_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $heart_beat_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['11'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $heart_beat_time && $today_time < $morning_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $morning_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $morning_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['12'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $morning_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $morning_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['12'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $morning_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $morning_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['12'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $morning_time && $today_time < $midwife_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $midwife_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $midwife_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['13'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $midwife_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $midwife_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['13'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $midwife_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $midwife_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['13'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $midwife_time && $today_time < $second_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $second_time)
+                                                <tr>
+                                                    <td class="border-b pe-2 p-2"><strong class="text-blue">{{ date('M d', $second_time) }}</strong></td>
+                                                    <td class="border-b p-2"><strong>{{ $lang['2nd'] }} (13 {{ $lang['week'] }})</strong></td>
+                                                </tr>	
+                                            @endif
+                                            @if($today_time == $second_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="border-b pe-2 p-2"><strong class="text-blue">{{ date('M d', $second_time) }}</strong></td>
+                                                    <td class="border-b p-2"><strong>{{ $lang['2nd'] }} (13 {{ $lang['week'] }})</strong></td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $second_time)
+                                                <tr>
+                                                    <td class="border-b pe-2 p-2"><strong class="color_gray">{{ date('M d', $second_time) }}</strong></td>
+                                                    <td class="border-b p-2"><strong class="color_gray">{{ $lang['2nd'] }} (13 {{ $lang['week'] }})</strong></td>
+                                                </tr>	
+                                            @endif
+                                            @if($today_time > $second_time && $today_time < $ears_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $ears_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $ears_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['14'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $ears_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $ears_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['14'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $ears_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $ears_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['14'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $ears_time && $today_time < $feeling_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $feeling_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $feeling_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['15'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $feeling_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $feeling_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['15'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $feeling_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $feeling_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['15'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $feeling_time && $today_time < $scan_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $scan_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $scan_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['16'] }} </td>
+                                                </tr>	
+                                            @endif
+                                            @if($today_time == $scan_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $scan_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['16'] }} </td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $scan_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $scan_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['16'] }} </td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $scan_time && $today_time < $organs_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $organs_time)
+                                                <tr>
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $organs_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['17'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $organs_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $organs_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['17'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $organs_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $organs_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['17'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $organs_time && $today_time < $third_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $third_time)
+                                                <tr>
+                                                    <td class="border-b pe-2 p-2"><strong class="text-blue">{{ date('M d', $third_time) }}</strong></td>
+                                                    <td class="border-b p-2"><strong>{{ $lang['3rd'] }} (28 {{ $lang['week'] }})</strong></td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $third_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="border-b pe-2 p-2"><strong class="text-blue">{{ date('M d', $third_time) }}</strong></td>
+                                                    <td class="border-b p-2"><strong>{{ $lang['3rd'] }} (28 {{ $lang['week'] }})</strong></td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $third_time)
+                                                <tr>
+                                                    <td class="border-b pe-2 p-2"><strong class="color_gray">{{ date('M d', $third_time) }}</strong></td>
+                                                    <td class="border-b p-2"><strong class="color_gray">{{ $lang['3rd'] }} (28 {{ $lang['week'] }})</strong></td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $third_time && $today_time < $deliver_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $deliver_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $deliver_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['18'] }}</td>
+                                                </tr>	
+                                            @endif
+                                            @if($today_time == $deliver_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $deliver_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['18'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $deliver_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $deliver_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['18'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $deliver_time && $today_time < $full_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $full_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $full_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['19'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $full_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $full_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['19'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $full_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $full_time) }}</td>
+                                                    <td class="color_gray border-b p-2">{{ $lang['19'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time > $full_time && $today_time < $due_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d') }}</td>
+                                                    <td class="border-b p-2">{{ $lang['9'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time < $due_time)
+                                                <tr>
+                                                    <td class="text-blue-500 border-b pe-2 p-2">{{ date('M d', $due_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['20'] }}</td>
+                                                </tr>
+                                            @endif
+                                            @if($today_time == $due_time || $today_time > $due_time)
+                                                <tr class="bg_blue_g text-white">
+                                                    <td class="text-blue border-b pe-2 p-2">{{ date('M d', $due_time) }}</td>
+                                                    <td class="border-b p-2">{{ $lang['20'] }}</td>
+                                                </tr>
+                                            @endif
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <!-- Charts Section -->
-                    <div class="w-full mt-12" 
-                         x-data='{ 
-                            detail: @json($detail),
-                            render(newDetail) {
-                                if (newDetail) this.detail = newDetail;
-                                
-                                if (typeof Highcharts === "undefined" || typeof Highcharts.chart !== "function") {
-                                    setTimeout(() => this.render(), 200);
-                                    return;
-                                }
-                                
-                                if (!this.detail || !this.detail.ovu_date) return;
 
-                                const categories = [];
-                                for (let i = 0; i <= 32; i++) {
-                                    const date = new Date(this.detail.ovu_date);
-                                    date.setDate(date.getDate() + 36 * 7 + i); // 36 weeks + i days
-                                    const options = { month: "short", day: "numeric" };
-                                    categories.push(date.toLocaleDateString("en-US", options));
-                                }
 
-                                Highcharts.chart(this.$refs.probChart, {
-                                    chart: { type: "bar", borderRadius: 15, backgroundColor: "#F6FAFC" },
-                                    title: { text: "{{ $lang['46'] ?? 'Daily Probability of Delivery' }}" },
-                                    xAxis: { categories: categories },
-                                    yAxis: { title: { text: null }, labels: { format: "{value}%" } },
-                                    series: [{
-                                        name: "{{ $lang['48'] ?? 'Probability' }}",
-                                        data: [1.4,1.3,1.4,1.9,2.4,2.1,2.7,3.1,2.8,2.9,3.8,4.0,4.0,4.6,6.9,5.2,4.5,4.3,4.0,4.1,4.2,4.0,3.1,2.4,2.3,1.7,1.3,1.1,0.7],
-                                        color: "#2845F5"
-                                    }],
-                                    credits: { enabled: false }
-                                });
+                            <p class="font-s-18 my-3"><strong class="border-b-blue text-blue pb-1">{{ $lang['21'] }}</strong></p>
+                            <div class="border border-blue-200 " id="set_custom_scroll" style="overflow:auto">
+                                <div class="row mt-3 flex " style="width:940px;" >
+                                    <div class="col-2 w-[20%] d-lg-block" style="border-right: 2px solid white;">
+                                        <div class="col-12 text-center bg-gray border-white"><strong>{{ $lang['21'] }}</strong></div>
+                                        <div class="col-12 p-2 trim_height text-center orange border-white orange_color" style="justify-content: center;display: grid;">
+                                            <b>{{ $lang['1st'] }}</b>
+                                            <img src="{{ asset('images/1st_trim.png') }}" alt="1st trimester" class="mt-2" width="100px" height="100px">
+                                        </div>
+                                        <div class="col-12 p-2 trim_height text-center light-blue border-white text-blue" style="justify-content: center;display: grid;border-top: 2px solid white;">
+                                            <b>{{ $lang['2nd'] }}</b>
+                                            <img src="{{ asset('images/2nd_trim.png') }}" alt="2nd trimester" class="mt-2" width="100px" height="100px">
+                                        </div>
+                                        <div class="col-12 p-2 trim_height text-center lime border-white green_color" style="justify-content: center;display: grid; border-top: 2px solid white;">
+                                            <b>{{ $lang['3rd'] }}</b>
+                                            <img src="{{ asset('images/3rd_trim.png') }}" alt="3rd trimester" class="mt-2" width="100px" style="max-height: 160px;">
+                                        </div>
+                                    </div>
+                                    <div class="col-2 w-[8%] col-lg-1" style="border-right: 2px solid white;">
+                                        <div class="col-12 text-center bg-gray border-white"><strong>{{ $lang['22'] }}</strong></div>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['one_t']))?$detail['one_t']:"light-orange orange_color") }}">1</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['two_t']))?$detail['two_t']:"light-orange orange_color") }}">2</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['three_t']))?$detail['three_t']:"light-orange orange_color") }}">3</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['four_t']))?$detail['four_t']:"lighter-blue text-blue") }}">4</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['five_t']))?$detail['five_t']:"lighter-blue text-blue") }}">5</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['six_t']))?$detail['six_t']:"lighter-blue text-blue") }}">6</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['seven_t']))?$detail['seven_t']:"light-lime green_color") }}">7</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['eight_t']))?$detail['eight_t']:"light-lime green_color") }}">8</b>
+                                        <b  class="col-12 border-white week_height text-center {{ ((isset($detail['nine_t']))?$detail['nine_t']:"light-lime green_color") }}">9</b>
+                                    </div>
+                                    <div class="col-2 w-[8%] col-lg-1" style="border-right: 2px solid white;">
+                                        <div class="col-12 text-center bg-gray border-white"><strong>{{ $lang['week'] }}</strong></div>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['one_t']))?$detail['one_t']:"light-orange orange_color") }}">0-4</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['two_t']))?$detail['two_t']:"light-orange orange_color") }}">5-8</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['three_t']))?$detail['three_t']:"light-orange orange_color") }}">9-13</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['four_t']))?$detail['four_t']:"lighter-blue text-blue") }}">14-17</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['five_t']))?$detail['five_t']:"lighter-blue text-blue") }}">18-21</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['six_t']))?$detail['six_t']:"lighter-blue text-blue") }}">22-27</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['seven_t']))?$detail['seven_t']:"light-lime green_color") }}">28-31</b>
+                                        <b style="border-bottom: 2px solid white;" class="col-12 border-white week_height text-center {{ ((isset($detail['eight_t']))?$detail['eight_t']:"light-lime green_color") }}">32-35</b>
+                                        <b class="col-12 border-white week_height text-center {{ ((isset($detail['nine_t']))?$detail['nine_t']:"light-lime green_color") }}">36-40</b>
+                                    </div>
+                                    <div class="col-4 w-[32%]" style="border-right: 2px solid white;">
+                                        <div class="col-12 text-center bg-gray border-white"><strong>{{ $lang['24'] }}</strong></div>
+                                        <div class="row p-2 text-[13px] border-white trim_height light-orange orange_color overflow-auto overflow-md-visible">
+                                            <div class="col-lg-6 px-2 overflow-auto">
+                                                <b>{{ $lang['27'] }}</b>
+                                                <p class="font-s-12">
+                                                    @php
+                                                        $early=explode(',', $lang['28']);
+                                                        foreach ($early as $key => $value) {
+                                                            echo $value.'<br>';
+                                                        }
+                                                        @endphp
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-6 px-2 overflow-auto">
+                                                <b>{{ $lang['29'] }}:</b>
+                                                <p class="font-s-12">
+                                                    @php
+                                                        $early=explode(',', $lang['31']);
+                                                        foreach ($early as $key => $value) {
+                                                            echo $value.'<br>';
+                                                        }
+                                                        @endphp
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-6 px-2 d-none d-lg-block">
+                                                <b>{{ $lang['30'] }}</b>
+                                                <p class="font-s-12">
+                                                    @php
+                                                        $early=explode(',', $lang['32']);
+                                                        foreach ($early as $key => $value) {
+                                                            echo $value.'<br>';
+                                                        }
+                                                    @endphp
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2 border-white trim_height lighter-blue text-blue overflow-auto" style="border-top: 2px solid white;border-bottom: 2px solid white;">
+                                            <div class="col-12 px-2 overflow-auto">
+                                                <b>{{ $lang['33'] }}</b>
+                                                <p class="font-s-12">
+                                                    @php
+                                                        $early=explode(',', $lang['34']);
+                                                        foreach ($early as $key => $value) {
+                                                            echo $value.'<br>';
+                                                        }
+                                                    @endphp
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-6 px-2 overflow-auto">
+                                                <b>{{ $lang['29'] }}:</b>
+                                                <p class="font-s-12">
+                                                    @php
+                                                        $early=explode(',', $lang['35']);
+                                                        foreach ($early as $key => $value) {
+                                                            echo $value.'<br>';
+                                                        }
+                                                    @endphp
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-6 px-2 d-none d-lg-block">
+                                                <b>{{ $lang['30'] }}</b>
+                                                <p class="font-s-12">{{ $lang['36'] }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="row p-2 text-[14px] border-white trim_height light-lime green_color overflow-auto overflow-md-visible">
+                                            <div class="col-lg-6 px-2 overflow-auto">
+                                                <b>{{ $lang['37'] }}:</b>
+                                                <p class="font-s-12">
+                                                    @php
+                                                        $early=explode(',', $lang['38']);
+                                                        foreach ($early as $key => $value) {
+                                                            echo $value.'<br>';
+                                                        }
+                                                    @endphp
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-6 px-2 overflow-auto">
+                                                <b>{{ $lang['29'] }}:</b>
+                                                <p class="font-s-12">
+                                                    @php
+                                                        $early=explode(',', $lang['39']);
+                                                        foreach ($early as $key => $value) {
+                                                            echo $value.'<br>';
+                                                        }
+                                                    @endphp
+                                                </p>
+                                            </div>
+                                            <div class="col-lg-6 px-2 d-none d-lg-block">
+                                                <b>{{ $lang['30'] }}:</b>
+                                                <p class="font-s-12">{{ $lang['40'] }}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 w-[32%]" style="border-right: 2px solid white;">
+                                        <div class="col-12 text-center bg-gray border-white"><strong>{{ $lang['25'] }}</strong></div>
+                                        <div class="col-12 p-2 border-white trim_height light-orange orange_color overflow-auto">
+                                            <b>{{ $lang['41'] }}</b>
+                                            <p class="font-s-12">
+                                                @php
+                                                    $early=explode(',', $lang['43']);
+                                                    foreach ($early as $key => $value) {
+                                                        echo $value.'<br>';
+                                                    }
+                                                @endphp
+                                            </p>
+                                            <b>{{ $lang['42'] }}</b>
+                                            <p class="font-s-12">1/4" --> 209" & 0.8 oz</p>
+                                        </div>
+                                        <div class="col-12 p-2 text-blue border-white trim_height lighter-blue overflow-auto"  style="border-top: 2px solid white;border-bottom: 2px solid white;">
+                                            <b>{{ $lang['41'] }}</b>
+                                            <p class="font-s-12">
+                                                @php
+                                                    $early=explode(',', $lang['44']);
+                                                    foreach ($early as $key => $value) {
+                                                        echo $value.'<br>';
+                                                    }
+                                                @endphp
+                                            </p>
+                                            <b>{{ $lang['42'] }}</b>
+                                            <p class="font-s-12">3.4" --> 1.5 oz & 14" & 1.7 lbs</p>
+                                        </div>
+                                        <div class="col-12 p-2 border-white trim_height light-lime green_color overflow-auto">
+                                            <b>{{ $lang['41'] }}</b>
+                                            <p class="font-s-12">
+                                                @php
+                                                    $early=explode(',', $lang['45']);
+                                                    foreach ($early as $key => $value) {
+                                                        echo $value.'<br>';
+                                                    }
+                                                @endphp
+                                            </p>
+                                            <b>{{ $lang['42'] }}</b>
+                                            <p class="font-s-12">14.4" & 2.9 lbs --> 20.3" & 8.1 lbs</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Charts Section -->
+                            <div class="w-full mt-12" 
+                                x-data='{ 
+                                    detail: @json($detail),
+                                    render(newDetail) {
+                                        if (newDetail) this.detail = newDetail;
+                                        
+                                        if (typeof Highcharts === "undefined" || typeof Highcharts.chart !== "function") {
+                                            setTimeout(() => this.render(), 200);
+                                            return;
+                                        }
+                                        
+                                        if (!this.detail || !this.detail.ovu_date) return;
 
-                                Highcharts.chart(this.$refs.cumProbChart, {
-                                    chart: { type: "line", borderRadius: 15, backgroundColor: "#F6FAFC" },
-                                    title: { text: "{{ $lang['47'] ?? 'Cumulative Probability of Delivery' }}" },
-                                    xAxis: { categories: categories },
-                                    yAxis: { title: { text: null }, labels: { format: "{value}%" } },
-                                    series: [{
-                                        name: "{{ $lang['49'] ?? 'Cumulative' }}",
-                                        data: [10.8,12.1,13.5,15.4,17.9,19.9,22.6,26.6,28.4,31.4,35.2,39.3,43.3,47.9,54.4,60.0,64.5,68.8,72.8,76.8,81.0,85.1,88.2,90.7,93.0,94.7,96.0,97.1,97.8],
-                                        color: "#1670a7"
-                                    }],
-                                    credits: { enabled: false }
-                                });
-                            }
-                         }' 
-                         x-init="render()"
-                         @render-graph.window="render($event.detail)"
-                         wire:ignore>
-                        <div class="grid grid-cols-1 lg:grid-cols-1 gap-2">
-                            <div x-ref="probChart" class="bg-white border border-gray-100 rounded-lg p-2 min-h-[400px]"></div>
-                            <div x-ref="cumProbChart" class="bg-white border border-gray-100 rounded-lg p-2 min-h-[400px]"></div>
-                        </div>
+                                        const categories = [];
+                                        for (let i = 0; i <= 32; i++) {
+                                            const date = new Date(this.detail.ovu_date);
+                                            date.setDate(date.getDate() + 36 * 7 + i); // 36 weeks + i days
+                                            const options = { month: "short", day: "numeric" };
+                                            categories.push(date.toLocaleDateString("en-US", options));
+                                        }
+
+                                        Highcharts.chart(this.$refs.probChart, {
+                                            chart: { type: "bar", borderRadius: 15, backgroundColor: "#F6FAFC" },
+                                            title: { text: "{{ $lang['46'] ?? 'Daily Probability of Delivery' }}" },
+                                            xAxis: { categories: categories },
+                                            yAxis: { title: { text: null }, labels: { format: "{value}%" } },
+                                            series: [{
+                                                name: "{{ $lang['48'] ?? 'Probability' }}",
+                                                data: [1.4,1.3,1.4,1.9,2.4,2.1,2.7,3.1,2.8,2.9,3.8,4.0,4.0,4.6,6.9,5.2,4.5,4.3,4.0,4.1,4.2,4.0,3.1,2.4,2.3,1.7,1.3,1.1,0.7],
+                                                color: "#2845F5"
+                                            }],
+                                            credits: { enabled: false }
+                                        });
+
+                                        Highcharts.chart(this.$refs.cumProbChart, {
+                                            chart: { type: "line", borderRadius: 15, backgroundColor: "#F6FAFC" },
+                                            title: { text: "{{ $lang['47'] ?? 'Cumulative Probability of Delivery' }}" },
+                                            xAxis: { categories: categories },
+                                            yAxis: { title: { text: null }, labels: { format: "{value}%" } },
+                                            series: [{
+                                                name: "{{ $lang['49'] ?? 'Cumulative' }}",
+                                                data: [10.8,12.1,13.5,15.4,17.9,19.9,22.6,26.6,28.4,31.4,35.2,39.3,43.3,47.9,54.4,60.0,64.5,68.8,72.8,76.8,81.0,85.1,88.2,90.7,93.0,94.7,96.0,97.1,97.8],
+                                                color: "#1670a7"
+                                            }],
+                                            credits: { enabled: false }
+                                        });
+                                    }
+                                }' 
+                                x-init="render()"
+                                @render-graph.window="render($event.detail)"
+                                wire:ignore>
+                                <div class="grid grid-cols-1 gap-4 mt-6">
+                                    <div x-ref="probChart" class="bg-white border border-gray-100 rounded-lg p-2 min-h-[400px]"></div>
+                                    <div x-ref="cumProbChart" class="bg-white border border-gray-100 rounded-lg p-2 min-h-[400px]"></div>
+                                </div>
+                            </div>
                     </div>
                 </div>
             </div>
