@@ -253,7 +253,7 @@
                         this.customCarb = 100 - parseInt(this.customPro) - parseInt(this.customFat);
                     }
                 }
-                this.updateCharts();
+                this.renderMacroCharts();
             },
             renderMainChart() {
                 let bmrVal = this.bmr;
@@ -342,7 +342,7 @@
             window.addEventListener('render-graph', () => updateCharts());
             $watch('macroMode', () => { $nextTick(() => renderMacroCharts()); });
          "
-         class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 mt-10 scroll-mt-20">
+         class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
         
         <div class="">
             @if ($type == 'calculator')
@@ -359,15 +359,15 @@
             </div>
         </div>
 
-        <div class=" rounded-lg p-5 mt-3">
-            <div class="rounded-lg p-4">
-                <p class="text-center text-xl font-bold mt-3 text-blue-600 uppercase"><strong>{{$lang['70']}} (TDEE)</strong></p>
+        <div class=" rounded-lg md:p-5 mt-3">
+            <div class="rounded-lg md:p-4">
+                <p class="text-center md:text-xl font-boldmd: mt-2"><strong>{{$lang['70']}} (TDEE)</strong></p>
                 
                 <div class="lg:flex md:flex justify-between gap-6">
                     <!-- TDEE Score -->
                     <div class="lg:w-1/2 mt-3 flex flex-col justify-center">
-                        <div class="bg-[#F6FAFC] rounded-lg text-center p-8 border border-blue-50">
-                            <p><b class="text-green-600 text-6xl" x-text="tdee.toLocaleString()"></b></p>
+                        <div class="bg-[#F6FAFC] rounded-lg text-center p-4 md:p-8 border border-blue-50">
+                            <p><b class="text-green-600 text-4xl md:text-6xl" x-text="tdee.toLocaleString()"></b></p>
                             <p class="text-sm font-bold pb-2 border-b border-gray-200 text-gray-500 uppercase tracking-widest mt-2">{{$lang['71']}}</p>
                             <p class="text-sm mt-4 text-left leading-relaxed">
                                 Based on the <b x-text="formula === 'mifflin' ? '{{$lang['66']}}' : (formula === 'revised' ? '{{$lang['67']}}' : '{{$lang['68']}}')"></b>, 
@@ -405,7 +405,7 @@
             </div>
 
             <!-- Components Chart -->
-            <p class="text-center text-lg mt-8">
+            <p class="text-center text-lg lg:mt-8 mt-4">
                 <strong class="text-blue-600">{{$lang['77']}}</strong>
             </p>
             <div class="w-full flex justify-center py-4">
@@ -495,24 +495,24 @@
             <p class="mt-8 text-2xl text-blue-600 font-bold uppercase text-center border-b border-blue-50 pb-4"><b>{{ $lang[52] }}</b></p>
             
             <div class="max-w-3xl mx-auto mt-6">
-                <div class="flex items-center justify-between p-1 bg-gray-100 rounded-2xl shadow-inner gap-1">
-                    <button @click="macroMode = 'maintenance'; updateCharts()" 
-                            class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
+                <div class="grid grid-cols-2 md:flex items-center justify-between p-1 bg-gray-100 rounded-2xl shadow-inner gap-1">
+                    <button @click="macroMode = 'maintenance'; renderMacroCharts()" 
+                            class="py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base md:flex-1" 
                             :class="macroMode === 'maintenance' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang['m1'] }}
                     </button>
-                    <button @click="macroMode = 'cutting'; updateCharts()" 
-                            class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
+                    <button @click="macroMode = 'cutting'; renderMacroCharts()" 
+                            class="py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base md:flex-1" 
                             :class="macroMode === 'cutting' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang['m2'] }}
                     </button>
-                    <button @click="macroMode = 'bulking'; updateCharts()" 
-                            class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
+                    <button @click="macroMode = 'bulking'; renderMacroCharts()" 
+                            class="py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base md:flex-1" 
                             :class="macroMode === 'bulking' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang['m3'] }}
                     </button>
-                    <button @click="macroMode = 'custom'; updateCharts()" 
-                            class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
+                    <button @click="macroMode = 'custom'; renderMacroCharts()" 
+                            class="py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base md:flex-1" 
                             :class="macroMode === 'custom' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang[53] }}
                     </button>
@@ -626,21 +626,21 @@
                         </div>
                     </div>
                     
-                    <div class="mt-10  p-10 rounded-[40px] border border-gray-100 shadow-sm max-w-4xl mx-auto flex flex-col items-center">
+                    <div class="mt-10  p-4 md:p-10 rounded-[40px] border border-gray-100 shadow-sm max-w-4xl mx-auto flex flex-col items-center">
                         <div id="custom_moderate" style="width: 150px; height: 150px;"></div>
                         
-                        <div class="flex justify-center gap-16 md:gap-24 mt-12 w-full flex-wrap">
-                            <div class="text-center">
-                                <p class="text-red-600 font-bold text-lg mb-1">Protein</p>
-                                <p class="text-4xl font-black text-red-800"><span x-text="Math.round((tdee * (customPro/100)) / 4)"></span> <small class="text-xl">g</small></p>
+                        <div class="flex justify-center gap-8 md:gap-24 mt-12 w-full flex-wrap">
+                            <div class="text-center min-w-[80px]">
+                                <p class="text-red-600 font-bold text-sm md:text-lg mb-1">Protein</p>
+                                <p class="text-2xl md:text-4xl font-black text-red-800"><span x-text="Math.round((tdee * (customPro/100)) / 4)"></span> <small class="text-lg md:text-xl">g</small></p>
                             </div>
-                            <div class="text-center">
-                                <p class="text-yellow-600 font-bold text-lg mb-1">Fats</p>
-                                <p class="text-4xl font-black text-yellow-800"><span x-text="Math.round((tdee * (customFat/100)) / 9)"></span> <small class="text-xl">g</small></p>
+                            <div class="text-center min-w-[80px]">
+                                <p class="text-yellow-600 font-bold text-sm md:text-lg mb-1">Fats</p>
+                                <p class="text-2xl md:text-4xl font-black text-yellow-800"><span x-text="Math.round((tdee * (customFat/100)) / 9)"></span> <small class="text-lg md:text-xl">g</small></p>
                             </div>
-                            <div class="text-center">
-                                <p class="text-green-600 font-bold text-lg mb-1">Carbs</p>
-                                <p class="text-4xl font-black text-green-800"><span x-text="Math.round((tdee * (customCarb/100)) / 4)"></span> <small class="text-xl">g</small></p>
+                            <div class="text-center min-w-[80px]">
+                                <p class="text-green-600 font-bold text-sm md:text-lg mb-1">Carbs</p>
+                                <p class="text-2xl md:text-4xl font-black text-green-800"><span x-text="Math.round((tdee * (customCarb/100)) / 4)"></span> <small class="text-lg md:text-xl">g</small></p>
                             </div>
                         </div>
                         
