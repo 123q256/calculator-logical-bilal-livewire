@@ -107,7 +107,7 @@
                         <div class="relative w-full py-2">
                             <input type="number" step="any" x-model="weight" class="input w-full border border-gray-300 rounded-lg px-4 py-2" />
                             <label @click="openWeightUnit = !openWeightUnit" class="unit-label-abs" x-text="unit + ' ▾'"></label>
-                            <div x-show="openWeightUnit" @click.away="openWeightUnit = false" class="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1 right-0 min-w-[60px]" x-cloak>
+                            <div x-show="openWeightUnit" @click.away="openWeightUnit = false" class="absolute z-10  border border-gray-300 rounded-md shadow-lg mt-1 right-0 min-w-[60px]" x-cloak>
                                 <p class="unit-dropdown-item" @click="convertWeight('lbs')">lbs</p>
                                 <p class="unit-dropdown-item" @click="convertWeight('kg')">kg</p>
                             </div>
@@ -129,7 +129,7 @@
                                     <div class="relative w-full py-2">
                                         <input type="number" x-model="height_in" min="0" max="11" class="input w-full border border-gray-300 rounded-lg px-4 py-2" />
                                         <label @click="openHeightUnit = !openHeightUnit" class="unit-label-abs">ft/in ▾</label>
-                                        <div x-show="openHeightUnit" @click.away="openHeightUnit = false" class="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1 right-0 min-w-[70px]" x-cloak>
+                                        <div x-show="openHeightUnit" @click.away="openHeightUnit = false" class="absolute z-10  border border-gray-300 rounded-md shadow-lg mt-1 right-0 min-w-[70px]" x-cloak>
                                             <p class="unit-dropdown-item" @click="convertHeight('cm')">cm</p>
                                             <p class="unit-dropdown-item font-bold text-blue-600 bg-blue-50">ft/in</p>
                                         </div>
@@ -143,7 +143,7 @@
                                 <div class="relative w-full py-2">
                                     <input type="number" step="any" x-model="height_cm" class="input w-full border border-gray-300 rounded-lg px-4 py-2" />
                                     <label @click="openHeightUnit = !openHeightUnit" class="unit-label-abs">cm ▾</label>
-                                    <div x-show="openHeightUnit" @click.away="openHeightUnit = false" class="absolute z-10 bg-white border border-gray-300 rounded-md shadow-lg mt-1 right-0 min-w-[70px]" x-cloak>
+                                    <div x-show="openHeightUnit" @click.away="openHeightUnit = false" class="absolute z-10  border border-gray-300 rounded-md shadow-lg mt-1 right-0 min-w-[70px]" x-cloak>
                                         <p class="unit-dropdown-item font-bold text-blue-600 bg-blue-50">cm</p>
                                         <p class="unit-dropdown-item" @click="convertHeight('ft/in')">ft/in</p>
                                     </div>
@@ -185,7 +185,7 @@
             @endif
         </div>
     </form>
-
+    </div>
     @if($detail)
     <div id="result-section" 
          x-data="{ 
@@ -221,6 +221,40 @@
                 this.renderMainChart();
                 this.renderMacroCharts();
             },
+            adjustMacros(changed) {
+                let p = parseInt(this.customPro);
+                let f = parseInt(this.customFat);
+                let c = parseInt(this.customCarb);
+                let total = p + f + c;
+                
+                if (total !== 100) {
+                    let diff = 100 - total;
+                    // Distribute diff between the other two
+                    if (changed === 'pro') {
+                        let half = Math.floor(diff / 2);
+                        let otherHalf = diff - half;
+                        this.customFat = Math.max(10, f + half);
+                        this.customCarb = Math.max(10, c + otherHalf);
+                    } else if (changed === 'fat') {
+                        let half = Math.floor(diff / 2);
+                        let otherHalf = diff - half;
+                        this.customPro = Math.max(10, p + half);
+                        this.customCarb = Math.max(10, c + otherHalf);
+                    } else if (changed === 'carb') {
+                        let half = Math.floor(diff / 2);
+                        let otherHalf = diff - half;
+                        this.customPro = Math.max(10, p + half);
+                        this.customFat = Math.max(10, f + otherHalf);
+                    }
+                    
+                    // Final check to ensure exactly 100
+                    let finalTotal = parseInt(this.customPro) + parseInt(this.customFat) + parseInt(this.customCarb);
+                    if (finalTotal !== 100) {
+                        this.customCarb = 100 - parseInt(this.customPro) - parseInt(this.customFat);
+                    }
+                }
+                this.updateCharts();
+            },
             renderMainChart() {
                 let bmrVal = this.bmr;
                 let tef = this.tdee * 0.1;
@@ -250,11 +284,16 @@
             renderMacroCharts() {
                 const renderSmallPie = (id, pro, fat, carb) => {
                     Highcharts.chart(id, {
-                        chart: { type: 'pie', width: 100, height: 100, backgroundColor: 'transparent' },
+                        chart: { type: 'pie', width: 115, height: 115, backgroundColor: 'transparent' },
                         title: { text: null },
                         plotOptions: {
                             pie: {
-                                dataLabels: { enabled: false },
+                                dataLabels: { 
+                                    enabled: true, 
+                                    format: '{point.percentage:.0f}%',
+                                    distance: -18,
+                                    style: { fontSize: '10px', color: '#FFFFFF', fontWeight: 'bold', textOutline: 'none' }
+                                },
                                 colors: ['#E94442', '#E7A827', '#38a169']
                             }
                         },
@@ -272,7 +311,29 @@
                 renderSmallPie('lowerChart', 40, 40, 20);
                 renderSmallPie('higherChart', 30, 20, 50);
                 if (this.macroMode === 'custom') {
-                    renderSmallPie('custom_moderate', this.customPro, this.customFat, this.customCarb);
+                    Highcharts.chart('custom_moderate', {
+                        chart: { type: 'pie', width: 150, height: 150, backgroundColor: 'transparent' },
+                        title: { text: null },
+                        plotOptions: {
+                            pie: {
+                                dataLabels: { 
+                                    enabled: true, 
+                                    format: '{point.percentage:.0f}%',
+                                    distance: -30,
+                                    style: { fontSize: '10px', color: '#FFFFFF', fontWeight: 'bold', textOutline: 'none' }
+                                },
+                                colors: ['#E94442', '#E7A827', '#38a169']
+                            }
+                        },
+                        series: [{
+                            data: [
+                                { name: 'Protein', y: parseInt(this.customPro) },
+                                { name: 'Fat', y: parseInt(this.customFat) },
+                                { name: 'Carbs', y: parseInt(this.customCarb) }
+                            ]
+                        }],
+                        credits: { enabled: false }
+                    });
                 }
             }
          }"
@@ -283,10 +344,11 @@
          "
          class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 mt-10 scroll-mt-20">
         
-        <div class="flex flex-col md:flex-row justify-between items-center">
+        <div class="">
             @if ($type == 'calculator')
                 @include('inc.copy-pdf')
             @endif
+               <div class="flex flex-col md:flex-row justify-between items-center">
             <div class="mt-4 md:mt-0 lg:w-[30%]">
                 <select x-model="formula" @change="updateCharts()" class="resultInput w-full px-4 border border-blue-200">
                     <option value="mifflin">{{ $lang['66'] ?? 'Mifflin-St Jeor' }}</option>
@@ -294,9 +356,10 @@
                     <option value="katch">{{ $lang['68'] ?? 'Katch-McArdle' }}</option>
                 </select>
             </div>
+            </div>
         </div>
 
-        <div class="bg-white rounded-lg p-5 mt-3">
+        <div class=" rounded-lg p-5 mt-3">
             <div class="rounded-lg p-4">
                 <p class="text-center text-xl font-bold mt-3 text-blue-600 uppercase"><strong>{{$lang['70']}} (TDEE)</strong></p>
                 
@@ -371,7 +434,7 @@
                         <img src="{{ asset('images/tdee_apple.svg') }}" class="w-5 h-5 brightness-0 invert">
                         <p class="text-white font-bold">{{$lang['78']}}</p>
                     </div>
-                    <div class="w-full text-sm px-2 border border-red-100 rounded-b-lg bg-white shadow-sm">
+                    <div class="w-full text-sm px-2 border border-red-100 rounded-b-lg  shadow-sm">
                         <div class="flex items-center justify-between py-4 px-4 border-b border-gray-50">
                             <div>
                                 <p class="font-bold text-gray-700">{{ $lang['20'] }}</p>
@@ -402,7 +465,7 @@
                         <img src="{{ asset('images/tdee_arm.svg') }}" class="w-5 h-5 brightness-0 invert">
                         <p class="text-white font-bold">{{$lang['80']}}</p>
                     </div>
-                    <div class="w-full text-sm px-2 border border-green-100 rounded-b-lg bg-white shadow-sm">
+                    <div class="w-full text-sm px-2 border border-green-100 rounded-b-lg  shadow-sm">
                         <div class="flex items-center justify-between py-4 px-4 border-b border-gray-50">
                             <div>
                                 <p class="font-bold text-gray-700">{{ $lang['25'] }}</p>
@@ -435,22 +498,22 @@
                 <div class="flex items-center justify-between p-1 bg-gray-100 rounded-2xl shadow-inner gap-1">
                     <button @click="macroMode = 'maintenance'; updateCharts()" 
                             class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
-                            :class="macroMode === 'maintenance' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:bg-white'">
+                            :class="macroMode === 'maintenance' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang['m1'] }}
                     </button>
                     <button @click="macroMode = 'cutting'; updateCharts()" 
                             class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
-                            :class="macroMode === 'cutting' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:bg-white'">
+                            :class="macroMode === 'cutting' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang['m2'] }}
                     </button>
                     <button @click="macroMode = 'bulking'; updateCharts()" 
                             class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
-                            :class="macroMode === 'bulking' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:bg-white'">
+                            :class="macroMode === 'bulking' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang['m3'] }}
                     </button>
                     <button @click="macroMode = 'custom'; updateCharts()" 
                             class="flex-1 py-3 px-2 rounded-xl font-bold transition-all text-sm md:text-base" 
-                            :class="macroMode === 'custom' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:bg-white'">
+                            :class="macroMode === 'custom' ? 'bg-[#278ECD] text-white shadow-md' : 'text-gray-500 hover:'">
                         {{ $lang[53] }}
                     </button>
                 </div>
@@ -466,83 +529,122 @@
                 </p>
 
                 <!-- Non-Custom View (3 Charts) -->
-                <div x-show="macroMode !== 'custom'" class="flex flex-wrap justify-center gap-8 animate-in fade-in duration-500">
-                    <template x-for="(macro, index) in [
-                        { name: '{{ $lang['moderate'] }} (30/35/35)', id: 'moderateChart', p: 0.3, f: 0.35, c: 0.35 },
-                        { name: '{{ $lang['lower'] }} (40/40/20)', id: 'lowerChart', p: 0.4, f: 0.4, c: 0.2 },
-                        { name: '{{ $lang['high'] }} (30/20/50)', id: 'higherChart', p: 0.3, f: 0.2, c: 0.5 }
-                    ]">
-                        <div class="w-full md:w-[30%] bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
-                            <p class="mb-4 text-center font-bold text-gray-800" x-text="macro.name"></p>
-                            <div class="flex justify-between items-center">
-                                <div class="space-y-4 text-sm font-bold">
-                                    <div class="text-red-600">
-                                        <div class="flex items-center gap-1"><img src="{{ asset('images/chart_pro.jpg') }}" class="w-3 h-3 object-contain"> <span x-text="'{{ $lang['pro'] }}'"></span></div>
-                                        <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * macro.p) / 4) + ' g'"></p>
-                                    </div>
-                                    <div class="text-yellow-600">
-                                        <div class="flex items-center gap-1"><img src="{{ asset('images/chart_fat.jpg') }}" class="w-3 h-3 object-contain"> <span x-text="'{{ $lang['fat'] }}'"></span></div>
-                                        <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * macro.f) / 9) + ' g'"></p>
-                                    </div>
-                                    <div class="text-green-600">
-                                        <div class="flex items-center gap-1"><img src="{{ asset('images/chart_carb.jpg') }}" class="w-3 h-3 object-contain"> <span x-text="'{{ $lang['carb'] }}'"></span></div>
-                                        <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * macro.c) / 4) + ' g'"></p>
-                                    </div>
+                <div x-show="macroMode !== 'custom'" class="flex flex-wrap justify-center gap-4 animate-in fade-in duration-500">
+                    <!-- Moderate Carb -->
+                    <div class="w-full md:w-[31%]  p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <p class="mb-4 text-center font-bold text-gray-800">{{ $lang['moderate'] }} (30/35/35)</p>
+                        <div class="flex justify-between items-center">
+                            <div class="space-y-4 text-sm font-bold">
+                                <div class="text-red-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_pro.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['pro'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.3) / 4) + ' g'"></p>
                                 </div>
-                                <div :id="macro.id"></div>
+                                <div class="text-yellow-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_fat.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['fat'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.35) / 9) + ' g'"></p>
+                                </div>
+                                <div class="text-green-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_carb.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['carb'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.35) / 4) + ' g'"></p>
+                                </div>
                             </div>
+                            <div id="moderateChart" style="width:115px; height:115px;"></div>
                         </div>
-                    </template>
+                    </div>
+
+                    <!-- Lower Carb -->
+                    <div class="w-full md:w-[31%]  p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <p class="mb-4 text-center font-bold text-gray-800">{{ $lang['lower'] }} (40/40/20)</p>
+                        <div class="flex justify-between items-center">
+                            <div class="space-y-4 text-sm font-bold">
+                                <div class="text-red-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_pro.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['pro'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.4) / 4) + ' g'"></p>
+                                </div>
+                                <div class="text-yellow-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_fat.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['fat'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.4) / 9) + ' g'"></p>
+                                </div>
+                                <div class="text-green-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_carb.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['carb'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.2) / 4) + ' g'"></p>
+                                </div>
+                            </div>
+                            <div id="lowerChart" style="width:115px; height:115px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Higher Carb -->
+                    <div class="w-full md:w-[31%]  p-6 rounded-2xl border border-gray-100 shadow-sm">
+                        <p class="mb-4 text-center font-bold text-gray-800">{{ $lang['high'] }} (30/20/50)</p>
+                        <div class="flex justify-between items-center">
+                            <div class="space-y-4 text-sm font-bold">
+                                <div class="text-red-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_pro.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['pro'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.3) / 4) + ' g'"></p>
+                                </div>
+                                <div class="text-yellow-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_fat.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['fat'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.2) / 9) + ' g'"></p>
+                                </div>
+                                <div class="text-green-600">
+                                    <div class="flex items-center gap-1"><img src="{{ asset('images/chart_carb.jpg') }}" class="w-3 h-3 object-contain"> <span>{{ $lang['carb'] }}</span></div>
+                                    <p x-text="Math.round(((macroMode === 'cutting' ? tdee-500 : (macroMode === 'bulking' ? tdee+500 : tdee)) * 0.5) / 4) + ' g'"></p>
+                                </div>
+                            </div>
+                            <div id="higherChart" style="width:115px; height:115px;"></div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Custom View (Sliders + 1 Chart) -->
                 <div x-show="macroMode === 'custom'" class="animate-in fade-in duration-500">
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                         <!-- Protein Box -->
-                        <div class="bg-red-50/50 p-6 rounded-2xl border border-red-100">
+                        <div class="bg-red-50/30 p-6 rounded-2xl border border-red-100">
                             <div class="flex justify-between font-bold text-red-600 mb-4">
                                 <span class="text-lg">Protein</span>
                                 <span class="text-lg" x-text="customPro + '%'"></span>
                             </div>
-                            <input type="range" min="10" max="60" x-model="customPro" @input="updateCharts()" class="w-full accent-red-600">
+                            <input type="range" min="10" max="60" x-model="customPro" @input="adjustMacros('pro')" class="w-full accent-red-600">
                         </div>
                         <!-- Fats Box -->
-                        <div class="bg-yellow-50/50 p-6 rounded-2xl border border-yellow-100">
+                        <div class="bg-yellow-50/30 p-6 rounded-2xl border border-yellow-100">
                             <div class="flex justify-between font-bold text-yellow-600 mb-4">
                                 <span class="text-lg">Fats</span>
                                 <span class="text-lg" x-text="customFat + '%'"></span>
                             </div>
-                            <input type="range" min="10" max="60" x-model="customFat" @input="updateCharts()" class="w-full accent-yellow-600">
+                            <input type="range" min="10" max="60" x-model="customFat" @input="adjustMacros('fat')" class="w-full accent-yellow-600">
                         </div>
                         <!-- Carbs Box -->
-                        <div class="bg-green-50/50 p-6 rounded-2xl border border-green-100">
+                        <div class="bg-green-50/30 p-6 rounded-2xl border border-green-100">
                             <div class="flex justify-between font-bold text-green-600 mb-4">
                                 <span class="text-lg">Carbs</span>
                                 <span class="text-lg" x-text="customCarb + '%'"></span>
                             </div>
-                            <input type="range" min="10" max="80" x-model="customCarb" @input="updateCharts()" class="w-full accent-green-600">
+                            <input type="range" min="10" max="80" x-model="customCarb" @input="adjustMacros('carb')" class="w-full accent-green-600">
                         </div>
                     </div>
                     
-                    <div class="flex flex-col items-center mt-12 bg-white p-8 rounded-3xl border border-gray-50 shadow-sm max-w-2xl mx-auto">
-                        <div id="custom_moderate" style="width: 250px; height: 250px;"></div>
+                    <div class="mt-10  p-10 rounded-[40px] border border-gray-100 shadow-sm max-w-4xl mx-auto flex flex-col items-center">
+                        <div id="custom_moderate" style="width: 150px; height: 150px;"></div>
                         
-                        <div class="grid grid-cols-3 gap-12 mt-8 w-full">
+                        <div class="flex justify-center gap-16 md:gap-24 mt-12 w-full flex-wrap">
                             <div class="text-center">
-                                <p class="text-red-600 font-bold mb-1">Protein</p>
-                                <p class="text-2xl font-black text-red-700" x-text="Math.round((tdee * (customPro/100)) / 4) + ' g'"></p>
+                                <p class="text-red-600 font-bold text-lg mb-1">Protein</p>
+                                <p class="text-4xl font-black text-red-800"><span x-text="Math.round((tdee * (customPro/100)) / 4)"></span> <small class="text-xl">g</small></p>
                             </div>
                             <div class="text-center">
-                                <p class="text-yellow-600 font-bold mb-1">Fats</p>
-                                <p class="text-2xl font-black text-yellow-700" x-text="Math.round((tdee * (customFat/100)) / 9) + ' g'"></p>
+                                <p class="text-yellow-600 font-bold text-lg mb-1">Fats</p>
+                                <p class="text-4xl font-black text-yellow-800"><span x-text="Math.round((tdee * (customFat/100)) / 9)"></span> <small class="text-xl">g</small></p>
                             </div>
                             <div class="text-center">
-                                <p class="text-green-600 font-bold mb-1">Carbs</p>
-                                <p class="text-2xl font-black text-green-700" x-text="Math.round((tdee * (customCarb/100)) / 4) + ' g'"></p>
+                                <p class="text-green-600 font-bold text-lg mb-1">Carbs</p>
+                                <p class="text-4xl font-black text-green-800"><span x-text="Math.round((tdee * (customCarb/100)) / 4)"></span> <small class="text-xl">g</small></p>
                             </div>
                         </div>
                         
-                        <div x-show="parseInt(customPro) + parseInt(customFat) + parseInt(customCarb) !== 100" class="mt-6 px-4 py-2 bg-red-100 text-red-700 rounded-lg font-bold text-sm">
+                        <div x-show="parseInt(customPro) + parseInt(customFat) + parseInt(customCarb) !== 100" class="mt-10 px-6 py-3 bg-red-50 text-red-600 rounded-2xl font-bold text-base border border-red-100">
                             ⚠️ Percentages must total 100% (Current: <span x-text="parseInt(customPro) + parseInt(customFat) + parseInt(customCarb)"></span>%)
                         </div>
                     </div>
