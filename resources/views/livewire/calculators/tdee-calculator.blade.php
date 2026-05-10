@@ -187,6 +187,7 @@
     </form>
     </div>
     @if($detail)
+    <hr>
     <div id="result-section" 
          x-data="{ 
             detail: @entangle('detail'),
@@ -348,7 +349,11 @@
             @if ($type == 'calculator')
                 @include('inc.copy-pdf')
             @endif
-               <div class="flex flex-col md:flex-row justify-between items-center">
+           
+        </div>
+
+        <div class=" rounded-lg md:p-5 mt-3">
+                <div class="flex flex-col md:flex-row justify-end items-center">
             <div class="mt-4 md:mt-0 lg:w-[30%]">
                 <select x-model="formula" @change="updateCharts()" class="resultInput w-full px-4 border border-blue-200">
                     <option value="mifflin">{{ $lang['66'] ?? 'Mifflin-St Jeor' }}</option>
@@ -357,9 +362,6 @@
                 </select>
             </div>
             </div>
-        </div>
-
-        <div class=" rounded-lg md:p-5 mt-3">
             <div class="rounded-lg md:p-4">
                 <p class="text-center md:text-xl font-boldmd: mt-2"><strong>{{$lang['70']}} (TDEE)</strong></p>
                 
