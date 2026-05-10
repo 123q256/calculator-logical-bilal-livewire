@@ -23275,7 +23275,7 @@ class Health extends Model
             $this->param['BMR'] = round($BMR);
             $this->param['BMI'] = $BMI;
             $this->param['you_are'] = $you_are;
-            $this->param['submit'] = $newSubmitUnit;
+            // $this->param['submit'] = $newSubmitUnit;
             $this->param['calories'] = $calories;
             $this->param['submit'] = $submit;
             // maintance moderate
