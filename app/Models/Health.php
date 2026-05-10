@@ -17010,6 +17010,7 @@ class Health extends Model
                 "RMR" => $RMR,
                 "LBM" => $LBM,
                 "tdee_target" => $tdee_target,
+                "BMR_target" => $BMR_target,
                 "RMR_target" => $RMR_target,
                 "LBM_target" => $LBM_target,
                 "BMI" => $BMI,
