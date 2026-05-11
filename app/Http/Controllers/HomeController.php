@@ -364,7 +364,6 @@ class HomeController extends Controller
 
 	public function showPage($lang = null, $url)
 	{
-		
 		error_reporting(0);
 		$request = request();
 		$check = $_SERVER['REQUEST_URI'];
@@ -396,7 +395,7 @@ class HomeController extends Controller
 			$cal_data = file_get_contents("keys/" . $file . ".txt");
 			$cal_data = json_decode($cal_data);
 		}
-		// dd($cal_data);
+		// dd($url);
 		if (isset($cal_data)) {
 			if (isset($request->submit)) {
 				$fun_name = explode('-', $url);
@@ -405,8 +404,10 @@ class HomeController extends Controller
 					$fun = 'gas';
 				} elseif ($url == 'waist-to-height-ratio-calculator') {
 					$fun = 'waist_height';
-				} elseif ($url == '6-minute-walk-test') {
+				} elseif ($url == 'six-minute-walk-test') {
+					// dd('fff');
 					$fun = 'walk';
+				
 				} elseif ($url == 'percent-yield-calculator') {
 					$fun = 'percent_yield';
 				} elseif ($url == 'body-shape-calculator') {
@@ -780,7 +781,7 @@ class HomeController extends Controller
 				}
 
 				$model = $cal_data->cal_cat;
-
+				// dd($model);
 				if ($model == 'Everyday-Life') {
 					$model = 'EverydayLife';
 				}

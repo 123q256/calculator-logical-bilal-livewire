@@ -251,8 +251,8 @@
                 @include('inc.widget-button')
             @endif
         @if($detail)
-        <hr>
-        <div id="result-section" class="w-full mx-auto p-4 lg:py-8 md:py-8 result_calculator rounded-lg mt-5 space-y-6 result">
+        <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:py-8 md:py-8 result_calculator rounded-lg mt-5 space-y-6 result">
+            <hr>
             <div class="">
                 @if ($type == 'calculator')
                      @include('inc.copy-pdf')

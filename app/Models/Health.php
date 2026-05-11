@@ -1758,8 +1758,9 @@ class Health extends Model
             $total_sit=0;
             $total_run=0;
             $total_score=0;
+            $push_s=0; $sit_s=0; $run_s=0; $min_push=0; $min_sit=0; $min_time=''; $push_class=''; $sit_class=''; $run_class=''; $total_class='';
             for ($i=1; $i <= $total ; $i++) { 
-                if (is_numeric($request->{"age$i"}) && is_numeric($request->{"push$i"}) && is_numeric($request->{"sit$i"}) && is_numeric($request->{"2mile$i"})) {
+                if (is_numeric($request->{"age$i"}) && is_numeric($request->{"push$i"}) && is_numeric($request->{"sit$i"}) && !empty($request->{"2mile$i"})) {
                                         $check=true;
                     $ave=$ave+1;
                     $push=$request->{"push$i"};
@@ -4620,7 +4621,7 @@ class Health extends Model
                         <input class="input" type="number" name="sit'.$i.'" value="'.$request->{"sit$i"}.'" placeholder="00">
                     </div>
                     <div class="col-2 p-1 p-lg-2">
-                        <input class="input" type="text" name="2mile'.$i.'" value="'.$request->{"2mile.$i"}.'"  placeholder="00">
+                        <input class="input" type="text" name="2mile'.$i.'" value="'.$request->{"2mile$i"}.'"  placeholder="00">
                     </div>';
                 }
                 $this->param['input'] = $input;
@@ -4638,7 +4639,7 @@ class Health extends Model
             $total_run=0;
             $total_score=0;
             for ($i=1; $i <= $total ; $i++) { 
-                if (is_numeric($request->{"age$i"}) && is_numeric($request->{"push$i"}) && is_numeric($request->{"sit$i"}) && is_numeric($request->{"2mile$i"}) && is_numeric($request->{"height$i"}) && is_numeric($request->{"weight$i"})) {
+                if (is_numeric($request->{"age$i"}) && is_numeric($request->{"push$i"}) && is_numeric($request->{"sit$i"}) && !empty($request->{"2mile$i"}) && is_numeric($request->{"height$i"}) && is_numeric($request->{"weight$i"})) {
                     $check=true;
                     $ave=$ave+1;
                     $push=$request->{"push$i"};
@@ -7982,6 +7983,7 @@ class Health extends Model
                 if (!is_numeric($sec)) {
                     $sec=0;
                 }
+                $push_s=0; $sit_s=0; $run_s=0; $min_push=0; $min_sit=0; $min_time=''; $push_class=''; $sit_class=''; $run_class=''; $total_class='';
                 if ($request->gender=='Male') {
                     if ($request->age >= 17 && $request->age < 22) {
                         if ($push<5) {$push_s=0;}if ($push=='5') {$push_s='9';}if ($push=='6') {$push_s=10;}
@@ -11645,7 +11647,7 @@ class Health extends Model
           return $this->param;
         }
         $table='<table class="w-full" cellspacing="0">
-        <thead class="bg-[#99EA48]">
+        <thead class="bg-[#2845F5] text-white">
             <tr class="">
                 <td colspan="3" class="text-center border-2 radius-t-10 px-3 py-2">
                     Ovulation Date: "'.$date.'"
@@ -19965,6 +19967,7 @@ class Health extends Model
         }
 
         function wazan($a,$b){
+            $kanda = $b;
             if($a == "1"){
                 $kanda = $b * 1;
             }elseif ($a == "2") {
@@ -20413,25 +20416,26 @@ class Health extends Model
 
 		if($type=="first"){
 			if(is_numeric($v) && is_numeric($t) && is_numeric($dp) && $v>0 && $t>0 && $dp>0){
-				$v_val=$v*$v_unit;
-				$t_val=$t*$t_unit;
-				$dp_val=$dp*$dp_unit;
+				$v_val=(float)$v*(float)$v_unit;
+				$t_val=(float)$t*(float)$t_unit;
+				$dp_val=(float)$dp*(float)$dp_unit;
 				$dpm=($v_val*$dp_val)/($t_val);
 				$dph=($v_val*$dp_val)/($t_val/60);
 				$dr=$dph/$dp_val;
 				$this->param['dpm']=$dpm;
 				$this->param['dph']=$dph;
+                $this->param['dr']=$dr;
 			}else{
                 $this->param['error'] = 'Please! Check Your Input.';
                 return $this->param;
 			}
 		}else if($type=="second"){
 			if(is_numeric($d) && is_numeric($bw) && is_numeric($bv) && is_numeric($drug) && is_numeric($dp) && $d>0 && $bw>0 && $bv>0 && $drug>0 && $dp>0){
-				$d_val=$d*$d_unit;
-				$bw_val=$bw*$bw_unit;
-				$bv_val=$bv*$bv_unit;
-				$drug_val=$drug*$drug_unit;
-				$dp_val=$dp*$dp_unit;
+				$d_val=(float)$d*(float)$d_unit;
+				$bw_val=(float)$bw*(float)$bw_unit;
+				$bv_val=(float)$bv*(float)$bv_unit;
+				$drug_val=(float)$drug*(float)$drug_unit;
+				$dp_val=(float)$dp*(float)$dp_unit;
 				if($bw_val>0 && $bw_val<300){
 					$dr=(60*$d_val/1000*$bw_val*$bv_val)/(1000*$drug_val)*1000000;
 					$concentration=($drug_val/$bv_val)*1000;
@@ -20440,6 +20444,7 @@ class Health extends Model
 					$this->param['concentration']=$concentration;
 					$this->param['time_to_bag']=$time_to_bag;
 					$this->param['flow_rate']=$dr*$dp_val;
+                    $this->param['dr']=$dr;
 				}else{
                     $this->param['error'] = 'Body weight great than 0 and less than 300 kg.';
                     return $this->param;

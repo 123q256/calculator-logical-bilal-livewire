@@ -133,6 +133,9 @@ class WetBulbCalculator extends Component
         $this->detail = null;
 
         session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error', 'scroll_to_result']);
+        if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
     }
 
     public function getConvertedValue($value, $unit)
