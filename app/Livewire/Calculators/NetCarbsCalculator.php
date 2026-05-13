@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Livewire\Calculators;
-use App\Models\Health;
-use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+use Livewire\Component;
+use App\Models\Health;
+class NetCarbsCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $serving = 'per serving';
+    public $location = 'yes';
+    public $carbohydrates = '5';
+    public $fiber = '5';
+    public $alcohol = '30';
+    public $contains = 'no';
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +26,12 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->serving = $inputs['serving'] ?? 'per serving';
+            $this->location = $inputs['location'] ?? 'yes';
+            $this->carbohydrates = $inputs['carbohydrates'] ?? '5';
+            $this->fiber = $inputs['fiber'] ?? '5';
+            $this->alcohol = $inputs['alcohol'] ?? '30';
+            $this->contains = $inputs['contains'] ?? 'no';
         }
     }
 
@@ -35,8 +43,12 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
+        $this->serving = 'per serving';
+        $this->location = 'yes';
+        $this->carbohydrates = '5';
+        $this->fiber = '5';
+        $this->alcohol = '30';
+        $this->contains = 'no';
         $this->error = null;
         $this->detail = null;
 
@@ -48,19 +60,23 @@ class MaxHeartRateCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'serving' => $this->serving,
+            'location' => $this->location,
+            'carbohydrates' => $this->carbohydrates,
+            'fiber' => $this->fiber,
+            'alcohol' => $this->alcohol,
+            'contains' => $this->contains,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->net($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +118,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.net-carbs-calculator');
     }
 }

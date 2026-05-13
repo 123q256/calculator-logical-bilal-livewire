@@ -4,10 +4,10 @@ namespace App\Livewire\Calculators;
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class ItRatio extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $f_input = '7';
+    public $s_input = '5';
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +22,8 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->f_input = $inputs['f_input'] ?? '7';
+            $this->s_input = $inputs['s_input'] ?? '5';
         }
     }
 
@@ -35,8 +35,8 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
+        $this->f_input = '7';
+        $this->s_input = '5';
         $this->error = null;
         $this->detail = null;
 
@@ -54,13 +54,18 @@ class MaxHeartRateCalculator extends Component
 
     public function calculate()
     {
+        if (empty($this->s_input) || $this->s_input == 0) {
+            $this->error = 'Second input cannot be zero or empty.';
+            return;
+        }
+
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'f_input' => $this->f_input,
+            's_input' => $this->s_input,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->it($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +107,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.it-ratio');
     }
 }

@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Livewire\Calculators;
+
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class A1cCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $solve = '1';
+    public $input = '6';
+    public $unit1 = '%';
+    public $unit2 = 'mmol/L';
+
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +26,10 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->solve = $inputs['solve'] ?? '1';
+            $this->input = $inputs['input'] ?? '6';
+            $this->unit1 = $inputs['unit1'] ?? '%';
+            $this->unit2 = $inputs['unit2'] ?? 'mmol/L';
         }
     }
 
@@ -35,32 +41,25 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
-        $this->error = null;
-        $this->detail = null;
-
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
-
+        $this->reset(['solve', 'input', 'unit1', 'unit2', 'detail', 'error']);
+        session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error', 'scroll_to_result']);
+        
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'solve' => $this->solve,
+            'input' => $this->input,
+            'unit1' => $this->unit1,
+            'unit2' => $this->unit2,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->a1c($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +101,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.a1c-calculator');
     }
 }

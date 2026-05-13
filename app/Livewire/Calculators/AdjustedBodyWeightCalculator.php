@@ -1,13 +1,21 @@
 <?php
 
 namespace App\Livewire\Calculators;
+
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class AdjustedBodyWeightCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $gender = 'male';
+    public $weight = '15';
+    public $weight_unit = 'kg';
+    
+    public $height_ft = '6';
+    public $height_in = '12';
+    public $height_cm = '168';
+    public $unit_ft_in = 'cm';
+
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +30,14 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->gender = $inputs['gender'] ?? 'male';
+            $this->weight = $inputs['weight'] ?? '15';
+            $this->weight_unit = $inputs['weight_unit'] ?? 'kg';
+            
+            $this->height_ft = $inputs['height_ft'] ?? '6';
+            $this->height_in = $inputs['height_in'] ?? '12';
+            $this->height_cm = $inputs['height_cm'] ?? '168';
+            $this->unit_ft_in = $inputs['unit_ft_in'] ?? 'cm';
         }
     }
 
@@ -35,32 +49,28 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
-        $this->error = null;
-        $this->detail = null;
-
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
-
+        $this->reset(['gender', 'weight', 'weight_unit', 'height_ft', 'height_in', 'height_cm', 'unit_ft_in', 'detail', 'error']);
+        session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error', 'scroll_to_result']);
+        
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'gender' => $this->gender,
+            'weight' => $this->weight,
+            'weight_unit' => $this->weight_unit,
+            'height_ft' => $this->height_ft,
+            'height_in' => $this->height_in,
+            'height_cm' => $this->height_cm,
+            'unit_ft_in' => $this->unit_ft_in,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->adjusted($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +112,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.adjusted-body-weight-calculator');
     }
 }

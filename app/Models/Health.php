@@ -17504,11 +17504,6 @@ class Health extends Model
         }
 	}
  
-
-
-
-    
-
     // Body Fat Calculator
 	 public function body($request){
         if ($request->calculator_type==='simple') {
@@ -17652,6 +17647,8 @@ class Health extends Model
 				$this->param['adult_body_fat'] = $adult_body_fat;
 				$this->param['BAI'] = $BAI;
 				$this->param['fat_mass'] = $fat_mass;
+				$this->param['fat_weight'] = round(($army / 100) * $request->weight, 2);
+				$this->param['fat_weight_unit'] = $request->unit;
 				$this->param['category'] = $category;
 				$this->param['lean_mass'] = $lean_mass;
 				$this->param['RESULT'] = 1;
@@ -17678,6 +17675,9 @@ class Health extends Model
                     $Hip_in = $request->hip;
                     $neck_in = $request->neck;
                     $hightUnit = $request->hightUnit;
+                    $Waist = $request->waist;
+                    $Hip = $request->hip;
+                    $neck = $request->neck;
 
                     // Convert inches to cm
                     $Waist_cm = $Waist_in * 2.54;
@@ -22010,7 +22010,7 @@ class Health extends Model
             }
         }
 		$this->param['bodyFat'] =  number_format($bodyFat,2);
-		$this->param['fatMass'] = abs(number_format($fatMass,2)) + 0;
+		$this->param['fatMass'] = abs((float)str_replace(',', '', number_format($fatMass, 2))) + 0;
 		$this->param['leanMass'] =  number_format($leanMass,2);
 		$this->param['bodyFatCategory'] = $bodyFatCategory;
 		}else{

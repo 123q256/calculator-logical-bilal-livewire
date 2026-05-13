@@ -4,10 +4,20 @@ namespace App\Livewire\Calculators;
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class UrineOutputCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $weight = '80';
+    public $weight_unit = 'kg';
+    public $time = '24';
+    public $time_min = '10';
+    public $time_sec = '10';
+    public $time_unit = 'sec';
+    public $urine = '3000';
+    public $urine_unit = 'ml';
+    public $fluid = '300';
+    public $fluid_unit = 'ml';
+    public $output_unit = 'kg';
+    public $balance_unit = 'ml';
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +32,18 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->weight = $inputs['weight'] ?? '80';
+            $this->weight_unit = $inputs['weight_unit'] ?? 'kg';
+            $this->time = $inputs['time'] ?? '24';
+            $this->time_min = $inputs['time_min'] ?? '10';
+            $this->time_sec = $inputs['time_sec'] ?? '10';
+            $this->time_unit = $inputs['time_unit'] ?? 'sec';
+            $this->urine = $inputs['urine'] ?? '3000';
+            $this->urine_unit = $inputs['urine_unit'] ?? 'ml';
+            $this->fluid = $inputs['fluid'] ?? '300';
+            $this->fluid_unit = $inputs['fluid_unit'] ?? 'ml';
+            $this->output_unit = $inputs['output_unit'] ?? 'kg';
+            $this->balance_unit = $inputs['balance_unit'] ?? 'ml';
         }
     }
 
@@ -35,8 +55,18 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
+        $this->weight = '80';
+        $this->weight_unit = 'kg';
+        $this->time = '24';
+        $this->time_min = '10';
+        $this->time_sec = '10';
+        $this->time_unit = 'sec';
+        $this->urine = '3000';
+        $this->urine_unit = 'ml';
+        $this->fluid = '300';
+        $this->fluid_unit = 'ml';
+        $this->output_unit = 'kg';
+        $this->balance_unit = 'ml';
         $this->error = null;
         $this->detail = null;
 
@@ -48,19 +78,29 @@ class MaxHeartRateCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'weight' => $this->weight,
+            'weight_unit' => $this->weight_unit,
+            'time' => $this->time,
+            'time_min' => $this->time_min,
+            'time_sec' => $this->time_sec,
+            'time_unit' => $this->time_unit,
+            'urine' => $this->urine,
+            'urine_unit' => $this->urine_unit,
+            'fluid' => $this->fluid,
+            'fluid_unit' => $this->fluid_unit,
+            'output_unit' => $this->output_unit,
+            'balance_unit' => $this->balance_unit,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->urine($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +142,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.urine-output-calculator');
     }
 }

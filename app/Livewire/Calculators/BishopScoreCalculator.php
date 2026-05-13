@@ -4,10 +4,13 @@ namespace App\Livewire\Calculators;
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class BishopScoreCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $effacement = '0';
+    public $consistency = '0';
+    public $fetal_station = '2';
+    public $head_position = '0';
+    public $dilation = '1';
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +25,11 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->effacement = $inputs['effacement'] ?? '0';
+            $this->consistency = $inputs['consistency'] ?? '0';
+            $this->fetal_station = $inputs['fetal_station'] ?? '2';
+            $this->head_position = $inputs['head_position'] ?? '0';
+            $this->dilation = $inputs['dilation'] ?? '1';
         }
     }
 
@@ -35,8 +41,11 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
+        $this->effacement = '0';
+        $this->consistency = '0';
+        $this->fetal_station = '2';
+        $this->head_position = '0';
+        $this->dilation = '1';
         $this->error = null;
         $this->detail = null;
 
@@ -48,19 +57,22 @@ class MaxHeartRateCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'effacement' => $this->effacement,
+            'consistency' => $this->consistency,
+            'fetal_station' => $this->fetal_station,
+            'head_position' => $this->head_position,
+            'dilation' => $this->dilation,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->bishop($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +114,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.bishop-score-calculator');
     }
 }

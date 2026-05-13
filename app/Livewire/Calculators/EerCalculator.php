@@ -1,13 +1,27 @@
 <?php
 
 namespace App\Livewire\Calculators;
+
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class EerCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $gender = 'Male';
+    public $age = '25';
+    public $child_age = '25';
+    public $trim = '1st';
+    public $period = '1st6';
+    public $lac = '1st';
+    public $height_ft = '5';
+    public $height_in = '10';
+    public $height_cm = '175';
+    public $unit_ft_in = 'ft/in';
+    public $weight = '160';
+    public $unit = 'lbs';
+    public $activity = 'Sedentary';
+    public $goal = 'maintain';
+
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +36,20 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->gender = $inputs['gender'] ?? 'Male';
+            $this->age = $inputs['age'] ?? '25';
+            $this->child_age = $inputs['child_age'] ?? '25';
+            $this->trim = $inputs['trim'] ?? '1st';
+            $this->period = $inputs['period'] ?? '1st6';
+            $this->lac = $inputs['lac'] ?? '1st';
+            $this->height_ft = $inputs['height-ft'] ?? '5';
+            $this->height_in = $inputs['height-in'] ?? '10';
+            $this->height_cm = $inputs['height-cm'] ?? '175';
+            $this->unit_ft_in = $inputs['unit_ft_in'] ?? 'ft/in';
+            $this->weight = $inputs['weight'] ?? '160';
+            $this->unit = $inputs['unit'] ?? 'lbs';
+            $this->activity = $inputs['activity'] ?? 'Sedentary';
+            $this->goal = $inputs['goal'] ?? 'maintain';
         }
     }
 
@@ -35,32 +61,35 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
-        $this->error = null;
-        $this->detail = null;
-
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
-
+        $this->reset(['gender', 'age', 'child_age', 'trim', 'period', 'lac', 'height_ft', 'height_in', 'height_cm', 'unit_ft_in', 'weight', 'unit', 'activity', 'goal', 'detail', 'error']);
+        session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error', 'scroll_to_result']);
+        
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
+            'gender' => $this->gender,
             'age' => $this->age,
+            'child_age' => $this->child_age,
+            'trim' => $this->trim,
+            'period' => $this->period,
+            'lac' => $this->lac,
+            'height-ft' => $this->height_ft,
+            'height-in' => $this->height_in,
+            'height-cm' => $this->height_cm,
+            'unit_ft_in' => $this->unit_ft_in,
+            'weight' => $this->weight,
+            'unit' => $this->unit,
+            'activity' => $this->activity,
+            'goal' => $this->goal,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->eer($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +131,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.eer-calculator');
     }
 }

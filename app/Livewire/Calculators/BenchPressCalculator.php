@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Livewire\Calculators;
+
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class BenchPressCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $weight = '100';
+    public $unit = 'lbs';
+    public $reps = '5';
+    public $tableType = 'Percentage of 1RM';
+
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +26,10 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->weight = $inputs['weight'] ?? '100';
+            $this->unit = $inputs['unit'] ?? 'lbs';
+            $this->reps = $inputs['reps'] ?? '5';
+            $this->tableType = $inputs['tableType'] ?? 'Percentage of 1RM';
         }
     }
 
@@ -35,32 +41,25 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
-        $this->error = null;
-        $this->detail = null;
-
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
-
+        $this->reset(['weight', 'unit', 'reps', 'tableType', 'detail', 'error']);
+        session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error', 'scroll_to_result']);
+        
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'weight' => $this->weight,
+            'unit' => $this->unit,
+            'reps' => $this->reps,
+            'tableType' => $this->tableType,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->bench($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +101,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.bench-press-calculator');
     }
 }

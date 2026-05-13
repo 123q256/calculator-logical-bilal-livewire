@@ -4,10 +4,12 @@ namespace App\Livewire\Calculators;
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class AstAltRatioCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $ast = '12';
+    public $ast_unit = 'U / liter';
+    public $alt = '12';
+    public $alt_unit = 'U / liter';
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +24,10 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->ast = $inputs['ast'] ?? '12';
+            $this->ast_unit = $inputs['ast_unit'] ?? 'U / liter';
+            $this->alt = $inputs['alt'] ?? '12';
+            $this->alt_unit = $inputs['alt_unit'] ?? 'U / liter';
         }
     }
 
@@ -35,8 +39,10 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
+        $this->ast = '12';
+        $this->ast_unit = 'U / liter';
+        $this->alt = '12';
+        $this->alt_unit = 'U / liter';
         $this->error = null;
         $this->detail = null;
 
@@ -48,19 +54,26 @@ class MaxHeartRateCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
+        if (empty($this->alt) || $this->alt == 0) {
+            $this->error = 'ALT cannot be zero or empty.';
+            return;
+        }
+
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'ast' => $this->ast,
+            'ast_unit' => $this->ast_unit,
+            'alt' => $this->alt,
+            'alt_unit' => $this->alt_unit,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->ast($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +115,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.ast-alt-ratio-calculator');
     }
 }

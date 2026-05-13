@@ -4,10 +4,13 @@ namespace App\Livewire\Calculators;
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class IncidenceRateCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $cases = '10';
+    public $risk = '100';
+    public $different_unit = 'No';
+    public $population = '1000';
+    public $per = '100000';
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +25,11 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->cases = $inputs['cases'] ?? '10';
+            $this->risk = $inputs['risk'] ?? '100';
+            $this->different_unit = $inputs['different_unit'] ?? 'No';
+            $this->population = $inputs['population'] ?? '1000';
+            $this->per = $inputs['per'] ?? '100000';
         }
     }
 
@@ -35,8 +41,11 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
+        $this->cases = '10';
+        $this->risk = '100';
+        $this->different_unit = 'No';
+        $this->population = '1000';
+        $this->per = '100000';
         $this->error = null;
         $this->detail = null;
 
@@ -48,19 +57,27 @@ class MaxHeartRateCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
+        if (empty($this->risk) || $this->risk == 0) {
+            $this->error = 'Risk population cannot be zero or empty.';
+            return;
+        }
+
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'cases' => $this->cases,
+            'risk' => $this->risk,
+            'different_unit' => $this->different_unit,
+            'population' => $this->population,
+            'per' => $this->per,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->incidence($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +119,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.incidence-rate-calculator');
     }
 }

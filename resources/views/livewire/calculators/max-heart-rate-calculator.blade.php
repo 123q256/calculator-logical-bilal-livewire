@@ -1,4 +1,4 @@
-<div>
+<div x-data="{ formula: @entangle('formula') }">
   <form wire:submit.prevent="calculate">
 
     <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg  space-y-6 my-3">
@@ -11,34 +11,26 @@
             <div class="col-span-12">
                 <label for="formula" class="label">{!! $lang['1'] !!}:</label>
                 <div class="w-full py-2 relative">
-                    <select name="formula" id="formula" class="input">
-                        @php
-                            function optionsList($arr1,$arr2,$unit){
-                            foreach($arr1 as $index => $name){
-                        @endphp
-                            <option value="{!! $name !!}" {{ (isset($unit) && $name === $unit) ? " selected" : "" }}>
-                                {!! $arr2[$index] !!}
-                            </option>
-                        @php
-                            }}
-                            $name = [$lang[2], $lang[3], $lang[4], $lang[5], $lang[6]];
-                            $val = ['1', '2', '3', '4', '5'];
-                            optionsList($val,$name,isset(request()->formula)?request()->formula:'1');
-                        @endphp
+                    <select wire:model.live="formula" id="formula" class="input">
+                        <option value="1">{!! $lang[2] !!}</option>
+                        <option value="2">{!! $lang[3] !!}</option>
+                        <option value="3">{!! $lang[4] !!}</option>
+                        <option value="4">{!! $lang[5] !!}</option>
+                        <option value="5">{!! $lang[6] !!}</option>
                     </select>
                 </div>
             </div>
             <div class="col-span-12  text-center">
-                <div id="math1"><strong>HR<sub>{{ $lang[7] }}</sub> = 205.8 - (0.685 * {{ $lang[8] }})</strong></div>
-                <div class="hidden" id="math2"><strong>HR<sub>{{ $lang[7] }}</sub> = 220 - {{ $lang[8] }}</strong></div>
-                <div class="hidden" id="math3"><strong>HR<sub>{{ $lang[7] }}</sub> = 211 - (0.64 * {{ $lang[8] }})</strong></div>
-                <div class="hidden" id="math4"><strong>HR<sub>{{ $lang[7] }}</sub> = 192 - (0.007 * {{ $lang[8] }}<sup>2</sup>)</strong></div>
-                <div class="hidden" id="math5"><strong>HR<sub>{{ $lang[7] }}</sub> = 208 - (0.07 * {{ $lang[8] }})</strong></div>
+                <div x-cloak x-show="formula === '1'"><strong>HR<sub>{{ $lang[7] }}</sub> = 205.8 - (0.685 * {{ $lang[8] }})</strong></div>
+                <div x-cloak x-show="formula === '2'"><strong>HR<sub>{{ $lang[7] }}</sub> = 220 - {{ $lang[8] }}</strong></div>
+                <div x-cloak x-show="formula === '3'"><strong>HR<sub>{{ $lang[7] }}</sub> = 211 - (0.64 * {{ $lang[8] }})</strong></div>
+                <div x-cloak x-show="formula === '4'"><strong>HR<sub>{{ $lang[7] }}</sub> = 192 - (0.007 * {{ $lang[8] }}<sup>2</sup>)</strong></div>
+                <div x-cloak x-show="formula === '5'"><strong>HR<sub>{{ $lang[7] }}</sub> = 208 - (0.07 * {{ $lang[8] }})</strong></div>
             </div>
             <div class="col-span-12">
                 <label for="age" class="label">{!! $lang['9'] !!}:</label>
                 <div class="w-full py-2 relative">
-                    <input type="number" step="any" name="age" id="age" class="input" aria-label="input" placeholder="00" value="{{ isset(request()->age)?request()->age:'7' }}" />
+                    <input type="number" step="any" wire:model.live="age" id="age" class="input" aria-label="input" placeholder="00" />
                     <span class=" input_unit">years</span>
                 </div>
             </div>
@@ -76,28 +68,5 @@
         </div>
     
     @endisset
-    @push('calculatorJS')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                let formulaElement = document.getElementById('formula');
-                let cal = formulaElement.value;
-
-                function showHideMathSections(cal) {
-                    document.getElementById('math1').style.display = (cal === '1') ? 'block' : 'none';
-                    document.getElementById('math2').style.display = (cal === '2') ? 'block' : 'none';
-                    document.getElementById('math3').style.display = (cal === '3') ? 'block' : 'none';
-                    document.getElementById('math4').style.display = (cal === '4') ? 'block' : 'none';
-                    document.getElementById('math5').style.display = (cal === '5') ? 'block' : 'none';
-                }
-
-                showHideMathSections(cal);
-
-                formulaElement.addEventListener('change', function() {
-                    let cal = this.value;
-                    showHideMathSections(cal);
-                });
-            });
-        </script>
-    @endpush
 </form>
 </div>

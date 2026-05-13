@@ -1,13 +1,19 @@
 <?php
 
 namespace App\Livewire\Calculators;
+
 use App\Models\Health;
 use Livewire\Component;
 
-class MaxHeartRateCalculator extends Component
+class DrugHalfLifeCalculator extends Component
 {
-     public $formula = '1';
-    public $age = '7';
+    public $time = '12';
+    public $time_min = '9';
+    public $time_sec = '12';
+    public $time_unit = 'hrs';
+    public $dosage = '1000';
+    public $dosage_unit = 'mg';
+
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -22,8 +28,12 @@ class MaxHeartRateCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->formula = $inputs['formula'] ?? '1';
-            $this->age = $inputs['age'] ?? '7';
+            $this->time = $inputs['time'] ?? '12';
+            $this->time_min = $inputs['time_min'] ?? '9';
+            $this->time_sec = $inputs['time_sec'] ?? '12';
+            $this->time_unit = $inputs['time_unit'] ?? 'hrs';
+            $this->dosage = $inputs['dosage'] ?? '1000';
+            $this->dosage_unit = $inputs['dosage_unit'] ?? 'mg';
         }
     }
 
@@ -35,32 +45,27 @@ class MaxHeartRateCalculator extends Component
 
     public function resetForm()
     {
-        $this->formula = '1';
-        $this->age = '7';
-        $this->error = null;
-        $this->detail = null;
-
-        session()->forget([
-            'calculator_back_inputs',
-            'calculator_result',
-            'validation_error',
-            'scroll_to_result'
-        ]);
-
+        $this->reset(['time', 'time_min', 'time_sec', 'time_unit', 'dosage', 'dosage_unit', 'detail', 'error']);
+        session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error', 'scroll_to_result']);
+        
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->previous() ?? '/');
+            return redirect()->to(url()->current());
         }
     }
 
     public function calculate()
     {
         $request = (object)[
-            'formula' => $this->formula,
-            'age' => $this->age,
+            'time' => $this->time,
+            'time_min' => $this->time_min,
+            'time_sec' => $this->time_sec,
+            'time_unit' => $this->time_unit,
+            'dosage' => $this->dosage,
+            'dosage_unit' => $this->dosage_unit,
         ];
 
         $model = new Health();
-        $result = $model->max($request);
+        $result = $model->drug($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
@@ -102,6 +107,6 @@ class MaxHeartRateCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.max-heart-rate-calculator');
+        return view('livewire.calculators.drug-half-life-calculator');
     }
 }
