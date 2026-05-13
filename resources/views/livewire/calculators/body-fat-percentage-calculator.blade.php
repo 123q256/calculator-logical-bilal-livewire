@@ -44,14 +44,18 @@
 
                     <!-- Calculator Type Selector (Simple/Advance) -->
                     <div class="col-span-12 px-2 flex gap-2">
-                        <button type="button" wire:click="$set('calculator_type', 'simple')" 
-                                class="px-4 py-2 rounded-lg font-bold transition {{ $calculator_type === 'simple' ? 'bg-[#2845F5] text-white' : 'bg-gray-100' }}">
-                            Simple
-                        </button>
-                        <button type="button" wire:click="$set('calculator_type', 'advance')" 
-                                class="px-4 py-2 rounded-lg font-bold transition {{ $calculator_type === 'advance' ? 'bg-[#2845F5] text-white' : 'bg-gray-100' }}">
-                            Advance
-                        </button>
+                        <label class="cursor-pointer">
+                            <input type="radio" wire:model.live="calculator_type" value="simple" class="hidden">
+                            <div class="px-4 py-2 rounded-lg font-bold transition {{ $calculator_type === 'simple' ? 'bg-[#2845F5] text-white' : 'bg-gray-100' }}">
+                                Simple
+                            </div>
+                        </label>
+                        <label class="cursor-pointer">
+                            <input type="radio" wire:model.live="calculator_type" value="advance" class="hidden">
+                            <div class="px-4 py-2 rounded-lg font-bold transition {{ $calculator_type === 'advance' ? 'bg-[#2845F5] text-white' : 'bg-gray-100' }}">
+                                Advance
+                            </div>
+                        </label>
                     </div>
 
                     <!-- Method Selection (Only for Advance) -->
@@ -246,7 +250,7 @@
                                         getImg() {
                                             const g = $wire.gender === 'Male' ? 'man' : 'women';
                                             const f = '{{ $field }}' === 'tricep' ? 'tri' : ('{{ $field }}' === 'bicep' ? 'bi' : '{{ $field }}');
-                                            return '/images/' + g + '/' + g + '_' + f + '.png';
+                                            return '/images/' + g + '_' + f + '.png';
                                         },
                                         getTip() {
                                             const f = '{{ $field }}';
@@ -303,6 +307,7 @@
 
         <!-- Result Section -->
         @isset($detail)
+        <hr>
                 <div  id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
                 @if ($type == 'calculator')
                     @include('inc.copy-pdf')

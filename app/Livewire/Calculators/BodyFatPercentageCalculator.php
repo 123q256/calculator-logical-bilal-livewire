@@ -128,6 +128,8 @@ class BodyFatPercentageCalculator extends Component
 
     public function calculate()
     {
+          $this->detail = null;
+        $this->error = null;
         $requestData = [
             'gender' => $this->gender,
             'method' => $this->method,

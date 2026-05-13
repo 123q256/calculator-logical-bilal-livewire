@@ -65,13 +65,11 @@
                 </div>
             </div>
 
-            <div class="flex justify-center items-center space-x-4 mt-8">
                 @if ($type == 'calculator')
                     @include('inc.button')
                 @elseif ($type == 'widget')
                     @include('inc.widget-button')
                 @endif
-            </div>
         </div>
 
         @if($detail)
