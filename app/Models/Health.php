@@ -15256,7 +15256,7 @@ class Health extends Model
         $this->param['RESULT'] = 1;
         return $this->param;
     }
-
+    // Jump Rope Calorie Calculator
     public function jump($request){
 
         $operations = $request->operations;
