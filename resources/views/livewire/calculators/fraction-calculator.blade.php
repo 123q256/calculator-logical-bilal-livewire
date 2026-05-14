@@ -410,7 +410,7 @@ hr                                </div>
                         \)</strong>
                     </p>
                     
-                    <div class="space-y-4">
+                    <div class="space-y-4 text-[20px] md:text-[25px]">
                         <p class="mt-3 font-bold text-gray-800 underline">Explanation:</p>
                         
                         <p class="mt-3">
@@ -489,7 +489,7 @@ hr                                </div>
                         @endif
 
                         @if($detail['btm'] != '1')
-                            <p class="mt-3 text-gray-500 italic">Decimal: {{ round($detail['upr']/$detail['btm'], 4) }}</p>
+                            <p class="mt-3">Decimal: {{ round($detail['upr']/$detail['btm'], 4) }}</p>
                         @endif
                     </div>
                 </div>
