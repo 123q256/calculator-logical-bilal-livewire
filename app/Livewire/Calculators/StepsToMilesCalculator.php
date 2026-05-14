@@ -81,7 +81,7 @@ class StepsToMilesCalculator extends Component
             $this->error = null;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->current());
+                return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->js(<<<'JS'

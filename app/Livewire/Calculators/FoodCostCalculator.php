@@ -59,7 +59,7 @@ class FoodCostCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-            return redirect()->to(url()->current());
+            return redirect()->to(url()->previous() ?? '/');
         }
     }
 

@@ -6,7 +6,6 @@ use Livewire\Component;
 
 class PercentageCalculator extends Component
 {
-    // ─── Core Props ───────────────────────────────────────────────
     public $error  = null;
     public $detail = null;
     public $type   = 'calculator';
@@ -15,7 +14,6 @@ class PercentageCalculator extends Component
     public $calLink;
     public $device = 'desktop';
 
-    // ─── ID Locale Fields (to=1..4) ───────────────────────────────
     public $angka_1     = '';
     public $angka_2     = '';
     public $angka_3     = '';
@@ -25,12 +23,10 @@ class PercentageCalculator extends Component
     public $perubahan_1 = '';
     public $perubahan_2 = '';
 
-    // ─── EN Locale Fields ─────────────────────────────────────────
     public $method = '1';
     public $p      = '';
     public $x      = '';
 
-    // ─── Mount ────────────────────────────────────────────────────
     public function mount($type = 'calculator', $lang = [], $calName = null, $calLink = null)
     {
         $this->calName = $calName;
@@ -58,12 +54,18 @@ class PercentageCalculator extends Component
         }
     }
 
-    // ─── Reset ────────────────────────────────────────────────────
+    public function updated($propertyName)
+    {
+        $this->detail = null;
+        $this->error = null;
+    }
+
     public function resetForm(): void
     {
         $this->resetErrorBag();
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             session()->forget(['calculator_result', 'calculator_back_inputs', 'validation_error']);
+        }
 
         $this->error       = null;
         $this->detail      = null;
@@ -80,7 +82,6 @@ class PercentageCalculator extends Component
         $this->x           = '';
     }
 
-    // ─── Calculate ────────────────────────────────────────────────
     public function calculate($submit = null)
     {
         $this->error = null;
@@ -109,38 +110,38 @@ class PercentageCalculator extends Component
 
         $model  = new \App\Models\Math();
         $result = $model->percentage($request);
-    if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+                session()->flash('calculator_result', $result);
+                session()->flash('scroll_to_result', true);
+                session()->put('calculator_back_inputs', $request);
+                return redirect()->to(url()->previous() ?? '/');
+            }
+
             $this->detail = $result;
             $this->error = null;
-            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-
-            session()->flash('calculator_result', $result);
-            session()->flash('scroll_to_result', true);
-            session()->put('calculator_back_inputs', $request);
-                                    return;
-            // return redirect()->to(url()->previous() ?? '/');
-        }
-                    } else {
-                $this->js(<<<'JS'
-                    setTimeout(() => {
-                        const el = document.getElementById('result-section');
-                        if (el) {
-                            const offset = el.getBoundingClientRect().top + window.scrollY - 100;
-                            window.scrollTo({ top: offset, behavior: 'smooth' });
-                        }
-                    }, 100);
-                JS);
-            }
+            $this->js(<<<'JS'
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = el.getBoundingClientRect().top + window.scrollY - 100;
+                        window.scrollTo({ top: offset, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
+            return;
         }
 
         $this->error = $result['error'] ?? 'Something went wrong.';
         $this->detail = null;
+
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-                session()->flash('validation_error', $this->error);            return redirect()->to(url()->previous() ?? '/');
+            session()->flash('validation_error', $this->error);
+            return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    // ─── Render ───────────────────────────────────────────────────
     public function render()
     {
         if (session('scroll_to_result')) {

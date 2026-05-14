@@ -57,7 +57,7 @@ class IncidenceRateCalculator extends Component
         ]);
 
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-            return redirect()->to(url()->current());
+            return redirect()->to(url()->previous() ?? '/');
         }
     }
 
@@ -86,7 +86,7 @@ class IncidenceRateCalculator extends Component
             $this->error = null;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->current());
+                return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->js(<<<'JS'

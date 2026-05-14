@@ -24453,7 +24453,7 @@ class Health extends Model
             return $this->param;
 		}		
 	}
-
+    // Swimming Calorie Calculator
     public function swimming($request)
 	{
 		$weight      = trim($request->input('weight'));

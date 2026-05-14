@@ -1127,7 +1127,6 @@ class Math extends Model
 
 	// Doubling Time Calculator
 	function doubling($request){
-		// dd($request->all());
 		$x= $request->x;
 		$want= $request->want;
   		if (is_numeric($x) && is_numeric($want)) {
@@ -2264,7 +2263,6 @@ class Math extends Model
 
 	// Area of A Sector Calculator
 	function sector($request){
-		// dd($request->all());
 		$angle= $request->angle;	
 		$angle_unit= $request->angle_unit;
 		$rad= $request->rad;
@@ -4242,7 +4240,6 @@ class Math extends Model
 		$this->param['height'] = $height;
 		$this->param['radius'] = $radius;
 		$this->param['RESULT'] = 1;
-		//  dd($this->param);
 	    return $this->param;
 	}
 
@@ -5830,7 +5827,6 @@ class Math extends Model
 			$error= round((($ov - $av)/$av)*100,2);
 			$this->param['own_error'] = $error;
 			$this->param['RESULT'] = 1;
-			// dd($this->param ,$error);
 			return $this->param;
 		} else {
 			$this->param['error'] = 'Please Check Your Input.';
@@ -8446,9 +8442,6 @@ class Math extends Model
 
 	// Rational or Irrational Calculator
 	function irrational($request){
-		//  dd($request->all());
-
-
 		$expression_unit= $request->expression_unit;
 		$num1= $request->num1;
 		$num2= $request->num2;
@@ -10183,7 +10176,6 @@ class Math extends Model
 
 	// Linear Approximation Calculator
 	function linear($request){
-		// dd($request->all());
 		$type= $request->type;
 		if ($type==='1') {
 			$eq= $request->EnterEq;
@@ -10947,7 +10939,6 @@ class Math extends Model
 
 	// Parallelogram Calculator
 	function parallelogram($request){
-		// dd($request->all());
 		$unit = $request->unit;
 		$rad = $request->rad1;
 		$side1 = $request->side1;
@@ -12037,7 +12028,6 @@ class Math extends Model
 			}
 			$this->param['tan']=round($tan,8);
 			$this->param['RESULT'] = 1;
-			dd($this->param);
 			return $this->param;
 		}else{
 			$this->param['error'] = 'Please! Check Your Input.';
@@ -12149,7 +12139,6 @@ class Math extends Model
 				$this->param['btm'] =$btm;
 				$this->param['g'] =$g;
 				$this->param['RESULT'] =1;
-				 dd($this->param);
 				return $this->param;
 			}else{
 				$div='1';
@@ -18001,7 +17990,6 @@ class Math extends Model
 
 	// Integral Calculator
 	function integral($request){
-		// dd($request->all());
 		$EnterEq= $request->EnterEq;
 		$ub= $request->ub;
 		$lb= $request->lb;
@@ -18091,7 +18079,6 @@ class Math extends Model
 
 	// Derivative Calculator
 	function derivative($request){
-		// dd($request->all());
 		$EnterEq = $request->EnterEq;
 		$with = $request->with;
 		$how = $request->how;
@@ -19700,7 +19687,6 @@ class Math extends Model
 
 	// Vector Addition Calculator
 	public function vector_addition($request){
-		//  dd($request->all());
 		$calculation=$request->input('calculation');
 		$operation=$request->input('operation');
 		$alpha=$request->input('alpha');
@@ -19720,7 +19706,6 @@ class Math extends Model
 		$direction_y=$request->input('direction_y');
 		$direction_y_unit=$request->input('direction_y_unit');
 		function convert_angle($unit,$value){
-			// dd($unit,$value);
 			if($unit=="deg"){
 				$val1=$value*0.017453;
 			}else if($unit=="rad"){
@@ -20158,7 +20143,6 @@ class Math extends Model
 		$unit4=$request->input('unit4');
 		
 		function calculation($a,$b){
-			// dd($b);
 			if($b == 'cm'){
 				$val = $a;
 			}elseif($b == 'mm'){
@@ -20438,7 +20422,6 @@ class Math extends Model
 		$bb3 = $request->input('bb3');
 
 		if ($request->has('submit')) {
-			// dd('s');
 			if ($dimen == '3d') {
 				if ($a_rep == 'coor' && $b_rep == 'coor') {
 					if (is_numeric($ax) && is_numeric($ay) && is_numeric($az) && is_numeric($bx) && is_numeric($by) && is_numeric($bz)) {
@@ -20953,7 +20936,6 @@ class Math extends Model
 					}
 					// $alpha_value=$angle_gamma*$ang;
 					// $beta_value=$angle_beta*$ang2;
-					// dd($alpha_value);
 					if($alpha_value<180 && $beta_value<180){
 						if($alpha_value+$beta_value<180){
 						$ph_value=unit_convert($pyramid_height_unit,$pyramid_height);
@@ -23833,7 +23815,6 @@ class Math extends Model
 
     // Rationalize The Denominator Calculator
     function rationalize($request){
-		//  dd($request->all());
 		$type = $request->type;
 		$operations = $request->operations;
 		$a = $request->a;
@@ -23992,7 +23973,6 @@ class Math extends Model
 			$yeq=str_replace('^', '**', $yeq);
 			$yeq=str_replace('e^sqrt(x)', 'exp(2*x)', $yeq);
 			$equ="(".$xeq.")/(".$yeq.")";
-				// dd($xeq,$yeq);
 			try {
 				$client = new Client();
 				$response = $client->post("http://167.172.134.148/rationalize", [
@@ -25219,7 +25199,6 @@ class Math extends Model
 
 	// percentage calculator
 	function percentage($request){
-		// dd($request->all());
 		if(app()->getLocale() == "id"){
 			$angka_1= $request->angka_1;
 			$angka_2= $request->angka_2;
@@ -26826,7 +26805,6 @@ class Math extends Model
 
     // Inverse Matrix Calculator
     function inv_mat($request){
-		//  dd($request->all());
         function invert($A, $debug = false){
             $swap=[];
             $swap_line=[];
@@ -27884,7 +27862,6 @@ class Math extends Model
 	// 		} else {
 	// 			$intersectPoints = null; // Handle the case where no JSON is found
 	// 		}
-	// 		// dd($responseContent,$intersectPoints);
 	// 		$this->param['dataArray'] = $responseContent;
 	// 		return $this->param;
 	// 	}else{
@@ -28999,7 +28976,6 @@ class Math extends Model
 
 	// Scientific Notation Calculator
 	function scientific($request){
-		// dd($request->all());
 		$submit = $request->type;
 		$nbr1 = $request->nbr1;
 		$pwr1 = $request->pwr1;
@@ -29040,8 +29016,6 @@ class Math extends Model
 				$this->param['ee_ans'] = $ee_ans;
 				$this->param['ee_p'] = $ee_p;
 				$this->param['RESULT'] = 1;
-                 dd($this->param);
-
 				return $this->param;
 			}else{
 				$this->param['error'] = 'Please Check Your Input.';
@@ -29664,7 +29638,6 @@ class Math extends Model
 						$bn = base_convert(abs($dc), 10,$select_base);
 						return array($bn, $dc);
 					} elseif ($bnr_slc === "divd") { //Divide
-						// dd($fN);
 						if($fN == '0' || $sN == '0'){
 							return ['error' => 'Please! Check your input'];
 						}
@@ -29686,7 +29659,6 @@ class Math extends Model
 				}else if($bnr_slc=="divi"){
 					$this->param['pres']="division";
 				}
-				// dd($this->param['pres']);
 				// $this->param['bn'] = bnrCal($fN,$sN,$bnr_slc,$select_base)[0];
 				$result = bnrCal($fN, $sN, $bnr_slc, $select_base);
 				if (is_array($result) && isset($result[0])) {
@@ -30172,7 +30144,6 @@ class Math extends Model
 		$no1=$request->input('no1');
 		$action=$request->input('action');
 
-		// dd($dec);
 		if($selection === 'distance'){
 			$check=true;
 			if ($cal === 'bnry_cal') {
@@ -30316,7 +30287,6 @@ class Math extends Model
 
 			function dec_cal($dec, $bits) {
 				// Convert decimal to binary
-				// dd('s');
 				$bnry = decbin($dec);
 				$bits = (int)$bits;
 				
@@ -30422,8 +30392,6 @@ class Math extends Model
 				$this->param['error'] = 'Please! Enter Number in Range';
 				return $this->param;
 			}
-			// dd($this->param);
-
 			$this->param['RESULT'] = 1;
 			return $this->param;
 		}else{
@@ -31085,7 +31053,6 @@ class Math extends Model
 			}
 		}else if($selection=="4"){
 			if($grading_system2=="1" || $grading_system2=="2"){ //Numbers && Percentage
-				// dd('s');
 				$count_grade_was=count($grade_was);
 				$count_you_worth=count($worth);
 				$i=0;
@@ -31402,7 +31369,6 @@ class Math extends Model
 
     // Fraction Calculator
 	public function old_fraction($request){
-		// dd($request->all());
         $submit = $request->submit;
 		if($submit == 'calculate_fraction'){
 			$fraction_types = $request->fraction_types;
@@ -31482,7 +31448,6 @@ class Math extends Model
 					$this->param['totalD'] =$totalD;
 					$this->param['g'] =$g;
 					$this->param['RESULT'] =1;
-					// dd($this->param);
 					return $this->param;
 				}else{
 					$this->param['error'] = 'Please! Enter valid Input.';
@@ -31882,7 +31847,6 @@ class Math extends Model
 	}
 
 	public function fraction($request){
-		//  dd($request->all());
         $calculate_type = $request->calculate_type;
 		if($calculate_type == 'fraction_type'){
 			$fraction_types = $request->fraction_types;
@@ -33002,7 +32966,6 @@ class Math extends Model
 			$data = json_decode($response->getBody()->getContents(), true);
 			$dataArray = $data['choices'][0]['message']['content'];
 			$dataArray = json_decode($dataArray, true);
-			// dd($dataArray);
 			$this->param['dataArray'] = $dataArray;
 			$this->param['disable'] = "disable";
 			return $this->param;
@@ -33589,7 +33552,6 @@ class Math extends Model
 				$check = false;
 			}
 		}
-		// dd($numbers);
 		if ($check == true) {
 			sort($numbers);
 			$sum = array_sum($numbers);
@@ -33625,8 +33587,6 @@ class Math extends Model
 			// Calculate IQR (Interquartile Range)
 			$IQR = $Q3 - $Q1;
 			
-			// dd($Q1,$Q3,$IQR);
-
 			$m_array = array_count_values($numbers);
 			$m_max = max($m_array);
 			$mode = array();
@@ -33789,12 +33749,10 @@ class Math extends Model
 				$type = 'percentage';
 			}
 		}
-		// dd($type);
 		if ($check == true) {
 			sort($numbers);
 			$last_index = count($numbers) - 1;
 			$sol = "(";
-			// dd($type);
 			if ($type == 'number') {
 				foreach ($numbers as $key => $value) {
 					if ($key != $last_index) {
@@ -33822,7 +33780,6 @@ class Math extends Model
 					}
 				}
 				$geo = round((pow($pro, (1 / count($numbers))) - 1) * 100, 4);
-				// dd($geo);
 				$this->param['textline'] = "aa gai value";
 				$this->param['sol1'] = $sol1;
 				$this->param['pro'] = $pro;
@@ -34707,7 +34664,6 @@ class Math extends Model
 				$this->param['method'] = $method;
 				$this->param['mad'] = round($mad, 1);
 				$this->param['RESULT'] = 1;
-				// dd($this->param);
 				return $this->param;
 			} elseif ($method == 1) {
 				sort($data);
@@ -34792,7 +34748,6 @@ class Math extends Model
 			$this->param['error'] = "r needs to be less than or equal to n";
 			return $this->param;
 		}
-		// dd($this->param);
 	}
 
 	public function permutation($request)
@@ -36367,7 +36322,6 @@ class Math extends Model
 
 	public function p($request)
 	{
-		// dd($request->all());
 		$tail = $request->tail;
 		$with = $request->with;
 		$score = $request->score;
@@ -38105,7 +38059,6 @@ class Math extends Model
 					return $this->param;
 				} else {
 					$words1 = preg_replace("/[^a-zA-Z0-9]+/", " ", $input);
-					// dd($words1);
 					$alphabets = preg_replace("/[^a-zA-Z]+/", "", $input);
 					$null_space = str_replace(' ', '', $input);
 					$count_wrd = explode(" ", $words1);
@@ -38120,7 +38073,6 @@ class Math extends Model
 					$answer_jg = $add_nums;
 					$answer_eg = $add_nums;
 					$answer_h = $add_nums;
-					// dd('else');
 					$small = strtolower($input);
 					$null_space = str_replace(' ', '', $small);
 					$alphabets = preg_replace("/[^a-zA-Z]+/", "", $null_space);
@@ -38133,7 +38085,6 @@ class Math extends Model
 					$sum_num = array_sum($num_agye);
 					$array_agai = str_split($alphabets);
 					$nawa = explode(' ', $small);
-					// dd('sdfs');
 					foreach ($nawa as  $value) {
 						$inner_alpha[] = str_split(trim($value));
 					}
@@ -38170,8 +38121,6 @@ class Math extends Model
 					$this->param['inner_sum_jg'] = $inner_sum_jg;
 					$this->param['inner_sum_eg'] = $inner_sum_eg;
 					$this->param['inner_sum_h'] = $inner_sum_h;
-					// dd($sum_num);
-
 					for ($i = 0; $i < count($array_agai); $i++) {
 						$value = $array_agai[$i];
 						$sum_eo[] = $English_Ordinal[$value];
@@ -38189,8 +38138,6 @@ class Math extends Model
 					// $answer_jg = array_sum($sum_jg) + $sum_num;
 					// $answer_eg = array_sum($sum_eg) + $sum_num;
 					// $answer_h = array_sum($sum_h) + $sum_num;
-					// dd('s');
-
 					// if(preg_match("/[^a-zA-Z]+/", $input) && preg_match('/\d/', $input)){
 					if(preg_match('/\d/', $input)){
 						$answer_eo = $sum_num;
