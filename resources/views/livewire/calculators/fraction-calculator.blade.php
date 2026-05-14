@@ -253,8 +253,8 @@
             @if($calculate_type == 'fraction_type')
                 <div class="space-y-10">
                     @if($fraction_types === "one_frac")
-                        <div class="p-6 my-4 space-y-6 text-[25px]">
-                            <div class="text-left result-font">
+                        <div class="p-6 my-4 space-y-6 result-font" wire:key="result-one-frac">
+                            <div class="text-left math-render-target">
                                 \( {!! $ne1 !!} \frac{ {!! $neo2 !!} }{ {!! $du1 !!} } = \frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} } \)
                             </div>
                             
@@ -277,20 +277,13 @@
                             </div>
                         </div>
                     @elseif($fraction_types === "simple_frac")
-                        <div class="p-6 my-4 result-font">
-                            <p class="text-center mt-2">
-                                <strong>\(
-                                    @if($action=='^')
-                                        \left( \frac{ {!! $N1 !!} }{ {!! $D1 !!} } \right) {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } =
-                                    @else
-                                        \frac{ {!! $N1 !!} }{ {!! $D1 !!} } {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } =
-                                    @endif
-                                    @if($detail['btm'] != 1 && $detail['upr'] != 0)
-                                        \frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} }
-                                    @else
-                                        {!! $detail['upr'] !!}
-                                    @endif
-                                \)</strong>
+                        <div class="p-6 my-4 result-font math-render-target" wire:key="result-simple-frac">
+                            <p class="text-center mt-2 font-bold">
+                                @if($action=='^')
+                                    $$ \left( \frac{ {!! $N1 !!} }{ {!! $D1 !!} } \right) {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } = @if($detail['btm'] != 1 && $detail['upr'] != 0)\frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} }@else{!! $detail['upr'] !!}@endif $$
+                                @else
+                                    $$ \frac{ {!! $N1 !!} }{ {!! $D1 !!} } {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } = @if($detail['btm'] != 1 && $detail['upr'] != 0)\frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} }@else{!! $detail['upr'] !!}@endif $$
+                                @endif
                             </p>
                         </div>
                         
@@ -338,20 +331,13 @@ hr                                </div>
                         </div>
 
                     @elseif($fraction_types === "three_frac")
-                        <div class="p-6 my-4 result-font">
-                            <p class="text-center mt-2">
-                                <strong>\(
-                                    \frac{ {!! $N1 !!} }{ {!! $D1 !!} } {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } {!! $action1 !!} \frac{ {!! $N3 !!} }{ {!! $D3 !!} } =
-                                    @if($detail['btm'] != 1 && $detail['upr'] != 0)
-                                        \frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} }
-                                    @else
-                                        {!! $detail['upr'] !!}
-                                    @endif
-                                \)</strong>
+                        <div class="p-6 my-4 result-font math-render-target" wire:key="result-three-frac">
+                            <p class="text-center mt-2 font-bold">
+                                $$ \frac{ {!! $N1 !!} }{ {!! $D1 !!} } {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } {!! $action1 !!} \frac{ {!! $N3 !!} }{ {!! $D3 !!} } = @if($detail['btm'] != 1 && $detail['upr'] != 0)\frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} }@else{!! $detail['upr'] !!}@endif $$
                             </p>
                         </div>
                         <div class="space-y-8">
-                            <div class="border p-6 my-4">
+                            <div class="p-6 my-4">
                                 @php
                                     $gN1=$N1; $gD1=$D1; $gN2=$N2; $gD2=$D2; $gN3=$N3; $gD3=$D3; $gAct=$action; $gAct1=$action1;
                                     if (($action=='+' || $action=='-') && ($action1=='+' || $action1=='-')) {
@@ -376,20 +362,13 @@ hr                                </div>
                             </div>
                         </div>
                     @elseif($fraction_types === "four_frac")
-                        <div class="p-6 my-4 result-font">
-                            <p class="text-center mt-2">
-                                <strong>\(
-                                    \frac{ {!! $N1 !!} }{ {!! $D1 !!} } {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } {!! $action1 !!} \frac{ {!! $N3 !!} }{ {!! $D3 !!} } {!! $action2 !!} \frac{ {!! $N4 !!} }{ {!! $D4 !!} } =
-                                    @if($detail['btm'] != 1 && $detail['upr'] != 0)
-                                        \frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} }
-                                    @else
-                                        {!! $detail['upr'] !!}
-                                    @endif
-                                \)</strong>
+                        <div class="p-6 my-4 result-font math-render-target" wire:key="result-four-frac">
+                            <p class="text-center mt-2 font-bold">
+                                $$ \frac{ {!! $N1 !!} }{ {!! $D1 !!} } {!! $action !!} \frac{ {!! $N2 !!} }{ {!! $D2 !!} } {!! $action1 !!} \frac{ {!! $N3 !!} }{ {!! $D3 !!} } {!! $action2 !!} \frac{ {!! $N4 !!} }{ {!! $D4 !!} } = @if($detail['btm'] != 1 && $detail['upr'] != 0)\frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} }@else{!! $detail['upr'] !!}@endif $$
                             </p>
                         </div>
                         <div class="space-y-8 mt-6">
-                            <div class="border p-6 my-4 math-steps prose max-w-none">
+                            <div class="p-6 my-4 math-steps prose max-w-none">
                                 @php
                                     $gN1=$N1; $gD1=$D1; $gN2=$N2; $gD2=$D2; $gN3=$N3; $gD3=$D3; $gN4=$N4; $gD4=$D4;
                                     $gAct=$action; $gAct1=$action1; $gAct2=$action2;
@@ -539,6 +518,21 @@ hr                                </div>
                     throwOnError: false
                 });
             }
+
+            // Force render specific targets
+            document.querySelectorAll('.math-render-target').forEach(function(el) {
+                const math = el.textContent.trim();
+                const match = math.match(/^\\\((.*)\\\)$/) || math.match(/^\$\$(.*)\$\$$/);
+                if (match && match[1]) {
+                    try {
+                        katex.render(match[1], el, {
+                            throwOnError: false,
+                            displayMode: true
+                        });
+                    } catch (err) {}
+                }
+            });
+
             initializePainters();
         }
 
