@@ -32383,6 +32383,7 @@ class Math extends Model
 				$this->param['g'] =$g;
 				$this->param['btm'] =$btm;
 				$this->param['lcd'] =$lcd;
+				$this->param['RESULT'] =1;
 				return $this->param;
 			}else{
 				$this->param['error'] = 'Please fill all fields.';

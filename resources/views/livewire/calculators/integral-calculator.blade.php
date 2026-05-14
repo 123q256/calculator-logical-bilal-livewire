@@ -118,28 +118,49 @@
     @push('calculatorJS')
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
         <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
-        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body, { delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}, {left: '$', right: '$', display: false}] });"></script>
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
         
+        <style>
+            .res_step ol { list-style: decimal; padding-left: 2rem; margin-bottom: 1rem; }
+            .res_step ul { list-style: disc; padding-left: 2rem; margin-bottom: 1rem; }
+            .res_step p { margin-bottom: 0.5rem; }
+            .res_step h2 { font-size: 1.25rem; font-weight: bold; margin-top: 1.5rem; margin-bottom: 0.75rem; color: #1e40af; }
+            .collapsible { margin-bottom: 1.5rem; border-left: 4px solid #3b82f6; padding-left: 1rem; }
+        </style>
+
         <script>
-            document.addEventListener('livewire:initialized', () => {
-                @this.on('math-updated', (event) => {
-                    setTimeout(() => {
-                        if (typeof renderMathInElement === 'function') {
-                            renderMathInElement(document.body, {
-                                delimiters: [
-                                    {left: '$$', right: '$$', display: true},
-                                    {left: '\\(', right: '\\)', display: false},
-                                    {left: '$', right: '$', display: false}
-                                ]
-                            });
-                        }
-                    }, 150);
+            function processMathAndRender() {
+                const target = document.getElementById('result-section');
+                if (!target) return;
+
+                // Convert legacy MathJax script tags to KaTeX delimiters
+                target.querySelectorAll('script[type^="math/tex"]').forEach(script => {
+                    const display = script.getAttribute('type').includes('mode=display');
+                    const content = script.textContent;
+                    const span = document.createElement('span');
+                    span.innerHTML = display ? `$$${content}$$` : `\\(${content}\\)`;
+                    script.parentNode.replaceChild(span, script);
                 });
 
-                // Initial render
                 if (typeof renderMathInElement === 'function') {
-                    renderMathInElement(document.body);
+                    renderMathInElement(target, {
+                        delimiters: [
+                            {left: '$$', right: '$$', display: true},
+                            {left: '\\(', right: '\\)', display: false},
+                            {left: '$', right: '$', display: false}
+                        ],
+                        throwOnError: false
+                    });
                 }
+            }
+
+            document.addEventListener('livewire:initialized', () => {
+                // Initial render
+                setTimeout(processMathAndRender, 200);
+
+                @this.on('math-updated', () => {
+                    setTimeout(processMathAndRender, 200);
+                });
 
                 // Keyboard handling
                 document.querySelectorAll('.keyBtn').forEach(function(button) {

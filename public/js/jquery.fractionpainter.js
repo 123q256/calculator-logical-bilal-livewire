@@ -32,13 +32,14 @@ function FractionPainter() {
     };
 
     this.createCanvas = function(instance){
-        var width = $.fractionPainter.get(instance, "width")+'%';
-        var height = $.fractionPainter.get(instance, "height")+'%';
+        var width = $.fractionPainter.get(instance, "width");
+        var height = $.fractionPainter.get(instance, "height");
         var canvasId = "canvas_" + instance.id;
         
         var canvas = $("<canvas/>")
             .attr("width", width)
             .attr("height", height)
+            .css({ width: '100%', height: 'auto', maxWidth: width + 'px' })
             .attr("id", canvasId);
         
         return canvas;
@@ -85,36 +86,50 @@ function FractionPainter() {
 
     this._paintPie = function(instance, context, numerator, denominator, width, height) {
         var _ctx = context;
+        if (denominator <= 0) return;
 
-        var _fillColor = "#1e5b80";
-        var _fillInactiveColor = "#ececec";
-        var _strokeColor = "#333333";
+        var _fillColor = "#3b82f6"; // Using the blue-500 from Tailwind
+        var _fillInactiveColor = "#f1f5f9"; // slate-100
+        var _strokeColor = "#94a3b8"; // slate-400
 
         var angle = 2 * Math.PI / denominator;
         var radius = Math.min(width, height)/2;
+        var startAngle = -Math.PI / 2; // Start from 12 o'clock
 
+        // Fill active part
         _ctx.fillStyle = _fillColor;
-        _ctx.lineWidth = 0.47;
+        _ctx.lineWidth = 1;
         _ctx.beginPath();
-        _ctx.arc(0, 0, radius, 0, numerator * angle);
-        _ctx.lineTo(0,0);
+        _ctx.moveTo(0, 0);
+        _ctx.arc(0, 0, radius, startAngle, startAngle + (numerator * angle));
+        _ctx.closePath();
         _ctx.fill();
         
-        _ctx.fillStyle = _fillInactiveColor;
-        _ctx.beginPath();
-        _ctx.arc(0, 0, radius, numerator * angle, denominator * angle);
-        _ctx.lineTo(0,0);
-        _ctx.fill();
+        // Fill inactive part
+        if (numerator < denominator) {
+            _ctx.fillStyle = _fillInactiveColor;
+            _ctx.beginPath();
+            _ctx.moveTo(0, 0);
+            _ctx.arc(0, 0, radius, startAngle + (numerator * angle), startAngle + (denominator * angle));
+            _ctx.closePath();
+            _ctx.fill();
+        }
         
-        _ctx.strokeStyle= _strokeColor;
+        // Draw strokes/lines
+        _ctx.strokeStyle = _strokeColor;
+        _ctx.lineWidth = 0.5;
         
         for(var k = 0; k < denominator; k++) {
             _ctx.beginPath();
-            _ctx.arc(0, 0, radius, k * angle, (k + 1) * angle);
-            _ctx.lineTo(0,0);
-            
+            _ctx.moveTo(0, 0);
+            _ctx.arc(0, 0, radius, startAngle + (k * angle), startAngle + ((k + 1) * angle));
             _ctx.stroke();
         }
+
+        // Draw outer circle
+        _ctx.beginPath();
+        _ctx.arc(0, 0, radius, 0, 2 * Math.PI);
+        _ctx.stroke();
     };
 
     this.setMatrix = function(instance, ctx) {

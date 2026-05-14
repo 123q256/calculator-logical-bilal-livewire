@@ -1,22 +1,19 @@
 <?php
 
 namespace App\Livewire\Calculators;
-use App\Helpers\Math;
+use App\Models\Math;
 use Livewire\Component;
 
-class IntegralCalculator extends Component
+class LimitCalculator extends Component
 {
+    public $EnterEq = '(6x + 4)/(3x - 1)';
+    public $with = 'x';
+    public $how = '1';
+    public $dir = '+';
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-
-    // Inputs
-    public $EnterEq = 'cos(x)^3*sin(x)';
-    public $with = 'x';
-    public $form = 'def';
-    public $ub = '3';
-    public $lb = '2';
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -27,11 +24,10 @@ class IntegralCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            foreach ($inputs as $key => $value) {
-                if (property_exists($this, $key)) {
-                    $this->$key = $value;
-                }
-            }
+            $this->EnterEq = $inputs['EnterEq'] ?? $this->EnterEq;
+            $this->with = $inputs['with'] ?? $this->with;
+            $this->how = $inputs['how'] ?? $this->how;
+            $this->dir = $inputs['dir'] ?? $this->dir;
         }
     }
 
@@ -43,13 +39,12 @@ class IntegralCalculator extends Component
 
     public function resetForm()
     {
+        $this->EnterEq = '(6x + 4)/(3x - 1)';
+        $this->with = 'x';
+        $this->how = '1';
+        $this->dir = '+';
         $this->error = null;
         $this->detail = null;
-        $this->EnterEq = 'cos(x)^3*sin(x)';
-        $this->with = 'x';
-        $this->form = 'def';
-        $this->ub = '3';
-        $this->lb = '2';
 
         session()->forget([
             'calculator_back_inputs',
@@ -68,15 +63,14 @@ class IntegralCalculator extends Component
         $requestData = [
             'EnterEq' => $this->EnterEq,
             'with' => $this->with,
-            'form' => $this->form,
-            'ub' => $this->ub,
-            'lb' => $this->lb,
+            'how' => $this->how,
+            'dir' => $this->dir,
         ];
 
         $request = new \Illuminate\Http\Request($requestData);
-        $model = new \App\Models\Math();
-        $result = $model->integral($request);
-        // dd($result);
+        $model = new Math();
+        $result = $model->limit($request);
+
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
@@ -118,6 +112,6 @@ class IntegralCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.integral-calculator');
+        return view('livewire.calculators.limit-calculator');
     }
 }
