@@ -491,6 +491,17 @@ hr                                </div>
                         @if($detail['btm'] != '1')
                             <p class="mt-3">Decimal: {{ round($detail['upr']/$detail['btm'], 4) }}</p>
                         @endif
+
+                        <div class="mt-8 pt-8 border-t">
+                            <p class="font-bold text-gray-800 mb-4">Fraction Visualization:</p>
+                            <div class="flex flex-wrap items-center justify-center gap-4 bg-gray-50 p-6 rounded-xl border">
+                                <div id="firstFrac"></div>
+                                <div class="text-xl font-bold">{!! $actions !!}</div>
+                                <div id="secondFrac"></div>
+                                <div class="text-xl font-bold">=</div>
+                                <div id="ansFrac"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 </div>
@@ -519,7 +530,6 @@ hr                                </div>
                 });
             }
 
-            // Force render specific targets
             document.querySelectorAll('.math-render-target').forEach(function(el) {
                 const math = el.textContent.trim();
                 const match = math.match(/^\\\((.*)\\\)$/) || math.match(/^\$\$(.*)\$\$$/);
@@ -533,36 +543,68 @@ hr                                </div>
                 }
             });
 
-            initializePainters();
+            // If we have detail, try to initialize painters with existing data
+            const currentDetail = @json($detail);
+            if (currentDetail) {
+                initializePainters({
+                    detail: currentDetail,
+                    N1: {!! (float)($N1 ?? 0) !!},
+                    D1: {!! (float)($D1 ?? 1) !!},
+                    N2: {!! (float)($N2 ?? 0) !!},
+                    D2: {!! (float)($D2 ?? 1) !!},
+                    N3: {!! (float)($N3 ?? 0) !!},
+                    D3: {!! (float)($D3 ?? 1) !!},
+                    N4: {!! (float)($N4 ?? 0) !!},
+                    D4: {!! (float)($D4 ?? 1) !!},
+                    fraction_types: @json($fraction_types)
+                });
+            }
         }
 
-        function initializePainters() {
-            const detail = @json($detail);
+        function initializePainters(data) {
+            if (!data || !data.detail) return;
             const size = window.innerWidth < 768 ? 60 : 110;
-            if (!detail) return;
 
-            @if(isset($detail) && $calculate_type == 'fraction_type')
-                if ($('#firstFrac').length) $('#firstFrac').empty().fractionPainter({ numerator: {{ (float)$N1 }}, denominator: {{ (float)$D1 }}, width: size, height: size });
-                if ($('#secondFrac').length) $('#secondFrac').empty().fractionPainter({ numerator: {{ (float)$N2 }}, denominator: {{ (float)$D2 }}, width: size, height: size });
-                @if($fraction_types === "three_frac" || $fraction_types === "four_frac")
-                    if ($('#thirdFrac').length) $('#thirdFrac').empty().fractionPainter({ numerator: {{ (float)$N3 }}, denominator: {{ (float)$D3 }}, width: size, height: size });
-                @endif
-                @if($fraction_types === "four_frac")
-                    if ($('#fourFrac').length) $('#fourFrac').empty().fractionPainter({ numerator: {{ (float)$N4 }}, denominator: {{ (float)$D4 }}, width: size, height: size });
-                @endif
-                if ($('#ansFrac').length) $('#ansFrac').empty().fractionPainter({ numerator: {{ (float)($detail['upr'] ?? 0) }}, denominator: {{ (float)($detail['btm'] ?? 1) }}, width: size + 10, height: size + 10 });
-            @endif
+            const n1 = parseFloat(data.N1 || data.detail.N1 || 0);
+            const d1 = parseFloat(data.D1 || data.detail.D1 || 1);
+            const n2 = parseFloat(data.N2 || data.detail.N2 || 0);
+            const d2 = parseFloat(data.D2 || data.detail.D2 || 1);
+            const n3 = parseFloat(data.N3 || 0);
+            const d3 = parseFloat(data.D3 || 1);
+            const n4 = parseFloat(data.N4 || 0);
+            const d4 = parseFloat(data.D4 || 1);
+
+            if ($('#firstFrac').length) $('#firstFrac').empty().fractionPainter({ numerator: n1, denominator: d1, width: size, height: size });
+            if ($('#secondFrac').length) $('#secondFrac').empty().fractionPainter({ numerator: n2, denominator: d2, width: size, height: size });
+            
+            if (data.fraction_types === "three_frac" || data.fraction_types === "four_frac") {
+                if ($('#thirdFrac').length) $('#thirdFrac').empty().fractionPainter({ numerator: n3, denominator: d3, width: size, height: size });
+            }
+            if (data.fraction_types === "four_frac") {
+                if ($('#fourFrac').length) $('#fourFrac').empty().fractionPainter({ numerator: n4, denominator: d4, width: size, height: size });
+            }
+
+            if ($('#ansFrac').length) $('#ansFrac').empty().fractionPainter({ 
+                numerator: parseFloat(data.detail.upr || 0), 
+                denominator: parseFloat(data.detail.btm || 1), 
+                width: size + 10, 
+                height: size + 10 
+            });
         }
 
         document.addEventListener('livewire:initialized', () => {
             processMathAndRender();
             
             Livewire.hook('morph.updated', (el, component) => {
-                setTimeout(processMathAndRender, 50);
+                setTimeout(processMathAndRender, 100);
             });
 
-            @this.on('math-updated', () => {
-                setTimeout(processMathAndRender, 100);
+            @this.on('math-updated', (event) => {
+                const data = Array.isArray(event) ? event[0] : event;
+                setTimeout(() => {
+                    processMathAndRender();
+                    initializePainters(data);
+                }, 200);
             });
         });
     </script>

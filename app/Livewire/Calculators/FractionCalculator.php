@@ -148,7 +148,18 @@ class FractionCalculator extends Component
                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
-                $this->dispatch('math-updated');
+                $this->dispatch('math-updated', [
+                    'detail' => $this->detail,
+                    'N1' => $this->N1,
+                    'D1' => $this->D1,
+                    'N2' => $this->N2,
+                    'D2' => $this->D2,
+                    'N3' => $this->N3,
+                    'D3' => $this->D3,
+                    'N4' => $this->N4,
+                    'D4' => $this->D4,
+                    'fraction_types' => $this->fraction_types
+                ]);
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         const el = document.getElementById('result-section');
