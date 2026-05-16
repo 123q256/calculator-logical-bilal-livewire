@@ -98,16 +98,21 @@
             </div>
         @endif
 
-        <div class="mb-8 lg:w-[50%] md:w-[75%] w-[100%] mx-auto mt-5">
+        <div class="mb-8 lg:w-[60%] md:w-[80%] w-[100%] mx-auto mt-5">
             <div class="flex flex-wrap items-center bg-blue-100 border border-blue-500 text-center rounded-lg px-1">
-                <div class="lg:w-1/2 w-full px-2 py-1" wire:click="$set('calculate_type', 'fraction_type')">
+                <div class="lg:w-1/3 w-full px-2 py-1" wire:click="$set('calculate_type', 'fraction_type')">
                     <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white {{ $calculate_type === 'fraction_type' ? 'tagsUnit' : '' }}">
                         Fractions
                     </div>
                 </div>
-                <div class="lg:w-1/2 w-full px-2 py-1" wire:click="$set('calculate_type', 'mixed_type')">
+                <div class="lg:w-1/3 w-full px-2 py-1" wire:click="$set('calculate_type', 'mixed_type')">
                     <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white {{ $calculate_type === 'mixed_type' ? 'tagsUnit' : '' }}">
                         {{ $lang['44'] }}
+                    </div>
+                </div>
+                <div class="lg:w-1/3 w-full px-2 py-1" wire:click="$set('calculate_type', 'advanced_type')">
+                    <div class="bg-white px-3 py-2 cursor-pointer rounded-md transition-colors duration-300 hover_tags hover:text-white {{ $calculate_type === 'advanced_type' ? 'tagsUnit' : '' }}">
+                        Advanced
                     </div>
                 </div>
             </div>
@@ -191,9 +196,40 @@
                     @endif
                 </div>
             </div>
+        @elseif($calculate_type === 'advanced_type')
+            <div class="bg-white p-8 rounded-2xl mb-8">
+                <div class="fraction-input-group">
+                    @foreach($advanced_fractions as $index => $frac)
+                        @if($index > 0)
+                            <select wire:model.live="advanced_fractions.{{ $index }}.op" class="op-select">
+                                @foreach(['+', '-', '×', '÷'] as $op)
+                                    <option value="{{ $op }}">{{ $op }}</option>
+                                @endforeach
+                            </select>
+                        @endif
+                        
+                        <div class="flex flex-col items-center gap-2 relative">
+                            <div class="fraction-box">
+                                <input required type="number" step="any" wire:model.live="advanced_fractions.{{ $index }}.n" class="num-den-input" placeholder="N">
+                                <div class="frac-line"></div>
+                                <input required type="number" step="any" wire:model.live="advanced_fractions.{{ $index }}.d" class="num-den-input" placeholder="D">
+                            </div>
+                            @if($index > 1)
+                                <button type="button" wire:click="removeFraction({{ $index }})" class="text-red-500 hover:text-red-700 text-xs mt-1">Remove</button>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+                
+                <div class="text-right mt-8">
+                    <button type="button" wire:click="addMore" class="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600 transition-colors font-medium">
+                        Add More
+                    </button>
+                </div>
+            </div>
         @else
             <!-- Mixed Numbers Mode -->
-            <div class="bg-white p-8 rounded-2xl mb-8">
+            <div class="bg-white p-8 rounded-2xl">
                 <div class="fraction-input-group">
                     <!-- Mixed 1 -->
                     <div class="fraction-box mixed">
@@ -325,7 +361,7 @@
                                     <div id="secondFrac"></div>
                                     <div class="text-3xl font-bold text-gray-400">=</div>
                                     <div id="ansFrac"></div>
-hr                                </div>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -395,12 +431,62 @@ hr                                </div>
                                 <div class="text-xl font-bold">{!! $action1 !!}</div>
                                 <div id="thirdFrac"></div>
                                 <div class="text-xl font-bold">{!! $action2 !!}</div>
-                                <div id="fourFrac"></div>
+                            <div id="fourFrac"></div>
                                 <div class="text-xl font-bold text-blue-500">=</div>
                                 <div id="ansFrac"></div>
                             </div>
                         </div>
                     @endif
+                </div>
+            @elseif($calculate_type == 'advanced_type')
+                <div class="p-6 my-4 space-y-8 result-font" wire:key="result-advanced">
+                    <div class="text-center text-3xl font-bold math-render-target border-b pb-6">
+                        \( {!! $detail['input'] !!} = \frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} } \)
+                    </div>
+                    
+                    <div class="space-y-8 md:text-[20px] text-[16px]">
+                        <p class="font-bold text-2xl underline text-gray-800">Explanation:</p>
+                        
+                        <p class="mt-4 text-gray-700"><strong>Input:</strong> \( {!! $detail['input'] !!} \)</p>
+                        
+                        <div class="mt-8 space-y-10">
+                            @foreach($detail['steps'] as $index => $step)
+                                <div class="space-y-4">
+                                    <p class="font-extrabold text-blue-700 text-xl">Step #{{ $index + 1 }}:</p>
+                                    <div class="space-y-3 pl-6 border-l-4 border-blue-100">
+                                        <p class="text-gray-600">Calculate: \( {!! $step['calcText'] !!} \)</p>
+                                        <p class="font-medium">= \( \frac{ {!! $step['intermediateN'] !!} }{ {!! $step['intermediateD'] !!} } \)</p>
+                                        @if($step['g'] > 1)
+                                            <p class="text-green-600 font-medium">Simplify (Divide by {{ $step['g'] }}): \( \frac{ {!! $step['resN'] !!} }{ {!! $step['resD'] !!} } \)</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        
+                        <div class="pt-8 border-t-2 border-gray-100 space-y-6">
+                            <p class="text-xl font-bold text-gray-500 italic">Therefore:</p>
+                            <p class="text-3xl font-bold"><strong>Final Answer =</strong> \( \frac{ {!! $detail['upr'] !!} }{ {!! $detail['btm'] !!} } \)</p>
+                            
+                            @if($detail['mixed'])
+                                <p class="text-2xl text-blue-600 font-bold"><strong>Mixed Form =</strong> {!! $detail['mixed']['w'] !!} \( \frac{ {!! $detail['mixed']['n'] !!} }{ {!! $detail['mixed']['d'] !!} } \)</p>
+                            @endif
+                            
+                            <div class="pt-4">
+                                <p class="text-xl font-bold border-b pb-2 mb-4">Result in decimal:</p>
+                                <p class="text-3xl font-mono text-center py-4 bg-gray-50 rounded-lg shadow-inner">
+                                    {{ round($detail['upr']/$detail['btm'], 10) }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 pt-10 border-t">
+                        <p class="font-bold text-gray-800 mb-6 text-xl">Fraction Visualization:</p>
+                        <div class="flex flex-wrap items-center justify-center gap-6 bg-white p-10 rounded-2xl border-2 border-dashed border-gray-100 shadow-sm">
+                            <div id="ansFrac"></div>
+                        </div>
+                    </div>
                 </div>
             @else
                 <div class="col-12 text-[18px] p-6 my-4">
@@ -438,9 +524,9 @@ hr                                </div>
                         @elseif($actions == '÷')
                             <p class="mt-3">
                                 Step # 2 =
-                                \(
+                                 \(
                                     \frac{ ({!! $detail['N1'].'×'.$detail['D2'] !!}) }{ ({!! $detail['N2'].'×'.$detail['D1'] !!}) }
-                                )
+                                \)
                             </p>
                         @else
                             <p class="mt-3">
@@ -504,11 +590,10 @@ hr                                </div>
                         </div>
                     </div>
                 </div>
-                </div>
             @endif
         </div>
     </div>
-    @endif
+@endif
 </div>
 @push('calculatorJS')
     <link rel="stylesheet" href="{{ url('katex/katex.min.css') }}">
@@ -565,31 +650,87 @@ hr                                </div>
             if (!data || !data.detail) return;
             const size = window.innerWidth < 768 ? 60 : 110;
 
-            const n1 = parseFloat(data.N1 || data.detail.N1 || 0);
-            const d1 = parseFloat(data.D1 || data.detail.D1 || 1);
-            const n2 = parseFloat(data.N2 || data.detail.N2 || 0);
-            const d2 = parseFloat(data.D2 || data.detail.D2 || 1);
-            const n3 = parseFloat(data.N3 || 0);
-            const d3 = parseFloat(data.D3 || 1);
-            const n4 = parseFloat(data.N4 || 0);
-            const d4 = parseFloat(data.D4 || 1);
+            // Handle root level vs detail level data
+            const detail = data.detail || data;
+            const upr = parseFloat(detail.upr || 0);
+            const btm = parseFloat(detail.btm || 1);
 
-            if ($('#firstFrac').length) $('#firstFrac').empty().fractionPainter({ numerator: n1, denominator: d1, width: size, height: size });
-            if ($('#secondFrac').length) $('#secondFrac').empty().fractionPainter({ numerator: n2, denominator: d2, width: size, height: size });
-            
-            if (data.fraction_types === "three_frac" || data.fraction_types === "four_frac") {
-                if ($('#thirdFrac').length) $('#thirdFrac').empty().fractionPainter({ numerator: n3, denominator: d3, width: size, height: size });
-            }
-            if (data.fraction_types === "four_frac") {
-                if ($('#fourFrac').length) $('#fourFrac').empty().fractionPainter({ numerator: n4, denominator: d4, width: size, height: size });
+            // Use absolute values for visualization as most painters don't support negative slices
+            const visN = Math.abs(upr);
+            const visD = Math.abs(btm);
+
+            if (data.calculate_type !== 'advanced_type') {
+                const n1 = parseFloat(data.N1 || detail.N1 || 0);
+                const d1 = parseFloat(data.D1 || detail.D1 || 1);
+                const n2 = parseFloat(data.N2 || detail.N2 || 0);
+                const d2 = parseFloat(data.D2 || detail.D2 || 1);
+                const n3 = parseFloat(data.N3 || 0);
+                const d3 = parseFloat(data.D3 || 1);
+                const n4 = parseFloat(data.N4 || 0);
+                const d4 = parseFloat(data.D4 || 1);
+
+                if ($('#firstFrac').length) $('#firstFrac').empty().fractionPainter({ numerator: Math.abs(n1), denominator: Math.abs(d1), width: size, height: size });
+                if ($('#secondFrac').length) $('#secondFrac').empty().fractionPainter({ numerator: Math.abs(n2), denominator: Math.abs(d2), width: size, height: size });
+                
+                if (data.fraction_types === "three_frac" || data.fraction_types === "four_frac") {
+                    if ($('#thirdFrac').length) $('#thirdFrac').empty().fractionPainter({ numerator: Math.abs(n3), denominator: Math.abs(d3), width: size, height: size });
+                }
+                if (data.fraction_types === "four_frac") {
+                    if ($('#fourFrac').length) $('#fourFrac').empty().fractionPainter({ numerator: Math.abs(n4), denominator: Math.abs(d4), width: size, height: size });
+                }
             }
 
-            if ($('#ansFrac').length) $('#ansFrac').empty().fractionPainter({ 
-                numerator: parseFloat(data.detail.upr || 0), 
-                denominator: parseFloat(data.detail.btm || 1), 
-                width: size + 10, 
-                height: size + 10 
-            });
+            if ($('#ansFrac').length) {
+                let displayN = visN;
+                let displayD = visD;
+
+                const ratio = visN / visD;
+                if (ratio > 10) {
+                    displayD = 100;
+                    displayN = 1000;
+                } else if (displayD > 100) {
+                    displayD = 100;
+                    displayN = Math.round(ratio * 100);
+                }
+
+                const container = $('#ansFrac').empty().css({
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'center',
+                    gap: '15px'
+                });
+
+                const fullCircles = Math.floor(displayN / displayD);
+                const remN = displayN % displayD;
+                const totalCircles = fullCircles + (remN > 0 ? 1 : 0);
+
+                for (let i = 0; i < totalCircles; i++) {
+                    const circleDiv = $('<div></div>').appendTo(container);
+                    let n = displayD;
+                    let d = displayD;
+
+                    if (i === totalCircles - 1 && remN > 0) {
+                        n = remN;
+                    }
+
+                    circleDiv.fractionPainter({ 
+                        numerator: n, 
+                        denominator: d, 
+                        width: size, 
+                        height: size 
+                    });
+                }
+                
+                // If result is 0
+                if (totalCircles === 0) {
+                    $('<div></div>').appendTo(container).fractionPainter({ 
+                        numerator: 0, 
+                        denominator: 1, 
+                        width: size, 
+                        height: size 
+                    });
+                }
+            }
         }
 
         document.addEventListener('livewire:initialized', () => {

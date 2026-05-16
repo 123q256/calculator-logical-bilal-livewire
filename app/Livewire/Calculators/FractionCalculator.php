@@ -38,6 +38,12 @@ class FractionCalculator extends Component
     public $de2 = '7';
     public $actions = '+';
 
+    // Advanced mode
+    public $advanced_fractions = [
+        ['n' => 3, 'd' => 13],
+        ['n' => 5, 'd' => 15, 'op' => '+']
+    ];
+
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
@@ -71,11 +77,34 @@ class FractionCalculator extends Component
         $this->error = null;
     }
 
+    public function addMore()
+    {
+        $this->advanced_fractions[] = ['n' => '', 'd' => '', 'op' => '+'];
+        $this->detail = null;
+    }
+
+    public function removeFraction($index)
+    {
+        if (count($this->advanced_fractions) > 2) {
+            unset($this->advanced_fractions[$index]);
+            $this->advanced_fractions = array_values($this->advanced_fractions);
+        }
+        $this->detail = null;
+    }
+
     public function resetForm()
     {
         $this->detail = null;
         $this->error = null;
+        $this->calculate_type = 'fraction_type';
+        $this->fraction_types = 'simple_frac';
+        $this->stype = 'simple_frac';
         
+        $this->advanced_fractions = [
+            ['n' => 3, 'd' => 13],
+            ['n' => 5, 'd' => 15, 'op' => '+']
+        ];
+
         session()->forget([
             'calculator_back_inputs',
             'calculator_result',
@@ -92,7 +121,12 @@ class FractionCalculator extends Component
     {
         // Basic Validation
         try {
-            if ($this->calculate_type === 'fraction_type') {
+            if ($this->calculate_type === 'advanced_type') {
+                foreach ($this->advanced_fractions as $frac) {
+                    if ($frac['d'] == 0 && $frac['d'] !== '') throw new \Exception("Denominator cannot be zero.");
+                    if ($frac['n'] === '' || $frac['d'] === '') throw new \Exception("Please fill all fraction fields.");
+                }
+            } elseif ($this->calculate_type === 'fraction_type') {
                 if ($this->fraction_types === 'one_frac') {
                     if ($this->du1 == 0) throw new \Exception("Denominator cannot be zero.");
                 } else {
@@ -105,6 +139,11 @@ class FractionCalculator extends Component
             }
         } catch (\Exception $e) {
             $this->error = $e->getMessage();
+            return;
+        }
+
+        if ($this->calculate_type === 'advanced_type') {
+            $this->calculateAdvanced();
             return;
         }
 
@@ -176,6 +215,111 @@ class FractionCalculator extends Component
         $this->error = $result['error'] ?? 'Something went wrong.';
         session()->flash('validation_error', $this->error);
         $this->detail = null;
+    }
+
+    private function calculateAdvanced()
+    {
+        try {
+            $resN = (float)$this->advanced_fractions[0]['n'];
+            $resD = (float)$this->advanced_fractions[0]['d'];
+
+            $steps = [];
+            $initialInput = "\\frac{ $resN }{ $resD }";
+            
+            for ($i = 1; $i < count($this->advanced_fractions); $i++) {
+                $op = $this->advanced_fractions[$i]['op'];
+                $nextN = (float)$this->advanced_fractions[$i]['n'];
+                $nextD = (float)$this->advanced_fractions[$i]['d'];
+
+                $initialInput .= " $op \\frac{ $nextN }{ $nextD }";
+
+                $oldN = $resN;
+                $oldD = $resD;
+
+                if ($op == '+') {
+                    $resN = ($oldN * $nextD) + ($nextN * $oldD);
+                    $resD = $oldD * $nextD;
+                    $calcText = "\\frac{ ($oldN \\times $nextD) + ($nextN \\times $oldD) }{ $oldD \\times $nextD }";
+                } elseif ($op == '-') {
+                    $resN = ($oldN * $nextD) - ($nextN * $oldD);
+                    $resD = $oldD * $nextD;
+                    $calcText = "\\frac{ ($oldN \\times $nextD) - ($nextN \\times $oldD) }{ $oldD \\times $nextD }";
+                } elseif ($op == '×' || $op == 'of') {
+                    $resN = $oldN * $nextN;
+                    $resD = $oldD * $nextD;
+                    $calcText = "\\frac{ $oldN \\times $nextN }{ $oldD \\times $nextD }";
+                } elseif ($op == '÷') {
+                    if ($nextN == 0) throw new \Exception("Division by zero.");
+                    $resN = $oldN * $nextD;
+                    $resD = $oldD * $nextN;
+                    $calcText = "\\frac{ $oldN \\times $nextD }{ $oldD \\times $nextN }";
+                }
+
+                $g = $this->gcd($resN, $resD);
+                $unsimplifiedN = $resN;
+                $unsimplifiedD = $resD;
+                
+                $resN /= $g;
+                $resD /= $g;
+                
+                $steps[] = [
+                    'op' => $op,
+                    'nextN' => $nextN,
+                    'nextD' => $nextD,
+                    'calcText' => $calcText,
+                    'intermediateN' => $unsimplifiedN,
+                    'intermediateD' => $unsimplifiedD,
+                    'g' => $g,
+                    'resN' => $resN,
+                    'resD' => $resD
+                ];
+            }
+
+            $mixedForm = null;
+            if (abs($resN) > abs($resD) && $resD != 1 && $resD != 0) {
+                $whole = floor(abs($resN) / abs($resD));
+                $rem = abs($resN) % abs($resD);
+                if ($resN < 0) $whole = -$whole;
+                $mixedForm = ['w' => $whole, 'n' => $rem, 'd' => abs($resD)];
+            }
+
+            $result = [
+                'upr' => $resN,
+                'btm' => $resD,
+                'steps' => $steps,
+                'input' => $initialInput,
+                'mixed' => $mixedForm,
+                'RESULT' => 1
+            ];
+
+            $this->detail = $result;
+            session()->flash('calculator_result', $result);
+            $this->dispatch('math-updated', ['detail' => $this->detail]);
+            
+            $this->js(<<<'JS'
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                        window.scrollTo({ top: offset, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
+
+        } catch (\Exception $e) {
+            $this->error = $e->getMessage();
+        }
+    }
+
+    private function gcd($a, $b)
+    {
+        $a = abs($a);
+        $b = abs($b);
+        while ($b) {
+            $a %= $b;
+            list($a, $b) = [$b, $a];
+        }
+        return $a ?: 1;
     }
 
 
