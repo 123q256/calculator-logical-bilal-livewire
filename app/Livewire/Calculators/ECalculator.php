@@ -5,17 +5,14 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class SineCalculator extends Component
+class ECalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
+    public $lang = [];
 
-    // Inputs
-    public $angle = '45';
-    public $angle_unit = 'deg';
-
-    public function mount($type = 'calculator')
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->detail = session('calculator_result');
@@ -23,15 +20,17 @@ class SineCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->angle = $inputs['angle'] ?? '45';
-            $this->angle_unit = $inputs['angle_unit'] ?? 'deg';
+            $this->cal = $inputs['cal'] ?? 'ex';
+            $this->a = $inputs['a'] ?? '5';
+            $this->x = $inputs['x'] ?? '2';
         }
     }
 
     public function resetForm()
     {
-        $this->angle = '45';
-        $this->angle_unit = 'deg';
+        $this->cal = 'ex';
+        $this->a = '5';
+        $this->x = '2';
         $this->error = null;
         $this->detail = null;
 
@@ -55,18 +54,24 @@ class SineCalculator extends Component
 
     public function calculate()
     {
-        if ($this->angle === '' || $this->angle === null) {
+        if ($this->x === '' || $this->x === null) {
+            $this->error = 'Please! Check Your Input.';
+            return;
+        }
+
+        if ($this->cal === 'ax' && ($this->a === '' || $this->a === null)) {
             $this->error = 'Please! Check Your Input.';
             return;
         }
 
         $request = (object)[
-            'angle' => $this->angle,
-            'angle_unit' => $this->angle_unit,
+            'cal' => $this->cal,
+            'a' => $this->a,
+            'x' => $this->x,
         ];
 
         $model = new Math();
-        $result = $model->sine($request);
+        $result = $model->e($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
@@ -111,6 +116,6 @@ class SineCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.sine-calculator');
+        return view('livewire.calculators.e-calculator');
     }
 }

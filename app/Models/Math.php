@@ -1627,7 +1627,7 @@ class Math extends Model
 	}
 
 
-	// e Calculator
+	// e Calculator e
 	function e($request){
 		
 		$cal= $request->cal;
@@ -11982,7 +11982,7 @@ class Math extends Model
 		if(is_numeric($angle)){
 			if($angle_unit==='deg'){
 				$csc=1/(sin(deg2rad($angle)));
-			}elseif($angle_unit==='pirad'){
+			}elseif($angle_unit==='piradians'){
 				$angle=$angle*pi();
 				$csc=1/(sin($angle));
 			}else{
@@ -12004,7 +12004,7 @@ class Math extends Model
 		if(is_numeric($angle)){
 			if($angle_unit==='deg'){
 				$sec=1/(cos(deg2rad($angle)));
-			}elseif($angle_unit==='pirad'){
+			}elseif($angle_unit==='piradians'){
 				$angle=$angle*pi();
 				$sec=1/(cos($angle));
 			}else{
@@ -12026,7 +12026,7 @@ class Math extends Model
 		if(is_numeric($angle)){
 			if($angle_unit==='deg'){
 				$tan=tan(deg2rad($angle));
-			}elseif($angle_unit==='pirad'){
+			}elseif($angle_unit==='piradians'){
 				$angle=$angle*pi();
 				$tan=tan($angle);
 			}elseif($angle_unit==='mrad'){
@@ -12051,7 +12051,7 @@ class Math extends Model
 		if(is_numeric($angle)){
 			if($angle_unit==='deg'){
 				$cot=1/(tan(deg2rad($angle)));
-			}elseif($angle_unit==='pirad'){
+			}elseif($angle_unit==='piradians'){
 				$angle=$angle*pi();
 				$cot=1/(tan($angle));
 			}elseif($angle_unit==='mrad'){
@@ -22237,8 +22237,8 @@ class Math extends Model
 			$this->param['RESULT']=1;
 			return $this->param;
 		}elseif($method1==='0' && $ratio_of==='r3'){
-			if(is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($d) && is_numeric($e) && is_numeric($f) || is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($d) && is_numeric($e) || is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($d) && is_numeric($f) || is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($e) && is_numeric($f)){
-				$this->param['error'] = 'Please Check Input!';
+			if(is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($d) && is_numeric($e) && is_numeric($f)){
+				$this->param['error'] = 'Please Enter 4 numbers & leave 2 fields empty!';
 				return $this->param;
 			}elseif(is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($d)){
 				$x=$d/$a;
@@ -22248,8 +22248,35 @@ class Math extends Model
 					$this->param['dbl']='dbl';
 				}
 				$this->param['r3']='r3';
+				$this->param['d_val']=$d;
 				$this->param['e_val']=round($e_val,5);
 				$this->param['f_val']=round($f_val,5);
+				$this->param['RESULT']=1;
+				return $this->param;
+			}elseif(is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($e)){
+				$x=$e/$b;
+				$d_val=$a*$x;
+				$f_val=$c1*$x;
+				if(gettype($d_val)==='double' || gettype($f_val)==='double'){
+					$this->param['dbl']='dbl';
+				}
+				$this->param['r3']='r3';
+				$this->param['d_val']=round($d_val,5);
+				$this->param['e_val']=$e;
+				$this->param['f_val']=round($f_val,5);
+				$this->param['RESULT']=1;
+				return $this->param;
+			}elseif(is_numeric($a) && is_numeric($b) && is_numeric($c1) && is_numeric($f)){
+				$x=$f/$c1;
+				$d_val=$a*$x;
+				$e_val=$b*$x;
+				if(gettype($d_val)==='double' || gettype($e_val)==='double'){
+					$this->param['dbl']='dbl';
+				}
+				$this->param['r3']='r3';
+				$this->param['d_val']=round($d_val,5);
+				$this->param['e_val']=round($e_val,5);
+				$this->param['f_val']=$f;
 				$this->param['RESULT']=1;
 				return $this->param;
 			}else{

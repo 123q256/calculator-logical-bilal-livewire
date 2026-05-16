@@ -5,15 +5,18 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class SineCalculator extends Component
+class AreaBetweenTwoCurvesCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
 
     // Inputs
-    public $angle = '45';
-    public $angle_unit = 'deg';
+    public $EnterEq1 = '6x+x^3';
+    public $EnterEq2 = '6x + 4';
+    public $upper = '3';
+    public $lower = '1';
+    public $with = 'x';
 
     public function mount($type = 'calculator')
     {
@@ -23,15 +26,21 @@ class SineCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->angle = $inputs['angle'] ?? '45';
-            $this->angle_unit = $inputs['angle_unit'] ?? 'deg';
+            $this->EnterEq1 = $inputs['EnterEq1'] ?? '6x+x^3';
+            $this->EnterEq2 = $inputs['EnterEq2'] ?? '6x + 4';
+            $this->upper = $inputs['upper'] ?? '3';
+            $this->lower = $inputs['lower'] ?? '1';
+            $this->with = $inputs['with'] ?? 'x';
         }
     }
 
     public function resetForm()
     {
-        $this->angle = '45';
-        $this->angle_unit = 'deg';
+        $this->EnterEq1 = '6x+x^3';
+        $this->EnterEq2 = '6x + 4';
+        $this->upper = '3';
+        $this->lower = '1';
+        $this->with = 'x';
         $this->error = null;
         $this->detail = null;
 
@@ -55,25 +64,46 @@ class SineCalculator extends Component
 
     public function calculate()
     {
-        if ($this->angle === '' || $this->angle === null) {
+        if (empty($this->EnterEq1) || empty($this->EnterEq2) || empty($this->upper) || empty($this->lower)) {
             $this->error = 'Please! Check Your Input.';
             return;
         }
 
-        $request = (object)[
-            'angle' => $this->angle,
-            'angle_unit' => $this->angle_unit,
-        ];
+        $request = new class($this->EnterEq1, $this->EnterEq2, $this->upper, $this->lower, $this->with) {
+            public $EnterEq1;
+            public $EnterEq2;
+            public $upper;
+            public $lower;
+            public $with;
+
+            public function __construct($e1, $e2, $u, $l, $w) {
+                $this->EnterEq1 = $e1;
+                $this->EnterEq2 = $e2;
+                $this->upper = $u;
+                $this->lower = $l;
+                $this->with = $w;
+            }
+
+            public function all() {
+                return [
+                    'EnterEq1' => $this->EnterEq1,
+                    'EnterEq2' => $this->EnterEq2,
+                    'upper' => $this->upper,
+                    'lower' => $this->lower,
+                    'with' => $this->with,
+                ];
+            }
+        };
 
         $model = new Math();
-        $result = $model->sine($request);
+        $result = $model->area($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
             $this->error = null;
 
             session()->flash('calculator_result', $result);
-            session()->flash('calculator_back_inputs', (array)$request);
+            session()->flash('calculator_back_inputs', $request->all());
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
                  session()->flash('scroll_to_result', true);
@@ -111,6 +141,23 @@ class SineCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.sine-calculator');
+
+        $lang = [];
+        $file = 'area-between-two-curves-calculator';
+        if (app()->getLocale() != 'en') {
+            $file = app()->getLocale() . '-' . $file;
+        }
+        
+        $path = public_path("keys/{$file}.txt");
+        if (file_exists($path)) {
+            $data = json_decode(file_get_contents($path), true);
+            if (isset($data['lang_keys'])) {
+                $lang = json_decode($data['lang_keys'], true);
+            }
+        }
+
+        return view('livewire.calculators.area-between-two-curves-calculator', [
+            'lang' => $lang
+        ]);
     }
 }

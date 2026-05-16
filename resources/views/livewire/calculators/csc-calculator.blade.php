@@ -21,14 +21,13 @@
                                      class="absolute z-[1002] bg-white border border-gray-300 rounded-md w-auto top-full right-0 shadow-lg mt-1 text-left">
                                     <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'deg'; openUnit = false">degrees (deg)</p>
                                     <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'rad'; openUnit = false">radians (rad)</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'mrad'; openUnit = false">milliradians (mrad)</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'piradians'; openUnit = false">* π radians (pirad)</p>
+                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'piradians'; openUnit = false">* π rad (pirad)</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-span-12 flex justify-center text-center">
-                        <img src="{{ asset('images/tan_prop.svg') }}" height="100%" width="70%" alt="tangent Graph" style="object-fit: contain;" loading="lazy" decoding="async">
+                        <img src="{{ asset('images/csc_prop.svg') }}" height="100%" width="70%" alt="Csc Graph" style="object-fit: contain;" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>
@@ -61,28 +60,36 @@
                                         }else{
                                             $deg = '';
                                         }
-                                        $tan = $detail['tan'];
-                                        $table = array("1.73205081"=>"\sqrt 3", "-1.73205081"=>"-\sqrt 3", "0.57735027"=>"1\over {\sqrt 3} \) = \( {{\sqrt 3} \over 3}", "-0.57735027"=>"-1\over {\sqrt 3} \) = \( {-{\sqrt 3} \over 3}");
+                                        $csc = $detail['csc'];
+                                        $table = array("1.41421356"=>"\sqrt 2", "1.15470054"=>"2{\sqrt 3} \over 3");
                                     @endphp
                                     @if($angle_unit === 'deg')
                                         @php
                                             $val = '';
                                             foreach($table as $key => $value){
-                                                if("$key" === "$tan"){
+                                                if($csc < 0){
+                                                    $key = $key * (-1);
+                                                }
+                                                if("$key" === "$csc"){
                                                     $val = $value;
                                                 }
                                             }
                                         @endphp
                                         @if(!empty($val))
+                                            @php
+                                                if($csc < 0){
+                                                    $val = '-' . $val;
+                                                }
+                                            @endphp
                                             <tr>
-                                                <td class="py-2 border-b" width="60%"><strong>tan({{ $angle.$deg }})</strong></td>
+                                                <td class="py-2 border-b" width="60%"><strong>csc({{ $angle.$deg }})</strong></td>
                                                 <td class="py-2 border-b">\( {{$val}} \)</td>
                                             </tr>
                                         @endif
                                     @endif
                                     <tr>
-                                        <td class="py-2 border-b" width="60%"><strong>tan({{ $angle.$deg }})</strong></td>
-                                        <td class="py-2 border-b">{{ $tan }}</td>
+                                        <td class="py-2 border-b" width="60%"><strong>csc({{ $angle.$deg }})</strong></td>
+                                        <td class="py-2 border-b">{{ $csc }}</td>
                                     </tr>
                                 </table>
                             </div>

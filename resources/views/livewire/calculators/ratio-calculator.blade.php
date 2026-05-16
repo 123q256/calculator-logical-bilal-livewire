@@ -191,7 +191,7 @@
                     <p class="text-3xl text-blue-600 font-bold">
                         @if($r2_mode)
                             @if($method == '0')
-                                <span class="{{ isset($detail['a_val']) ? 'text-orange-500' : '' }}">{{ $res_a }}</span> : 
+                                <span class="{{ isset($detail['a_val']) ? 'text-orange-500' : '' }}">{{ (float)$res_a }}</span> : 
                                 <span class="{{ isset($detail['b_val']) ? 'text-orange-500' : '' }}">{{ round((float)$res_b, 4) }}</span> = 
                                 <span class="{{ isset($detail['c_val']) ? 'text-orange-500' : '' }}">{{ round((float)$res_c, 4) }}</span> : 
                                 <span class="{{ isset($detail['d_val']) ? 'text-orange-500' : '' }}">{{ round((float)$res_d, 4) }}</span>
@@ -200,12 +200,25 @@
                             @endif
                         @else
                             @if($method1 == '0')
-                                {{ $a }} : {{ $b }} : {{ $c1 }} = {{ $d }} : <span class="text-orange-500">{{ round((float)$res_e, 4) }} : {{ round((float)$res_f, 4) }}</span>
+                                {{ $a }} : {{ $b }} : {{ $c1 }} = {{ $res_d }} : <span class="text-orange-500">{{ round((float)$res_e, 4) }} : {{ round((float)$res_f, 4) }}</span>
                             @else
                                 {{ $a }} : {{ $b }} : {{ $c1 }} = <span class="text-orange-500">{{ round((float)$res_a, 4) }} : {{ round((float)$res_b, 4) }} : {{ round((float)$res_c1, 4) }}</span>
                             @endif
                         @endif
                     </p>
+
+                    @if(isset($detail['dbl']))
+                        <div class="mt-4">
+                            <p class="text-xl font-bold">{{ $lang['16'] }}:</p>
+                            <p class="text-2xl text-blue-500 font-bold">
+                                @if($r2_mode)
+                                    {{ $a }} : {{ $b }} = {{ round((float)$res_a) }} : {{ round((float)$res_b) }}
+                                @else
+                                    {{ $a }} : {{ $b }} : {{ $c1 }} = {{ round((float)$res_a) }} : {{ round((float)$res_b) }} : {{ round((float)$res_c1) }}
+                                @endif
+                            </p>
+                        </div>
+                    @endif
                     
                     @if(isset($detail['gcf']))
                         <p class="mt-4 text-lg"><strong>{{ $lang['17'] }} <a href="{{ $lang['18'] }}" target="_blank" class="text-blue-500 underline">{{ $lang['19'] }}</a> {{ $lang['20'] }}</strong></p>
@@ -218,7 +231,40 @@
                     {{-- Pie Chart Section --}}
                     <div class="col-span-12 lg:col-span-6 flex flex-col items-center">
                         <p class="text-xl font-bold mb-4">{{ $lang['24'] }}</p>
-                        <div id="piechart" class="w-full h-[300px]" wire:ignore></div>
+                        <div class="w-full" 
+                                 x-data='{ 
+                                    chartData: {!! $detail["chartData"] !!},
+                                    render() {
+                                        if (typeof Highcharts === "undefined") {
+                                            setTimeout(() => this.render(), 200);
+                                            return;
+                                        }
+                                        Highcharts.chart(this.$refs.canvas, {
+                                            chart: { type: "pie", backgroundColor: "transparent" },
+                                            title: { text: null },
+                                            series: [{ 
+                                                name: "Ratio Part", 
+                                                data: this.chartData,
+                                                colorByPoint: true
+                                            }],
+                                            colors: ["#00c2db", "#ff9f00", "#4caf50"],
+                                            credits: { enabled: false },
+                                            tooltip: { pointFormat: "{series.name}: {point.percentage:.1f}%" },
+                                            plotOptions: {
+                                                pie: {
+                                                    allowPointSelect: true,
+                                                    cursor: "pointer",
+                                                    dataLabels: { enabled: true, format: "{point.name}: {point.percentage:.1f}%" }
+                                                }
+                                            }
+                                        });
+                                    }
+                                 }' 
+                                 x-init="render()"
+                                 @chart-updated.window="chartData = $event.detail; render()"
+                                 wire:ignore>
+                            <div x-ref="canvas" class="w-full h-[300px]"></div>
+                        </div>
                     </div>
 
                     {{-- Bar Graphs Section --}}
@@ -227,7 +273,7 @@
                         
                         {{-- Horizontal Comparison --}}
                         <div class="flex flex-col items-center w-full">
-                            <p class="text-sm font-semibold mb-2">{{ $lang['25'] }} {{ round($res_a, 2) }}, {{ $lang['26'] }} {{ round($res_b, 2) }}</p>
+                            <p class="text-sm font-semibold mb-2">{{ $lang['25'] }} {{ round((float)$res_a, 2) }}, {{ $lang['26'] }} {{ round((float)$res_b, 2) }}</p>
                             <div class="w-[200px] h-[40px] bg-orange-400 relative rounded overflow-hidden shadow-inner">
                                 <div class="bg-cyan-500 h-full transition-all duration-500" style="width: {{ $pie_width }}%"></div>
                             </div>
@@ -235,7 +281,7 @@
 
                         {{-- Vertical Comparison --}}
                         <div class="flex flex-col items-center w-full">
-                            <p class="text-sm font-semibold mb-2">{{ $lang['27'] }} {{ round($res_a, 2) }}, {{ $lang['28'] }} {{ round($res_b, 2) }}</p>
+                            <p class="text-sm font-semibold mb-2">{{ $lang['27'] }} {{ round((float)$res_a, 2) }}, {{ $lang['28'] }} {{ round((float)$res_b, 2) }}</p>
                             <div class="w-[200px] h-[150px] flex items-end justify-center space-x-4 border-b-2 border-gray-300 pb-1">
                                 <div class="bg-cyan-500 w-[60px] shadow-md transition-all duration-500" style="height: {{ min($bar_height, 150) }}px"></div>
                                 <div class="bg-orange-400 w-[60px] h-[150px] shadow-md"></div>
@@ -254,55 +300,6 @@
 </form>
 
 @push('calculatorJS')
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
-    if (typeof google !== 'undefined' && google.charts) {
-        google.charts.load('current', {'packages':['corechart']});
-    }
-    
-    document.addEventListener('livewire:initialized', () => {
-        @if(isset($detail))
-            setTimeout(drawChart, 200);
-        @endif
-
-        Livewire.hook('morph.updated', (el, component) => {
-            if (component.name === 'calculators.ratio-calculator' && document.getElementById('piechart')) {
-                drawChart();
-            }
-        });
-    });
-
-    function drawChart() {
-        const el = document.getElementById('piechart');
-        if (!el || typeof google === 'undefined' || !google.visualization) return;
-
-        let dataArr = [['Part', 'Value']];
-        @if(isset($detail))
-            @if(isset($detail['r2']))
-                dataArr.push(['Part A', {{ (float)($detail['a_val'] ?? $detail['a_val1'] ?? $detail['a_val2'] ?? $detail['a_val3'] ?? $detail['a_val4'] ?? $detail['a_val5'] ?? $detail['a_val6'] ?? $a) }}]);
-                dataArr.push(['Part B', {{ (float)($detail['b_val'] ?? $detail['b_val1'] ?? $detail['b_val2'] ?? $detail['b_val3'] ?? $detail['b_val4'] ?? $detail['b_val5'] ?? $detail['b_val6'] ?? $b) }}]);
-            @else
-                dataArr.push(['Part A', {{ (float)($detail['a_val'] ?? $detail['a_val1'] ?? $detail['a_val2'] ?? $detail['a_val3'] ?? $detail['a_val4'] ?? $detail['a_val5'] ?? $detail['a_val6'] ?? $a) }}]);
-                dataArr.push(['Part B', {{ (float)($detail['b_val'] ?? $detail['b_val1'] ?? $detail['b_val2'] ?? $detail['b_val3'] ?? $detail['b_val4'] ?? $detail['b_val5'] ?? $detail['b_val6'] ?? $b) }}]);
-                dataArr.push(['Part C', {{ (float)($detail['c_val1'] ?? $detail['c_val2'] ?? $detail['c_val3'] ?? $detail['c_val4'] ?? $detail['c_val5'] ?? $detail['c_val6'] ?? $c1) }}]);
-            @endif
-        @endif
-
-        if (dataArr.length <= 1) return;
-
-        var data = google.visualization.arrayToDataTable(dataArr);
-        var options = {
-            colors: ['#00c2db', '#ff9f00', '#4caf50'],
-            slices: { 0: {offset: 0.05} },
-            legend: { position: 'bottom' },
-            backgroundColor: 'transparent',
-            chartArea: {width: '100%', height: '80%'},
-            animation: { startup: true, duration: 1000, easing: 'out' }
-        };
-
-        var chart = new google.visualization.PieChart(el);
-        chart.draw(data, options);
-    }
-</script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
 @endpush
 </div>

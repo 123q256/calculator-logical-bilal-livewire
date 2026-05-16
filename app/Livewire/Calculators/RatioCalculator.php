@@ -130,6 +130,20 @@ class RatioCalculator extends Component
         $result = $model->ratio($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            // Prepare Chart Data
+            $res_a = $result['a_val'] ?? $result['a_val1'] ?? $result['a_val2'] ?? $result['a_val3'] ?? $result['a_val4'] ?? $result['a_val5'] ?? $result['a_val6'] ?? $this->a;
+            $res_b = $result['b_val'] ?? $result['b_val1'] ?? $result['b_val2'] ?? $result['b_val3'] ?? $result['b_val4'] ?? $result['b_val5'] ?? $result['b_val6'] ?? $this->b;
+            $res_c1 = $result['c_val1'] ?? $result['c_val2'] ?? $result['c_val3'] ?? $result['c_val4'] ?? $result['c_val5'] ?? $result['c_val6'] ?? $this->c1;
+
+            $chartData = [
+                ['name' => 'Part A', 'y' => (float)$res_a],
+                ['name' => 'Part B', 'y' => (float)$res_b],
+            ];
+            if (isset($result['r3'])) {
+                $chartData[] = ['name' => 'Part C', 'y' => (float)$res_c1];
+            }
+            $result['chartData'] = json_encode($chartData);
+
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
@@ -139,6 +153,7 @@ class RatioCalculator extends Component
                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
+                $this->dispatch('chart-updated', $chartData);
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         if (typeof renderMathInElement === 'function') {

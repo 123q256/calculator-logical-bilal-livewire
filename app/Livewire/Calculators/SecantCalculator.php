@@ -5,14 +5,14 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class SineCalculator extends Component
+class SecantCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
 
     // Inputs
-    public $angle = '45';
+    public $angle = '12';
     public $angle_unit = 'deg';
 
     public function mount($type = 'calculator')
@@ -23,14 +23,14 @@ class SineCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->angle = $inputs['angle'] ?? '45';
+            $this->angle = $inputs['angle'] ?? '12';
             $this->angle_unit = $inputs['angle_unit'] ?? 'deg';
         }
     }
 
     public function resetForm()
     {
-        $this->angle = '45';
+        $this->angle = '12';
         $this->angle_unit = 'deg';
         $this->error = null;
         $this->detail = null;
@@ -64,9 +64,8 @@ class SineCalculator extends Component
             'angle' => $this->angle,
             'angle_unit' => $this->angle_unit,
         ];
-
         $model = new Math();
-        $result = $model->sine($request);
+        $result = $model->secant($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
@@ -111,6 +110,23 @@ class SineCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.sine-calculator');
+
+        $lang = [];
+        $file = 'secant-calculator';
+        if (app()->getLocale() != 'en') {
+            $file = app()->getLocale() . '-' . $file;
+        }
+        
+        $path = public_path("keys/{$file}.txt");
+        if (file_exists($path)) {
+            $data = json_decode(file_get_contents($path), true);
+            if (isset($data['lang_keys'])) {
+                $lang = json_decode($data['lang_keys'], true);
+            }
+        }
+
+        return view('livewire.calculators.secant-calculator', [
+            'lang' => $lang
+        ]);
     }
 }

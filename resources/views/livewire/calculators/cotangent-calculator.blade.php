@@ -22,13 +22,13 @@
                                     <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'deg'; openUnit = false">degrees (deg)</p>
                                     <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'rad'; openUnit = false">radians (rad)</p>
                                     <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'mrad'; openUnit = false">milliradians (mrad)</p>
-                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'piradians'; openUnit = false">* π radians (pirad)</p>
+                                    <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm text-black" @click="unit = 'piradians'; openUnit = false">* π rad (pirad)</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-span-12 flex justify-center text-center">
-                        <img src="{{ asset('images/tan_prop.svg') }}" height="100%" width="70%" alt="tangent Graph" style="object-fit: contain;" loading="lazy" decoding="async">
+                        <img src="{{ asset('images/cot_prop.svg') }}" height="100%" width="70%" alt="Cotangent Graph" style="object-fit: contain;" loading="lazy" decoding="async">
                     </div>
                 </div>
             </div>
@@ -61,28 +61,28 @@
                                         }else{
                                             $deg = '';
                                         }
-                                        $tan = $detail['tan'];
+                                        $cot = $detail['cot'];
                                         $table = array("1.73205081"=>"\sqrt 3", "-1.73205081"=>"-\sqrt 3", "0.57735027"=>"1\over {\sqrt 3} \) = \( {{\sqrt 3} \over 3}", "-0.57735027"=>"-1\over {\sqrt 3} \) = \( {-{\sqrt 3} \over 3}");
                                     @endphp
                                     @if($angle_unit === 'deg')
                                         @php
                                             $val = '';
                                             foreach($table as $key => $value){
-                                                if("$key" === "$tan"){
+                                                if("$key" === "$cot"){
                                                     $val = $value;
                                                 }
                                             }
                                         @endphp
                                         @if(!empty($val))
                                             <tr>
-                                                <td class="py-2 border-b" width="60%"><strong>tan({{ $angle.$deg }})</strong></td>
+                                                <td class="py-2 border-b" width="60%"><strong>cot({{ $angle.$deg }})</strong></td>
                                                 <td class="py-2 border-b">\( {{$val}} \)</td>
                                             </tr>
                                         @endif
                                     @endif
                                     <tr>
-                                        <td class="py-2 border-b" width="60%"><strong>tan({{ $angle.$deg }})</strong></td>
-                                        <td class="py-2 border-b">{{ $tan }}</td>
+                                        <td class="py-2 border-b" width="60%"><strong>cot({{ $angle.$deg }})</strong></td>
+                                        <td class="py-2 border-b">{{ $cot }}</td>
                                     </tr>
                                 </table>
                             </div>
