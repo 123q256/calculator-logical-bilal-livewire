@@ -1,0 +1,116 @@
+<?php
+
+namespace App\Livewire\Calculators;
+
+use App\Models\Math;
+use Livewire\Component;
+
+class UnitCircleCalculator extends Component
+{
+    public $error = null;
+    public $detail = null;
+    public $type = 'calculator';
+    public $lang = [];
+
+    // Inputs
+    public $angle = 45;
+    public $angle_unit = 'deg';
+    public $nbr = 5;
+
+    public function mount($type = 'calculator', $lang = [])
+    {
+        $this->type = $type;
+        $this->lang = $lang;
+        $this->detail = session('calculator_result');
+        $this->error = session('validation_error');
+
+        if (session()->has('calculator_back_inputs')) {
+            $inputs = session('calculator_back_inputs');
+            $this->angle = $inputs['angle'] ?? 45;
+            $this->angle_unit = $inputs['angle_unit'] ?? 'deg';
+        }
+    }
+
+    public function resetForm()
+    {
+        $this->angle = 45;
+        $this->angle_unit = 'deg';
+        $this->error = null;
+        $this->detail = null;
+
+        session()->forget([
+            'calculator_back_inputs',
+            'calculator_result',
+            'validation_error',
+            'scroll_to_result'
+        ]);
+
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+            return redirect()->to(url()->previous() ?? '/');
+        }
+    }
+
+    public function updated($propertyName)
+    {
+        $this->detail = null;
+        $this->error = null;
+    }
+
+    public function calculate()
+    {
+        $this->validate([
+            'angle' => 'required|numeric',
+            'angle_unit' => 'required|in:deg,rad,pirad',
+        ]);
+
+        $request = (object)[
+            'angle' => $this->angle,
+            'angle_unit' => $this->angle_unit,
+        ];
+
+        $model = new Math();
+        $result = $model->unit($request);
+
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            $this->detail = $result;
+            $this->error = null;
+
+            session()->flash('calculator_result', $result);
+            session()->flash('calculator_back_inputs', (array)$request);
+
+            if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+                 return redirect()->to(url()->previous() ?? '/');
+            } else {
+                $this->js(<<<'JS'
+                    setTimeout(() => {
+                        const el = document.getElementById('result-section');
+                        if (el) {
+                            const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                            window.scrollTo({ top: offset, behavior: 'smooth' });
+                        }
+                    }, 100);
+                JS);
+            }
+            return;
+        }
+
+        $this->error = $result['error'] ?? 'Something went wrong.';
+        $this->detail = null;
+    }
+
+    public function render()
+    {
+        if (session('scroll_to_result')) {
+            $this->js(<<<'JS'
+                setTimeout(() => {
+                    const el = document.getElementById('result-section');
+                    if (el) {
+                        const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                        window.scrollTo({ top: offset, behavior: 'smooth' });
+                    }
+                }, 100);
+            JS);
+        }
+        return view('livewire.calculators.unit-circle-calculator');
+    }
+}

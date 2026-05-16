@@ -116,6 +116,7 @@
                                 <p class="mt-3">{{$lang['graph']}}:</p>
                             </div>
                             <div id="box1" class="w-full md:w-[60%] lg:w-[60%]  mt-4 text-center" style="height: 350px;"
+                                wire:key="graph-1-{{ $renderCount }}"
                                 x-data="{
                                     renderGraph() {
                                         if (typeof JXG === 'undefined') {
@@ -161,6 +162,7 @@
                                 <p class="mt-3">{{$lang['graph']}}:</p>
                             </div>
                             <div id="box1" class="w-full md:w-[60%] lg:w-[60%]  mt-4 text-center" style="height: 350px;"
+                                wire:key="graph-2-{{ $renderCount }}"
                                 x-data="{
                                     renderGraph() {
                                         if (typeof JXG === 'undefined') {

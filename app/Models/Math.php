@@ -1784,7 +1784,7 @@ class Math extends Model
 			return $this->param;
 		}
 	}
-
+	// Hemisphere Calculator
 	function hemisphere($request){
 		$to_calculate = $request->to_calculate;
 		$val = $request->value;
@@ -8819,12 +8819,12 @@ class Math extends Model
 
 	// Linear Interpolation Calculator
 	function linear_interpolation($request){
-		$x1=$_POST['x1'];
-		$y1=$_POST['y1'];
-		$x2=$_POST['x2'];
-		$y2=$_POST['y2'];
-		$x3=$_POST['x3'];
-		$y3=$_POST['y3'];
+		$x1 = $request->x1;
+		$y1 = $request->y1;
+		$x2 = $request->x2;
+		$y2 = $request->y2;
+		$x3 = $request->x3;
+		$y3 = $request->y3;
 		if(empty($x1) && is_numeric($y1) && is_numeric($x2) && is_numeric($y2) && is_numeric($x3) && is_numeric($y3)){
 			if($x2!=$x3 && $y1!=$y2 && $y2!=$y3 && $y1!=$y3){
 				$s1=$y3-$y1;
@@ -9294,9 +9294,10 @@ class Math extends Model
 
 	// Interval Notation Calculator
 	function interval($request){
-		$i= $request->i;
-		$x= $request->x;
-		$validator = Validator::make($request->all(), [
+		$data = is_object($request) && method_exists($request, 'all') ? $request->all() : (array)$request;
+		$i = $data['i'] ?? null;
+		$x = $data['x'] ?? null;
+		$validator = Validator::make($data, [
 			'i' => 'required|regex:/^[^<>&]*$/i',
 		]);
 		if ($validator->fails()) {
@@ -9329,8 +9330,14 @@ class Math extends Model
 				}
 			}
 			$arr=explode(',',$i);
-			preg_match("/\(|\[/",$arr[0],$arr0);
-			preg_match("/\)|\]/",$arr[1],$arr1);
+			if (count($arr) < 2) {
+				$this->param['error'] = 'Please Enter Valid Input (e.g. 2,8).';
+				return $this->param;
+			}
+			if (!preg_match("/\(|\[/",$arr[0],$arr0) || !preg_match("/\)|\]/",$arr[1],$arr1)) {
+				$this->param['error'] = 'Please Enter Valid Input with brackets (e.g. [2,8]).';
+				return $this->param;
+			}
 			$arr00=explode($arr0[0],$arr[0]);
 			$arr11=explode($arr1[0],$arr[1]);
 			if(!empty($arr00[0])){
@@ -22125,17 +22132,17 @@ class Math extends Model
 
 	// Ratio Calculator
 	public function ratio($request){
-		$a=trim($request->input('a'));
-		$b=trim($request->input('b'));
-		$c=trim($request->input('c'));
-		$c1=trim($request->input('c1'));
-		$d=trim($request->input('d'));
-		$e=trim($request->input('e'));
-		$f=trim($request->input('f'));
-		$i=trim($request->input('i'));
-		$ratio_of=trim(stripslashes(htmlspecialchars($request->input('ratio_of'))));
-		$method=trim(stripslashes(htmlspecialchars($request->input('method'))));
-		$method1=trim(stripslashes(htmlspecialchars($request->input('method1'))));
+		$a=trim($request->a);
+		$b=trim($request->b);
+		$c=trim($request->c);
+		$c1=trim($request->c1);
+		$d=trim($request->d);
+		$e=trim($request->e);
+		$f=trim($request->f);
+		$i=trim($request->i);
+		$ratio_of=trim(stripslashes(htmlspecialchars($request->ratio_of)));
+		$method=trim(stripslashes(htmlspecialchars($request->method)));
+		$method1=trim(stripslashes(htmlspecialchars($request->method1)));
 		if($method =='0' && $ratio_of =='r2'){
 			if(is_numeric($a) && is_numeric($b) && is_numeric($c) && is_numeric($d)){
 				$this->param['error'] = 'Please Enter 3 numbers & left 1 field empty!';
