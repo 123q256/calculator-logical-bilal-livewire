@@ -44,7 +44,7 @@
             };
         @endphp
 
-       <div class="lg:w-[60%] md:w-[60%] w-full mx-auto ">
+       <div class="lg:w-[70%] md:w-[70%] w-full mx-auto ">
             <div class="grid grid-cols-12  gap-2 md:gap-4 lg:gap-4">
 
                 <div class="col-span-12 md:col-span-8 lg:col-span-8" id="method" style="display: {{ $isVisible('method') ? 'block' : 'none' }}">
@@ -84,7 +84,7 @@
                 <div id="txt2" class="txt_set my-2 col-span-12" style="display: {{ $isVisible('txt2') ? 'block' : 'none' }}">{!! $lang['13'] !!}</div>
                 
                 <div class="col-span-12 items-center mt-2">
-                    <div class="grid grid-cols-12 gap-3">
+                    <div class="grid grid-cols-12 gap-1">
                         <div class="col-span-2 p_set" id="a" style="display: {{ $isVisible('a') ? 'block' : 'none' }}">
                             <p class="text-center"><strong>A</strong></p>
                             <input type="number" step="any" class="input" wire:model.live="a" name="a" @if($isDisabled($a, $ratio_of)) disabled style="background-color: gainsboro" @endif>
@@ -232,14 +232,16 @@
                     <div class="col-span-12 lg:col-span-6 flex flex-col items-center">
                         <p class="text-xl font-bold mb-4">{{ $lang['24'] }}</p>
                         <div class="w-full" 
+                                 wire:key="ratio-chart-{{ count((array)$detail) }}"
                                  x-data='{ 
                                     chartData: {!! $detail["chartData"] !!},
                                     render() {
+                                        if (!this.chartData || this.chartData.length === 0) return;
                                         if (typeof Highcharts === "undefined") {
                                             setTimeout(() => this.render(), 200);
                                             return;
                                         }
-                                        Highcharts.chart(this.$refs.canvas, {
+                                        Highcharts.chart($refs.canvas, {
                                             chart: { type: "pie", backgroundColor: "transparent" },
                                             title: { text: null },
                                             series: [{ 
@@ -261,7 +263,7 @@
                                     }
                                  }' 
                                  x-init="render()"
-                                 @chart-updated.window="chartData = $event.detail; render()"
+                                 @chartUpdated.window="chartData = $event.detail; render()"
                                  wire:ignore>
                             <div x-ref="canvas" class="w-full h-[300px]"></div>
                         </div>

@@ -22,11 +22,11 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 md:grid-cols-2 mt-2 gap-4" x-show="['1', '2', '3', '4'].includes(calc_type)">
                 <div class="space-y-2">
                     <label for="x1" class="font-s-14 text-blue">{{ $lang['x1'] ?? 'x1' }}:</label>
-                    <input type="number" wire:model="x1" id="x1" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="x1" id="x1" class="input" aria-label="input" step="any" />
                 </div>
                 <div class="space-y-2">
                     <label for="y1" class="font-s-14 text-blue">{{ $lang['y1'] ?? 'y1' }}:</label>
-                    <input type="number" wire:model="y1" id="y1" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="y1" id="y1" class="input" aria-label="input" step="any" />
                 </div>
             </div>
 
@@ -34,11 +34,11 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 md:grid-cols-2 mt-2 gap-4" x-show="['2', '3'].includes(calc_type)">
                 <div class="space-y-2">
                     <label for="x2" class="font-s-14 text-blue">{{ $lang['x2'] ?? 'x2' }}:</label>
-                    <input type="number" wire:model="x2" id="x2" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="x2" id="x2" class="input" aria-label="input" step="any" />
                 </div>
                 <div class="space-y-2">
                     <label for="y2" class="font-s-14 text-blue"><span x-show="calc_type === '3'">or </span>{{ $lang['y2'] ?? 'y2' }}:</label>
-                    <input type="number" wire:model="y2" id="y2" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="y2" id="y2" class="input" aria-label="input" step="any" />
                 </div>
             </div>
 
@@ -46,16 +46,16 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 md:grid-cols-2 mt-2 gap-4" x-show="['1', '3', '4'].includes(calc_type)">
                 <div class="space-y-2">
                     <label for="m" class="font-s-14 text-blue">{{ $lang['slope'] ?? 'Slope' }}:</label>
-                    <input type="number" wire:model="m" id="m" class="input" aria-label="input" step="any" placeholder="00" />
+                    <input type="number" wire:model.live="m" id="m" class="input" aria-label="input" step="any" placeholder="00" />
                 </div>
                 <div class="space-y-2">
                     <i class="col-1 ps-4 pt-3" x-show="calc_type === '3'">or</i>
                     <label for="angle" class="font-s-14 text-blue">{{ $lang['angle'] ?? 'Angle' }}°:</label>
-                    <input type="number" wire:model="angle" id="angle" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="angle" id="angle" class="input" aria-label="input" step="any" />
                 </div>
                 <div class="space-y-2" x-show="calc_type === '1'">
                     <label for="dis" class="font-s-14 text-blue">{{ $lang['distance'] ?? 'Distance' }}:</label>
-                    <input type="number" wire:model="dis" id="dis" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="dis" id="dis" class="input" aria-label="input" step="any" />
                 </div>
             </div>
 
@@ -63,15 +63,15 @@
             <div class="grid grid-cols-2 lg:grid-cols-2 md:grid-cols-2 mt-2 gap-4" x-show="calc_type === 'line'" style="display: none;">
                 <div class="space-y-2">
                     <label for="x" class="px-lg-3 font-s-14 text-blue">{{ $lang['enter'] ?? 'Enter' }}: <i class="ps-2">x</i></label>
-                    <input type="number" wire:model="x" id="x" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="x" id="x" class="input" aria-label="input" step="any" />
                 </div>
                 <div class="space-y-2">
                     <label for="y" class="font-s-14 text-blue"><i class="ps-2">y</i></label>
-                    <input type="number" wire:model="y" id="y" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="y" id="y" class="input" aria-label="input" step="any" />
                 </div>
                 <div class="space-y-2">
                     <label for="b" class="font-s-14 text-blue"><span class="ps-2">=0</span></label>
-                    <input type="number" wire:model="b" id="b" class="input" aria-label="input" step="any" />
+                    <input type="number" wire:model.live="b" id="b" class="input" aria-label="input" step="any" />
                 </div>
             </div>
         </div>
@@ -149,8 +149,28 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" wire:ignore>
-                                <div id="box1" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
+                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" 
+                                 wire:key="graph-main-{{ $renderCount }}" 
+                                 x-data='{
+                                     initGraph() {
+                                         if (typeof JXG === "undefined") { setTimeout(() => this.initGraph(), 200); return; }
+                                         const data = {!! isset($detail["chartData"]) ? $detail["chartData"] : "{}" !!};
+                                         if (!data.box1) return;
+                                         this.$nextTick(() => {
+                                             const el = document.getElementById("box-main");
+                                             if (!el) return;
+                                             el.innerHTML = "";
+                                             const board = JXG.JSXGraph.initBoard("box-main", { boundingbox: data.box1.bounds, axis: true, showCopyright: false });
+                                             const p1 = board.create("point", data.box1.p1, {size: 4, name: "P1"});
+                                             const p2 = board.create("point", data.box1.p2, {size: 4, name: "P2"});
+                                             board.create("line", [p1, p2]);
+                                         });
+                                     }
+                                 }' 
+                                 x-init="initGraph()"
+                                 @chartUpdated.window="initGraph()"
+                                 wire:ignore>
+                                <div id="box-main" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
                             </div>
                         @elseif($calc_type_res == 'line')
                             <p class="mt-2 font-s-25 text-blue text-center">{{ $lang['ans'] ?? 'Detailed Answer' }}</p>
@@ -231,8 +251,28 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" wire:ignore>
-                                <div id="box1" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
+                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" 
+                                 wire:key="graph-main-{{ $renderCount }}" 
+                                 x-data='{
+                                     initGraph() {
+                                         if (typeof JXG === "undefined") { setTimeout(() => this.initGraph(), 200); return; }
+                                         const data = {!! isset($detail["chartData"]) ? $detail["chartData"] : "{}" !!};
+                                         if (!data.box1) return;
+                                         this.$nextTick(() => {
+                                             const el = document.getElementById("box-main");
+                                             if (!el) return;
+                                             el.innerHTML = "";
+                                             const board = JXG.JSXGraph.initBoard("box-main", { boundingbox: data.box1.bounds, axis: true, showCopyright: false });
+                                             const p1 = board.create("point", data.box1.p1, {size: 4, name: "P1"});
+                                             const p2 = board.create("point", data.box1.p2, {size: 4, name: "P2"});
+                                             board.create("line", [p1, p2]);
+                                         });
+                                     }
+                                 }' 
+                                 x-init="initGraph()"
+                                 @chartUpdated.window="initGraph()"
+                                 wire:ignore>
+                                <div id="box-main" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
                             </div>
                         @elseif($calc_type_res == '4')
                             <table class="w-full md:w-[50%] lg:w-[50%]">
@@ -285,8 +325,28 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" wire:ignore>
-                                <div id="box1" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
+                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" 
+                                 wire:key="graph-right-{{ $renderCount }}" 
+                                 x-data='{
+                                     initGraph() {
+                                         if (typeof JXG === "undefined") { setTimeout(() => this.initGraph(), 200); return; }
+                                         const data = {!! isset($detail["chartData"]) ? $detail["chartData"] : "{}" !!};
+                                         if (!data.box1) return;
+                                         this.$nextTick(() => {
+                                             const el = document.getElementById("box-right");
+                                             if (!el) return;
+                                             el.innerHTML = "";
+                                             const board = JXG.JSXGraph.initBoard("box-right", { boundingbox: data.box1.bounds, axis: true, showCopyright: false });
+                                             const p1 = board.create("point", data.box1.p1, {size: 4, name: "P1"});
+                                             const p2 = board.create("point", data.box1.p2, {size: 4, name: "P2"});
+                                             board.create("line", [p1, p2]);
+                                         });
+                                     }
+                                 }' 
+                                 x-init="initGraph()"
+                                 @chartUpdated.window="initGraph()"
+                                 wire:ignore>
+                                <div id="box-right" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
                             </div>
                             
                             <p class="mt-2 font-s-25 text-blue text-center">Left Side</p>
@@ -310,9 +370,30 @@
                                 </tr>
                                 </tbody>
                             </table>
-                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" wire:ignore>
-                                <div id="box" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
+                            <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" 
+                                 wire:key="graph-left-{{ $renderCount }}" 
+                                 x-data='{
+                                     initGraph() {
+                                         if (typeof JXG === "undefined") { setTimeout(() => this.initGraph(), 200); return; }
+                                         const data = {!! isset($detail["chartData"]) ? $detail["chartData"] : "{}" !!};
+                                         if (!data.box) return;
+                                         this.$nextTick(() => {
+                                             const el = document.getElementById("box-left");
+                                             if (!el) return;
+                                             el.innerHTML = "";
+                                             const board = JXG.JSXGraph.initBoard("box-left", { boundingbox: data.box.bounds, axis: true, showCopyright: false });
+                                             const p1 = board.create("point", data.box.p1, {size: 4, name: "Q1"});
+                                             const p2 = board.create("point", data.box.p2, {size: 4, name: "Q2"});
+                                             board.create("line", [p1, p2]);
+                                         });
+                                     }
+                                 }' 
+                                 x-init="initGraph()"
+                                 @chartUpdated.window="initGraph()"
+                                 wire:ignore>
+                                <div id="box-left" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
                             </div>
+
                             
                             <p class="col s12 center color_blue font_s25 center">&nbsp;</p>
                     
@@ -354,81 +435,7 @@
             </div>
         </div>
         
-        <!-- Initial Page Load Rendering -->
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    if (typeof JXG === 'undefined') return;
-                    
-                    @if($calc_type_res == '2')
-                        @php
-                            $tx2=(($x2_res<0)?$x2_res-10:"-".$x2_res+10);
-                            $tx1=(($x1_res<0)?($x1_res-10)*(-1):$x1_res+10);
-                            $ty2=(($y2_res<0)?$y2_res-10:"-".$y2_res+10);
-                            $ty1=(($y1_res<0)?($y1_res-10)*(-1):$y1_res+10);
-                        @endphp
-                        if (document.getElementById('box1')) {
-                            if (JXG.JSXGraph.boards['box1']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                            document.getElementById('box1').innerHTML = '';
-                            var board = JXG.JSXGraph.initBoard('box1', {boundingbox: [{{$tx2}}, {{$ty1}}, {{$tx1}}, {{$ty2}}], axis:true});
-                            var p1 = board.create('point', [{{$x1_res}}, {{$y1_res}}]);
-                            var p2 = board.create('point', [{{$x2_res}}, {{$y2_res}}]);
-                            var l1 = board.create('line', [p1, p2]);
-                        }
-                    @elseif($calc_type_res == '3')
-                        @php
-                            $nx2 = $detail['x2'] ?? 0;
-                            $ny2 = $detail['y2'] ?? 0;
-                            $tx2=(($nx2<0)?$nx2-10:"-".$nx2+10);
-                            $tx1=(($x1_res<0)?($x1_res-10)*(-1):$x1_res+10);
-                            $ty2=(($ny2<0)?$ny2-10:"-".$ny2+10);
-                            $ty1=(($y1_res<0)?($y1_res-10)*(-1):$y1_res+10);
-                        @endphp
-                        if (document.getElementById('box1')) {
-                            if (JXG.JSXGraph.boards['box1']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                            document.getElementById('box1').innerHTML = '';
-                            var board = JXG.JSXGraph.initBoard('box1', {boundingbox: [{{$tx2}}, {{$ty1}}, {{$tx1}}, {{$ty2}}], axis:true});
-                            var p1 = board.create('point', [{{$x1_res}}, {{$y1_res}}]);
-                            var p2 = board.create('point', [{{$nx2}}, {{$ny2}}]);
-                            var l1 = board.create('line', [p1, p2]);
-                        }
-                    @elseif($calc_type_res == '1')
-                        @php
-                            $x2r = $detail['x2r'] ?? 0; $y2r = $detail['y2r'] ?? 0;
-                            $xr = $detail['xr'] ?? 0; $yr = $detail['yr'] ?? 0;
-                            $tx2r=(($x2r<0)?$x2r-10:"-".$x2r+10);
-                            $txr=(($xr<0)?($xr-10)*(-1):$xr+10);
-                            $ty2r=(($y2r<0)?$y2r-10:"-".$y2r+10);
-                            $tyr=(($yr<0)?($yr-10)*(-1):$yr+10);
-                        @endphp
-                        if (document.getElementById('box1')) {
-                            if (JXG.JSXGraph.boards['box1']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                            document.getElementById('box1').innerHTML = '';
-                            var board1 = JXG.JSXGraph.initBoard('box1', {boundingbox: [{{$tx2r}}, {{$tyr}}, {{$txr}}, {{$ty2r}}], axis:true});
-                            var p1_1 = board1.create('point', [{{$xr}}, {{$yr}}]);
-                            var p2_1 = board1.create('point', [{{$x2r}}, {{$y2r}}]);
-                            var l1_1 = board1.create('line', [p1_1, p2_1]);
-                        }
-                        @php
-                            $x2l = $detail['x2l'] ?? 0; $y2l = $detail['y2l'] ?? 0;
-                            $xl = $detail['xl'] ?? 0; $yl = $detail['yl'] ?? 0;
-                            $tx2l=(($x2l<0)?$x2l-10:"-".$x2l+10);
-                            $txl=(($xl<0)?($xl-10)*(-1):$xl+10);
-                            $ty2l=(($y2l<0)?$y2l-10:"-".$y2l+10);
-                            $tyl=(($yl<0)?($yl-10)*(-1):$yl+10);
-                        @endphp
-                        if (document.getElementById('box')) {
-                            if (JXG.JSXGraph.boards['box']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box']);
-                            document.getElementById('box').innerHTML = '';
-                            var board2 = JXG.JSXGraph.initBoard('box', {boundingbox: [{{$tx2l}}, {{$tyl}}, {{$txl}}, {{$ty2l}}], axis:true});
-                            var p1_2 = board2.create('point', [{{$xl}}, {{$yl}}]);
-                            var p2_2 = board2.create('point', [{{$x2l}}, {{$y2l}}]); // Note y2l was historically y2r in original script, correcting to y2l for logic parity
-                            var l1_2 = board2.create('line', [p1_2, p2_2]);
-                        }
-                    @endif
-                }, 300);
-            });
-        </script>
+
     </div>
     @endisset
 </form>

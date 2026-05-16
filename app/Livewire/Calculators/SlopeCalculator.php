@@ -53,7 +53,7 @@ class SlopeCalculator extends Component
         }
     }
 
-  public function updated()
+    public function updated($propertyName)
     {
         $this->detail = null;
         $this->error = null;
@@ -70,6 +70,8 @@ class SlopeCalculator extends Component
     public $x = '3';
     public $y = '-9';
     public $b = '11';
+
+    public $renderCount = 0;
 
     public function calculate()
     {
@@ -92,98 +94,77 @@ class SlopeCalculator extends Component
         $result = $model->slope($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            $this->renderCount++;
             $result['calc_type'] = $this->calc_type;
-            $result['x1_used'] = $this->x1;
-            $result['x2_used'] = $this->x2;
-            $result['y1_used'] = $this->y1;
-            $result['y2_used'] = $this->y2;
+            
+            // Prepare chart data based on type
+            $chartData = ['type' => $this->calc_type];
+            
+            if ($this->calc_type == '2' || $this->calc_type == '3') {
+                $x1 = (float)$this->x1;
+                $y1 = (float)$this->y1;
+                $x2 = (float)($this->calc_type == '2' ? $this->x2 : ($result['x2'] ?? 0));
+                $y2 = (float)($this->calc_type == '2' ? $this->y2 : ($result['y2'] ?? 0));
+                
+                // Better bounding box: focus on the points
+                $minX = min($x1, $x2); $maxX = max($x1, $x2);
+                $minY = min($y1, $y2); $maxY = max($y1, $y2);
+                $padX = max(abs($maxX - $minX) * 0.5, 5);
+                $padY = max(abs($maxY - $minY) * 0.5, 5);
+                
+                $chartData['box1'] = [
+                    'bounds' => [$minX - $padX, $maxY + $padY, $maxX + $padX, $minY - $padY],
+                    'p1' => [$x1, $y1],
+                    'p2' => [$x2, $y2]
+                ];
+            } elseif ($this->calc_type == '1') {
+                // Right box (box1)
+                $x2r = (float)($result['x2r'] ?? 0); $y2r = (float)($result['y2r'] ?? 0);
+                $xr = (float)($result['xr'] ?? 0); $yr = (float)($result['yr'] ?? 0);
+                
+                $minXr = min($xr, $x2r); $maxXr = max($xr, $x2r);
+                $minYr = min($yr, $y2r); $maxYr = max($yr, $y2r);
+                $padXr = max(abs($maxXr - $minXr) * 0.5, 5);
+                $padYr = max(abs($maxYr - $minYr) * 0.5, 5);
+                
+                $chartData['box1'] = [
+                    'bounds' => [$minXr - $padXr, $maxYr + $padYr, $maxXr + $padXr, $minYr - $padYr],
+                    'p1' => [$xr, $yr],
+                    'p2' => [$x2r, $y2r]
+                ];
+                
+                // Left box (box)
+                $x2l = (float)($result['x2l'] ?? 0); $y2l = (float)($result['y2l'] ?? 0);
+                $xl = (float)($result['xl'] ?? 0); $yl = (float)($result['yl'] ?? 0);
+                
+                $minXl = min($xl, $x2l); $maxXl = max($xl, $x2l);
+                $minYl = min($yl, $y2l); $maxYl = max($yl, $y2l);
+                $padXl = max(abs($maxXl - $minXl) * 0.5, 5);
+                $padYl = max(abs($maxYl - $minYl) * 0.5, 5);
+                
+                $chartData['box'] = [
+                    'bounds' => [$minXl - $padXl, $maxYl + $padYl, $maxXl + $padXl, $minYl - $padYl],
+                    'p1' => [$xl, $yl],
+                    'p2' => [$x2l, $y2l]
+                ];
+            }
+
+            $result['chartData'] = json_encode($chartData);
+            $this->detail = $result;
+            $this->error = null;
 
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request->all());
-            $this->error = null;
+            session()->flash('calculator_back_inputs', (array)$request);
+
+            $this->dispatch('chartUpdated', $chartData);
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                  return redirect()->to(url()->previous() ?? '/');
             } else {
-                $this->detail = $result;
-                
-                $jsPayload = '';
-                if ($this->calc_type == '2') {
-                    $tx2 = ($this->x2 < 0) ? ($this->x2 - 10) : ((-1 * floatval($this->x2)) + 10);
-                    $tx1 = ($this->x1 < 0) ? (($this->x1 - 10) * -1) : ($this->x1 + 10);
-                    $ty2 = ($this->y2 < 0) ? ($this->y2 - 10) : ((-1 * floatval($this->y2)) + 10);
-                    $ty1 = ($this->y1 < 0) ? (($this->y1 - 10) * -1) : ($this->y1 + 10);
-                    $jsPayload = "
-                        if (document.getElementById('box1')) {
-                            if (JXG.JSXGraph.boards['box1']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                            document.getElementById('box1').innerHTML = '';
-                            var board = JXG.JSXGraph.initBoard('box1', {boundingbox: [{$tx2}, {$ty1}, {$tx1}, {$ty2}], axis:true});
-                            var p1 = board.create('point', [{$this->x1}, {$this->y1}]);
-                            var p2 = board.create('point', [{$this->x2}, {$this->y2}]);
-                            var l1 = board.create('line', [p1, p2]);
-                        }
-                    ";
-                } elseif ($this->calc_type == '3') {
-                    $nx2 = $result['x2'] ?? 0;
-                    $ny2 = $result['y2'] ?? 0;
-                    $tx2 = ($nx2 < 0) ? ($nx2 - 10) : ((-1 * floatval($nx2)) + 10);
-                    $tx1 = ($this->x1 < 0) ? (($this->x1 - 10) * -1) : ($this->x1 + 10);
-                    $ty2 = ($ny2 < 0) ? ($ny2 - 10) : ((-1 * floatval($ny2)) + 10);
-                    $ty1 = ($this->y1 < 0) ? (($this->y1 - 10) * -1) : ($this->y1 + 10);
-                    $jsPayload = "
-                        if (document.getElementById('box1')) {
-                            if (JXG.JSXGraph.boards['box1']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                            document.getElementById('box1').innerHTML = '';
-                            var board = JXG.JSXGraph.initBoard('box1', {boundingbox: [{$tx2}, {$ty1}, {$tx1}, {$ty2}], axis:true});
-                            var p1 = board.create('point', [{$this->x1}, {$this->y1}]);
-                            var p2 = board.create('point', [{$nx2}, {$ny2}]);
-                            var l1 = board.create('line', [p1, p2]);
-                        }
-                    ";
-                } elseif ($this->calc_type == '1') {
-                    $x2r = $result['x2r'] ?? 0; $y2r = $result['y2r'] ?? 0;
-                    $xr = $result['xr'] ?? 0; $yr = $result['yr'] ?? 0;
-                    $tx2r = ($x2r < 0) ? ($x2r - 10) : ((-1 * floatval($x2r)) + 10);
-                    $txr = ($xr < 0) ? (($xr - 10) * -1) : ($xr + 10);
-                    $ty2r = ($y2r < 0) ? ($y2r - 10) : ((-1 * floatval($y2r)) + 10);
-                    $tyr = ($yr < 0) ? (($yr - 10) * -1) : ($yr + 10);
-                    
-                    $x2l = $result['x2l'] ?? 0; $y2l = $result['y2l'] ?? 0;
-                    $xl = $result['xl'] ?? 0; $yl = $result['yl'] ?? 0;
-                    $tx2l = ($x2l < 0) ? ($x2l - 10) : ((-1 * floatval($x2l)) + 10);
-                    $txl = ($xl < 0) ? (($xl - 10) * -1) : ($xl + 10);
-                    $ty2l = ($y2l < 0) ? ($y2l - 10) : ((-1 * floatval($y2l)) + 10);
-                    $tyl = ($yl < 0) ? (($yl - 10) * -1) : ($yl + 10);
-
-                    $jsPayload = "
-                        if (document.getElementById('box1')) {
-                            if (JXG.JSXGraph.boards['box1']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                            document.getElementById('box1').innerHTML = '';
-                            var board1 = JXG.JSXGraph.initBoard('box1', {boundingbox: [{$tx2r}, {$tyr}, {$txr}, {$ty2r}], axis:true});
-                            var p1_1 = board1.create('point', [{$xr}, {$yr}]);
-                            var p2_1 = board1.create('point', [{$x2r}, {$y2r}]);
-                            var l1_1 = board1.create('line', [p1_1, p2_1]);
-                        }
-                        if (document.getElementById('box')) {
-                            if (JXG.JSXGraph.boards['box']) JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box']);
-                            document.getElementById('box').innerHTML = '';
-                            var board2 = JXG.JSXGraph.initBoard('box', {boundingbox: [{$tx2l}, {$tyl}, {$txl}, {$ty2l}], axis:true});
-                            var p1_2 = board2.create('point', [{$xl}, {$yl}]);
-                            var p2_2 = board2.create('point', [{$x2l}, {$y2l}]);
-                            var l1_2 = board2.create('line', [p1_2, p2_2]);
-                        }
-                    ";
-                }
-
-                $this->js(<<<JS
+                $this->js(<<<'JS'
                     setTimeout(() => {
-                        if (window.MathJax) {
-                            MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
-                        }
-                        if (typeof JXG !== 'undefined') {
-                            {$jsPayload}
-                        }
+                        if (window.MathJax) MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.scrollY - 100;

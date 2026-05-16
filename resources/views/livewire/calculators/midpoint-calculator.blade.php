@@ -123,35 +123,32 @@
                                     </p>
                                    
                                 </div>
-                                <!-- Chart Container (Persistent) -->
-                                <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" wire:ignore>
+                                <!-- Chart Container (Reactive) -->
+                                <div class="w-full md:w-[80%] lg:w-[80%] mt-4 mx-auto" 
+                                     wire:key="graph-{{ $renderCount }}" 
+                                     x-data='{
+                                         chartData: {!! $detail["chartData"] !!},
+                                         initGraph() {
+                                             if (typeof JXG === "undefined") {
+                                                 setTimeout(() => this.initGraph(), 200);
+                                                 return;
+                                             }
+                                             const board = JXG.JSXGraph.initBoard("box1", {
+                                                 boundingbox: this.chartData.bounds, 
+                                                 axis: true,
+                                                 showCopyright: false
+                                             });
+                                             const p1 = board.create("point", this.chartData.p1, {name: "X", size: 4});
+                                             const p2 = board.create("point", this.chartData.p2, {name: "Y", size: 4});
+                                             const p3 = board.create("point", this.chartData.mid, {name: "Midpoint", size: 4, color: "green"});
+                                             board.create("line", [p1, p2]);
+                                         }
+                                     }' 
+                                     x-init="initGraph()"
+                                     @chartUpdated.window="chartData = $event.detail; initGraph()"
+                                     wire:ignore>
                                     <div id="box1" class="jxgbox w-full rounded-lg" style="height: 350px; background-color: #f7f7f7; border: 1px solid #ddd;"></div>
                                 </div>
-                                
-                                <!-- Initial Page Load Rendering -->
-                                @php
-                                    $x2=(($detail['x2_used']<0)?$detail['x2_used']-10:"-".$detail['x2_used']+10);
-                                    $x1=(($detail['x1_used']<0)?($detail['x1_used']-10)*(-1):$detail['x1_used']+10);
-                                    $y2=(($detail['y2_used']<0)?$detail['y2_used']-10:"-".$detail['y2_used']+10);
-                                    $y1=(($detail['y1_used']<0)?($detail['y1_used']-10)*(-1):$detail['y1_used']+10);
-                                @endphp
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', function() {
-                                        setTimeout(function() {
-                                            if (typeof JXG !== 'undefined' && document.getElementById('box1')) {
-                                                if (JXG.JSXGraph.boards['box1']) {
-                                                    JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                                                }
-                                                document.getElementById('box1').innerHTML = '';
-                                                var board = JXG.JSXGraph.initBoard('box1', {boundingbox: [{{$x2}}, {{$y1}}, {{$x1}}, {{$y2}}], axis:true});
-                                                var p1 = board.create('point', [{{$detail['x1_used']}}, {{$detail['y1_used']}}], {name:'X',size:4});
-                                                var p2 = board.create('point', [{{$detail['x2_used']}}, {{$detail['y2_used']}}], {name:'Y',size:4});
-                                                var p3 = board.create('point', [{{$detail['x']}}, {{$detail['y']}}], {name:'Midpoint',size:4});
-                                                board.create('line', [p1, p2]);
-                                            }
-                                        }, 300);
-                                    });
-                                </script>
                             </div>
                         </div>
                     </div>

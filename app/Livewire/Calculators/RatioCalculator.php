@@ -153,7 +153,7 @@ class RatioCalculator extends Component
                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
-                $this->dispatch('chart-updated', $chartData);
+                $this->dispatch('chartUpdated', $chartData);
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         if (typeof renderMathInElement === 'function') {

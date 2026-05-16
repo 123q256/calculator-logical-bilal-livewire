@@ -59,6 +59,8 @@ class MidpointCalculator extends Component
         $this->error = null;
     }
 
+    public $renderCount = 0;
+
     public function calculate()
     {
         $this->validate([
@@ -79,28 +81,26 @@ class MidpointCalculator extends Component
         $result = $model->midpoint($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            $result['x1_used'] = $this->x1;
-            $result['y1_used'] = $this->y1;
-            $result['x2_used'] = $this->x2;
-            $result['y2_used'] = $this->y2;
+            $this->renderCount++;
             
-            // Critical: Use a numeric array to avoid double quotes in the HTML attribute.
-            // This prevents the x-data attribute from breaking and rendering as text.
-            $result['chartData'] = json_encode([
-                (float)$this->x1,
-                (float)$this->y1,
-                (float)$this->x2,
-                (float)$this->y2,
-                (float)$result['x'],
-                (float)$result['y']
-            ]);
+            // Better bounding box: focus on the points
+            $x1 = (float)$this->x1; $y1 = (float)$this->y1;
+            $x2 = (float)$this->x2; $y2 = (float)$this->y2;
+            $mx = (float)$result['x']; $my = (float)$result['y'];
 
-            // Critical: Calculate bounding box values in PHP to match legacy logic exactly
-            $x2_bound = (($this->x2 < 0) ? $this->x2 - 10 : "-" . $this->x2 + 10);
-            $x1_bound = (($this->x1 < 0) ? ($this->x1 - 10) * (-1) : $this->x1 + 10);
-            $y2_bound = (($this->y2 < 0) ? $this->y2 - 10 : "-" . $this->y2 + 10);
-            $y1_bound = (($this->y1 < 0) ? ($this->y1 - 10) * (-1) : $this->y1 + 10);
+            $minX = min($x1, $x2, $mx); $maxX = max($x1, $x2, $mx);
+            $minY = min($y1, $y2, $my); $maxY = max($y1, $y2, $my);
+            $padX = max(abs($maxX - $minX) * 0.5, 5);
+            $padY = max(abs($maxY - $minY) * 0.5, 5);
 
+            $chartData = [
+                'bounds' => [$minX - $padX, $maxY + $padY, $maxX + $padX, $minY - $padY],
+                'p1' => [$x1, $y1],
+                'p2' => [$x2, $y2],
+                'mid' => [$mx, $my],
+            ];
+            
+            $result['chartData'] = json_encode($chartData);
             $this->detail = $result;
             $this->error = null;
 
@@ -108,33 +108,13 @@ class MidpointCalculator extends Component
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
 
-            $x2_bound = (($this->x2 < 0) ? $this->x2 - 10 : "-" . $this->x2 + 10);
-            $x1_bound = (($this->x1 < 0) ? ($this->x1 - 10) * (-1) : $this->x1 + 10);
-            $y2_bound = (($this->y2 < 0) ? $this->y2 - 10 : "-" . $this->y2 + 10);
-            $y1_bound = (($this->y1 < 0) ? ($this->y1 - 10) * (-1) : $this->y1 + 10);
-
-            $this->js(<<<JS
-                setTimeout(() => {
-                    if (typeof JXG !== 'undefined' && document.getElementById('box1')) {
-                        if (JXG.JSXGraph.boards['box1']) {
-                            JXG.JSXGraph.freeBoard(JXG.JSXGraph.boards['box1']);
-                        }
-                        document.getElementById('box1').innerHTML = '';
-                        var board = JXG.JSXGraph.initBoard('box1', {boundingbox: [{$x2_bound}, {$y1_bound}, {$x1_bound}, {$y2_bound}], axis:true});
-                        var p1 = board.create('point', [{$this->x1}, {$this->y1}], {name:'X',size:4});
-                        var p2 = board.create('point', [{$this->x2}, {$this->y2}], {name:'Y',size:4});
-                        var p3 = board.create('point', [{$result['x']}, {$result['y']}], {name:'Midpoint',size:4});
-                        board.create('line', [p1, p2]);
-                    }
-                }, 200);
-            JS);
+            $this->dispatch('chartUpdated', $chartData);
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                  return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->js(<<<'JS'
                     setTimeout(() => {
-                        if (typeof MJrerender === 'function') MJrerender();
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
