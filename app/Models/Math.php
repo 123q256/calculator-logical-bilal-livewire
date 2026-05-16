@@ -4328,7 +4328,7 @@ class Math extends Model
 						$div.='0';
 					}
 					if (count($nbr)>1) {
-						$upr=$nbr[0].$nbr[1];
+						$upr=$nbr[0].(isset($nbr[1]) ? $nbr[1] : "");
 					}else{
 						$upr=$num;
 					}
@@ -6932,11 +6932,11 @@ class Math extends Model
 			$nbr=$percent/100;
 			$nbr=explode('.', $nbr);
 			$div='1';
-				$count=strlen($nbr[1]);
+				$count=isset($nbr[1]) ? strlen($nbr[1]) : 0;
 				for ($i=1; $i <= $count ; $i++) { 
 					$div.='0';
 				}
-				$upr=$nbr[0].$nbr[1];
+				$upr=$nbr[0].(isset($nbr[1]) ? $nbr[1] : "");
 				/****
 				** Reduce value
 				****/
@@ -8212,19 +8212,21 @@ class Math extends Model
 					$y1='';
 					$y2='';
 					for ($i=1; $i <= $nbr ; $i++) { 
+						$valX = $request->{'x'.$i} ?? 0;
+						$valY = $request->{'y'.$i} ?? 0;
 						if ($i!=$nbr) {
 							$x1.="x_$i + ";
 							$y1.="y_$i + ";
-							$x2.=$_POST['x'.$i]." + ";
-							$y2.=$_POST['y'.$i]." + ";
+							$x2.=$valX." + ";
+							$y2.=$valY." + ";
 						}else{
 							$x1.=" x_$i";
 							$y1.=" y_$i";
-							$x2.=" ".$_POST['x'.$i];
-							$y2.=" ".$_POST['y'.$i];
+							$x2.=" ".$valX;
+							$y2.=" ".$valY;
 						}
-						$x=$x + $_POST['x'.$i];
-						$y=$y + $_POST['y'.$i];
+						$x=$x + $valX;
+						$y=$y + $valY;
 					}
 					$x3=$x;
 					$y3=$y;
@@ -12089,7 +12091,7 @@ class Math extends Model
 				$third=round($third,$round);
 				$num=explode('.', $third);
 				$div='1';
-				$count=strlen($num[1]);
+				$count=isset($num[1]) ? strlen($num[1]) : 0;
 				for ($i=1; $i <= $count ; $i++) { 
 					$div.='0';
 				}
@@ -12146,7 +12148,7 @@ class Math extends Model
 				for ($i=1; $i <= $count ; $i++) { 
 					$div.='0';
 				}
-				$upr=$nbr[0].$nbr[1];
+				$upr=$nbr[0].(isset($nbr[1]) ? $nbr[1] : "");
 				/****
 				** Reduce value
 				****/
@@ -29104,6 +29106,7 @@ class Math extends Model
 
 	// Million Billion Lakh & Crore Converter
 	function million($request){
+		$t1=$t2=$t3=$t4=$t5=$t6=$t7=$t8='';
 		if (isset($request->from_new)) {
 			$from_new = $request->from_new;
 		}else{
