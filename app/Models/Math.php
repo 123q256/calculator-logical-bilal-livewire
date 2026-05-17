@@ -6508,13 +6508,13 @@ class Math extends Model
 					return $this->param;
         		}
         	}
-        	if ($unit==='1') {
+        	if ($unit=='1') {
         		$deg=$angle;
         		$red=deg2rad($angle);
-        	}elseif ($unit==='2') {
+        	}elseif ($unit=='2') {
         		$deg=round(rad2deg($angle),2);
         		$red=$angle;
-        	}elseif ($unit==='3') {
+        	}elseif ($unit=='3') {
         		$deg=round(($angle*180),2);
         		$this->param['angle_'] = $angle_;
         		$red=deg2rad($angle*180);
@@ -16737,13 +16737,15 @@ class Math extends Model
 		$num1 = $request->num1;
 		$num2 = $request->num2;
 		$eq = $request->eq;
-		function printDivisors($n) {
+		$printDivisors = function($n) {
+			$divi = [];
 			for($i = 1; $i <= $n; $i++) {
 				if($n%$i == 0)
 				  $divi[]="$i ";
 			}
 			return($divi);
-		}
+		};
+
 		if ($submit === "factor") {
 			if((is_numeric($num1) || is_numeric($num2))) {
 				if(is_numeric($num1)) {
@@ -16921,7 +16923,8 @@ class Math extends Model
 						}
 						if ($c !== "0") {
 							$step1 = abs($a*$c);
-							$divisors_ans = printDivisors($step1);
+							$divisors_ans = $printDivisors($step1);
+
 							$new_array = $divisors_ans;
 							$median = 0;
 							if (count($divisors_ans) % 2 !== 0){
@@ -27750,7 +27753,6 @@ class Math extends Model
 	// 	}
   	// }
 
-	// Absolute Value Calculator
 
 	// Absolute Value Calculator
 	function absolute($request){
@@ -28392,7 +28394,6 @@ class Math extends Model
 		}
 	}
 
-	// Unit Tangent Vector Calculator
 	function rate($request){
 		$a=$request->a;
 		$b=$request->b;

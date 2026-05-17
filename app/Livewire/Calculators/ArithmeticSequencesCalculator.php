@@ -1,24 +1,20 @@
 <?php
 
 namespace App\Livewire\Calculators;
-
-use App\Models\EverydayLife;
+use App\Models\Math;
 use Livewire\Component;
 
-class TurkeySizeCalculator extends Component
+class ArithmeticSequencesCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $result_key = 1;
+    public $first = '1';
+    public $diff = '3';
+    public $nth = '20';
 
-    // Inputs
-    public $adults = 4;
-    public $children = 4;
-    public $leftovers = 'no';
-
-    public function mount($type = 'calculator', $lang = [])
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
@@ -27,25 +23,20 @@ class TurkeySizeCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->adults = $inputs->adults ?? 4;
-            $this->children = $inputs->children ?? 4;
-            $this->leftovers = $inputs->leftovers ?? 'no';
+            $this->first = $inputs['first'] ?? '1';
+            $this->diff = $inputs['diff'] ?? '3';
+            $this->nth = $inputs['nth'] ?? '20';
         }
     }
 
-    public function updated($propertyName)
+  public function resetForm()
     {
-        $this->detail = null;
-        $this->error = null;
-    }
 
-    public function resetForm()
-    {
         $this->error = null;
         $this->detail = null;
-        $this->adults = 4;
-        $this->children = 4;
-        $this->leftovers = 'no';
+        $this->first = '1';
+        $this->diff = '3';
+        $this->nth = '20';
 
         session()->forget([
             'calculator_back_inputs',
@@ -54,36 +45,40 @@ class TurkeySizeCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function calculate()
+  public function updated()
     {
-        $this->result_key++;
         $this->detail = null;
         $this->error = null;
+    }
 
-        $request = (object)[
-            'adults' => $this->adults,
-            'children' => $this->children,
-            'leftovers' => $this->leftovers,
-        ];
+    public function calculate()
+    {
+        $request = new \Illuminate\Http\Request();
+        $request->replace([
+            'first' => $this->first,
+            'diff' => $this->diff,
+            'nth' => $this->nth,
+        ]);
 
-        $model = new EverydayLife();
-        $result = $model->turkey($request);
-        // dd($result);
-          if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+        $model = new Math();
+        $result = $model->arithmetic($request);
+
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            session()->flash('calculator_back_inputs', $request->all());
             $this->error = null;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
+                $this->dispatch('math-updated');
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         const el = document.getElementById('result-section');
@@ -96,24 +91,24 @@ class TurkeySizeCalculator extends Component
             }
             return;
         }
+
         $this->error = $result['error'] ?? 'Something went wrong.';
         session()->flash('validation_error', $this->error);
+        $this->detail = null;
     }
-    
-    public function render()
+
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
-                setTimeout(() => {
-                    const el = document.getElementById('result-section');
-                    if (el) {
-                        const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
-                        window.scrollTo({ top: offset, behavior: 'smooth' });
-                    }
-                }, 100);
+                const el = document.getElementById('result-section');
+                if (el) {
+                    const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
+                    window.scrollTo({ top: offset, behavior: 'smooth' });
+                }
             JS);
         }
-        return view('livewire.calculators.turkey-size-calculator');
-
+        return view('livewire.calculators.arithmetic-sequences-calculator');
     }
 }

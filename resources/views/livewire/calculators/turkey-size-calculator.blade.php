@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="calculate">
+ <form wire:submit.prevent="calculate">
         <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 my-3">
             @if ($error)
                 <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
@@ -40,7 +40,6 @@
                 @include('inc.widget-button')
             @endif
         </div>
-    </form>
 
      @isset($detail)
             <hr>
@@ -60,7 +59,7 @@
                                     </p>
                                 </div>
                             </div>
-                            <div class="w-full md:w-[60%] lg:w-[60%] mx-auto overflow-auto mt-2 text-left">
+                            <div class="w-full  lg:w-[80%] overflow-auto mt-2 text-left">
                                 <table class="w-full text-[18px]">
                                     <tr>
                                         <td class="border-b py-2" width="60%"><strong>{{$lang[7]}}:</strong></td>
@@ -90,4 +89,6 @@
             </div>
         </div>
     @endisset
+    </form>
+
 </div>

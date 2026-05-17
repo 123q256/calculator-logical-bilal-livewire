@@ -1,22 +1,21 @@
 <?php
 
 namespace App\Livewire\Calculators;
-
-use App\Models\EverydayLife;
+use App\Models\Math;
 use Livewire\Component;
 
-class TurkeySizeCalculator extends Component
+class GradientCalculator extends Component
 {
+    public $gradient_type = 'two';
+    public $EnterEq = 'x^2+y^3';
+    public $x = '1';
+    public $y = '3';
+    public $z = '2';
+
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $result_key = 1;
-
-    // Inputs
-    public $adults = 4;
-    public $children = 4;
-    public $leftovers = 'no';
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -27,25 +26,36 @@ class TurkeySizeCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->adults = $inputs->adults ?? 4;
-            $this->children = $inputs->children ?? 4;
-            $this->leftovers = $inputs->leftovers ?? 'no';
+            $this->gradient_type = $inputs['type'] ?? $this->gradient_type;
+            $this->EnterEq = $inputs['EnterEq'] ?? $this->EnterEq;
+            $this->x = $inputs['x'] ?? $this->x;
+            $this->y = $inputs['y'] ?? $this->y;
+            $this->z = $inputs['z'] ?? $this->z;
         }
     }
 
-    public function updated($propertyName)
+    public function setDimension($dimension)
     {
+        $this->gradient_type = $dimension;
+        if ($dimension === 'three') {
+            $this->EnterEq = 'x^2+y^3+z^4';
+        } else {
+            $this->EnterEq = 'x^2+y^3';
+        }
         $this->detail = null;
         $this->error = null;
     }
 
     public function resetForm()
     {
+        $this->gradient_type = 'two';
+        $this->EnterEq = 'x^2+y^3';
+        $this->x = '1';
+        $this->y = '3';
+        $this->z = '2';
+
         $this->error = null;
         $this->detail = null;
-        $this->adults = 4;
-        $this->children = 4;
-        $this->leftovers = 'no';
 
         session()->forget([
             'calculator_back_inputs',
@@ -54,38 +64,56 @@ class TurkeySizeCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
+        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function calculate()
+    public function updated()
     {
-        $this->result_key++;
         $this->detail = null;
         $this->error = null;
+    }
 
-        $request = (object)[
-            'adults' => $this->adults,
-            'children' => $this->children,
-            'leftovers' => $this->leftovers,
+    public function calculate()
+    {
+        $inputs = [
+            'type' => $this->gradient_type,
+            'EnterEq' => $this->EnterEq,
+            'x' => $this->x,
+            'y' => $this->y,
+            'z' => $this->z,
         ];
 
-        $model = new EverydayLife();
-        $result = $model->turkey($request);
-        // dd($result);
-          if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+        // Construct request compatibility layer using Laravel request merge
+        $request = request()->merge($inputs);
+
+        $model = new Math();
+        $result = $model->gradient($request);
+
+        if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            // Apply float formatting guard to prevent corrupt component payload errors
+            foreach ($result as $key => $value) {
+                if (is_float($value)) {
+                    $result[$key] = round($value, 10);
+                }
+            }
+
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', $request);
+            session()->flash('calculator_back_inputs', $inputs);
             $this->error = null;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
+                $this->dispatch('math-updated');
                 $this->js(<<<'JS'
                     setTimeout(() => {
+                        if (typeof MJrerender === 'function') {
+                            MJrerender();
+                        }
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -96,10 +124,12 @@ class TurkeySizeCalculator extends Component
             }
             return;
         }
-        $this->error = $result['error'] ?? 'Something went wrong.';
+
+        $this->error = $result['error'] ?? 'Please check your inputs.';
         session()->flash('validation_error', $this->error);
+        $this->detail = null;
     }
-    
+
     public function render()
     {
         if (session('scroll_to_result')) {
@@ -113,7 +143,6 @@ class TurkeySizeCalculator extends Component
                 }, 100);
             JS);
         }
-        return view('livewire.calculators.turkey-size-calculator');
-
+        return view('livewire.calculators.gradient-calculator');
     }
 }
