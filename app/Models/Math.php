@@ -2217,7 +2217,7 @@ class Math extends Model
 				$c1=2*$rad;
 				$s1=$c1*$c1;
 			}elseif ($with=='2') {
-				$radius=(3*$rad/(4*$pi))**(1/3)."<br>";
+				$radius=(3*$rad/(4*$pi))**(1/3);
 				$circumference=($pi**(2/3)*(6*$rad)**(1/3));
 				$surfacearea=($pi**(1/3)*(6*$rad)**(2/3));
 				$volume=$rad;
@@ -3726,6 +3726,10 @@ class Math extends Model
 		$start = $request->start;	
 		$final = $request->final;
 		if (is_numeric($start) && is_numeric($final)) {
+			if ((float)$start === 0.0) {
+				$this->param['error'] = 'Initial Value cannot be zero.';
+				return $this->param;
+			}
 			$ans=($final-$start)/abs($start);
 			$this->param['ans1'] = round($ans,3);
 			$ans=$ans*100;
@@ -9136,63 +9140,20 @@ class Math extends Model
 		}
 	}
 
-	// Distributive Property Calculator
-	// function distributive($request){
-	//     $EnterEq = $request->EnterEq;
-	// 	if (isset($EnterEq)) {
-	// 		$format = '{
-	// 			"steps": [
-	// 				"<p>23.43 * 21.3 / log(32) * 10 ^ (21)</p>",
-	// 				"<p>499.059 / log(32) * 10 ^ (21)</p>",
-	// 				"<p>499.059 / 1.505149978319906 * 10 ^ (21)</p>",
-	// 				"<p>331.5676226212784 * 10 ^ (21)</p>",
-	// 				"<p>331.5676226212784 * 10 ^ 21</p>",
-	// 				"<p>331.5676226212784 * 1000000000000000000000</p>",
-	// 				// continue for more steps
-	// 			],
-	// 			"final_answer": "Final Answer"
-	// 		}';
-	// 		$prompt = "calculate distributive property of this equation ($EnterEq) and give step by step solution and final answer remeber that steps and final answer accurate then Generate a JSON object. Each step only calculation should be in an <p> tag.If equation is invalid then return only error not steps.
-	// 		The JSON format should be like that. Just like that:
-	// 		".$format;
-	// 		$client = new Client();
-	// 		$response = $client->post('https://api.openai.com/v1/chat/completions', [
-	// 			'headers' => [
-	// 				'Authorization' => 'Bearer ' . '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',
-	// 				'Content-Type' => 'application/json'
-	// 			],
-	// 			'json' => [
-	// 				"model" => "gpt-4o-mini",
-	// 				"response_format" => [
-	// 					"type" => "json_object"
-	// 				],
-	// 				"max_tokens" => 16000,
-	// 				"messages" => [
-	// 					[
-	// 						"role" => "user",
-	// 						"content" => $prompt
-	// 					]
-	// 				]
-	// 			]
-	// 		]);
-	// 		$data = json_decode($response->getBody()->getContents(), true);
-	// 		$dataArray = $data['choices'][0]['message']['content'];
-	// 		$dataArray = json_decode($dataArray, true);
-	// 		$this->param['dataArray'] = $dataArray;
-	// 		return $this->param;
-	// 	} else {
-	// 		$this->param['error'] = 'Please! Check Your Input.';
-	// 		return $this->param;
-	// 	}
-	// }
-
 	public function distributive($request){
-		if(isset($_POST['submit'])){
-	      $EnterEq=trim($_POST['EnterEq']);
-	    }elseif(isset($_GET['res_link'])){
-	      $this->form_validation->set_data($_GET);
-	      $EnterEq=trim($_GET['EnterEq']);
-	    }
+		$EnterEq = null;
+		if (is_object($request)) {
+			$EnterEq = $request->EnterEq ?? null;
+		} elseif (is_array($request)) {
+			$EnterEq = $request['EnterEq'] ?? null;
+		}
+		if (empty($EnterEq)) {
+			if (isset($_POST['EnterEq'])) {
+				$EnterEq = trim($_POST['EnterEq']);
+			} elseif (isset($_GET['EnterEq'])) {
+				$EnterEq = trim($_GET['EnterEq']);
+			}
+		}
 
 		if(!empty($EnterEq)){
 
@@ -9231,8 +9192,7 @@ class Math extends Model
 					return $this->param;
                 }
             }
-            catch(Exception $r) {
-            	// echo $r->getMessage();die;
+            catch(\Throwable $r) {
             	$this->param['error'] = 'Please! Check Your Input.';
 				return $this->param;
             }
@@ -12437,11 +12397,23 @@ class Math extends Model
 		}
 		
 	}
-
 	// Polynomial Long Division Calculator
 	function polynomial($request){
-		$dividend = trim($_POST['dividend']);
-		$divisor = trim($_POST['divisor']);
+		$dividend = null;
+		$divisor = null;
+		if (is_object($request)) {
+			$dividend = $request->dividend ?? null;
+			$divisor = $request->divisor ?? null;
+		} elseif (is_array($request)) {
+			$dividend = $request['dividend'] ?? null;
+			$divisor = $request['divisor'] ?? null;
+		}
+		if (empty($dividend)) {
+			$dividend = isset($_POST['dividend']) ? trim($_POST['dividend']) : (isset($_GET['dividend']) ? trim($_GET['dividend']) : null);
+		}
+		if (empty($divisor)) {
+			$divisor = isset($_POST['divisor']) ? trim($_POST['divisor']) : (isset($_GET['divisor']) ? trim($_GET['divisor']) : null);
+		}
 		$validator = Validator::make($request->all(), [
 			'dividend' => 'required|regex:/^[^<>&]*$/i',
 			'divisor' => 'required|regex:/^[^<>&]*$/i',
@@ -25808,7 +25780,7 @@ class Math extends Model
 					]);
 					$buffer = $response->body();
 					$buffer = explode("@@@", $buffer);
-					$lcm = $buffer[2];
+					$lcm = $buffer[2] ?? '';
 					$lcm = explode('}{', $lcm);
 					$action = str_replace('plus', '+', $action);
 					$action = str_replace('div', '÷', $action);
@@ -25816,17 +25788,17 @@ class Math extends Model
 						$lcm = substr_replace($lcm[1], "", -1);
 						$this->param['lcm'] = $lcm;
 					}
-					$this->param['up'] = $buffer[0];
-					$this->param['down'] = $buffer[1];
-					$this->param['ans'] = $buffer[2];
+					$this->param['up'] = $buffer[0] ?? '';
+					$this->param['down'] = $buffer[1] ?? '';
+					$this->param['ans'] = $buffer[2] ?? '';
 					if ($action == '+' || $action == '-') {
-						$this->param['left'] = $buffer[3];
-						$this->param['right'] = $buffer[4];
-						$this->param['top'] = $buffer[5];
-						$this->param['bottom'] = $buffer[6];
+						$this->param['left'] = $buffer[3] ?? '';
+						$this->param['right'] = $buffer[4] ?? '';
+						$this->param['top'] = $buffer[5] ?? '';
+						$this->param['bottom'] = $buffer[6] ?? ($this->param['lcm'] ?? '');
 					} else {
-						$this->param['top'] = $buffer[3];
-						$this->param['bottom'] = $buffer[4];
+						$this->param['top'] = $buffer[3] ?? '';
+						$this->param['bottom'] = $buffer[4] ?? '';
 					}
 					$this->param['action'] = $action;
 					$this->param['RESULT'] = 1;
@@ -25964,47 +25936,48 @@ class Math extends Model
 					]);
 					$buffer = $response->body();
 					$buffer = explode("@@@", $buffer);
-					$lcm = $buffer[1];
+					$lcm = $buffer[1] ?? '';
 					$lcm = explode('}{', $lcm);
 					if (count($lcm) > 1) {
 						$lcm = substr_replace($lcm[1], "", -1);
 						$this->param['lcm'] = $lcm;
 					}
-					$this->param['ans'] = $buffer[1];
-					$this->param['up'] = $buffer[2];
-					$this->param['down'] = $buffer[3];
-					$this->param['thr'] = $buffer[4];
+					$this->param['ans'] = $buffer[1] ?? '';
+					$this->param['up'] = $buffer[2] ?? '';
+					$this->param['down'] = $buffer[3] ?? '';
+					$this->param['thr'] = $buffer[4] ?? '';
 					$action = str_replace('plus', '+', $action1);
 					$action = str_replace('div', '÷', $action);
 					$action1 = str_replace('plus', '+', $action2);
 					$action1 = str_replace('div', '÷', $action1);
 					if (($action == '+' || $action == '-') && ($action1 == '+' || $action1 == '-')) {
-						$this->param['left'] = $buffer[5];
-						$this->param['center'] = $buffer[6];
-						$this->param['right'] = $buffer[7];
-						$this->param['top'] = $buffer[8];
+						$this->param['left'] = $buffer[5] ?? '';
+						$this->param['center'] = $buffer[6] ?? '';
+						$this->param['right'] = $buffer[7] ?? '';
+						$this->param['top'] = $buffer[8] ?? '';
 					} elseif (($action == '*' || $action == '÷') && ($action1 == '*' || $action1 == '÷')) {
-						$this->param['up1'] = $buffer[5];
-						$this->param['up2'] = $buffer[6];
-						$this->param['down1'] = $buffer[7];
-						$this->param['down2'] = $buffer[8];
+						$this->param['up1'] = $buffer[5] ?? '';
+						$this->param['up2'] = $buffer[6] ?? '';
+						$this->param['down1'] = $buffer[7] ?? '';
+						$this->param['down2'] = $buffer[8] ?? '';
 						$this->param['action1'] = $action1;
 					} else {
-						$this->param['up1'] = $buffer[5];
-						$this->param['ansl'] = $buffer[6];
-						$lcm1 = $buffer[6];
+						$this->param['up1'] = $buffer[5] ?? '';
+						$this->param['ansl'] = $buffer[6] ?? '';
+						$lcm1 = $buffer[6] ?? '';
 						$lcm1 = explode('}{', $lcm1);
 						if (count($lcm1) > 1) {
 							$lcm1 = substr_replace($lcm1[1], "", -1);
 							$this->param['lcm1'] = $lcm1;
 						}
-						$this->param['down1'] = $buffer[7];
-						$this->param['top'] = $buffer[8];
-						$this->param['left'] = $buffer[9];
-						$this->param['right'] = $buffer[10];
+						$this->param['down1'] = $buffer[7] ?? '';
+						$this->param['top'] = $buffer[8] ?? '';
+						$this->param['left'] = $buffer[9] ?? '';
+						$this->param['right'] = $buffer[10] ?? '';
 						$this->param['action1'] = $action1;
 					}
 					$this->param['action'] = $action;
+					$this->param['action1'] = $action1;
 					$this->param['RESULT'] = 1;
 					return $this->param;
 				} catch (\Exception $response) {
@@ -27638,10 +27611,10 @@ class Math extends Model
     			$this->param['enter'] = $buffer[0];
     			$this->param['ans'] = $buffer[1];
     			$this->param['equs'] = $buffer[2];
-				// $queryParams = $request->all();
-				// $baseUrl = url()->current();
-				// $queryString = http_build_query($queryParams);
-				// $shareURL = $baseUrl . '/?' . $queryString;
+				$queryParams = $request->all();
+				$baseUrl = url()->current();
+				$queryString = http_build_query($queryParams);
+				$shareURL = $baseUrl . '/?' . $queryString;
     			$this->param['shareURL'] = $shareURL;
 				$this->param['RESULT'] = 1;
 				return $this->param;
