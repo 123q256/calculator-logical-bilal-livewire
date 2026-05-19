@@ -44,6 +44,19 @@
  </div>
 
     @isset($detail)
+    @php
+        if (!function_exists('safe_round')) {
+            function safe_round($val, $precision = 5) {
+                if ($val === 'NAN' || $val === 'NaN' || (is_numeric($val) && is_nan((float)$val))) {
+                    return 'NAN';
+                }
+                if ($val === 'INF' || $val === 'INF' || $val === 'infinity' || $val === 'Infinity' || (is_numeric($val) && is_infinite((float)$val))) {
+                    return 'INF';
+                }
+                return is_numeric($val) ? round((float)$val, $precision) : $val;
+            }
+        }
+    @endphp
     <hr>
     <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg  space-y-6 result">
         <div class="">
@@ -57,30 +70,30 @@
                                 <table class="w-full text-[18px]">
                                     <tr>
                                         <td class="py-2 border-b" width="60%"><strong>{{ $lang['end'] }}</strong></td>
-                                        <td class="py-2 border-b">( x₂ , y₂ ) = ({{$detail['x2']}} , {{$detail['y2']}})</td>
+                                        <td class="py-2 border-b">( x₂ , y₂ ) = ({{safe_round($detail['x2'])}} , {{safe_round($detail['y2'])}})</td>
                                     </tr>
                                     <tr>
                                         <td class="py-2 border-b" width="60%"><strong>{{ $lang['dis'] }}</strong></td>
-                                        <td class="py-2 border-b">{{$detail['dis']}}</td>
+                                        <td class="py-2 border-b">{{safe_round($detail['dis'])}}</td>
                                     </tr>
                                 </table>
                             </div>
                             <div class="w-full">
                                 <p class="mt-2"><strong>{{$lang['exp']}}</strong></p>
                                 <p class="mt-2">You entered the following points:</p>
-                                <p class="mt-2">(x₁ , y₁) = ({{$x1}} , {{$y1}})</p>
-                                <p class="mt-2">(x , y) = ({{$x}} , {{$y}})</p>
+                                <p class="mt-2">(x₁ , y₁) = ({{safe_round($x1)}} , {{safe_round($y1)}})</p>
+                                <p class="mt-2">(x , y) = ({{safe_round($x)}} , {{safe_round($y)}})</p>
                                 <p class="mt-2">
                                     (x₂ , y₂) = (2 × x - x₁, 2 × y - y₁)
                                 </p>
                                 <p class="mt-2">
-                                    (x₂ , y₂) = (2 × {{$x}} - {{$x1}}, 2 × {{$y}} - {{$y1}})
+                                    (x₂ , y₂) = (2 × {{safe_round($x)}} - {{safe_round($x1)}}, 2 × {{safe_round($y)}} - {{safe_round($y1)}})
                                 </p>
                                 <p class="mt-2">
-                                    (x₂ , y₂) = ({{2 * $x - $x1}} , {{2 * $y - $y1}})
+                                    (x₂ , y₂) = ({{safe_round(2 * $x - $x1)}} , {{safe_round(2 * $y - $y1)}})
                                 </p>
                                 <p class="mt-2">
-                                    (x₂ , y₂) = ({{$detail['x2']}} , {{$detail['y2']}})
+                                    (x₂ , y₂) = ({{safe_round($detail['x2'])}} , {{safe_round($detail['y2'])}})
                                 </p>
                                 <p class="mt-2">Distance Equation Solution:</p>
                                 <p class="mt-2">
@@ -92,29 +105,29 @@
                                 <p class="mt-2">
                                     d = 
                                     <span class="quadratic_math-eq-token">
-                                        <span class="quadratic_square-root">({{$detail['x2']}} - {{$x1}})² + ({{$detail['y2']}} - {{$y1}})²</span>
+                                        <span class="quadratic_square-root">({{safe_round($detail['x2'])}} - {{safe_round($x1)}})² + ({{safe_round($detail['y2'])}} - {{safe_round($y1)}})²</span>
                                     </span>
                                 </p>
                                 <p class="mt-2">
                                     d = 
                                     <span class="quadratic_math-eq-token">
-                                        <span class="quadratic_square-root">({{$detail['x2'] - $x1}})² + ({{$detail['y2'] - $y1}})²</span>
+                                        <span class="quadratic_square-root">({{safe_round($detail['x2'] - $x1)}})² + ({{safe_round($detail['y2'] - $y1)}})²</span>
                                     </span>
                                 </p>
                                 <p class="mt-2">
                                     d = 
                                     <span class="quadratic_math-eq-token">
-                                        <span class="quadratic_square-root">({{pow(($detail['x2']-$x1),2)}}) + ({{pow(($detail['y2']-$y1),2)}})</span>
+                                        <span class="quadratic_square-root">({{safe_round(pow(($detail['x2']-$x1),2))}}) + ({{safe_round(pow(($detail['y2']-$y1),2))}})</span>
                                     </span>
                                 </p>
                                 <p class="mt-2">
                                     d = 
                                     <span class="quadratic_math-eq-token">
-                                        <span class="quadratic_square-root">{{pow(($detail['x2']-$x1),2) + pow(($detail['y2']-$y1),2)}}</span>
+                                        <span class="quadratic_square-root">{{safe_round(pow(($detail['x2']-$x1),2) + pow(($detail['y2']-$y1),2))}}</span>
                                     </span>
                                 </p>
                                 <p class="mt-2">
-                                    d = {{$detail['dis']}}
+                                    d = {{safe_round($detail['dis'])}}
                                 </p>
                             </div>
                         </div>

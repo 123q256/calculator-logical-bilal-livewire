@@ -8524,7 +8524,7 @@ class Math extends Model
 					return $this->param;
 				}
 			}
-			if (!empty($final_ans)) {
+			if ($final_ans !== '' && $final_ans !== null) {
 				$this->param['final_ans'] = $final_ans;
 			}
 			if (!empty($exp)) {
@@ -19553,12 +19553,12 @@ class Math extends Model
 
 	// POLYGON CALCULATOR
 	public function polygon($request){
-		$num1=$request->input('operations');
-		$num2=$request->input('npolygon');
-		$num3=$request->input('calculation');
-		$Label=$request->input('labl');
-		$pie=$request->input('pie');
-		$unit=$request->input('units');
+		$num1=$request->operations;
+		$num2=$request->npolygon;
+		$num3=$request->calculation;
+		$Label=$request->labl;
+		$pie=$request->pie;
+		$unit=$request->units;
 
 			if (is_numeric($Label) && is_numeric($pie)) {
 				$nvalue=$num1;

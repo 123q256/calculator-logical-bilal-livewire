@@ -1,21 +1,19 @@
 <?php
 
 namespace App\Livewire\Calculators;
-
 use App\Models\Math;
 use Livewire\Component;
 
-class PercentageDecreaseCalculator extends Component
+class VariationCalculator extends Component
 {
-    // Public Input Properties
-    public $start = '21';
-    public $final = '25';
-
-    // Component State
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
+
+    public $select = '1';
+    public $y = '31';
+    public $x = '3';
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -26,19 +24,17 @@ class PercentageDecreaseCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            $this->start = $inputs['start'] ?? '21';
-            $this->final = $inputs['final'] ?? '25';
+            $this->select = $inputs['select'] ?? '1';
+            $this->y = $inputs['y'] ?? '31';
+            $this->x = $inputs['x'] ?? '3';
         }
     }
 
     public function resetForm()
     {
-        $this->resetErrorBag();
-        $this->resetValidation();
-
-        $this->start = '21';
-        $this->final = '25';
-
+        $this->select = '1';
+        $this->y = '31';
+        $this->x = '3';
         $this->error = null;
         $this->detail = null;
 
@@ -54,7 +50,7 @@ class PercentageDecreaseCalculator extends Component
         }
     }
 
-    public function updated($propertyName)
+    public function updated()
     {
         $this->detail = null;
         $this->error = null;
@@ -63,30 +59,36 @@ class PercentageDecreaseCalculator extends Component
     public function calculate()
     {
         $request = (object)[
-            'start' => $this->start,
-            'final' => $this->final,
+            'x' => $this->x,
+            'y' => $this->y,
+            'select' => $this->select,
         ];
 
-        if ((float)$this->start === 0.0) {
-            $this->error = 'Initial Value cannot be zero.';
-            $this->detail = null;
-            return;
+        $model = new Math();
+        $result = $model->variation($request);
+
+        if (is_array($result)) {
+            foreach ($result as $key => $val) {
+                if (is_float($val)) {
+                    if (is_nan($val)) {
+                        $result[$key] = 'NAN';
+                    } elseif (is_infinite($val)) {
+                        $result[$key] = 'INF';
+                    }
+                }
+            }
         }
 
-        $model = new Math();
-        $result = $model->per_dec($request);
-
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
-            $this->detail = $result;
-            $this->error = null;
-
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
+            $this->error = null;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 return redirect()->to(url()->previous() ?? '/');
             } else {
+                $this->detail = $result;
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         if (typeof MJrerender === 'function') MJrerender();
@@ -101,7 +103,7 @@ class PercentageDecreaseCalculator extends Component
             return;
         }
 
-        $this->error = $result['error'] ?? 'Please! Check Your Input.';
+        $this->error = $result['error'] ?? 'Something went wrong.';
         session()->flash('validation_error', $this->error);
         $this->detail = null;
     }
@@ -117,6 +119,6 @@ class PercentageDecreaseCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.percentage-decrease-calculator');
+        return view('livewire.calculators.variation-calculator');
     }
 }

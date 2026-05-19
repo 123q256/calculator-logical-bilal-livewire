@@ -5,7 +5,7 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class PercentageDecreaseCalculator extends Component
+class PercentageDifferenceCalculator extends Component
 {
     // Public Input Properties
     public $start = '21';
@@ -67,14 +67,15 @@ class PercentageDecreaseCalculator extends Component
             'final' => $this->final,
         ];
 
-        if ((float)$this->start === 0.0) {
-            $this->error = 'Initial Value cannot be zero.';
+        // per_dif divides by ($start + $final) / 2 — guard against zero denominator
+        if (is_numeric($this->start) && is_numeric($this->final) && ((float)$this->start + (float)$this->final) === 0.0) {
+            $this->error = 'Sum of both values cannot be zero.';
             $this->detail = null;
             return;
         }
 
         $model = new Math();
-        $result = $model->per_dec($request);
+        $result = $model->per_dif($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             $this->detail = $result;
@@ -117,6 +118,6 @@ class PercentageDecreaseCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.percentage-decrease-calculator');
+        return view('livewire.calculators.percentage-difference-calculator');
     }
 }
