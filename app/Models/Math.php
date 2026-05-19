@@ -1533,6 +1533,14 @@ class Math extends Model
 		$sin2x= $request->sin2x;
 		$cos2x= $request->cos2x;
 		$tan2x= $request->tan2x;
+
+		$safe_div = function($num, $den) {
+			if (abs((float)$den) < 1e-15) {
+				return INF;
+			}
+			return $num / $den;
+		};
+
   		if ($know==1) {
   			if (is_numeric($angle)) {
 	  			if ($angle_unit=='rad') {
@@ -1547,13 +1555,13 @@ class Math extends Model
 	  			}
 	  			$sin2=(1-cos(2*deg2rad($angle)))/2;
 	  			$cos2=(1+cos(2*deg2rad($angle)))/2;
-	  			$tan2=(1-cos(2*deg2rad($angle)))/(1+cos(2*deg2rad($angle)));
+	  			$tan2=$safe_div(1-cos(2*deg2rad($angle)), 1+cos(2*deg2rad($angle)));
 	  			$sin3=(3*sin(deg2rad($angle)) - sin(3*deg2rad($angle)))/4;
 	  			$cos3=(1/4)*cos(3*deg2rad($angle)) + (3/4)* cos(deg2rad($angle));
-	  			$tan3=$sin3/$cos3;
+	  			$tan3=$safe_div($sin3, $cos3);
 	  			$sin4=(3 - (4*cos(2*deg2rad($angle))) + cos(4*deg2rad($angle)))/8;
 	  			$cos4=(3 + (4*cos(2*deg2rad($angle))) + cos(4*deg2rad($angle)))/8;
-	  			$tan4=$sin4/$cos4;
+	  			$tan4=$safe_div($sin4, $cos4);
 	  			$this->param['sin'] = $sin;
 	  			$this->param['cos'] = $cos;
 	  			$this->param['tan'] = $tan;
@@ -1600,13 +1608,13 @@ class Math extends Model
   			}
   			$sin2=(1-cos(2*deg2rad($angle)))/2;
   			$cos2=(1+cos(2*deg2rad($angle)))/2;
-  			$tan2=(1-cos(2*deg2rad($angle)))/(1+cos(2*deg2rad($angle)));
+  			$tan2=$safe_div(1-cos(2*deg2rad($angle)), 1+cos(2*deg2rad($angle)));
   			$sin3=(3*sin(deg2rad($angle)) - sin(3*deg2rad($angle)))/4;
   			$cos3=(1/4)*cos(3*deg2rad($angle)) + (3/4)* cos(deg2rad($angle));
-  			$tan3=$sin3/$cos3;
+  			$tan3=$safe_div($sin3, $cos3);
   			$sin4=(3 - (4*cos(2*deg2rad($angle))) + cos(4*deg2rad($angle)))/8;
   			$cos4=(3 + (4*cos(2*deg2rad($angle))) + cos(4*deg2rad($angle)))/8;
-  			$tan4=$sin4/$cos4;
+  			$tan4=$safe_div($sin4, $cos4);
   			$this->param['sin'] = $sin;
   			$this->param['cos'] = $cos;
   			$this->param['tan'] = $tan;
@@ -37733,7 +37741,7 @@ class Math extends Model
 			}
 		}
 	}
-
+		// Gematria Calculator
 	public function gematria($request)
 	{
 		error_reporting(0);

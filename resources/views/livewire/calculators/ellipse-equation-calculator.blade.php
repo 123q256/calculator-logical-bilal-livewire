@@ -10,7 +10,7 @@ img{
         <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
        @endif
        <div class="lg:w-[60%] md:w-[60%] w-full mx-auto ">
-            <div class="grid grid-cols-1  lg:grid-cols-2 md:grid-cols-2 mt-3   gap-2 md:gap-4 lg:gap-4">
+            <div class="grid grid-cols-12 mt-3   gap-2 md:gap-4 lg:gap-4">
 
             <div class="col-span-12">
                 <label for="selection" class="label">{{$lang['1']}}:</label>
@@ -21,7 +21,7 @@ img{
                     </select>
                 </div>
             </div>
-            <div class="col-span-12 text-[18px] text-center">
+            <div class="col-span-12 text-[18px] text-center" wire:key="equation-{{ $selection }}" wire:ignore>
                 @if($selection === '1')
                     <p class="equation">\( Ax^2+Bx^2=C \)</p>
                 @else
@@ -399,6 +399,16 @@ img{
             }
         }
         
+        document.addEventListener('livewire:initialized', () => {
+            if (typeof MJrerender === 'function') MJrerender();
+            
+            Livewire.hook('morph.updated', (el, component) => {
+                setTimeout(() => {
+                    if (typeof MJrerender === 'function') MJrerender();
+                }, 50);
+            });
+        });
+
         document.addEventListener('livewire:navigated', function () {
             if (typeof MJrerender === 'function') MJrerender();
             @if(isset($detail) && isset($detail['calculation1']) && isset($detail['calculation2']))
