@@ -8376,6 +8376,14 @@ class Math extends Model
 	      	} 
 	  	}
   		if (is_numeric($a) && is_numeric($b)) {
+			if (intval($a) != $a || intval($b) != $b) {
+				$this->param['error'] = 'Inputs a and m must be integers.';
+				return $this->param;
+			}
+			if ($b <= 0) {
+				$this->param['error'] = 'Modulo m must be greater than zero.';
+				return $this->param;
+			}
   			$m=$b;
   			if ($opr==1) {
   				$res = xgcd($a,$m)[1];
@@ -8424,15 +8432,37 @@ class Math extends Model
   				$ansText = 'a x b = ?';
   				$ans = $a.' x '.$b.' = '.($a*$b);
   			}elseif($opr==4) {
+				if ($b == 0) {
+					$this->param['error'] = 'Division by zero is not allowed.';
+					return $this->param;
+				}
   				$ansText = 'a ÷ b = ?';
   				$ans = $a.' ÷ '.$b.' = '.(round($a/$b,5));
   			}elseif($opr==5) {
   				$ansText = 'a<sup class="font-s-14">b</sup> = ?';
   				$ans = $a.'<sup class="font-s-14">'.$b.'</sup> = '.(pow($a,$b));
   			}elseif($opr==6) {
+				if ($b == 0) {
+					$this->param['error'] = 'Root index cannot be zero.';
+					return $this->param;
+				}
+				if ($a < 0) {
+					if (intval($b) != $b || intval($b) % 2 == 0) {
+						$this->param['error'] = 'For negative values of a, the root index b must be an odd integer.';
+						return $this->param;
+					}
+				}
   				$ansText = '<sup class="font-s-14">b</sup>√a  = ?';
   				$ans = '<sup class="font-s-14">'.$b.'</sup>√'.$a.'  = '.(round(pow($a,1/$b),5));
   			}elseif($opr==7) {
+				if ($a <= 0 || $a == 1) {
+					$this->param['error'] = 'Logarithm base (a) must be positive and not equal to 1.';
+					return $this->param;
+				}
+				if ($b <= 0) {
+					$this->param['error'] = 'Logarithm argument (b) must be positive.';
+					return $this->param;
+				}
   				$ansText = 'log<sub class="font-s-14">a</sub>b  = ?';
   				$ans = 'log<sub class="font-s-14">'.$a.'</sub>'.$b.'  = '.(round(log($b,$a),5));
   			}
@@ -8738,8 +8768,8 @@ class Math extends Model
 				return $this->param;
 			}
   		}else{
-  			$this->session->set_flashdata('combine','Please Check Your Input');
-			  return $this->param;	
+			$this->param['error'] = 'Please Check Your Input';
+			return $this->param;
   		}
 	}
 
@@ -14889,6 +14919,10 @@ class Math extends Model
 		$check=true;
 		if ($is_frac==1) {
 			if (is_numeric($dec)) {
+				if ($dec == 0) {
+					$this->param['error'] = 'The multiplicative inverse of 0 is undefined.';
+					return $this->param;
+				}
 				$upr=$dec;
 				$btm=1;
 			}else{
@@ -14896,6 +14930,14 @@ class Math extends Model
 			}
 		}elseif($is_frac==2){
 			if (is_numeric($n1) && is_numeric($d1)) {
+				if ($d1 == 0) {
+					$this->param['error'] = 'Denominator cannot be zero.';
+					return $this->param;
+				}
+				if ($n1 == 0) {
+					$this->param['error'] = 'The multiplicative inverse of 0 is undefined (numerator cannot be zero).';
+					return $this->param;
+				}
 				$upr=$n1;
 				$btm=$d1;
 			}else{
@@ -14903,6 +14945,10 @@ class Math extends Model
 			}
 		}else{
 			if (is_numeric($n1) && is_numeric($d1) && is_numeric($s1)) {
+				if ($d1 == 0) {
+					$this->param['error'] = 'Denominator cannot be zero.';
+					return $this->param;
+				}
 				if ($n1<0) {
 					$this->param['error'] = 'Numerator and denominator must be positive.';
 					return $this->param;
@@ -14911,6 +14957,10 @@ class Math extends Model
 					$upr=($d1*$s1)-$n1;
 				}else{
 					$upr=($d1*$s1)+$n1;
+				}
+				if ($upr == 0) {
+					$this->param['error'] = 'The multiplicative inverse of 0 is undefined.';
+					return $this->param;
 				}
 				$btm=$d1;
 			}else{
@@ -28366,7 +28416,7 @@ class Math extends Model
 			return $this->param;
 		}
 	}
-
+	// Unit Rate Calculator
 	function rate($request){
 		$a=$request->a;
 		$b=$request->b;
@@ -28395,7 +28445,7 @@ class Math extends Model
 			$this->param['error'] = 'Please! Check Your Input.';
 			return $this->param;
 		}
-  		if (!empty($ans)) {
+  		if (isset($ans) && $ans !== '') {
 			$this->param['ans'] = $ans;
 			$this->param['ans2'] = $ans2;
 			$this->param['ans3'] = $ans3;
@@ -28833,6 +28883,10 @@ class Math extends Model
 		$y3= $request->y3;
         if ($type=='2') {
             if (is_numeric($x1) && is_numeric($x2) && is_numeric($y1) && is_numeric($y2)) {
+                if ($x2 == $x1) {
+                    $this->param['error'] = 'X2 and X1 cannot be equal (slope is vertical/undefined).';
+                    return $this->param;
+                }
                 $x=$x2 - $x1;
                 $y=$y2 - $y1;
                 $slope=round($y / $x,4);
@@ -28847,6 +28901,11 @@ class Math extends Model
                 $this->param['slope'] = $slope;
                 $this->param['angle'] = $angle." deg";
                 $this->param['distance'] = $distance;
+                if ($slope != 0) {
+                    $this->param['x_intercept'] = round((-1)*$b/$slope,2);
+                } else {
+                    $this->param['x_intercept'] = 'None (horizontal line)';
+                }
             } else {
 				$this->param['error'] = 'Please Check Your Input.';
 				return $this->param;
@@ -28861,6 +28920,11 @@ class Math extends Model
                 $this->param['b'] = $b;
                 $this->param['slope'] = $slope;
                 $this->param['angle'] = $angle." deg";
+                if ($slope != 0) {
+                    $this->param['x_intercept'] = round((-1)*$b/$slope,2);
+                } else {
+                    $this->param['x_intercept'] = 'None (horizontal line)';
+                }
             }else{
 				$this->param['error'] = 'Please Check Your Input.';
 				return $this->param;
@@ -28875,6 +28939,11 @@ class Math extends Model
                 $this->param['b'] = $b;
                 $this->param['slope'] = $slope;
                 $this->param['angle'] = $angle." deg";
+                if ($slope != 0) {
+                    $this->param['x_intercept'] = round((-1)*$b/$slope,2);
+                } else {
+                    $this->param['x_intercept'] = 'None (horizontal line)';
+                }
             }else{
 				$this->param['error'] = 'Please Check Your Input.';
 				return $this->param;
@@ -29961,7 +30030,7 @@ class Math extends Model
 		return $this->param;
 	}
 
-	// equivalent fraction calculator
+	// Equivalent Fractions Calculator
 	public function equivalent($request){
 
 		$want_to=trim($request->input('want_to'));
