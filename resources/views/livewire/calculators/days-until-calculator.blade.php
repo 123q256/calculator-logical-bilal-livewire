@@ -77,7 +77,6 @@
         }
     </style>
     @php
-        $request = request();
         $nextYear = date('Y-m-d', strtotime('+1 month'));
         $selectedDays = request()->has('weekDay') ? request()->input('weekDay') : [''];
     @endphp
@@ -116,7 +115,6 @@
                                 <option value="Easter (Easter Sunday)">Easter (Easter Sunday)</option>
                             </select>
                         </div>
-                        {{-- @dd($request->startEvent) --}}
                     </div>
                 </div>
                 <div class="grid grid-cols-1   gap-4">

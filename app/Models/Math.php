@@ -552,6 +552,7 @@ class Math extends Model
             return $centi;
         }
         function con_cm_sq($a,$b){
+            $foot = $b; // default fallback
             if($a == "mm²"){
                 $foot = $b / 10;
             }elseif ($a == "cm²"){
@@ -6178,10 +6179,10 @@ class Math extends Model
 	
    	// Slope Percentage Calculator
 	function slope_percentage($request){
-		$rise = $_POST["rise"];
-		$run = $_POST["run"];
-		$rise_unit = $_POST["rise_unit"];
-		$run_unit = $_POST["run_unit"];
+		$rise = $request->rise;
+		$run = $request->run;
+		$rise_unit = $request->rise_unit;
+		$run_unit = $request->run_unit;
 		if (isset($rise_unit)) {
 			if ($rise_unit == 'm') {
 				$rise = $rise;
@@ -6473,16 +6474,32 @@ class Math extends Model
 		if(is_numeric($a) && is_numeric($b) && is_numeric($c) && is_numeric($d)){
 			$this->param['error'] = 'Please Enter 3 numbers & left 1 field empty!';
 			return $this->param;
-		}elseif(empty($a) && is_numeric($b) && is_numeric($c) && is_numeric($d)){
+		}elseif(!is_numeric($a) && is_numeric($b) && is_numeric($c) && is_numeric($d)){
+			if ($d == 0) {
+				$this->param['error'] = 'Division by zero is not allowed!';
+				return $this->param;
+			}
 			$a_val=($b*$c)/$d;
 			$this->param['a_val']=$a_val;
-		}elseif(is_numeric($a) && empty($b) && is_numeric($c) && is_numeric($d)){
+		}elseif(is_numeric($a) && !is_numeric($b) && is_numeric($c) && is_numeric($d)){
+			if ($c == 0) {
+				$this->param['error'] = 'Division by zero is not allowed!';
+				return $this->param;
+			}
 			$b_val=($a*$d)/$c;
 			$this->param['b_val']=$b_val;
-		}elseif(is_numeric($a) && is_numeric($b) && empty($c) && is_numeric($d)){
+		}elseif(is_numeric($a) && is_numeric($b) && !is_numeric($c) && is_numeric($d)){
+			if ($b == 0) {
+				$this->param['error'] = 'Division by zero is not allowed!';
+				return $this->param;
+			}
 			$c_val=($a*$d)/$b;
 			$this->param['c_val']=$c_val;
-		}elseif(is_numeric($a) && is_numeric($b) && is_numeric($c) && empty($d)){
+		}elseif(is_numeric($a) && is_numeric($b) && is_numeric($c) && !is_numeric($d)){
+			if ($a == 0) {
+				$this->param['error'] = 'Division by zero is not allowed!';
+				return $this->param;
+			}
 			$d_val=($b*$c)/$a;
 			$this->param['d_val']=$d_val;
 		}else{
@@ -8781,7 +8798,7 @@ class Math extends Model
   		}
 	}
 
-	// Degree And Leading Coefficient
+	// Degree and Leading Coefficient Calculator
 	function degree($request){
 		$equ= $request->equ;
 		$vari= $request->vari;
@@ -13832,7 +13849,7 @@ class Math extends Model
         }
     }
 
-	// Average Value Of Function
+	// Average Value of a Function Calculator
 	function avg_fun($request){
 		$fun= $request->fun;
 		$lb= $request->lb;
@@ -14299,10 +14316,10 @@ class Math extends Model
 		return $this->param;
 	}
 
-	// Descartes Rule Of Signs Calculator
+	// Descartes Rule of Signs Calculator
 	function descartes($request){
-		$equ=$_POST['equ'];
-		$vari=$_POST['vari'];
+		$equ = $request->equ ?? '';
+		$vari = $request->vari ?? '';
 		$range=range('a', 'z');
 		if (!empty($equ) && in_array(strtolower($vari), $range)) {
 			$input=$equ;
@@ -14717,6 +14734,9 @@ class Math extends Model
 				$this->param['error'] = 'Please! Enter only two values in one of the following fields.';
 				return $this->param;
 			}
+		}else{
+			$this->param['error'] = 'Please! Enter at least two values to calculate.';
+			return $this->param;
 		}
 		$this->param['method']=$method;
 		$this->param['a']=$len_a;
@@ -20871,6 +20891,7 @@ class Math extends Model
 			return $val2;
 		}
 		function centi($unit3,$value3){
+			$val3 = 0;
 			if($unit3=="mm²"){
 				$val3=$value3*0.01;
 			}else if($unit3=="cm²"){
@@ -24370,6 +24391,10 @@ class Math extends Model
 			}
 			return $answer;
 		}
+		if(is_numeric($pi) && ($pi == 0 || $pi == -2)) {
+			$this->param['error'] = 'Pi (π) cannot be 0 or -2!';
+			return $this->param;
+		}
 		if($selection=="1"){//Given Radius
 			if(is_numeric($radius) && is_numeric($pi) && $radius>0){
 				$ans=conversion($units,$radius);
@@ -26347,7 +26372,7 @@ class Math extends Model
                     $ans_pro[$l][] = $values * $f_vec[$l];
                 } 
             }
-            for ($m=0; $m < $matrix22; $m++) { 
+            for ($m=0; $m < count($combined_vector); $m++) { 
                 $pros_ans[] = array_column($ans_pro, $m);
             }
             $zaini = $all_vec;
@@ -26358,9 +26383,7 @@ class Math extends Model
             foreach ($subtract as $value) {
                 $all_vecunit[] = normalizeVector($matrix2,$value);
             }
-            array_pop($all_vecunit);
-            array_pop($subtract);
-            array_pop($pros_ans);
+            // Removed array_pop calls because loop bounds are now correct
         }else{
             $this->param['error'] = 'Please! Check Your Input.';
 			return $this->param;

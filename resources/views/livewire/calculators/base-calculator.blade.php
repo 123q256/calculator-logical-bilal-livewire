@@ -17,7 +17,7 @@
                         </div>
                     </div>
 
-                    <div class="col-span-12 md:col-span-6 lg:col-span-6 tno" x-show="$wire.tool === 'converter'">
+                    <div class="col-span-12 md:col-span-6 lg:col-span-6 tno" x-show="$wire.tool === 'converter'" style="{{ $tool === 'converter' ? '' : 'display: none;' }}">
                         <label for="bnr_third" class="font-s-14 text-blue">{{$lang[4]}}:</label>
                         <div class="py-2">
                             <input class="input" type="text" id="bnr_third" wire:model.live="bnr_third" x-on:keypress="handleKeypress($event, $wire.select_base)">
@@ -42,7 +42,7 @@
                         </div>
                     </div>
 
-                    <div class="col-span-12 md:col-span-6 lg:col-span-6 to_number" x-show="$wire.tool === 'converter'">
+                    <div class="col-span-12 md:col-span-6 lg:col-span-6 to_number" x-show="$wire.tool === 'converter'" style="{{ $tool === 'converter' ? '' : 'display: none;' }}">
                         <label for="to_number" class="font-s-14 text-blue">{{$lang['9']}}:</label>
                         <div class="w-100 py-2 position-relative"> 
                             <select id="to_number" wire:model.live="to_number" class="input">
@@ -60,7 +60,7 @@
                         </div>
                     </div>
 
-                    <div class="col-span-12 mt-2" x-show="$wire.tool === 'calculator'">
+                    <div class="col-span-12 mt-2" x-show="$wire.tool === 'calculator'" style="{{ $tool === 'calculator' ? '' : 'display: none;' }}">
                         <div class="grid grid-cols-12 mt-3 gap-2 md:gap-4 lg:gap-4"> 
                             <div class="col-span-5 fno">
                                 <label for="bnr_frs" class="font-s-14 text-blue">{{$lang[6]}}:</label>
