@@ -370,6 +370,10 @@ class Math extends Model
 				$val1 = $value * 36;
 			}else if($unit === "mi"){
 				$val1 = $value * 63360;
+			}else if($unit === "nmi"){
+				$val1 = $value * 72913.24;
+			}else{
+				$val1 = $value;
 			}
 			return $val1;	
 		}
@@ -3772,9 +3776,9 @@ class Math extends Model
 			$c2 = $sL - $si;
 			$slA = round((sqrt(pow($c1, 2) + pow($height, 2))), 2);
 			$slB = round((sqrt(pow($c2, 2) + pow($height, 2))), 2);
-			$a = round((asin($height / $HL)) * (180/3.14), 2);
-			$b = round((atan($height / $c1)) * (180/3.14), 2);
-			$c = round((atan($height / $c2)) * (180/3.14), 2);
+			$a = $HL != 0 ? round((asin($height / $HL)) * (180/3.14), 2) : 'NAN';
+			$b = $c1 != 0 ? round((atan($height / $c1)) * (180/3.14), 2) : 'NAN';
+			$c = $c2 != 0 ? round((atan($height / $c2)) * (180/3.14), 2) : 'NAN';
 		}else{
 			$this->param['error'] = 'Please! Check Your Input.';
 			return $this->param;
@@ -14836,6 +14840,7 @@ class Math extends Model
 			$this->param['totalD'] =$totalD;
 			$this->param['g'] =$g;
 			$this->param['btm'] =$btm;
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}else{
 			$this->param['error'] = 'Please fill all fields.';
