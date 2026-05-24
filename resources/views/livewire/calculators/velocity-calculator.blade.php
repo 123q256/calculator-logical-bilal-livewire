@@ -56,18 +56,15 @@
                         <label for="x" class="font-s-14 text-blue">{{ $lang['d'] ?? 'Distance' }}</label>
                         <div class="relative w-full">
                             <input type="number" step="any" wire:model="x" required id="x" class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00" />
-                            <div class="">
-                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('dis_unit')">
+                            <div x-data="{ open: false }" class="">
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                     {{ $dis_unit }} ▾
                                 </label>
-                                @if ($openDropdown === 'dis_unit')
-                                    <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                        @foreach (['in', 'ft', 'yd', 'm', 'cm', 'km', 'mi'] as $val)
-                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('dis_unit', '{{ $val }}')">{{ $val }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                    @foreach (['in', 'ft', 'yd', 'm', 'cm', 'km', 'mi'] as $val)
+                                        <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('dis_unit', '{{ $val }}')">{{ $val }}</p>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div> 
@@ -78,18 +75,15 @@
                         <label for="z" class="font-s-14 text-blue">{{ $lang['v'] ?? 'Velocity' }}</label>
                         <div class="relative w-full">
                             <input type="number" step="any" wire:model="vel" required id="z" class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00" />
-                            <div class="">
-                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('val_units')">
+                            <div x-data="{ open: false }" class="">
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                     {{ $val_units }} ▾
                                 </label>
-                                @if ($openDropdown === 'val_units')
-                                    <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                        @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
-                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('val_units', '{{ $val }}')">{{ $val }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                    @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
+                                        <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('val_units', '{{ $val }}')">{{ $val }}</p>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,18 +94,15 @@
                         <label for="y" class="font-s-14 text-blue">{{ $lang['t'] ?? 'Time' }}</label>
                         <div class="relative w-full">
                             <input type="number" step="any" wire:model="y" required id="y" class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00" />
-                            <div class="">
-                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('time_unit')">
+                            <div x-data="{ open: false }" class="">
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                     {{ $time_unit }} ▾
                                 </label>
-                                @if ($openDropdown === 'time_unit')
-                                    <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                        @foreach (['sec', 'min', 'hrs', 'days', 'wks', 'mos', 'yrs'] as $val)
-                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('time_unit', '{{ $val }}')">{{ $val }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                    @foreach (['sec', 'min', 'hrs', 'days', 'wks', 'mos', 'yrs'] as $val)
+                                        <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('time_unit', '{{ $val }}')">{{ $val }}</p>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -129,18 +120,15 @@
                             <label class="font-s-14 text-blue">{{ $lang['v'] ?? 'Speed' }} {{ $index > 0 ? $index + 1 : '1' }}</label>
                             <div class="relative w-full mt-1">
                                 <input type="number" step="any" wire:model="z.{{ $index }}" required class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00" />
-                                <div class="">
-                                    <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('val_unit_{{ $index }}')">
+                                <div x-data="{ open: false }" class="">
+                                    <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                         {{ $val_unit[$index] ?? 'm/s' }} ▾
                                     </label>
-                                    @if ($openDropdown === 'val_unit_'.$index)
-                                        <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                        <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                            @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
-                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('val_unit', '{{ $val }}', {{ $index }})">{{ $val }}</p>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                                    <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                        @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
+                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('val_unit', '{{ $val }}', {{ $index }})">{{ $val }}</p>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -153,18 +141,15 @@
                             </div>
                             <div class="relative w-full mt-1">
                                 <input type="number" step="any" wire:model="aty.{{ $index }}" required class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00" />
-                                <div class="">
-                                    <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('ytime_unit_{{ $index }}')">
+                                <div x-data="{ open: false }" class="">
+                                    <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                         {{ $ytime_unit[$index] ?? 'sec' }} ▾
                                     </label>
-                                    @if ($openDropdown === 'ytime_unit_'.$index)
-                                        <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                        <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                            @foreach (['sec', 'min', 'hrs', 'days', 'wks', 'mos', 'yrs'] as $val)
-                                                <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('ytime_unit', '{{ $val }}', {{ $index }})">{{ $val }}</p>
-                                            @endforeach
-                                        </div>
-                                    @endif
+                                    <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                        @foreach (['sec', 'min', 'hrs', 'days', 'wks', 'mos', 'yrs'] as $val)
+                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('ytime_unit', '{{ $val }}', {{ $index }})">{{ $val }}</p>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -198,18 +183,15 @@
                         <label for="x1" class="font-s-14 text-blue">{{ $lang['i_v'] ?? 'Initial Velocity' }}</label>
                         <div class="relative w-full mt-1">
                             <input type="number" step="any" wire:model="x1" required id="x1" class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00"/>
-                            <div class="">
-                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('iv_unit')">
+                            <div x-data="{ open: false }" class="">
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                     {{ $iv_unit }} ▾
                                 </label>
-                                @if ($openDropdown === 'iv_unit')
-                                    <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                        @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
-                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('iv_unit', '{{ $val }}')">{{ $val }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                    @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
+                                        <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('iv_unit', '{{ $val }}')">{{ $val }}</p>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -220,18 +202,15 @@
                         <label for="z1" class="font-s-14 text-blue">{{ $lang['f_v'] ?? 'Final Velocity' }}</label>
                         <div class="relative w-full mt-1">
                             <input type="number" step="any" wire:model="z1" required id="z1" class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00"/>
-                            <div class="">
-                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('fv_unit')">
+                            <div x-data="{ open: false }" class="">
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                     {{ $fv_unit }} ▾
                                 </label>
-                                @if ($openDropdown === 'fv_unit')
-                                    <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                        @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
-                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('fv_unit', '{{ $val }}')">{{ $val }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                    @foreach (['m/s', 'km/h', 'ft/s', 'mph', 'kn', 'ft/m', 'cm/s', 'm/min'] as $val)
+                                        <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('fv_unit', '{{ $val }}')">{{ $val }}</p>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -242,18 +221,15 @@
                         <label for="y1" class="font-s-14 text-blue">{{ $lang['t'] ?? 'Time' }}</label>
                         <div class="relative w-full mt-1">
                             <input type="number" step="any" wire:model="y1" required id="y1" class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00"/>
-                            <div class="">
-                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('atime_unit')">
+                            <div x-data="{ open: false }" class="">
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                     {{ $atime_unit }} ▾
                                 </label>
-                                @if ($openDropdown === 'atime_unit')
-                                    <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                        @foreach (['sec', 'min', 'hrs', 'days', 'wks', 'mos', 'yrs'] as $val)
-                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('atime_unit', '{{ $val }}')">{{ $val }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                    @foreach (['sec', 'min', 'hrs', 'days', 'wks', 'mos', 'yrs'] as $val)
+                                        <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('atime_unit', '{{ $val }}')">{{ $val }}</p>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -264,18 +240,15 @@
                         <label for="acc" class="font-s-14 text-blue">{{ $lang['a'] ?? 'Acceleration' }}</label>
                         <div class="relative w-full mt-1">
                             <input type="number" step="any" wire:model="acc" required id="acc" class="border border-blue-500 p-2 rounded-lg focus:ring-2 w-full text-blue" placeholder="00"/>
-                            <div class="">
-                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" wire:click.stop="toggleDropdown('acc_unit')">
+                            <div x-data="{ open: false }" class="">
+                                <label class="absolute cursor-pointer text-sm underline right-6 top-3 text-blue" @click="open = !open" @click.outside="open = false">
                                     {{ $acc_unit }} ▾
                                 </label>
-                                @if ($openDropdown === 'acc_unit')
-                                    <div class="fixed inset-0 z-[9]" wire:click="closeDropdown()"></div>
-                                    <div class="absolute z-10 bg-white border border-gray-300 rounded-md lg:w-[40%] md:w-[40%] w-[44%] mt-1 right-0 h-40 overflow-y-auto">
-                                        @foreach (['m/s²', 'cm/s²', 'in/s²', 'ft/s²', 'km/s²', 'mi/s²', 'g'] as $val)
-                                            <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" wire:click.stop="setUnit('acc_unit', '{{ $val }}')">{{ $val }}</p>
-                                        @endforeach
-                                    </div>
-                                @endif
+                                <div x-show="open" style="display: none;" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 h-84 overflow-y-auto">
+                                    @foreach (['m/s²', 'cm/s²', 'in/s²', 'ft/s²', 'km/s²', 'mi/s²', 'g'] as $val)
+                                        <p class="p-2 hover:bg-gray-100 cursor-pointer text-sm" @click="open = false; $wire.setUnit('acc_unit', '{{ $val }}')">{{ $val }}</p>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -294,7 +267,7 @@
 
         @isset($detail)
         <hr>
-            <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result mt-5">
+            <div id="result-section" wire:loading.remove wire:target="calculate" class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
             <div class="">
                 @if ($type=='calculator')
                     @include('inc.copy-pdf')

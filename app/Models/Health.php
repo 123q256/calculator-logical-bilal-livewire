@@ -23347,6 +23347,7 @@ class Health extends Model
         $end=$request->target;
         $choose=$request->choose;
         $enter_calories=$request->enter_calories;
+        $from = $request->from ?? null;
         $all_activites = [
             [2.3, "Activity promoting video game (e.g., Wii Fit), light effort (e.g., balance, yoga)", 'Activity promoting video game'],
             [3.8, "Activity promoting video game (e.g., Wii Fit), moderate effort (e.g., aerobic, resistance)", 'Activity promoting video game'],
