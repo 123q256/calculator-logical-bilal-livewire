@@ -71,12 +71,22 @@ class WeightlossCalculator extends Component
     {
         if ($this->unit !== $value) {
             $this->unit = $value;
-            $this->lose_unit = $value;
             if ($value === 'kg') {
                 $this->weight = round($this->weight / 2.205, 2);
-                $this->lose_w = round($this->lose_w / 2.205, 2);
             } else {
                 $this->weight = round($this->weight * 2.205, 2);
+            }
+        }
+        $this->detail = null;
+    }
+
+    public function setLoseUnit($value)
+    {
+        if ($this->lose_unit !== $value) {
+            $this->lose_unit = $value;
+            if ($value === 'kg') {
+                $this->lose_w = round($this->lose_w / 2.205, 2);
+            } else {
                 $this->lose_w = round($this->lose_w * 2.205, 2);
             }
         }

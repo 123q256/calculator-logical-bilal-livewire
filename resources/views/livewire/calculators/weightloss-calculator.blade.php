@@ -46,7 +46,7 @@
                     </div>
 
                     {{-- Height --}}
-                    <div class="col-span-2 grid grid-cols-2 gap-4" x-data="{ hightUnit: @entangle('hightUnit') }">
+                    <div class="grid grid-cols-2 gap-4" x-data="{ hightUnit: @entangle('hightUnit') }">
                         <!-- ft/in inputs -->
                         <div class="space-y-2 ft_in" x-show="hightUnit === 'ft/in'" x-cloak>
                             <label for="height_ft" class="font-s-14 text-blue">{!! $lang['height'] !!}:</label>
@@ -55,7 +55,7 @@
                         <div class="space-y-2 ft_in relative" x-show="hightUnit === 'ft/in'" x-cloak x-data="{ open: false }">
                             <label for="height_in" class="font-s-14 text-blue">&nbsp;</label>
                             <div class="relative w-full">
-                                <input type="number" wire:model.live="height_in" id="height_in" step="any" max="11" min="0" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" aria-label="input" placeholder="in" />
+                                <input type="number" wire:model.live="height_in" id="height_in" step="any" max="11" min="0" class="input" aria-label="input" placeholder="in" />
                                 <span class="absolute cursor-pointer text-sm underline right-6 top-4" @click="open = !open">
                                     <span x-text="hightUnit"></span> ▾
                                 </span>
@@ -69,7 +69,7 @@
                         <div class="space-y-2 col-span-2 h_cm" x-show="hightUnit === 'cm'" x-cloak x-data="{ open: false }">
                             <label for="height_cm" class="font-s-14 text-blue">{{ $lang['height'] }} (cm):</label>
                             <div class="relative w-full">
-                                <input type="number" wire:model.live="height_cm" id="height_cm" step="any" min="90" max="245" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" aria-label="input" placeholder="cm" />
+                                <input type="number" wire:model.live="height_cm" id="height_cm" step="any" min="90" max="245" class="input" aria-label="input" placeholder="cm" />
                                 <span class="absolute cursor-pointer text-sm underline right-6 top-4" @click="open = !open">
                                     <span x-text="hightUnit"></span> ▾
                                 </span>
@@ -85,7 +85,7 @@
                     <div class="space-y-2">
                         <label for="weight" class="font-s-14 text-blue">{{ $lang['weight'] }}:</label>
                         <div class="relative w-full" x-data="{ open: false, unit: @entangle('unit') }">
-                            <input type="number" wire:model.live="weight" id="weight" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" placeholder="00" />
+                            <input type="number" wire:model.live="weight" id="weight" step="any" class="input" placeholder="00" />
                             <span class="absolute cursor-pointer text-sm underline right-6 top-4" @click="open = !open">
                                 <span x-text="unit"></span> ▾
                             </span>
@@ -100,13 +100,13 @@
                      <div class="space-y-2">
                         <label for="lose_w" class="font-s-14 text-blue">{!! $lang['49'] !!}:</label>
                         <div class="relative w-full" x-data="{ open: false, lose_unit: @entangle('lose_unit') }">
-                            <input type="number" wire:model.live="lose_w" id="lose_w" step="any" class="border border-gray-300 p-2 rounded-lg focus:ring-2 w-full" placeholder="00" />
+                            <input type="number" wire:model.live="lose_w" id="lose_w" step="any" class="input" placeholder="00" />
                             <span class="absolute cursor-pointer text-sm underline right-6 top-4" @click="open = !open">
                                 <span x-text="lose_unit"></span> ▾
                             </span>
                             <div x-show="open" x-cloak @click.away="open = false" class="absolute z-10 bg-white border border-gray-300 rounded-md w-auto mt-1 right-0 shadow-lg">
-                                <p @click="$wire.setWeightUnit('lbs'); open = false" class="p-2 hover:bg-gray-100 cursor-pointer text-sm">pounds (lbs)</p>
-                                <p @click="$wire.setWeightUnit('kg'); open = false" class="p-2 hover:bg-gray-100 cursor-pointer text-sm">kilograms (kg)</p>
+                                <p @click="$wire.setLoseUnit('lbs'); open = false" class="p-2 hover:bg-gray-100 cursor-pointer text-sm">pounds (lbs)</p>
+                                <p @click="$wire.setLoseUnit('kg'); open = false" class="p-2 hover:bg-gray-100 cursor-pointer text-sm">kilograms (kg)</p>
                             </div>
                         </div>
                      </div>
@@ -132,17 +132,17 @@
                                     <input type="radio" value="by_date" wire:model.live="choose" id="by_date" class="with-gap" />
                                     <span class="text-[14px]"><strong>Time to reach your weight goal?</strong></span>
                                 </label>
-                                <div class="grid grid-cols-2 my-3 lg:grid-cols-2 md:grid-cols-2 gap-4" x-show="choose === 'by_date'" x-cloak>
+                                <div class="grid grid-cols-2 my-3 lg:grid-cols-2 md:grid-cols-2 gap-4" :class="{ 'opacity-50 pointer-events-none': choose !== 'by_date' }">
                                         <div class="col-6 pe-lg-1 pe-2">
                                             <label for="start" class="font-s-14 text-blue">{!! isset($lang['start'])?$lang['start']:"Start Date" !!}:</label>
                                             <div class="w-100 py-2 position-relative">
-                                                <input type="date" wire:model.live="start" id="start" class="input" aria-label="input" />
+                                                <input type="date" wire:model.live="start" id="start" class="input" aria-label="input" :disabled="choose !== 'by_date'" />
                                             </div>
                                         </div>
                                         <div class="col-6 ps-lg-1 ps-2">
                                             <label for="target" class="font-s-14 text-blue">{!! isset($lang['90'])?$lang['90']:"Target Date" !!}:</label>
                                             <div class="w-100 py-2 position-relative">
-                                                <input type="date" wire:model.live="target" id="target" class="input" aria-label="input" />
+                                                <input type="date" wire:model.live="target" id="target" class="input" aria-label="input" :disabled="choose !== 'by_date'" />
                                             </div>
                                         </div>
                                 </div>
@@ -152,10 +152,10 @@
                                     <input type="radio" value="by_calories" wire:model.live="choose" id="by_calories" class="with-gap" />
                                     <span class="font-s-14"><strong>Kcal/day are you ready to reduce?</strong></span>
                                 </label>
-                                <div class="col-12 mt-3" x-show="choose === 'by_calories'" x-cloak>
+                                <div class="col-12 mt-3" :class="{ 'opacity-50 pointer-events-none': choose !== 'by_calories' }">
                                     <label for="enter_calories" class="label">Calories:</label>
                                     <div class="w-100 py-2 relative">
-                                        <input type="number" step="any" wire:model.live="enter_calories" id="enter_calories" class="input" min="1" aria-label="input" placeholder="00" />
+                                        <input type="number" step="any" wire:model.live="enter_calories" id="enter_calories" class="input" min="1" aria-label="input" placeholder="00" :disabled="choose !== 'by_calories'" />
                                         <span class="text-blue input_unit">Kcal/day</span>
                                     </div>
                                 </div>
