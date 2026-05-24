@@ -852,7 +852,7 @@ class RationalizeTheDenominatorCalculator extends Component
                     $resultWritten3rd .= '<td class="py-2" rowspan="3">=</td>';
                     $resultWritten3rd .= '<td class="py-2" rowspan="3"><table><th class="py-2" rowspan="3">' . $aWrite . $bWrite . pow($y, $newRoot1st / $k) . ')';
                     if (!$oneSummand) {
-                        $resultWritten3rd .= $signUp . $cWrite . $dWrite . pow($y, $newRoot2nd / k) . ')';
+                        $resultWritten3rd .= $signUp . $cWrite . $dWrite . pow($y, $newRoot2nd / $k) . ')';
                     }
                     $resultWritten3rd .= '<br><hr noshade>' . $xWrite . $y . '</th></table></td>';
 

@@ -207,7 +207,37 @@
             <link rel="stylesheet" href="{{ url('katex/katex.min.css') }}">
             <script defer src="{{ url('katex/katex.min.js') }}"></script>
             <script defer src="{{ url('katex/auto-render.min.js') }}" 
-                    onload="renderMathInElement(document.body); window.MJrerender = function() { renderMathInElement(document.body); }"></script>
+                    onload="window.MJrerender && window.MJrerender()"></script>
+            <script>
+                window.MJrerender = function() {
+                    if (typeof renderMathInElement === 'function') {
+                        renderMathInElement(document.body, {
+                            delimiters: [
+                                {left: '$$', right: '$$', display: true},
+                                {left: '\\(', right: '\\)', display: false},
+                                {left: '\\[', right: '\\]', display: true}
+                            ],
+                            throwOnError : false
+                        });
+                    }
+                };
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    window.MJrerender();
+                });
+
+                document.addEventListener('livewire:initialized', () => {
+                    window.MJrerender();
+
+                    Livewire.hook('morph.updated', (el, component) => {
+                        window.MJrerender();
+                    });
+
+                    Livewire.on('math-updated', () => {
+                        setTimeout(() => { window.MJrerender(); }, 100);
+                    });
+                });
+            </script>
         @endpush
     </form>
 </div>

@@ -13966,6 +13966,7 @@ class Physics extends Model
 				$this->param['ans_t'] = "Time";
 			}
 			$this->param['ans'] = $ans;
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}elseif($velo_value == '3'){
 			$vs = $request->z;
@@ -14057,6 +14058,7 @@ class Physics extends Model
 				$this->param['ans_t'] = "Avrage Velocity";
 			}
 			$this->param['ans'] = $ans;
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}elseif($velo_value == '2'){
 			if($collection == '1'){
@@ -14332,6 +14334,7 @@ class Physics extends Model
 				$unit = "s";
 			}
 			$this->param['ans'] = $ans;
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}
 	}
