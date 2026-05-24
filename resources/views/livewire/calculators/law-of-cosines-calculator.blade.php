@@ -1,28 +1,15 @@
- @php
-        if (!function_exists('safe_round')) {
-            function safe_round($val, $precision = 5) {
-                if ($val === 'NAN' || $val === 'NaN' || (is_numeric($val) && is_nan((float)$val))) {
-                    return 'NAN';
-                }
-                if ($val === 'INF' || $val === 'INF' || $val === 'infinity' || $val === 'Infinity' || (is_numeric($val) && is_infinite((float)$val))) {
-                    return 'INF';
-                }
-                return is_numeric($val) ? round((float)$val, $precision) : $val;
-            }
-        }
-    @endphp
-<div
+<div x-on:show-result.window="showResult = true"
     x-data="{
-        cal: '{{ $cal }}',
-        side_a_unit: '{{ $side_a_unit }}',
-        side_b_unit: '{{ $side_b_unit }}',
-        side_c_unit: '{{ $side_c_unit }}',
-        angle_a_unit: '{{ $angle_a_unit }}',
-        angle_b_unit: '{{ $angle_b_unit }}',
-        angle_c_unit: '{{ $angle_c_unit }}',
+        cal: $wire.entangle('cal'),
+        side_a_unit: $wire.entangle('side_a_unit'),
+        side_b_unit: $wire.entangle('side_b_unit'),
+        side_c_unit: $wire.entangle('side_c_unit'),
+        angle_a_unit: $wire.entangle('angle_a_unit'),
+        angle_b_unit: $wire.entangle('angle_b_unit'),
+        angle_c_unit: $wire.entangle('angle_c_unit'),
         open_a: false, open_b: false, open_c: false,
         open_A: false, open_B: false, open_C: false,
-        showResult: {{ $detail ? 'true' : 'false' }},
+        showResult: {{ isset($detail) && $detail ? 'true' : 'false' }},
         showField(field) {
             const show = {
                 a: ['aa','ab','ac','sb','sc'],
@@ -37,16 +24,21 @@
         onInputChange() { this.showResult = false; }
     }"
 >
+    @php
+        if (!function_exists('safe_round')) {
+            function safe_round($val, $precision = 5) {
+                if ($val === 'NAN' || $val === 'NaN' || (is_numeric($val) && is_nan((float)$val))) {
+                    return 'NAN';
+                }
+                if ($val === 'INF' || $val === 'INF' || $val === 'infinity' || $val === 'Infinity' || (is_numeric($val) && is_infinite((float)$val))) {
+                    return 'INF';
+                }
+                return is_numeric($val) ? round((float)$val, $precision) : $val;
+            }
+        }
+    @endphp
 
     <form wire:submit.prevent="calculate" @input.capture="onInputChange()">
-        {{-- Hidden inputs to sync Alpine state to Livewire on submit --}}
-        <input type="hidden" wire:model="cal" x-bind:value="cal">
-        <input type="hidden" wire:model="side_a_unit" x-bind:value="side_a_unit">
-        <input type="hidden" wire:model="side_b_unit" x-bind:value="side_b_unit">
-        <input type="hidden" wire:model="side_c_unit" x-bind:value="side_c_unit">
-        <input type="hidden" wire:model="angle_a_unit" x-bind:value="angle_a_unit">
-        <input type="hidden" wire:model="angle_b_unit" x-bind:value="angle_b_unit">
-        <input type="hidden" wire:model="angle_c_unit" x-bind:value="angle_c_unit">
 
         <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 my-3">
             @if (isset($error))
@@ -60,7 +52,7 @@
                         <div class="col-12 mt-0 mt-lg-2">
                             <label for="cal" class="font-s-14 text-blue">{{$lang['1']}}:</label>
                             <div class="w-full py-2">
-                                <select x-model="cal" @change="onInputChange()" wire:model="cal" name="cal" class="input" id="cal" aria-label="select">
+                                <select x-model="cal" @change="onInputChange()" name="cal" class="input" id="cal" aria-label="select">
                                     <option value="aa">{{$lang['2']." A"}}</option>
                                     <option value="ab">{{$lang['2']." B"}}</option>
                                     <option value="ac">{{$lang['2']." C"}}</option>
@@ -299,8 +291,6 @@
 
     <div class="col-span-12 mt-4 canvas"
         x-data="{
-            a: {{ $a }}, b: {{ $b }}, c: {{ $c }},
-            A: {{ $A }}, B: {{ $B }},
             canvas: null, ctx: null, xo: 200, yo: 330,
             deg2rad(deg) { return deg * Math.PI / 180; },
             getcc() {
@@ -320,7 +310,11 @@
             draw() {
                 if(!this.getcc()) return;
                 this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height);
-                var a=this.a, b=this.b, c=this.c, A=this.A, B=this.B;
+                var detail = $wire.detail;
+                if (!detail) return;
+                var a = Number(detail.side_a), b = Number(detail.side_b), c = Number(detail.side_c);
+                var A = Number(detail.angle_a), B = Number(detail.angle_b);
+                if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(A) || isNaN(B)) return;
                 var e = -a * this.deg2rad(B); e = -a * Math.sin(this.deg2rad(B));
                 var d = Math.sqrt(Math.abs(b*b - e*e));
                 if(A > 90) d = -1*d;
@@ -339,7 +333,8 @@
                 document.getElementById('triangle').style.display='block';
             }
         }"
-        x-init="$nextTick(() => draw())"
+        x-init="setTimeout(() => draw(), 100)"
+        x-on:show-result.window="setTimeout(() => draw(), 100)"
     >
         <canvas id="triangle" width="600" height="350"></canvas>
         </div>{{-- col-span-12 canvas --}}
@@ -358,7 +353,7 @@
     @script
     <script>
         Livewire.hook('morph.updated', ({ el, component }) => {
-            if (typeof renderMathInElement === 'function') renderMathInElement(document.body);
+            if (typeof renderMathInElement === 'function') renderMathInElement(component.el || document.body);
         });
     </script>
     @endscript

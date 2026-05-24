@@ -4,19 +4,31 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class EndpointCalculator extends Component
+class DistanceFormulaCalculator extends Component
 {
-    public $error = null;
+   public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $x1 = '1';
-    public $y1 = '3';
-    public $x = '3';
-    public $y = '4';
-    public $renderCount = 0;
 
-    public function mount($type = 'calculator', $lang = [])
+    public $data = [
+        'type' => '2P',
+        'dimen' => '2D',
+        '2px1' => '', '2px2' => '',
+        '3px1' => '', '3px2' => '', '3px3' => '',
+        'x1' => '', 'y1' => '', 'm' => '', 'b' => '', 'm2' => '', 'b2' => '',
+        '3x1' => '', '3y1' => '', '3z1' => '',
+        '4x1' => '', '4y1' => '', '4z1' => '', '4k1' => '',
+        'x2' => '', 'y2' => '',
+        '3x2' => '', '3y2' => '', '3z2' => '',
+        '4x2' => '', '4y2' => '', '4z2' => '', '4k2' => '',
+        'x3' => '', 'y3' => '',
+        '3x3' => '', '3y3' => '', '3z3' => '',
+        '4x3' => '', '4y3' => '', '4z3' => '', '4k3' => ''
+    ];
+
+
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
@@ -25,22 +37,19 @@ class EndpointCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            if (isset($inputs['x1'])) $this->x1 = $inputs['x1'];
-            if (isset($inputs['y1'])) $this->y1 = $inputs['y1'];
-            if (isset($inputs['x'])) $this->x = $inputs['x'];
-            if (isset($inputs['y'])) $this->y = $inputs['y'];
+
         }
     }
 
     public function resetForm()
     {
-        $this->x1 = '1';
-        $this->y1 = '3';
-        $this->x = '3';
-        $this->y = '4';
+        $lang = $this->lang;
+        $type = $this->type;
+        $this->reset();
+        $this->lang = $lang;
+        $this->type = $type;
         $this->error = null;
         $this->detail = null;
-        $this->renderCount = 0;
 
         session()->forget([
             'calculator_back_inputs',
@@ -49,28 +58,25 @@ class EndpointCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function updated()
+  public function updated()
     {
         $this->detail = null;
         $this->error = null;
     }
 
-    public function calculate()
+        public function calculate()
     {
-        $request = (object)[
-            'x1' => $this->x1,
-            'y1' => $this->y1,
-            'x' => $this->x,
-            'y' => $this->y,
-        ];
+        $requestData = $this->data;
+        $request = new \Illuminate\Http\Request();
+        $request->replace($requestData);
 
         $model = new Math();
-        $result = $model->endpoint($request);
+        $result = $model->dis_formula($request);
 
         if (is_array($result)) {
             foreach ($result as $key => $val) {
@@ -89,12 +95,12 @@ class EndpointCalculator extends Component
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
             $this->error = null;
-            $this->renderCount++;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
+                $this->dispatch('math-updated');
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         const el = document.getElementById('result-section');
@@ -113,7 +119,8 @@ class EndpointCalculator extends Component
         $this->detail = null;
     }
 
-    public function render()
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
@@ -124,6 +131,6 @@ class EndpointCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.endpoint-calculator');
+        return view('livewire.calculators.distance-formula-calculator');
     }
 }

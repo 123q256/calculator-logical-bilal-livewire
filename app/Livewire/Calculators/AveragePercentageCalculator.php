@@ -4,17 +4,18 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class EndpointCalculator extends Component
+class AveragePercentageCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $x1 = '1';
-    public $y1 = '3';
-    public $x = '3';
-    public $y = '4';
-    public $renderCount = 0;
+
+    public $same_sample = 'no';
+    public $entries = [
+        ['percentage' => '', 'sample' => ''],
+        ['percentage' => '', 'sample' => '']
+    ];
 
     public function mount($type = 'calculator', $lang = [])
     {
@@ -25,22 +26,30 @@ class EndpointCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            if (isset($inputs['x1'])) $this->x1 = $inputs['x1'];
-            if (isset($inputs['y1'])) $this->y1 = $inputs['y1'];
-            if (isset($inputs['x'])) $this->x = $inputs['x'];
-            if (isset($inputs['y'])) $this->y = $inputs['y'];
+            $this->same_sample = $inputs['same_sample'] ?? $this->same_sample;
+            
+            if (isset($inputs['percentage']) && is_array($inputs['percentage'])) {
+                $newEntries = [];
+                foreach ($inputs['percentage'] as $i => $pct) {
+                    $newEntries[] = [
+                        'percentage' => $pct,
+                        'sample' => $inputs['sample'][$i] ?? ''
+                    ];
+                }
+                $this->entries = $newEntries;
+            }
         }
     }
 
-    public function resetForm()
+  public function resetForm()
     {
-        $this->x1 = '1';
-        $this->y1 = '3';
-        $this->x = '3';
-        $this->y = '4';
         $this->error = null;
         $this->detail = null;
-        $this->renderCount = 0;
+        $this->same_sample = 'no';
+        $this->entries = [
+            ['percentage' => '', 'sample' => ''],
+            ['percentage' => '', 'sample' => '']
+        ];
 
         session()->forget([
             'calculator_back_inputs',
@@ -49,12 +58,12 @@ class EndpointCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function updated()
+  public function updated()
     {
         $this->detail = null;
         $this->error = null;
@@ -62,15 +71,19 @@ class EndpointCalculator extends Component
 
     public function calculate()
     {
-        $request = (object)[
-            'x1' => $this->x1,
-            'y1' => $this->y1,
-            'x' => $this->x,
-            'y' => $this->y,
+        $percentages = array_column($this->entries, 'percentage');
+        $samples = array_column($this->entries, 'sample');
+
+        $requestData = [
+            'same_sample' => $this->same_sample,
+            'percentage' => $percentages,
+            'sample' => $samples,
         ];
+        $request = clone request();
+        $request->replace($requestData);
 
         $model = new Math();
-        $result = $model->endpoint($request);
+        $result = $model->avg_percentage($request);
 
         if (is_array($result)) {
             foreach ($result as $key => $val) {
@@ -87,16 +100,17 @@ class EndpointCalculator extends Component
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
-            session()->flash('calculator_back_inputs', (array)$request);
+            session()->flash('calculator_back_inputs', $requestData);
             $this->error = null;
-            $this->renderCount++;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->js(<<<'JS'
                     setTimeout(() => {
+                        if (typeof renderMathInElement === 'function') renderMathInElement(document.body);
+                        if (typeof MJrerender === 'function') MJrerender();
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -113,7 +127,8 @@ class EndpointCalculator extends Component
         $this->detail = null;
     }
 
-    public function render()
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
@@ -124,6 +139,6 @@ class EndpointCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.endpoint-calculator');
+        return view('livewire.calculators.average-percentage-calculator');
     }
 }

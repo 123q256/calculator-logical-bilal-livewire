@@ -14,13 +14,13 @@
     @endphp
 <form wire:submit.prevent="calculate"
     x-data="{
-        cal: '{{ $cal }}',
-        side_a_unit: '{{ $side_a_unit }}',
-        side_b_unit: '{{ $side_b_unit }}',
-        side_c_unit: '{{ $side_c_unit }}',
-        angle_a_unit: '{{ $angle_a_unit }}',
-        angle_b_unit: '{{ $angle_b_unit }}',
-        angle_c_unit: '{{ $angle_c_unit }}',
+        cal: $wire.entangle('cal'),
+        side_a_unit: $wire.entangle('side_a_unit'),
+        side_b_unit: $wire.entangle('side_b_unit'),
+        side_c_unit: $wire.entangle('side_c_unit'),
+        angle_a_unit: $wire.entangle('angle_a_unit'),
+        angle_b_unit: $wire.entangle('angle_b_unit'),
+        angle_c_unit: $wire.entangle('angle_c_unit'),
         open_a: false, open_b: false, open_c: false,
         open_A: false, open_B: false, open_C: false,
         showField(field) {
@@ -33,35 +33,9 @@
                 C: ['acc','bcc','cac','cbc','aac','bbc']
             };
             return (m[field] || []).includes(this.cal);
-        },
-        equations: {
-            abb: '\\\\( A = \\\\sin^{-1} \\\\left[ \\\\dfrac{a \\\\sin B}{b} \\\\right] \\\\)',
-            acc: '\\\\( A = \\\\sin^{-1} \\\\left[ \\\\dfrac{a \\\\sin C}{c} \\\\right] \\\\)',
-            aba: '\\\\( B = \\\\sin^{-1} \\\\left[ \\\\dfrac{b \\\\sin A}{a} \\\\right] \\\\)',
-            bcc: '\\\\( B = \\\\sin^{-1} \\\\left[ \\\\dfrac{b \\\\sin C}{c} \\\\right] \\\\)',
-            aca: '\\\\( C = \\\\sin^{-1} \\\\left[ \\\\dfrac{c \\\\sin A}{a} \\\\right] \\\\)',
-            bcb: '\\\\( C = \\\\sin^{-1} \\\\left[ \\\\dfrac{c \\\\sin B}{b} \\\\right] \\\\)',
-            bab: '\\\\( a = \\\\dfrac{b \\\\sin A}{\\\\sin B} \\\\)',
-            cac: '\\\\( a = \\\\dfrac{c \\\\sin A}{\\\\sin C} \\\\)',
-            aab: '\\\\( b = \\\\dfrac{a \\\\sin B}{\\\\sin A} \\\\)',
-            cbc: '\\\\( b = \\\\dfrac{c \\\\sin B}{\\\\sin C} \\\\)',
-            aac: '\\\\( c = \\\\dfrac{a \\\\sin C}{\\\\sin A} \\\\)',
-            bbc: '\\\\( c = \\\\dfrac{b \\\\sin C}{\\\\sin B} \\\\)'
-        },
-        syncCal() {
-            @this.set('cal', this.cal, false);
         }
     }"
 >
-    {{-- hidden inputs to sync Alpine state to Livewire on submit --}}
-    <input type="hidden" wire:model="cal" x-bind:value="cal">
-    <input type="hidden" wire:model="side_a_unit" x-bind:value="side_a_unit">
-    <input type="hidden" wire:model="side_b_unit" x-bind:value="side_b_unit">
-    <input type="hidden" wire:model="side_c_unit" x-bind:value="side_c_unit">
-    <input type="hidden" wire:model="angle_a_unit" x-bind:value="angle_a_unit">
-    <input type="hidden" wire:model="angle_b_unit" x-bind:value="angle_b_unit">
-    <input type="hidden" wire:model="angle_c_unit" x-bind:value="angle_c_unit">
-
     <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg  space-y-6 my-3">
         @if (isset($error))
         <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
@@ -398,11 +372,14 @@
                             },
                             draw() {
                                 this.canvasclear();
-                                var a = {{ safe_round($a) }};
-                                var b = {{ safe_round($b) }};
-                                var c = {{ safe_round($c) }};
-                                var A = {{ safe_round($A) }};
-                                var B = {{ safe_round($B) }};
+                                var detail = $wire.detail;
+                                if (!detail) return;
+                                var a = Number(detail.side_a);
+                                var b = Number(detail.side_b);
+                                var c = Number(detail.side_c);
+                                var A = Number(detail.angle_a);
+                                var B = Number(detail.angle_b);
+                                if (isNaN(a) || isNaN(b) || isNaN(c) || isNaN(A) || isNaN(B)) return;
                                 var e = -a * Math.sin(this.deg2rad(B));
                                 var d = Math.sqrt(Math.abs(b * b - e * e));
                                 if (A > 90) {
@@ -431,7 +408,8 @@
                                 document.getElementById('triangle').style.display = 'block';
                             }
                         }"
-                        x-init="draw()"
+                        x-init="setTimeout(() => draw(), 100)"
+                        x-on:show-result.window="setTimeout(() => draw(), 100)"
                     >
                         <canvas id="triangle" width="600" height="350"></canvas>
                     </div>
@@ -450,7 +428,7 @@
        <script>
            Livewire.hook('morph.updated', ({ el, component }) => {
                if (typeof renderMathInElement === 'function') {
-                   renderMathInElement(document.body);
+                   renderMathInElement(component.el || document.body);
                }
            });
        </script>

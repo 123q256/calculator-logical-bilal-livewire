@@ -4,19 +4,26 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class EndpointCalculator extends Component
+class GaussSeidelCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $x1 = '1';
-    public $y1 = '3';
-    public $x = '3';
-    public $y = '4';
-    public $renderCount = 0;
 
-    public function mount($type = 'calculator', $lang = [])
+    public $number = 2; // Default 3 variables (index 2)
+    public $matrix0_0 = 1;
+    public $matrix0_1 = 2;
+    public $matrix0_2 = 2;
+    public $matrix1_0 = 8;
+    public $matrix1_1 = 9;
+    public $matrix1_2 = 9;
+    public $matrix2_0 = 6;
+    public $matrix2_1 = 5;
+    public $matrix2_2 = 10;
+    public $value = [7, 7, 7];
+
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
@@ -25,22 +32,24 @@ class EndpointCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            if (isset($inputs['x1'])) $this->x1 = $inputs['x1'];
-            if (isset($inputs['y1'])) $this->y1 = $inputs['y1'];
-            if (isset($inputs['x'])) $this->x = $inputs['x'];
-            if (isset($inputs['y'])) $this->y = $inputs['y'];
+            $this->number = $inputs['number'] ?? $this->number;
+            $this->value = $inputs['value'] ?? $this->value;
+            for ($i = 0; $i <= 2; $i++) {
+                for ($j = 0; $j <= 2; $j++) {
+                    $prop = "matrix{$i}_{$j}";
+                    if (isset($inputs[$prop])) {
+                        $this->$prop = $inputs[$prop];
+                    }
+                }
+            }
         }
     }
 
-    public function resetForm()
+  public function resetForm()
     {
-        $this->x1 = '1';
-        $this->y1 = '3';
-        $this->x = '3';
-        $this->y = '4';
+
         $this->error = null;
         $this->detail = null;
-        $this->renderCount = 0;
 
         session()->forget([
             'calculator_back_inputs',
@@ -49,12 +58,12 @@ class EndpointCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function updated()
+  public function updated()
     {
         $this->detail = null;
         $this->error = null;
@@ -62,39 +71,32 @@ class EndpointCalculator extends Component
 
     public function calculate()
     {
-        $request = (object)[
-            'x1' => $this->x1,
-            'y1' => $this->y1,
-            'x' => $this->x,
-            'y' => $this->y,
+        $requestArray = [
+            'number' => $this->number,
+            'value' => $this->value,
         ];
-
-        $model = new Math();
-        $result = $model->endpoint($request);
-
-        if (is_array($result)) {
-            foreach ($result as $key => $val) {
-                if (is_float($val)) {
-                    if (is_nan($val)) {
-                        $result[$key] = 'NAN';
-                    } elseif (is_infinite($val)) {
-                        $result[$key] = 'INF';
-                    }
-                }
+        for ($i = 0; $i <= 2; $i++) {
+            for ($j = 0; $j <= 2; $j++) {
+                $prop = "matrix{$i}_{$j}";
+                $requestArray[$prop] = $this->$prop;
             }
         }
+        $request = (object) $requestArray;
+
+        $model = new Math();
+        $result = $model->gauss($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
             $this->error = null;
-            $this->renderCount++;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
+                $this->dispatch('math-updated');
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         const el = document.getElementById('result-section');
@@ -113,7 +115,8 @@ class EndpointCalculator extends Component
         $this->detail = null;
     }
 
-    public function render()
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
@@ -124,6 +127,6 @@ class EndpointCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.endpoint-calculator');
+        return view('livewire.calculators.gauss-seidel-calculator');
     }
 }

@@ -5896,6 +5896,7 @@ class Math extends Model
 		$pi_val = $request->pi_val;
 		$units = $request->units;
 		function newconvert_into_cm($unit,$value){
+			$val1 = $value * 1;
 			if($unit === "mm"){
 				$val1 = $value*0.1;
 			}else if($unit === "cm"){
@@ -6169,6 +6170,10 @@ class Math extends Model
 		$initial_value = $request->initial_value;
 		$final_value = $request->final_value;
 		if(is_numeric($initial_value) && is_numeric($final_value) ){
+			if ($initial_value == 0) {
+				$this->param['error'] = 'Initial value cannot be zero.';
+				return $this->param;
+			}
 			$answer = (($final_value - $initial_value) / abs($initial_value))*100;
 			$difference = $final_value - $initial_value;
 			$this->param['answer'] = $answer ;
@@ -19350,73 +19355,73 @@ class Math extends Model
 	// Volume Calculator
 	public function volume_cal($request)
 	{
-		$rec_width = $request->input("rec_width");
-		$rec_length = $request->input("rec_length");
-		$rec_height = $request->input("rec_height");
-		$rec_width_units = $request->input("rec_width_units");
-		$rec_length_units = $request->input("rec_length_units");
-		$rec_height_units = $request->input("rec_height_units");
-		$cub_side = $request->input("cub_side");
-		$cub_side_units = $request->input("cub_side_units");
-		$cyl_height = $request->input("cyl_height");
-		$cyl_height_units = $request->input("cyl_height_units");
-		$cyl_diameter = $request->input("cyl_diameter");
-		$cyl_diameter_units = $request->input("cyl_diameter_units");
-		$con_height = $request->input("con_height");
-		$con_height_units = $request->input("con_height_units");
-		$con_diameter = $request->input("con_diameter");
-		$con_diameter_units = $request->input("con_diameter_units");
-		$sph_diameter = $request->input("sph_diameter");
-		$sph_diameter_units = $request->input("sph_diameter_units");
-		$tri_base = $request->input("tri_base");
-		$tri_h = $request->input("tri_h");
-		$tri_h_units = $request->input("tri_h_units");
-		$tri_base_units = $request->input("tri_base_units");
-		$tri_length = $request->input("tri_length");
-		$tri_length_units = $request->input("tri_length_units");
-		$tri_height = $request->input("tri_height");
-		$tri_height_units = $request->input("tri_height_units");
-		$volume_select = $request->input("volume_select");
-		$pyr_height = $request->input("pyr_height");
-		$pyr_height_units = $request->input("pyr_height_units");
-		$pyr_side = $request->input("pyr_side");
-		$pyr_side_units = $request->input("pyr_side_units");
-		$cap_radius = $request->input("cap_radius");
-		$cap_radius_units = $request->input("cap_radius_units");
-		$cap_height = $request->input("cap_height");
-		$cap_height_units = $request->input("cap_height_units");
-		$hem_radius = $request->input("hem_radius");
-		$hem_radius_units = $request->input("hem_radius_units");
-		$hol_height = $request->input("hol_height");
-		$hol_height_units = $request->input("hol_height_units");
-		$hol_outer_dia = $request->input("hol_outer_dia");
-		$hol_outer_dia_units = $request->input("hol_outer_dia_units");
-		$hol_inner_dia = $request->input("hol_inner_dia");
-		$hol_inner_dia_units = $request->input("hol_inner_dia_units");
-		$coni_height = $request->input("coni_height");
-		$coni_height_units = $request->input("coni_height_units");
-		$coni_bottom_r = $request->input("coni_bottom_r");
-		$coni_bottom_r_units = $request->input("coni_bottom_r_units");
-		$coni_top_r = $request->input("coni_top_r");
-		$coni_top_r_units = $request->input("coni_top_r_units");
-		$tru_height = $request->input("tru_height");
-		$tru_height_units = $request->input("tru_height_units");
-		$tru_top_side = $request->input("tru_top_side");
-		$tru_top_side_units = $request->input("tru_top_side_units");
-		$tru_base_side = $request->input("tru_base_side");
-		$tru_base_side_units = $request->input("tru_base_side_units");
-		$ell_sem_a = $request->input("ell_sem_a");
-		$ell_sem_a_units = $request->input("ell_sem_a_units");
-		$ell_sem_b = $request->input("ell_sem_b");
-		$ell_sem_b_units = $request->input("ell_sem_b_units");
-		$ell_sem_c = $request->input("ell_sem_c");
-		$ell_sem_c_units = $request->input("ell_sem_c_units");
-		$square = $request->input("square");
-		$square_units = $request->input("square_units");
-		$col_height = $request->input("col_height");
-		$col_height_units = $request->input("col_height_units");
-		$col_radi = $request->input("col_radi");
-		$col_radi_units = $request->input("col_radi_units");
+		$rec_width = $request->rec_width;
+		$rec_length = $request->rec_length;
+		$rec_height = $request->rec_height;
+		$rec_width_units = $request->rec_width_units;
+		$rec_length_units = $request->rec_length_units;
+		$rec_height_units = $request->rec_height_units;
+		$cub_side = $request->cub_side;
+		$cub_side_units = $request->cub_side_units;
+		$cyl_height = $request->cyl_height;
+		$cyl_height_units = $request->cyl_height_units;
+		$cyl_diameter = $request->cyl_diameter;
+		$cyl_diameter_units = $request->cyl_diameter_units;
+		$con_height = $request->con_height;
+		$con_height_units = $request->con_height_units;
+		$con_diameter = $request->con_diameter;
+		$con_diameter_units = $request->con_diameter_units;
+		$sph_diameter = $request->sph_diameter;
+		$sph_diameter_units = $request->sph_diameter_units;
+		$tri_base = $request->tri_base;
+		$tri_h = $request->tri_h;
+		$tri_h_units = $request->tri_h_units;
+		$tri_base_units = $request->tri_base_units;
+		$tri_length = $request->tri_length;
+		$tri_length_units = $request->tri_length_units;
+		$tri_height = $request->tri_height;
+		$tri_height_units = $request->tri_height_units;
+		$volume_select = $request->volume_select;
+		$pyr_height = $request->pyr_height;
+		$pyr_height_units = $request->pyr_height_units;
+		$pyr_side = $request->pyr_side;
+		$pyr_side_units = $request->pyr_side_units;
+		$cap_radius = $request->cap_radius;
+		$cap_radius_units = $request->cap_radius_units;
+		$cap_height = $request->cap_height;
+		$cap_height_units = $request->cap_height_units;
+		$hem_radius = $request->hem_radius;
+		$hem_radius_units = $request->hem_radius_units;
+		$hol_height = $request->hol_height;
+		$hol_height_units = $request->hol_height_units;
+		$hol_outer_dia = $request->hol_outer_dia;
+		$hol_outer_dia_units = $request->hol_outer_dia_units;
+		$hol_inner_dia = $request->hol_inner_dia;
+		$hol_inner_dia_units = $request->hol_inner_dia_units;
+		$coni_height = $request->coni_height;
+		$coni_height_units = $request->coni_height_units;
+		$coni_bottom_r = $request->coni_bottom_r;
+		$coni_bottom_r_units = $request->coni_bottom_r_units;
+		$coni_top_r = $request->coni_top_r;
+		$coni_top_r_units = $request->coni_top_r_units;
+		$tru_height = $request->tru_height;
+		$tru_height_units = $request->tru_height_units;
+		$tru_top_side = $request->tru_top_side;
+		$tru_top_side_units = $request->tru_top_side_units;
+		$tru_base_side = $request->tru_base_side;
+		$tru_base_side_units = $request->tru_base_side_units;
+		$ell_sem_a = $request->ell_sem_a;
+		$ell_sem_a_units = $request->ell_sem_a_units;
+		$ell_sem_b = $request->ell_sem_b;
+		$ell_sem_b_units = $request->ell_sem_b_units;
+		$ell_sem_c = $request->ell_sem_c;
+		$ell_sem_c_units = $request->ell_sem_c_units;
+		$square = $request->square;
+		$square_units = $request->square_units;
+		$col_height = $request->col_height;
+		$col_height_units = $request->col_height_units;
+		$col_radi = $request->col_radi;
+		$col_radi_units = $request->col_radi_units;
 		
 		function convert_unit($unit, $value) {
 			if (isset($unit)) {
@@ -20088,26 +20093,26 @@ class Math extends Model
 	Venn DiaGram Calculator
 	**********************/
 	public function venn($request){
-		$submit = trim( $request->input( 'selection' ));
-		$venn_name = trim( $request->input( 'venn_name' ));
-		$ta = trim( $request->input( 'ta' ));
-		$tb = trim( $request->input( 'tb' ));
-		$a = trim( $request->input( 'a' ));
-		$b = trim( $request->input( 'b' ));
-		$u = trim( $request->input( 'u' ));
-		$c = trim( $request->input( 'c' ));
-		$venn_name3 = trim( $request->input( 'venn_name3' ));
-		$ta3 = trim( $request->input( 'ta3' ));
-		$tb3 = trim( $request->input( 'tb3' ));
-		$tc3 = trim( $request->input( 'tc3' ));
-		$a3 = trim( $request->input( 'a3' ));
-		$b3 = trim( $request->input( 'b3' ));
-		$c3 = trim( $request->input( 'c3' ));
-		$u3 = trim( $request->input( 'u3' ));
-		$anb3 = trim( $request->input( 'anb3' ));
-		$bnc3 = trim( $request->input( 'bnc3' ));
-		$cna3 = trim( $request->input( 'cna3' ));
-		$anbnc = trim( $request->input( 'anbnc' ));
+		$submit = trim($request->selection);
+		$venn_name = trim($request->venn_name);
+		$ta = trim($request->ta);
+		$tb = trim($request->tb);
+		$a = trim($request->a);
+		$b = trim($request->b);
+		$u = trim($request->u);
+		$c = trim($request->c);
+		$venn_name3 = trim($request->venn_name3);
+		$ta3 = trim($request->ta3);
+		$tb3 = trim($request->tb3);
+		$tc3 = trim($request->tc3);
+		$a3 = trim($request->a3);
+		$b3 = trim($request->b3);
+		$c3 = trim($request->c3);
+		$u3 = trim($request->u3);
+		$anb3 = trim($request->anb3);
+		$bnc3 = trim($request->bnc3);
+		$cna3 = trim($request->cna3);
+		$anbnc = trim($request->anbnc);
 		
 
 		// echo $z_score;
@@ -20197,17 +20202,17 @@ class Math extends Model
         Surface Area calculator
     ************************/   
     public function surface_area($request){
-		$operations=$request->input('operations');
-		$shape=$request->input('shape');
-		$first=$request->input('first');
-		$second=$request->input('second');
-		$third=$request->input('third');
-		$four=$request->input('four');
-		$pi=$request->input('pi');
-		$unit1=$request->input('unit1');
-		$unit2=$request->input('unit2');
-		$unit3=$request->input('unit3');
-		$unit4=$request->input('unit4');
+		$operations=$request->operations;
+		$shape=$request->shape;
+		$first=$request->first;
+		$second=$request->second;
+		$third=$request->third;
+		$four=$request->four;
+		$pi=$request->pi;
+		$unit1=$request->unit1;
+		$unit2=$request->unit2;
+		$unit3=$request->unit3;
+		$unit4=$request->unit4;
 		
 		function calculation($a,$b){
 			if($b == 'cm'){
@@ -20466,29 +20471,29 @@ class Math extends Model
 	public function angle($request)
 	{
 	
-		$dimen = $request->input('dimen');
-		$a_rep = $request->input('a_rep');
-		$ax = $request->input('ax');
-		$ay = $request->input('ay');
-		$az = $request->input('az');
-		$a1 = $request->input('a1');
-		$a2 = $request->input('a2');
-		$a3 = $request->input('a3');
-		$b1 = $request->input('b1');
-		$b2 = $request->input('b2');
-		$b3 = $request->input('b3');
-		$b_rep = $request->input('b_rep');
-		$bx = $request->input('bx');
-		$by = $request->input('by');
-		$bz = $request->input('bz');
-		$aa1 = $request->input('aa1');
-		$aa2 = $request->input('aa2');
-		$aa3 = $request->input('aa3');
-		$bb1 = $request->input('bb1');
-		$bb2 = $request->input('bb2');
-		$bb3 = $request->input('bb3');
+		$dimen = $request->dimen;
+		$a_rep = $request->a_rep;
+		$ax = $request->ax;
+		$ay = $request->ay;
+		$az = $request->az;
+		$a1 = $request->a1;
+		$a2 = $request->a2;
+		$a3 = $request->a3;
+		$b1 = $request->b1;
+		$b2 = $request->b2;
+		$b3 = $request->b3;
+		$b_rep = $request->b_rep;
+		$bx = $request->bx;
+		$by = $request->by;
+		$bz = $request->bz;
+		$aa1 = $request->aa1;
+		$aa2 = $request->aa2;
+		$aa3 = $request->aa3;
+		$bb1 = $request->bb1;
+		$bb2 = $request->bb2;
+		$bb3 = $request->bb3;
 
-		if ($request->has('submit')) {
+		if (isset($request->submit) || true) {
 			if ($dimen == '3d') {
 				if ($a_rep == 'coor' && $b_rep == 'coor') {
 					if (is_numeric($ax) && is_numeric($ay) && is_numeric($az) && is_numeric($bx) && is_numeric($by) && is_numeric($bz)) {
@@ -24100,8 +24105,8 @@ class Math extends Model
 		$value= $request->value;
 		for($i=0;$i<=$number;$i++){
 			for($j=0;$j<=$number;$j++){
-				if(is_numeric($_POST['matrix'.$i.'_'.$j])){
-					$r[]=$_POST['matrix'.$i.'_'.$j];
+				if(isset($request->{'matrix'.$i.'_'.$j}) && is_numeric($request->{'matrix'.$i.'_'.$j})){
+					$r[]=$request->{'matrix'.$i.'_'.$j};
 				}else{
 					$this->param['error'] = 'Please! Check Your Input.';
 					return $this->param;
@@ -24117,7 +24122,7 @@ class Math extends Model
 					$upper[$k][$f]=0;
 				}
 				else{
-					$upper[$k][$f]=$_POST['matrix'.$k.'_'.$f];
+					$upper[$k][$f]=$request->{'matrix'.$k.'_'.$f};
 				}
 			}
 		}
@@ -24143,7 +24148,7 @@ class Math extends Model
 				$lower[$i][$j]=0;
 			}
 			else{
-				$lower[$i][$j]=$_POST['matrix'.$i.'_'.$j];
+				$lower[$i][$j]=$request->{'matrix'.$i.'_'.$j};
 			}
 		$I_matrix_I = solve_matrix($lower);
 		$adjoint = array();
@@ -26485,7 +26490,7 @@ class Math extends Model
             $swap_line=[];
             $rowCount = count($matrix);
             if ($rowCount == 0)
-                return $matrix;
+                return array($matrix,$swap,$swap_line,$pz);
             $columnCount = 0;
             if (isset($matrix[0])) {
                 $columnCount = count($matrix[0]);
@@ -26509,7 +26514,7 @@ class Math extends Model
                             $i = $r;
                             $lead++;
                             if ($lead == $columnCount)
-                                return $matrix;
+                                return array($matrix,$swap,$swap_line,$pz);
                         }
                     }
                     $temp = $matrix[$r];
@@ -26569,8 +26574,8 @@ class Math extends Model
         }
 		for($i=1;$i<=$matrix2;$i++){
 			for($j=1;$j<=$matrix22;$j++){
-				if (isset($request['matrix3' . $i . '_' . $j]) && is_numeric($request['matrix3' . $i . '_' . $j])) {
-					$second_matrix[] = $request['matrix3' . $i . '_' . $j];
+				if (isset($request->{'matrix3' . $i . '_' . $j}) && is_numeric($request->{'matrix3' . $i . '_' . $j})) {
+					$second_matrix[] = $request->{'matrix3' . $i . '_' . $j};
 				}
 			}
 		} 
@@ -26594,8 +26599,8 @@ class Math extends Model
 			for ($i = 1; $i <= $count_rows; $i++) {
 				//$r[$i]=[];
 				for ($j = 1; $j <= $count_columns; $j++) {
-					if (isset($request['matrix' . $i . '_' . $j]) && is_numeric($request['matrix' . $i . '_' . $j])) {
-						$first_matrix = $request['matrix' . $i . '_' . $j];
+					if (isset($request->{'matrix' . $i . '_' . $j}) && is_numeric($request->{'matrix' . $i . '_' . $j})) {
+						$first_matrix = $request->{'matrix' . $i . '_' . $j};
 						//$r[$i][]=$first_matrix;
 						$r[] = $first_matrix;
 					} else {
@@ -26606,8 +26611,8 @@ class Math extends Model
 			}
 			for ($i = 1; $i <= $matrix2; $i++) {
 				for ($j = 1; $j <= $matrix22; $j++) {
-					if (isset($request['matrix3' . $i . '_' . $j]) && is_numeric(($request['matrix3' . $i . '_' . $j]))) {
-						$second_matrix = $request['matrix3' . $i . '_' . $j];
+					if (isset($request->{'matrix3' . $i . '_' . $j}) && is_numeric(($request->{'matrix3' . $i . '_' . $j}))) {
+						$second_matrix = $request->{'matrix3' . $i . '_' . $j};
 						$second_matrix;
 						$m[] = $second_matrix;
 					} else {
@@ -26621,7 +26626,7 @@ class Math extends Model
 				for ($j = 1; $j <= $matrix22; $j++) {
 					$result[$i][$j] = 0;
 					for ($k = 1; $k <= $matrix2; $k++) {
-						$result[$i][$j] += $request['matrix' . $i . '_' . $k] * $request['matrix3' . $k . '_' . $j];
+						$result[$i][$j] += $request->{'matrix' . $i . '_' . $k} * $request->{'matrix3' . $k . '_' . $j};
 						$result[$i][$j];
 					}
 				}
@@ -26670,7 +26675,7 @@ class Math extends Model
 		$matrix_4_2 = $request->matrix_4_2;
 		$matrix_4_3 = $request->matrix_4_3;
 		$matrix_4_4 = $request->matrix_4_4;
-		if ($matrix === '2' && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1)) {
+		if ($matrix == 2 && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1)) {
 			try{
 				$response = Http::timeout(120)->get('http://167.172.134.148/eigenvalues', [
 					'matrix' => $matrix,
@@ -26689,10 +26694,10 @@ class Math extends Model
 				$this->param['RESULT'] = 1;
 				return $this->param;
 			} catch (\Exception $response) {
-				$this->param['error'] = 'Please! Check Your Input.';
+				$this->param['error'] = 'Please! Check Your Input.11';
 				return $this->param;
 			}
-		} elseif ($matrix === '3' && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2)) {
+		} elseif ($matrix == 3 && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2)) {
 			try{
 				$response = Http::timeout(120)->get('http://167.172.134.148/eigenvalues', [
 					'matrix' => $matrix,
@@ -26717,10 +26722,10 @@ class Math extends Model
 				$this->param['RESULT'] = 1;
 				return $this->param;
 			} catch (\Exception $response) {
-				$this->param['error'] = 'Please! Check Your Input.';
+				$this->param['error'] = 'Please! Check Your Input.222';
 				return $this->param;
 			}
-		} elseif ($matrix === '4' && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_0_3) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_1_3) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2) && is_numeric($matrix_2_3) && is_numeric($matrix_3_0) && is_numeric($matrix_3_1) && is_numeric($matrix_3_2) && is_numeric($matrix_3_3)) {
+		} elseif ($matrix == 4 && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_0_3) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_1_3) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2) && is_numeric($matrix_2_3) && is_numeric($matrix_3_0) && is_numeric($matrix_3_1) && is_numeric($matrix_3_2) && is_numeric($matrix_3_3)) {
 			try{
 				$response = Http::timeout(120)->get('http://167.172.134.148/eigenvalues', [
 					'matrix' => $matrix,
@@ -26753,10 +26758,10 @@ class Math extends Model
 				$this->param['RESULT'] = 1;
 				return $this->param;
 			} catch (\Exception $response) {
-				$this->param['error'] = 'Please! Check Your Input.';
+				$this->param['error'] = 'Please! Check Your Input.33';
 				return $this->param;
 			}
-		} elseif ($matrix === '5' && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_0_3) && is_numeric($matrix_0_4) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_1_3) && is_numeric($matrix_1_4) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2) && is_numeric($matrix_2_3) && is_numeric($matrix_2_4) && is_numeric($matrix_3_0) && is_numeric($matrix_3_1) && is_numeric($matrix_3_2) && is_numeric($matrix_3_3) && is_numeric($matrix_3_4) && is_numeric($matrix_4_0) && is_numeric($matrix_4_1) && is_numeric($matrix_4_2) && is_numeric($matrix_4_3) && is_numeric($matrix_4_4)) {
+		} elseif ($matrix == 5 && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_0_3) && is_numeric($matrix_0_4) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_1_3) && is_numeric($matrix_1_4) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2) && is_numeric($matrix_2_3) && is_numeric($matrix_2_4) && is_numeric($matrix_3_0) && is_numeric($matrix_3_1) && is_numeric($matrix_3_2) && is_numeric($matrix_3_3) && is_numeric($matrix_3_4) && is_numeric($matrix_4_0) && is_numeric($matrix_4_1) && is_numeric($matrix_4_2) && is_numeric($matrix_4_3) && is_numeric($matrix_4_4)) {
 			try{
 				$response = Http::timeout(120)->get('http://167.172.134.148/eigenvalues', [
 					'matrix' => $matrix,
@@ -26799,11 +26804,11 @@ class Math extends Model
 				$this->param['RESULT'] = 1;
 				return $this->param;
 			} catch (\Exception $response) {
-				$this->param['error'] = 'Please! Check Your Input.';
+				$this->param['error'] = 'Please! Check Your Input.44';
 				return $this->param;
 			}
 		} else {
-			$this->param['error'] = 'Please! Check Your Input.';
+			$this->param['error'] = 'Please! Check Your Input.55';
 			return $this->param;
 		}
 	}
@@ -26820,7 +26825,7 @@ class Math extends Model
 		$matrix_2_0= $request->matrix_2_0;
 		$matrix_2_1= $request->matrix_2_1;
 		$matrix_2_2= $request->matrix_2_2;
-		if ($matrix === '2' && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1)) {
+		if ($matrix == 2 && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1)) {
 			try{
 				$response = Http::timeout(120)->get('http://167.172.134.148/eigenvectors', [
 					'matrix' => $matrix,
@@ -26852,7 +26857,7 @@ class Math extends Model
 				$this->param['error'] = 'Please! Check Your Input.';
 				return $this->param;
 			}
-		} elseif ($matrix === '3' && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2)) {
+		} elseif ($matrix == 3 && is_numeric($matrix_0_0) && is_numeric($matrix_0_1) && is_numeric($matrix_0_2) && is_numeric($matrix_1_0) && is_numeric($matrix_1_1) && is_numeric($matrix_1_2) && is_numeric($matrix_2_0) && is_numeric($matrix_2_1) && is_numeric($matrix_2_2)) {
 			try{
 				$response = Http::timeout(120)->get('http://167.172.134.148/eigenvectors', [
 					'matrix' => $matrix,
@@ -26929,7 +26934,7 @@ class Math extends Model
                 // for all remaining rows (diagonally)
                 for ($i = $j+1; $i < $n; ++ $i) {
                     // if the value is not already 0
-                    if ($A[$i][$j] !== 0) {
+                    if ($A[$i][$j] != 0) {
                         // adjust scale to pivot row
                         // subtract pivot row from current
                         $scalar = $A[$j][$j] / $A[$i][$j];
@@ -26948,7 +26953,7 @@ class Math extends Model
             // reverse run
             for ($j = $n-1; $j > 0; -- $j) {
                 for ($i = $j-1; $i >= 0; -- $i) {
-                    if ($A[$i][$j] !== 0) {
+                    if ($A[$i][$j] != 0) {
                         $scalar = $A[$j][$j] / $A[$i][$j];
                         for ($jj = $i; $jj < $n*2; ++ $jj) {
                             $A[$i][$jj] *= $scalar;
@@ -26965,7 +26970,7 @@ class Math extends Model
             // last run to make all diagonal 1s
             /// @note this can be done in last iteration (i.e. reverse run) too!
             for ($j = 0; $j < $n; ++ $j) {
-                if ($A[$j][$j] !== 1) {
+                if ($A[$j][$j] != 1) {
                     $scalar = 1 / $A[$j][$j];
                     for ($jj = $j; $jj < $n*2; ++ $jj) {
                         $A[$j][$jj] *= $scalar;
@@ -28111,14 +28116,14 @@ class Math extends Model
 		$input = '';
 		for ($i = 0; $i < $row; $i++) {
 			for ($j = 0; $j < $colum; $j++) {
-				if (!is_numeric($request['matrix_' . $i . '_' . $j])) {
+				if (!is_numeric($request->{'matrix_' . $i . '_' . $j})) {
 					$this->param['error'] = 'Please enter only numeric values.';
 					return $this->param;
 				}
 				if ($j == ($colum - 1)) {
-					$input .= $request['matrix_' . $i . '_' . $j];
+					$input .= $request->{'matrix_' . $i . '_' . $j};
 				} else {
-					$input .= $request['matrix_' . $i . '_' . $j] . ',';
+					$input .= $request->{'matrix_' . $i . '_' . $j} . ',';
 				}
 			}
 			if ($i != ($row - 1)) {

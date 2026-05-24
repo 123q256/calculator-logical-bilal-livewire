@@ -4,19 +4,24 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class EndpointCalculator extends Component
+class VolumeOfARectangle extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $x1 = '1';
-    public $y1 = '3';
-    public $x = '3';
-    public $y = '4';
-    public $renderCount = 0;
 
-    public function mount($type = 'calculator', $lang = [])
+    public $choose = 'hlw';
+    public $first = '12';
+    public $first_unit = 'cm';
+    public $second = '12';
+    public $second_unit = 'cm';
+    public $third = '12';
+    public $third_unit = 'cm';
+    public $units = 'cm';
+
+
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
@@ -25,22 +30,19 @@ class EndpointCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            if (isset($inputs['x1'])) $this->x1 = $inputs['x1'];
-            if (isset($inputs['y1'])) $this->y1 = $inputs['y1'];
-            if (isset($inputs['x'])) $this->x = $inputs['x'];
-            if (isset($inputs['y'])) $this->y = $inputs['y'];
+
         }
     }
 
     public function resetForm()
     {
-        $this->x1 = '1';
-        $this->y1 = '3';
-        $this->x = '3';
-        $this->y = '4';
+        $lang = $this->lang;
+        $type = $this->type;
+        $this->reset();
+        $this->lang = $lang;
+        $this->type = $type;
         $this->error = null;
         $this->detail = null;
-        $this->renderCount = 0;
 
         session()->forget([
             'calculator_back_inputs',
@@ -49,28 +51,25 @@ class EndpointCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function updated()
+  public function updated()
     {
         $this->detail = null;
         $this->error = null;
     }
 
-    public function calculate()
+        public function calculate()
     {
-        $request = (object)[
-            'x1' => $this->x1,
-            'y1' => $this->y1,
-            'x' => $this->x,
-            'y' => $this->y,
-        ];
+        $requestData = get_object_vars($this);
+        $request = new \Illuminate\Http\Request();
+        $request->replace($requestData);
 
         $model = new Math();
-        $result = $model->endpoint($request);
+        $result = $model->rectangle_volume($request);
 
         if (is_array($result)) {
             foreach ($result as $key => $val) {
@@ -89,14 +88,14 @@ class EndpointCalculator extends Component
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
             $this->error = null;
-            $this->renderCount++;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->js(<<<'JS'
                     setTimeout(() => {
+                        if (typeof MJrerender === 'function') MJrerender();
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -113,7 +112,8 @@ class EndpointCalculator extends Component
         $this->detail = null;
     }
 
-    public function render()
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
@@ -124,6 +124,7 @@ class EndpointCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.endpoint-calculator');
+    
+        return view('livewire.calculators.volume-of-a-rectangle');
     }
 }

@@ -4,19 +4,20 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class EndpointCalculator extends Component
+class OnesComplementCalculator extends Component
 {
     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $x1 = '1';
-    public $y1 = '3';
-    public $x = '3';
-    public $y = '4';
-    public $renderCount = 0;
+    public $cal = 'bnry_cal';
+    public $dec = '5';
+    public $bnry = '0101';
+    public $hex = 'F';
+    public $bits = '8';
+    public $no_of_bits = '8';
 
-    public function mount($type = 'calculator', $lang = [])
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
@@ -25,22 +26,25 @@ class EndpointCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            if (isset($inputs['x1'])) $this->x1 = $inputs['x1'];
-            if (isset($inputs['y1'])) $this->y1 = $inputs['y1'];
-            if (isset($inputs['x'])) $this->x = $inputs['x'];
-            if (isset($inputs['y'])) $this->y = $inputs['y'];
+            $this->cal = $inputs['cal'] ?? 'bnry_cal';
+            $this->dec = $inputs['dec'] ?? '5';
+            $this->bnry = $inputs['bnry'] ?? '0101';
+            $this->hex = $inputs['hex'] ?? 'F';
+            $this->bits = $inputs['bits'] ?? '8';
+            $this->no_of_bits = $inputs['no_of_bits'] ?? '8';
         }
     }
 
-    public function resetForm()
+  public function resetForm()
     {
-        $this->x1 = '1';
-        $this->y1 = '3';
-        $this->x = '3';
-        $this->y = '4';
         $this->error = null;
         $this->detail = null;
-        $this->renderCount = 0;
+        $this->cal = 'bnry_cal';
+        $this->dec = '5';
+        $this->bnry = '0101';
+        $this->hex = 'F';
+        $this->bits = '8';
+        $this->no_of_bits = '8';
 
         session()->forget([
             'calculator_back_inputs',
@@ -49,54 +53,82 @@ class EndpointCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function updated()
+  public function updated()
     {
         $this->detail = null;
         $this->error = null;
     }
 
+    public function currentBits()
+    {
+        if ($this->bits === 'other') {
+            return intval($this->no_of_bits) ?: 8;
+        }
+        return intval($this->bits) ?: 8;
+    }
+    
+    public function decMin()
+    {
+        $b = $this->currentBits();
+        if ($b >= 55) return '';
+        return -pow(2, $b - 1);
+    }
+    
+    public function decMax()
+    {
+        $b = $this->currentBits();
+        if ($b >= 55) return '';
+        return pow(2, $b - 1) - 1;
+    }
+    
+    public function decRangeText()
+    {
+        if ($this->currentBits() >= 55) return '';
+        return $this->decMin() . ' to ' . $this->decMax();
+    }
+    
+    public function bnryMaxLength()
+    {
+        return $this->currentBits();
+    }
+    
+    public function bnryRangeText()
+    {
+        return $this->currentBits() . ' Digits (without leading zeros)';
+    }
+
     public function calculate()
     {
         $request = (object)[
-            'x1' => $this->x1,
-            'y1' => $this->y1,
-            'x' => $this->x,
-            'y' => $this->y,
+            'cal' => $this->cal,
+            'dec' => $this->dec,
+            'bnry' => $this->bnry,
+            'hex' => $this->hex,
+            'bits' => $this->bits,
+            'no_of_bits' => $this->no_of_bits,
         ];
 
         $model = new Math();
-        $result = $model->endpoint($request);
-
-        if (is_array($result)) {
-            foreach ($result as $key => $val) {
-                if (is_float($val)) {
-                    if (is_nan($val)) {
-                        $result[$key] = 'NAN';
-                    } elseif (is_infinite($val)) {
-                        $result[$key] = 'INF';
-                    }
-                }
-            }
-        }
+        $result = $model->ones($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
             $this->error = null;
-            $this->renderCount++;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->js(<<<'JS'
                     setTimeout(() => {
+                        if (typeof MJrerender === 'function') MJrerender();
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -113,7 +145,8 @@ class EndpointCalculator extends Component
         $this->detail = null;
     }
 
-    public function render()
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
@@ -124,6 +157,6 @@ class EndpointCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.endpoint-calculator');
+        return view('livewire.calculators.ones-complement-calculator');
     }
 }

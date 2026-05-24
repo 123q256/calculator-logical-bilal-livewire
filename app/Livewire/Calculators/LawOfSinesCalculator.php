@@ -125,6 +125,7 @@ class LawOfSinesCalculator extends Component
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
             $this->error = null;
+            $this->dispatch('show-result');
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                  return redirect()->to(url()->previous() ?? '/');
@@ -133,7 +134,8 @@ class LawOfSinesCalculator extends Component
                 $this->js(<<<'JS'
                     setTimeout(() => {
                         if (typeof MJrerender === 'function') MJrerender();
-                        if (typeof renderMathInElement === 'function') renderMathInElement(document.body);
+                        const rootEl = typeof $wire !== 'undefined' && $wire.$el ? $wire.$el : document.body;
+                        if (typeof renderMathInElement === 'function') renderMathInElement(rootEl);
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
@@ -156,7 +158,8 @@ class LawOfSinesCalculator extends Component
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
                 setTimeout(() => {
-                    if (typeof renderMathInElement === 'function') renderMathInElement(document.body);
+                    const rootEl = typeof $wire !== 'undefined' && $wire.$el ? $wire.$el : document.body;
+                    if (typeof renderMathInElement === 'function') renderMathInElement(rootEl);
                 }, 100);
                 const el = document.getElementById('result-section');
                 if (el) {

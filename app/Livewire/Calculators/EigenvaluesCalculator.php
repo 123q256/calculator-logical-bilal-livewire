@@ -4,19 +4,23 @@ namespace App\Livewire\Calculators;
 use App\Models\Math;
 use Livewire\Component;
 
-class EndpointCalculator extends Component
+class EigenvaluesCalculator extends Component
 {
-    public $error = null;
+  public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $x1 = '1';
-    public $y1 = '3';
-    public $x = '3';
-    public $y = '4';
-    public $renderCount = 0;
+    public $matrix = 3;
+    
+    public $matrix_0_0 = 1, $matrix_0_1 = 1, $matrix_0_2 = 9, $matrix_0_3 = 0, $matrix_0_4 = 0;
+    public $matrix_1_0 = 2, $matrix_1_1 = 5, $matrix_1_2 = 1, $matrix_1_3 = 0, $matrix_1_4 = 0;
+    public $matrix_2_0 = 1, $matrix_2_1 = 2, $matrix_2_2 = 7, $matrix_2_3 = 0, $matrix_2_4 = 0;
+    public $matrix_3_0 = 0, $matrix_3_1 = 0, $matrix_3_2 = 0, $matrix_3_3 = 0, $matrix_3_4 = 0;
+    public $matrix_4_0 = 0, $matrix_4_1 = 0, $matrix_4_2 = 0, $matrix_4_3 = 0, $matrix_4_4 = 0;
 
-    public function mount($type = 'calculator', $lang = [])
+
+
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
@@ -25,22 +29,21 @@ class EndpointCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            if (isset($inputs['x1'])) $this->x1 = $inputs['x1'];
-            if (isset($inputs['y1'])) $this->y1 = $inputs['y1'];
-            if (isset($inputs['x'])) $this->x = $inputs['x'];
-            if (isset($inputs['y'])) $this->y = $inputs['y'];
+
         }
     }
 
-    public function resetForm()
+  public function resetForm()
     {
-        $this->x1 = '1';
-        $this->y1 = '3';
-        $this->x = '3';
-        $this->y = '4';
+
         $this->error = null;
         $this->detail = null;
-        $this->renderCount = 0;
+        $this->matrix = 3;
+        $this->matrix_0_0 = 1; $this->matrix_0_1 = 1; $this->matrix_0_2 = 9; $this->matrix_0_3 = 0; $this->matrix_0_4 = 0;
+        $this->matrix_1_0 = 2; $this->matrix_1_1 = 5; $this->matrix_1_2 = 1; $this->matrix_1_3 = 0; $this->matrix_1_4 = 0;
+        $this->matrix_2_0 = 1; $this->matrix_2_1 = 2; $this->matrix_2_2 = 7; $this->matrix_2_3 = 0; $this->matrix_2_4 = 0;
+        $this->matrix_3_0 = 0; $this->matrix_3_1 = 0; $this->matrix_3_2 = 0; $this->matrix_3_3 = 0; $this->matrix_3_4 = 0;
+        $this->matrix_4_0 = 0; $this->matrix_4_1 = 0; $this->matrix_4_2 = 0; $this->matrix_4_3 = 0; $this->matrix_4_4 = 0;
 
         session()->forget([
             'calculator_back_inputs',
@@ -49,12 +52,12 @@ class EndpointCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function updated()
+  public function updated()
     {
         $this->detail = null;
         $this->error = null;
@@ -63,36 +66,26 @@ class EndpointCalculator extends Component
     public function calculate()
     {
         $request = (object)[
-            'x1' => $this->x1,
-            'y1' => $this->y1,
-            'x' => $this->x,
-            'y' => $this->y,
+            'submit' => true,
+            'matrix' => $this->matrix,
         ];
-
-        $model = new Math();
-        $result = $model->endpoint($request);
-
-        if (is_array($result)) {
-            foreach ($result as $key => $val) {
-                if (is_float($val)) {
-                    if (is_nan($val)) {
-                        $result[$key] = 'NAN';
-                    } elseif (is_infinite($val)) {
-                        $result[$key] = 'INF';
-                    }
-                }
+        for ($i = 0; $i < 5; $i++) {
+            for ($j = 0; $j < 5; $j++) {
+                $prop = "matrix_{$i}_{$j}";
+                $request->$prop = $this->$prop;
             }
         }
 
+        $model = new Math();
+        $result = $model->eigenvalues($request);
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
             $this->error = null;
-            $this->renderCount++;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->js(<<<'JS'
@@ -104,6 +97,7 @@ class EndpointCalculator extends Component
                         }
                     }, 100);
                 JS);
+                $this->dispatch('math-updated');
             }
             return;
         }
@@ -113,7 +107,8 @@ class EndpointCalculator extends Component
         $this->detail = null;
     }
 
-    public function render()
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
@@ -124,6 +119,6 @@ class EndpointCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.endpoint-calculator');
+        return view('livewire.calculators.eigenvalues-calculator');
     }
 }

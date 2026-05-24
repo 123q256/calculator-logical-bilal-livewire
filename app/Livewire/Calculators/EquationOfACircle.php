@@ -1,22 +1,27 @@
 <?php
 
 namespace App\Livewire\Calculators;
-use App\Models\Math;
+use App\Models\Math;  
 use Livewire\Component;
 
-class EndpointCalculator extends Component
+class EquationOfACircle extends Component
 {
-    public $error = null;
+     public $error = null;
     public $detail = null;
     public $type = 'calculator';
     public $lang = [];
-    public $x1 = '1';
-    public $y1 = '3';
-    public $x = '3';
-    public $y = '4';
-    public $renderCount = 0;
 
-    public function mount($type = 'calculator', $lang = [])
+    public $from = '1';
+    public $a = '5';
+    public $b = '3';
+    public $c = '1';
+    public $x1 = '5';
+    public $y1 = '4';
+    public $r = '3';
+    public $h1 = '3';
+    public $k1 = '4';
+
+  public function mount($type = 'calculator', $lang = [])
     {
         $this->type = $type;
         $this->lang = $lang;
@@ -25,22 +30,32 @@ class EndpointCalculator extends Component
 
         if (session()->has('calculator_back_inputs')) {
             $inputs = session('calculator_back_inputs');
-            if (isset($inputs['x1'])) $this->x1 = $inputs['x1'];
-            if (isset($inputs['y1'])) $this->y1 = $inputs['y1'];
-            if (isset($inputs['x'])) $this->x = $inputs['x'];
-            if (isset($inputs['y'])) $this->y = $inputs['y'];
+            $this->from = $inputs['from'] ?? '1';
+            $this->a = $inputs['a'] ?? '5';
+            $this->b = $inputs['b'] ?? '3';
+            $this->c = $inputs['c'] ?? '1';
+            $this->x1 = $inputs['x1'] ?? '5';
+            $this->y1 = $inputs['y1'] ?? '4';
+            $this->r = $inputs['r'] ?? '3';
+            $this->h1 = $inputs['h1'] ?? '3';
+            $this->k1 = $inputs['k1'] ?? '4';
         }
     }
 
-    public function resetForm()
+  public function resetForm()
     {
-        $this->x1 = '1';
-        $this->y1 = '3';
-        $this->x = '3';
-        $this->y = '4';
         $this->error = null;
         $this->detail = null;
-        $this->renderCount = 0;
+        
+        $this->from = '1';
+        $this->a = '5';
+        $this->b = '3';
+        $this->c = '1';
+        $this->x1 = '5';
+        $this->y1 = '4';
+        $this->r = '3';
+        $this->h1 = '3';
+        $this->k1 = '4';
 
         session()->forget([
             'calculator_back_inputs',
@@ -49,12 +64,12 @@ class EndpointCalculator extends Component
             'scroll_to_result'
         ]);
 
-        if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
+          if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
             return redirect()->to(url()->previous() ?? '/');
         }
     }
 
-    public function updated()
+  public function updated()
     {
         $this->detail = null;
         $this->error = null;
@@ -62,37 +77,35 @@ class EndpointCalculator extends Component
 
     public function calculate()
     {
-        $request = (object)[
+        $requestData = [
+            'from' => $this->from,
+            'a' => $this->a,
+            'b' => $this->b,
+            'c' => $this->c,
             'x1' => $this->x1,
             'y1' => $this->y1,
-            'x' => $this->x,
-            'y' => $this->y,
+            'r' => $this->r,
+            'h1' => $this->h1,
+            'k1' => $this->k1,
         ];
+        
+        array_walk_recursive($requestData, function (&$item) {
+            if (is_float($item)) $item = (string) $item;
+        });
+
+        $request = new \Illuminate\Http\Request($requestData);
 
         $model = new Math();
-        $result = $model->endpoint($request);
-
-        if (is_array($result)) {
-            foreach ($result as $key => $val) {
-                if (is_float($val)) {
-                    if (is_nan($val)) {
-                        $result[$key] = 'NAN';
-                    } elseif (is_infinite($val)) {
-                        $result[$key] = 'INF';
-                    }
-                }
-            }
-        }
+        $result = $model->equation($request);
 
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
             session()->flash('calculator_back_inputs', (array)$request);
             $this->error = null;
-            $this->renderCount++;
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
-                return redirect()->to(url()->previous() ?? '/');
+                 return redirect()->to(url()->previous() ?? '/');
             } else {
                 $this->detail = $result;
                 $this->js(<<<'JS'
@@ -113,7 +126,8 @@ class EndpointCalculator extends Component
         $this->detail = null;
     }
 
-    public function render()
+
+   public function render()
     {
         if (session('scroll_to_result')) {
             $this->js(<<<'JS'
@@ -124,6 +138,6 @@ class EndpointCalculator extends Component
                 }
             JS);
         }
-        return view('livewire.calculators.endpoint-calculator');
+        return view('livewire.calculators.equation-of-a-circle');
     }
 }

@@ -108,7 +108,7 @@ class LawOfCosinesCalculator extends Component
 
         $model = new Math();
         $result = $model->law_of_cosines($request);
-
+        // dd($result);
         if (is_array($result)) {
             foreach ($result as $key => $val) {
                 if (is_float($val)) {
@@ -120,7 +120,6 @@ class LawOfCosinesCalculator extends Component
                 }
             }
         }
-
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
             session()->flash('calculator_result', $result);
             session()->flash('scroll_to_result', true);
@@ -140,6 +139,7 @@ class LawOfCosinesCalculator extends Component
                 'angle_c_unit' => $this->angle_c_unit,
             ]);
             $this->error = null;
+            $this->dispatch('show-result');
 
             if (env('LIVEWIRE_CALCULATOR_RELOAD')) {
                 return redirect()->to(url()->previous() ?? '/');
@@ -147,7 +147,8 @@ class LawOfCosinesCalculator extends Component
                 $this->detail = $result;
                 $this->js(<<<'JS'
                     setTimeout(() => {
-                        if (typeof renderMathInElement === 'function') renderMathInElement(document.body);
+                        const rootEl = typeof $wire !== 'undefined' && $wire.$el ? $wire.$el : document.body;
+                        if (typeof renderMathInElement === 'function') renderMathInElement(rootEl);
                         const el = document.getElementById('result-section');
                         if (el) {
                             const offset = el.getBoundingClientRect().top + window.pageYOffset - 100;
