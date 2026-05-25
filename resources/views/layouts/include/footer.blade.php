@@ -57,10 +57,10 @@
                     <h4 class="font-semibold text-white text-sm mb-4">Quick Links</h4>
                     <ul class="space-y-2.5 text-sm text-white">
                         <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('/') }}">Home</a></li>
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('content-disclaimer') }}">Content Disclaimer</a></li>
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('terms-of-service') }}">Terms and conditions</a></li>
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('privacy-policy') }}">Privacy policy</a></li>
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('editorial-Policies') }}">Editorial Policies</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('content-disclaimer') }}/">Content Disclaimer</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('terms-of-service') }}/">Terms and conditions</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('privacy-policy') }}/">Privacy policy</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('editorial-Policies') }}/">Editorial Policies</a></li>
                     </ul>
                 </div>
 
@@ -68,10 +68,10 @@
                 <div>
                     <h4 class="font-semibold text-white text-sm mb-4">Keep in Touch</h4>
                     <ul class="space-y-2.5 text-sm text-white">
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('about-us') }}">About Us</a></li>
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('contact-us') }}">Contact Us</a></li>
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('blog') }}">Blogs</a></li>
-                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('feedback') }}">Feedback</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('about-us') }}/">About Us</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('contact-us') }}/">Contact Us</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('blog') }}/">Blogs</a></li>
+                        <li><a class="hover:text-white transition-colors hover:underline" href="{{ url('feedback') }}/">Feedback</a></li>
                     </ul>
                 </div>
 

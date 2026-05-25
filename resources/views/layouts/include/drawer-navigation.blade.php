@@ -47,7 +47,7 @@
             </li>
 
             <li>
-                <a href="{{ url('blog') }}"
+                <a href="{{ url('blog') }}/"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
                     {{ Request::is('blog*') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600' }}">
                     <span
@@ -63,7 +63,7 @@
             </li>
 
             <li>
-                <a href="{{ url('contact-us') }}"
+                <a href="{{ url('contact-us') }}/"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
                     {{ Request::is('contact-us') ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600' }}">
                     <span
@@ -123,7 +123,7 @@
                     $isActive = $currentPath === $slug || str_starts_with($currentPath, $slug . '/');
                 @endphp
                 <li>
-                    <a href="{{ url($slug) }}"
+                    <a href="{{ url($slug) }}/"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
                         {{ $isActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600' }}">
 
@@ -147,7 +147,7 @@
             {{-- Unit Converter --}}
             @php $isUnitActive = $currentPath === 'unit-converter'; @endphp
             <li>
-                <a href="{{ url('unit-converter') }}"
+                <a href="{{ url('unit-converter') }}/"
                     class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all
             {{ $isUnitActive ? 'bg-indigo-50 text-indigo-600' : 'text-gray-700 hover:bg-gray-50 hover:text-indigo-600' }}">
 
@@ -176,7 +176,7 @@
         {{-- @guest
             <ul class="space-y-1">
                 <li>
-                    <a href="{{ url('login') }}"
+                    <a href="{{ url('login') }}/"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
                         <span class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -188,7 +188,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('register') }}"
+                    <a href="{{ url('register') }}/"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-all">
                         <span class="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center flex-shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -214,7 +214,7 @@
 
             <ul class="space-y-1">
                 <li>
-                    <a href="{{ url('profile') }}"
+                    <a href="{{ url('profile') }}/"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
                         <span class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -226,7 +226,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ url('change-password') }}"
+                    <a href="{{ url('change-password') }}/"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 transition-all">
                         <span class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center flex-shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -238,7 +238,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('logoutuser') }}"
+                    <a href="{{ route('logoutuser') }}/"
                         class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-600 hover:bg-red-50 transition-all">
                         <span class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center flex-shrink-0">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

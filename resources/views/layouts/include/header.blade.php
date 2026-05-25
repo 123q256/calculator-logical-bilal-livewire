@@ -17,9 +17,9 @@
       </a>
       <!-- Desktop Nav Links -->
       <nav class="hidden md:flex items-center gap-7 text-sm text-blue-50 font-medium">
-        <a href="{{ url('/') }}" class="hover:text-white transition-colors">Home</a>
+        <a href="{{ url('/') }}" class="text-white">Home</a>
         <div class="relative" id="cat-dropdown-wrap">
-          <button onclick="toggleCatDropdown()" class="flex items-center gap-1 hover:text-white transition-colors focus:outline-none">
+          <button onclick="toggleCatDropdown()" class="flex items-center gap-1 text-white focus:outline-none">
             Categories
             <svg id="cat-chevron" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -33,13 +33,13 @@
               @include('layouts.include.sub_menu')
           </div>
         </div>
-        <a href="{{ url('blog') }}" class="hover:text-white transition-colors">Blogs</a>
-        <a href="{{ url('contact-us') }}" class="hover:text-white transition-colors">Contact Us</a>
+        <a href="{{ url('blog') }}" class="text-white">Blogs</a>
+        <a href="{{ url('contact-us') }}" class="text-white">Contact Us</a>
       </nav>
       <!-- Desktop Actions -->
       <div class="hidden md:flex items-center gap-2">
      
-         <button class="p-2 rounded-lg hover:bg-white/10 transition-colors open-modal">
+         <button class="p-2 rounded-lg hover:bg-white/10 open-modal">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
           </svg>
@@ -47,13 +47,13 @@
       </div>
       <!-- Mobile: Search icon + Hamburger -->
       <div class="flex md:hidden items-center gap-2">
-        <button class="p-2 rounded-lg hover:bg-white/10 transition-colors open-modal" id="scrollToTopBtn">
+        <button class="p-2 rounded-lg hover:bg-white/10 open-modal" id="scrollToTopBtn">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
           </svg>
         </button>
         <button id="hamburger-btn" type="button" data-drawer-target="drawer-navigation" data-drawer-show="drawer-navigation"
-                 aria-controls="drawer-navigation" class="p-2 rounded-lg hover:bg-white/10 transition-colors">
+                 aria-controls="drawer-navigation" class="p-2 rounded-lg hover:bg-white/10">
           <svg id="hamburger-icon" class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
           </svg>

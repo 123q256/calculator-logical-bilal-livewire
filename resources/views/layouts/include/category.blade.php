@@ -9,7 +9,7 @@
           <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-4">
 
               <!-- 1. Health -->
-              <a href="{{ url('health') }}"
+              <a href="{{ url('health') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -22,7 +22,7 @@
               </a>
 
               <!-- 2. Math -->
-              <a href="{{ url('math') }}"
+              <a href="{{ url('math') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -35,7 +35,7 @@
               </a>
 
               <!-- 3. Everyday Life -->
-              <a href="{{ url('everyday-life') }}"
+              <a href="{{ url('everyday-life') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -48,7 +48,7 @@
               </a>
 
               <!-- 4. Finance -->
-              <a href="{{ url('finance') }}"
+              <a href="{{ url('finance') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -61,7 +61,7 @@
               </a>
 
               <!-- 5. Physics -->
-              <a href="{{ url('physics') }}"
+              <a href="{{ url('physics') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -73,7 +73,7 @@
               </a>
 
               <!-- 6. Chemistry -->
-              <a href="{{ url('chemistry') }}"
+              <a href="{{ url('chemistry') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -86,7 +86,7 @@
               </a>
 
               <!-- 7. Statistics -->
-              <a href="{{ url('statistics') }}"
+              <a href="{{ url('statistics') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -99,7 +99,7 @@
               </a>
 
               <!-- 8. Construction -->
-              <a href="{{ url('construction') }}"
+              <a href="{{ url('construction') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -112,7 +112,7 @@
               </a>
 
               <!-- 9. Pets -->
-              <a href="{{ url('pets') }}"
+              <a href="{{ url('pets') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -125,7 +125,7 @@
               </a>
 
               <!-- 10. Time & Date -->
-              <a href="{{ url('timedate') }}"
+              <a href="{{ url('timedate') }}/"
                   class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
@@ -137,7 +137,7 @@
                   <h3 class="font-semibold text-gray-800 text-sm">Time & Date</h3>
               </a>
               <!-- 10. Unit Converter -->
-            <a href="{{ url('unit-converter') }}"
+            <a href="{{ url('unit-converter') }}/"
                 class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                     style="background:#EEF0FB;">
