@@ -941,11 +941,11 @@ function autocomplete(inp, arr) {
         removeActive(x);
         if (currentFocus >= x.length) currentFocus = 0;
         if (currentFocus < 0) currentFocus = (x.length - 1);
-        x[currentFocus].classList.add("autosearch-activeclass");
+        x[currentFocus].classList.add("bg-[#1670a7]/10");
     }
     function removeActive(x) {
         for (var i = 0; i < x.length; i++) {
-            x[i].classList.remove("autosearch-activeclass");
+            x[i].classList.remove("bg-[#1670a7]/10");
         }
     }
     function closeAllLists(elmnt) {

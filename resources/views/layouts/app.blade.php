@@ -53,42 +53,27 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-            <!-- Livewire Component INSIDE -->
-            <livewire:search.search-two />
+            <!-- Static Include INSIDE -->
+            @include('layouts.include.search-two')
         </div>
     </div>
     @include('layouts.include.header')
     @section('content')
     @show
-       {{-- Footer --}}
-     @include('layouts.include.footer')
+    <!-- Footer -->
+    @include('layouts.include.footer')
     <script src="{{ url('js/flowbite.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script src="{{ url('assets/js/website.js') }}"></script>
-
     @livewireScripts
+    <script src="{{ url('js/search-calculator.js') }}?v={{ filemtime(public_path('js/search-calculator.js')) }}"></script>
+    <script src="{{ url('js/home.js') }}?v={{ filemtime(public_path('js/home.js')) }}"></script>
+    <script src="{{ url('js/modal-search.js') }}?v={{ filemtime(public_path('js/modal-search.js')) }}"></script>
+    <script src="{{ url('js/all.js') }}?v={{ filemtime(public_path('js/all.js')) }}"></script>
     @stack('calculatorJS')
-
-    <script>
-           function toggleCatDropdown() {
-      const dd = document.getElementById('cat-dropdown');
-      const chevron = document.getElementById('cat-chevron');
-      dd.classList.toggle('hidden');
-      chevron.classList.toggle('rotate-180');
-    }
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function(e) {
-      const wrap = document.getElementById('cat-dropdown-wrap');
-      if (!wrap.contains(e.target)) {
-        document.getElementById('cat-dropdown').classList.add('hidden');
-        document.getElementById('cat-chevron').classList.remove('rotate-180');
-      }
-    });
-    </script>
 </body>
 
 </html>

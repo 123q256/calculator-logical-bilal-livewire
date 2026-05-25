@@ -35,19 +35,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-// show_calculator
-function show_calculator(button) {
-    const value = button.value;
-    if (value === "scientific") {
-        $("#scientific_calculator").hide();
-        $("#simple_calculator").show();
-        $("#left_calulator").show();
-    } else if (value === "simple") {
-        $("#scientific_calculator").show();
-        $("#simple_calculator").hide();
-        $("#left_calulator").hide();
-    }
-}
 // downloadPDF
 async function downloadPDF() {
     const resultElementDiv = document.querySelector(".result");

@@ -223,6 +223,7 @@ class HomeController extends Controller
 		$data['posts'] = $posts;
 		$data['device'] = $this->device;
 		$data['allcategories'] = $this->allcategories;
+
 		return view('pages/index', $data);
 	}
 

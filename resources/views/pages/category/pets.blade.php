@@ -91,7 +91,7 @@
                 ?>
               
               
-                <div class=" justify-between px-2 py-5 border-bb border-[#DEDEDE] hover_border cursor-pointer items-center">
+                <div class=" justify-between px-2 py-5 !border !border-[#D2D4D8] border-[#DEDEDE] hover_border !cursor-pointer items-center">
                     <a href="{{ url($cal_link) }}/" class="flex justify-between items-center px-1 ">
                         <h3 class="hover:underline">{{ $cal_title }}</h3>
                         <svg width="6" height="11" viewBox="0 0 6 11" fill="none"
