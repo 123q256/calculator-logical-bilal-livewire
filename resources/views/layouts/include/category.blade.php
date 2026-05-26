@@ -1,6 +1,6 @@
   <!-- CATEGORIES — 10 total: 5 per row (2 rows desktop), 2 per row mobile -->
   <section id="categories" class="py-12 sm:py-12 bg-white">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6">
           <div class="text-center mb-12">
               <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Browse by Category</h2>
               <p class="text-gray-500 text-[16px]">Find the perfect calculator for your specific needs</p>
@@ -10,7 +10,7 @@
 
               <!-- 1. Health -->
               <a href="{{ url('health') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -23,7 +23,7 @@
 
               <!-- 2. Math -->
               <a href="{{ url('math') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -36,7 +36,7 @@
 
               <!-- 3. Everyday Life -->
               <a href="{{ url('everyday-life') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -49,7 +49,7 @@
 
               <!-- 4. Finance -->
               <a href="{{ url('finance') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-8 h-8" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -62,7 +62,7 @@
 
               <!-- 5. Physics -->
               <a href="{{ url('physics') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -74,7 +74,7 @@
 
               <!-- 6. Chemistry -->
               <a href="{{ url('chemistry') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@
 
               <!-- 7. Statistics -->
               <a href="{{ url('statistics') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -100,7 +100,7 @@
 
               <!-- 8. Construction -->
               <a href="{{ url('construction') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -113,7 +113,7 @@
 
               <!-- 9. Pets -->
               <a href="{{ url('pets') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -126,7 +126,7 @@
 
               <!-- 10. Time & Date -->
               <a href="{{ url('timedate') }}/"
-                  class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                  class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                   <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                       style="background:#EEF0FB;">
                       <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">
@@ -138,7 +138,7 @@
               </a>
               <!-- 10. Unit Converter -->
             <a href="{{ url('unit-converter') }}/"
-                class="border border-gray-200 rounded-2xl p-5 hover:shadow-md hover:border-indigo-200 transition-all cursor-pointer group text-center block">
+                class="border border-gray-200 rounded-2xl p-5  hover:border-indigo-200 transition-all cursor-pointer group text-center block">
                 <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-3 mx-auto transition-colors"
                     style="background:#EEF0FB;">
                     <svg class="w-6 h-6" fill="none" stroke="#3B4FE8" stroke-width="2" viewBox="0 0 24 24">

@@ -143,8 +143,11 @@ $(function () {
         }
     });
 
-    $('#modal-search-icon').on('click', function () {
-        $input.trigger('focus');
+    $('#modal-search-icon, .open-modal').on('click', function (e) {
+        e.preventDefault();
+        setTimeout(function() {
+            $input[0].focus();
+        }, 100);
     });
 
 });
