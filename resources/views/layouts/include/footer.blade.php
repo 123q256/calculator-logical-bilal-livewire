@@ -6,16 +6,20 @@
             <!-- Brand - 40% (2/5 columns) -->
             <div class="lg:col-span-2">
                 <div class="flex items-center gap-2 mb-3">
-                    <a href="{{ url('/') }}" class="flex items-center space-x-2 rtl:space-x-reverse">
-                        <div class="w-7 h-7 bg-white/20 rounded-lg flex items-center justify-center">
-                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <rect x="3" y="3" width="7" height="7" rx="1" stroke-width="2" />
-                                <rect x="14" y="3" width="7" height="7" rx="1" stroke-width="2" />
-                                <rect x="3" y="14" width="7" height="7" rx="1" stroke-width="2" />
-                                <rect x="14" y="14" width="7" height="7" rx="1" stroke-width="2" />
-                            </svg>
+                    <a href="{{ url('/') }}" class="flex items-center gap-3 group">
+                        <!-- Professional Icon -->
+                        <div class="relative w-10 h-10 flex items-center justify-center bg-white rounded-xl shadow-lg border-b-2 border-blue-100 group-hover:-translate-y-0.5 transition-all duration-300">
+                          <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                          </svg>
+                          <!-- Active Dot -->
+                          <div class="absolute -top-1 -right-1 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
                         </div>
-                        <span class="font-semibold text-white text-sm">Calculator Online</span>
+                        <!-- Logo Text -->
+                        <div class="flex flex-col">
+                          <span class="font-extrabold text-white text-[17px] leading-tight tracking-wide">Calculator</span>
+                          <span class="font-semibold text-blue-300 text-[10px] leading-none uppercase tracking-[0.2em]">Online</span>
+                        </div>
                     </a>
                 </div>
                 <p class="text-white text-sm leading-relaxed">

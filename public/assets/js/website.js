@@ -170,6 +170,9 @@ function showToast(message, bgColor = "bg-black") {
 document.addEventListener("DOMContentLoaded", function () {
     const modal = document.getElementById("default-modalfeed");
     const openBtn = document.querySelector(".open-feedback-btn"); // class for the trigger button
+    
+    if (!modal || !openBtn) return;
+
     const closeBtn = modal.querySelector(
         '[data-modal-hide="default-modalfeed"]'
     );

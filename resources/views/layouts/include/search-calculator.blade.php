@@ -3,7 +3,7 @@
     <section class="hero-bg py-12 sm:py-12 text-center">
         <div class="w-full mx-auto">
             <div class="max-w-3xl mx-auto px-6">
-                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
+                <h1 class="text-2xl sm:text-4xl font-bold text-gray-900 leading-tight mb-4">
                     Find the Right Calculator in Seconds
                 </h1>
                 <p class="text-gray-500 text-[18px] mb-10">
