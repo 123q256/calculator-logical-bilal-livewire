@@ -38,16 +38,17 @@
       </nav>
       <!-- Desktop Actions -->
       <div class="hidden md:flex items-center gap-2">
-     
-         <button class="p-2 rounded-lg hover:bg-white/10 open-modal">
-          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+         <button class="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm hover:shadow-md group open-modal">
+          <svg class="w-4 h-4 text-white group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
           </svg>
+          <span class="text-sm font-medium text-white/90 group-hover:text-white">Search...</span>
+          <span class="hidden lg:flex items-center justify-center px-1.5 py-0.5 rounded border border-white/30 text-[10px] text-white/70 ml-2 font-mono">⌘K</span>
         </button>
       </div>
       <!-- Mobile: Search icon + Hamburger -->
       <div class="flex md:hidden items-center gap-2">
-        <button class="p-2 rounded-lg hover:bg-white/10 open-modal" id="scrollToTopBtn">
+        <button class="p-2 bg-white/10 hover:bg-white/20 border border-white/20 rounded-full backdrop-blur-md transition-all duration-300 shadow-sm active:scale-95 open-modal" id="scrollToTopBtn">
           <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
           </svg>
