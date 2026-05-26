@@ -16,10 +16,14 @@
       </div>
       </a>
       <!-- Desktop Nav Links -->
-      <nav class="hidden md:flex items-center gap-7 text-sm text-blue-50 font-medium">
-        <a href="{{ url('/') }}" class="text-white">Home</a>
+      <nav class="hidden md:flex items-center gap-1 text-sm text-white font-medium">
+        <a href="{{ url('/') }}" class="px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-md transition-all duration-300 {{ request()->is('/') ? 'bg-white/20 backdrop-blur-md' : '' }}">Home</a>
         <div class="relative" id="cat-dropdown-wrap">
-          <button onclick="toggleCatDropdown()" class="flex items-center gap-1 text-white focus:outline-none">
+          @php
+              $catSlugs = ['health', 'math', 'everyday-life', 'finance', 'physics', 'chemistry', 'statistics', 'construction', 'pets', 'timedate', 'unit-converter'];
+              $isCategoryActive = in_array(request()->segment(1), $catSlugs);
+          @endphp
+          <button onclick="toggleCatDropdown()" class="flex items-center gap-1 px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-md transition-all duration-300 focus:outline-none {{ $isCategoryActive ? 'bg-white/20 backdrop-blur-md' : '' }}">
             Categories
             <svg id="cat-chevron" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -33,8 +37,8 @@
               @include('layouts.include.sub_menu')
           </div>
         </div>
-        <a href="{{ url('blog') }}" class="text-white">Blogs</a>
-        <a href="{{ url('contact-us') }}" class="text-white">Contact Us</a>
+        <a href="{{ url('blog') }}" class="px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-md transition-all duration-300 {{ request()->is('blog*') ? 'bg-white/20 backdrop-blur-md' : '' }}">Blogs</a>
+        <a href="{{ url('contact-us') }}" class="px-4 py-2 rounded-full hover:bg-white/10 hover:backdrop-blur-md transition-all duration-300 {{ request()->is('contact-us') ? 'bg-white/20 backdrop-blur-md' : '' }}">Contact Us</a>
       </nav>
       <!-- Desktop Actions -->
       <div class="hidden md:flex items-center gap-2">
