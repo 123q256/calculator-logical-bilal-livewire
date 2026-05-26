@@ -21,7 +21,6 @@ class CalculatorFeedback extends Component
             'name' => 'required|string|max:255',
             'message' => 'required|string|min:5',
         ]);
-
         Mail::to(env('CEO_EMAIL'))->send(new FeedbackCalculatorMail(
             $this->name,
             $this->email,

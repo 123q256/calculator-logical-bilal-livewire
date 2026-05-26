@@ -34,10 +34,9 @@
                         'calLink' => $cal_data->tech_calculator_link,
                     ])
 
-                    {{-- @if ($detail)
-                        <livewire:component.calculator-result-actions :detail="$detail" :calculator-name="$cal_name" :calculator-link="$cal_data->cal_link"
-                            :pageUrl="url()->current()" />
-                    @endif --}}
+                    <div id="global-feedback-actions" style="display: none; width: 100%;">
+                        @include('layouts.include.calculator-result-actions', ['detail' => true, 'calculatorName' => $cal_name ?? '', 'calculatorLink' => $cal_data->cal_link ?? '', 'pageUrl' => url()->current()])
+                    </div>
 
                 </div>
                 {{-- About Calculator --}}

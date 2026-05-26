@@ -87,7 +87,7 @@
         </div>
 
         @isset($detail)
-
+    <hr>
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg  space-y-6 my-3">
                 <div class="">

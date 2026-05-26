@@ -104,6 +104,7 @@ use App\Http\Controllers\Auth\UserForgotPasswordController;
     Route::middleware([App\Http\Middleware\RedirectIfIndexPhp::class])->group(function () {
         Route::post('/calculate', [HomeController::class, 'calculate'])->name('calculate_calculator');
         Route::post('/search_unit',[HomeController::class,'search_unit']);
+        Route::post('/save-calculator-feedback', [HomeController::class, 'saveCalculatorFeedback'])->name('save.calculator.feedback');
         Route::get('/{category}',[HomeController::class,'category'])
         ->where('category', 'health|finance|math|physics|chemistry|statistics|everyday-life|construction|pets|timedate');
         Route::get('/blog',[BlogController::class,'index']);

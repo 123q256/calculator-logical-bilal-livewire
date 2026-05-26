@@ -17,7 +17,7 @@
     </div>
 
     @if ($detail)
-        <div class="lg:flex md:flex flex px-5 mb-3 bg-[#808080] text-white rounded-lg items-center mt-2 justify-between">
+        <div class="lg:flex md:flex flex px-5 mb-3 bg-gradient-to-r from-blue-700 to-blue-500 text-white rounded-lg items-center mt-2 justify-between">
             <div id="actual_feedback" x-data="{
                 submitted: false,
                 loading: false,

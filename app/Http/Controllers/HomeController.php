@@ -2739,4 +2739,20 @@ class HomeController extends Controller
 			File::cleanDirectory(public_path('source/'));
 		}
 	}
+
+	public function saveCalculatorFeedback(Request $request)
+	{
+		try {
+			DB::table('user_responses')->insert([
+				'feedback' => $request->type,
+				'calculator_name' => $request->calculator_name,
+				'page' => $request->calculator_link,
+				'created_at' => now(),
+				'updated_at' => now(),
+			]);
+			return response()->json(['status' => 'success', 'message' => 'Thanks for your feedback!']);
+		} catch (\Exception $e) {
+			return response()->json(['status' => 'error', 'message' => 'Failed to save feedback'], 500);
+		}
+	}
 }

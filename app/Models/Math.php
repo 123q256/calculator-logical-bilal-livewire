@@ -30998,6 +30998,7 @@ class Math extends Model
 				}
 			}
 			$this->param['nawaz']=$nawaz;
+			$this->param['RESULT'] = 1;
 			return $this->param;
 		}else if($selection=="2"){
 			if(is_numeric($current_grade) && is_numeric($final_exam_grade2) && is_numeric($final_exam_weight) && $current_grade>0 && $final_exam_grade2>0 && $final_exam_weight>0){
@@ -31204,9 +31205,9 @@ class Math extends Model
 				}
 			}
 			else if($grading_system2=="3"){//USA Standard
-				$grade_was2=$_POST['grade_was2'];
-				$c=$_POST['c'];
-				$undertaker=$_POST['undertaker'];
+				$grade_was2=$request->input('grade_was2');
+				$c=$request->input('c');
+				$undertaker=$request->input('undertaker');
 				$read=0;
 				$count_grading_system=count($grade_was2);
 				$count_c=count($c);
@@ -31235,9 +31236,9 @@ class Math extends Model
 					$read=USAstd($final);		
 				}		
 			}else if($grading_system2=="4"){//Advanced USA
-				$grade_was3=$_POST['grade_was3'];
-				$c2=$_POST['c2'];
-				$undertaker2=$_POST['undertaker2'];
+				$grade_was3=$request->input('grade_was3');
+				$c2=$request->input('c2');
+				$undertaker2=$request->input('undertaker2');
 				$read=0;
 				$count_grading_system=count($grade_was3);
 				$count_c=count($c2);
@@ -31265,9 +31266,9 @@ class Math extends Model
 					$read=USAnormal($final);		
 				}
 			}else if($grading_system2=="5"){
-				$grade_was4=$_POST['grade_was4'];
-				$c3=$_POST['c3'];
-				$undertaker3=$_POST['undertaker3'];
+				$grade_was4=$request->input('grade_was4');
+				$c3=$request->input('c3');
+				$undertaker3=$request->input('undertaker3');
 				$read=0;
 				$count_grading_system=count($grade_was4);
 				$count_c=count($c3);
@@ -31296,9 +31297,9 @@ class Math extends Model
 					$read=canada($final);		
 				}
 			}else if($grading_system2=="6"){
-				$grade_was5=$_POST['grade_was5'];
-				$c4=$_POST['c4'];
-				$undertaker4=$_POST['undertaker4'];
+				$grade_was5=$request->input('grade_was5');
+				$c4=$request->input('c4');
+				$undertaker4=$request->input('undertaker4');
 				$read=0;
 				$count_grading_system=count($grade_was5);
 				$count_c=count($c4);
@@ -31326,9 +31327,9 @@ class Math extends Model
 					$read=GCSE($final);		
 				}
 			}else if($grading_system2=="7"){
-				$grade_was6=$_POST['grade_was6'];
-				$c5=$_POST['c5'];
-				$undertaker5=$_POST['undertaker5'];
+				$grade_was6=$request->input('grade_was6');
+				$c5=$request->input('c5');
+				$undertaker5=$request->input('undertaker5');
 				$read=0;
 				$count_grading_system=count($grade_was6);
 				$count_c=count($c5);
@@ -31356,9 +31357,9 @@ class Math extends Model
 					$read=AustraliaSchool($final);		
 				}
 			}else if($grading_system2=="8"){
-				$grade_was7=$_POST['grade_was7'];
-				$c6=$_POST['c6'];
-				$undertaker6=$_POST['undertaker6'];
+				$grade_was7=$request->input('grade_was7');
+				$c6=$request->input('c6');
+				$undertaker6=$request->input('undertaker6');
 				$read=0;
 				$count_grading_system=count($grade_was7);
 				$count_c=count($c6);
@@ -31386,9 +31387,9 @@ class Math extends Model
 					$read=AustraliaSchool($final);		
 				}
 			}else if($grading_system2=="9"){
-				$grade_was8=$_POST['grade_was8'];
-				$c7=$_POST['c7'];
-				$undertaker7=$_POST['undertaker7'];
+				$grade_was8=$request->input('grade_was8');
+				$c7=$request->input('c7');
+				$undertaker7=$request->input('undertaker7');
 				$read=0;
 				$count_grading_system=count($grade_was8);
 				$count_c=count($c7);

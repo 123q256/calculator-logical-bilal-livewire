@@ -16,6 +16,7 @@
     <form wire:submit.prevent="submit" class="space-y-4">
         <div>
             <input wire:model.defer="name" type="text" name="name"
+                oninput="this.parentElement.querySelector('.text-red-500')?.remove()"
                 class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-[#2845F5] focus:border-[#2845F5] shadow-sm"
                 placeholder="Enter Your Name" autocomplete="off">
             @error('name')
@@ -24,6 +25,7 @@
         </div>
         <div>
             <input wire:model.defer="email" type="email" name="email"
+                oninput="this.parentElement.querySelector('.text-red-500')?.remove()"
                 class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-[#2845F5] focus:border-[#2845F5] shadow-sm"
                 placeholder="Enter Your Email" autocomplete="off">
             @error('email')
@@ -32,6 +34,7 @@
         </div>
         <div>
             <textarea wire:model.defer="message" rows="5" name="message"
+                oninput="this.parentElement.querySelector('.text-red-500')?.remove()"
                 class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-[#2845F5] focus:border-[#2845F5] shadow-sm"
                 placeholder="Write Your Feedback"></textarea>
             @error('message')

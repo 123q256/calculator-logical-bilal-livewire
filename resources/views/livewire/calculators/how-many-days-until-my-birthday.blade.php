@@ -1,5 +1,5 @@
 <div>
-    <form wire:submit.prevent="calculate">
+    <form wire:submit.prevent="calculate" onsubmit="return false;">
         <div class="w-full mx-auto p-4 lg:p-8 md:p-8 input_form rounded-lg space-y-6 my-3">
             @if (isset($error))
                 <p class="text-red-500 text-lg font-semibold w-full">{{ $error }}</p>
@@ -64,6 +64,7 @@
         </div>
 
         @isset($detail)
+        <hr>
             <div id="result-section" wire:loading.remove wire:target="calculate"
                 class="w-full mx-auto p-4 lg:p-8 md:p-8 result_calculator rounded-lg space-y-6 result">
                 <div class="">
@@ -155,21 +156,7 @@
                     </div>
                 </div>
             </div>
-            @script
-                <script>
-                    document.addEventListener('livewire:initialized', () => {
-                        // Start countdown when component is initialized
-                        @this.updateCountdown();
 
-                        // Listen for update events
-                        Livewire.on('schedule-countdown-update', () => {
-                            setTimeout(() => {
-                                @this.updateCountdown();
-                            }, 1000);
-                        });
-                    });
-                </script>
-            @endscript
         @endisset
     </form>
 </div>

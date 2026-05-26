@@ -91,16 +91,21 @@ class HowManyDaysUntilMyBirthday extends Component
 
         $model = new Timedate();
         $result = $model->birthday_days($request);
-
+        
         if (!empty($result['RESULT']) && $result['RESULT'] == 1) {
+            // Convert Carbon instance to string to avoid Livewire serialization issues
+            if (isset($result['nextBirthday']) && $result['nextBirthday'] instanceof Carbon) {
+                $result['nextBirthday'] = $result['nextBirthday']->toDateTimeString();
+            }
+
             $this->detail = $result;
             $this->error = null;
-             if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-                
-                $this->nextBirthday = $result['nextBirthday'];
             
-                // Start the countdown
-                $this->startCountdown($this->nextBirthday);
+            // Set next birthday and start countdown
+            $this->nextBirthday = $result['nextBirthday'];
+            $this->startCountdown($this->nextBirthday);
+            
+            if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
                 session()->flash('calculator_result', $result);
                 session()->flash('scroll_to_result', true);
                 return redirect()->to(url()->previous() ?? '/');
@@ -114,16 +119,16 @@ class HowManyDaysUntilMyBirthday extends Component
                         }
                     }, 100);
                 JS);
+                return;
             }
         }
 
         $this->error = $result['error'] ?? 'Something went wrong.';
         $this->detail = null;
         if (env('LIVEWIRE_CALCULATOR_RELOAD', false)) {
-        session()->flash('validation_error', $this->error);  
-        return redirect()->to(url()->previous() ?? '/');
+            session()->flash('validation_error', $this->error);  
+            return redirect()->to(url()->previous() ?? '/');
         }
-        $this->detail = null;
     }
 
     public function startCountdown($targetDate)
@@ -156,9 +161,6 @@ class HowManyDaysUntilMyBirthday extends Component
         $this->countdownHours = str_pad($diff->h, 2, '0', STR_PAD_LEFT);
         $this->countdownMinutes = str_pad($diff->i, 2, '0', STR_PAD_LEFT);
         $this->countdownSeconds = str_pad($diff->s, 2, '0', STR_PAD_LEFT);
-
-        // Schedule next update
-        $this->dispatch('schedule-countdown-update');
     }
 
     public function render()
