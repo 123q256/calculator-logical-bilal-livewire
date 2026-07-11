@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="@yield('meta_des')">
+     <meta name="description" content="@yield('meta_des')">
+    @if (isset($noindex))
+        {!! $noindex !!}
+    @endif
+    @include('layouts/metas')
     <link rel="canonical" href="{{ url()->current() }}/" />
     <link href="{{ url('assets/images/logo.png') }}" rel="icon" type="image/x-icon" />
     <script src="https://cdn.tailwindcss.com"></script>
@@ -16,10 +20,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
         rel="stylesheet">
-    @if (isset($noindex))
-        {!! $noindex !!}
-    @endif
-    @include('layouts/metas')
+
     <style>
         [x-cloak] {
             display: none !important;
@@ -33,7 +34,6 @@
             background: linear-gradient(160deg, #f0f4ff 0%, #fafafa 60%, #fff 100%);
         }
     </style>
-    @livewireStyles
 </head>
 
 <body>
@@ -68,7 +68,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script type="text/javascript" src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
     <script src="{{ url('assets/js/website.js') }}"></script>
-    @livewireScripts
     <script src="{{ url('js/search-calculator.js') }}?v={{ filemtime(public_path('js/search-calculator.js')) }}"></script>
     <script src="{{ url('js/home.js') }}?v={{ filemtime(public_path('js/home.js')) }}"></script>
     <script src="{{ url('js/modal-search.js') }}?v={{ filemtime(public_path('js/modal-search.js')) }}"></script>
